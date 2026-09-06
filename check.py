@@ -84,8 +84,10 @@ for page in pages:
         if hits:
             fail(f"{name}: {label} leak -> {sorted(hits)}")
 
-    # 6. nav label must match the heading of the page it lands on. Four of six
-    #    labels once disagreed with their target; free disorientation.
+    # 6. head metadata present. Without a distinct title + description of real
+    #    length, two pages share a link preview and neither is findable.
+    #    (Nav-label/heading agreement is check 9; this comment used to claim
+    #    that by mistake after an edit moved the nav logic.)
     title = re.search(r"<title>(.*?)</title>", markup, re.S)
     if not title:
         fail(f"{name}: no <title>")
