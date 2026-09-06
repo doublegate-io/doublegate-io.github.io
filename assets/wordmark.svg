@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag  { font-size: 20px; fill: #97a1b2; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag  { fill: #55606f; }
+    }
+  </style>
+  <g transform="translate(16 26)">
+    <path d="M9 4 v60" stroke="#fb7185" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <path d="M63 4 v60" stroke="#34d399" stroke-width="9" stroke-linecap="round" fill="none"/>
+    <rect x="26" y="21" width="20" height="20" rx="4.5" fill="#e6e9ef"/>
+    <rect x="26" y="21" width="20" height="20" rx="4.5" fill="none" stroke="#08090c" stroke-width="1.5"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>

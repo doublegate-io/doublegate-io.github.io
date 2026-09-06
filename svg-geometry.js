@@ -19,7 +19,7 @@ try {
 
 const CHROME = process.env.CHROME_PATH || '/usr/bin/chromium';
 const ASSETS = 'file://' + process.cwd() + '/site/assets/';
-const SVGS = ['hero-flow.svg', 'artifact-flow.svg', 'social-card.svg', 'logo.svg'];
+const SVGS = ['hero-flow.svg', 'artifact-flow.svg', 'social-card.svg', 'logo.svg', 'wordmark.svg'];
 
 (async () => {
   let browser;
