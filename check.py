@@ -108,6 +108,18 @@ for page in pages:
         if not alt or len(alt.group(1)) < 25:
             fail(f"{name}: img without meaningful alt text")
 
+# 8a. og:image and og:url MUST be absolute. Crawlers do not resolve relative
+#     Open Graph URLs, so a relative one yields a link preview with no image --
+#     silently, since the page itself renders fine.
+for page in pages:
+    markup = page.read_text()
+    for prop in ("og:image", "og:url"):
+        m = re.search(rf'property="{prop}" content="([^"]+)"', markup)
+        if not m:
+            fail(f"{page.name}: missing {prop}")
+        elif not m.group(1).startswith("https://"):
+            fail(f"{page.name}: {prop} must be absolute -> {m.group(1)}")
+
 # 8b. THE SITE MUST NOT LINK INTO THE PRIVATE DESIGN REPO.
 #     The site is public; the design package is not. A deep link into it renders
 #     as a 404 for every visitor, and the visitor cannot tell a broken link from

@@ -81,7 +81,7 @@ TITLES = {
     ),
 }
 
-GH = "https://github.com/doublegate-io/doublegate-site"
+GH = "https://github.com/doublegate-io/doublegate-io.github.io"
 DOCS = f"{GH}/blob/main/docs"
 
 SHELL = """<!doctype html>
@@ -95,7 +95,8 @@ SHELL = """<!doctype html>
 <meta property="og:description" content="{desc}">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
-<meta property="og:image" content="assets/social-card.svg">
+<meta property="og:image" content="https://doublegate-io.github.io/assets/social-card.svg">
+<meta property="og:url" content="https://doublegate-io.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/style.css">
 </head>
