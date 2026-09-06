@@ -42,7 +42,10 @@ def visible(markup: str) -> str:
     return H.unescape(re.sub(r"(?s)<[^>]+>", " ", out))
 
 
-pages = sorted(ROOT.glob("*.html"))
+# scratch files (.tmp_*) are probes, not pages — scanning them produced 14
+# bogus failures once, and worse, they got committed. Ignore them here and in
+# .gitignore so neither can happen again.
+pages = sorted(p for p in ROOT.glob("*.html") if not p.name.startswith(".tmp"))
 if not pages:
     fail("no built pages — run python3 site/build.py")
 
