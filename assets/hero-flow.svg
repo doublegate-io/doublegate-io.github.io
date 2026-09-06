@@ -1,0 +1,206 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 400" width="1080" height="400"
+     role="img" aria-labelledby="t d" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif">
+<title id="t">How knowledge moves through doublegate</title>
+<desc id="d">An agent writes a claim. It is held in a separate store nothing can read, scanned for
+injection and secrets, graded and signed by a reviewer that did not write it, countersigned by a
+second gate on its own judgement, and only then readable company-wide. Once signed it is visible to the author's own agents immediately, while others wait for that
+signature. Rejected content returns to holding with its reasons. Records such as transcripts
+and logs bypass review entirely.</desc>
+
+<defs>
+  <style><![CDATA[
+    .zn   { font-size:11.5px; font-weight:700; letter-spacing:.1em; fill:#8d97a9; }
+    .st   { font-size:12px; font-weight:700; letter-spacing:.07em; }
+    .nm   { font-size:14px; font-weight:600; fill:#e6e9ef; }
+    .sb   { font-size:12.5px; fill:#97a1b2; }
+    .panel{ fill:#0e1118; stroke:#1e2430; stroke-width:1.4; }
+  ]]></style>
+
+  <linearGradient id="gHold" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#4c0519" stop-opacity=".6"/><stop offset="1" stop-color="#4c0519" stop-opacity=".15"/>
+  </linearGradient>
+  <linearGradient id="gChk" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#78350f" stop-opacity=".6"/><stop offset="1" stop-color="#78350f" stop-opacity=".15"/>
+  </linearGradient>
+  <linearGradient id="gOk" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#064e3b" stop-opacity=".65"/><stop offset="1" stop-color="#064e3b" stop-opacity=".18"/>
+  </linearGradient>
+  <linearGradient id="gLed" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#4c1d95" stop-opacity=".65"/><stop offset="1" stop-color="#4c1d95" stop-opacity=".18"/>
+  </linearGradient>
+  <linearGradient id="gCyn" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#0e7490" stop-opacity=".5"/><stop offset="1" stop-color="#0e7490" stop-opacity=".14"/>
+  </linearGradient>
+  <linearGradient id="rail" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#fb7185" stop-opacity=".55"/>
+    <stop offset=".3" stop-color="#fbbf24" stop-opacity=".55"/>
+    <stop offset=".55" stop-color="#34d399" stop-opacity=".55"/>
+    <stop offset=".78" stop-color="#a78bfa" stop-opacity=".55"/>
+    <stop offset="1" stop-color="#22d3ee" stop-opacity=".55"/>
+  </linearGradient>
+  <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+    <feGaussianBlur stdDeviation="4.5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+  </filter>
+
+  <!-- motion tracks run BELOW the boxes on a rail, so a moving dot never crosses a label -->
+  <path id="mRail" d="M 92 232 L 1000 232" fill="none"/>
+  <path id="mMine" d="M 560 232 Q 640 232 640 210" fill="none"/>
+  <path id="mRej"  d="M 596 232 Q 620 232 620 258 L 200 258 Q 176 258 176 232" fill="none"/>
+  <path id="mRec"  d="M 92 330 L 1000 330" fill="none"/>
+</defs>
+
+<rect width="1080" height="400" fill="#08090c"/>
+
+<!-- ════════ CLAIMS: the reviewed path ════════ -->
+<text class="zn" x="24" y="28">CLAIMS — WHAT THE AGENT ASSERTS AS TRUE</text>
+
+<!-- rail -->
+<path d="M 92 232 L 1000 232" stroke="url(#rail)" stroke-width="2.5" fill="none"/>
+
+<!-- 1 · written -->
+<g>
+  <rect class="panel" x="24" y="146" width="104" height="62" rx="12"/>
+  <text class="nm" x="76" y="172" text-anchor="middle">an agent</text>
+  <text class="nm" x="76" y="190" text-anchor="middle">writes it</text>
+  <line x1="76" y1="208" x2="76" y2="232" stroke="#232b39" stroke-width="1.5"/>
+  <circle cx="76" cy="232" r="4" fill="#0e1118" stroke="#8d97a9" stroke-width="1.5"/>
+</g>
+
+<!-- 2 · HELD -->
+<g>
+  <rect x="152" y="130" width="128" height="78" rx="13" fill="url(#gHold)" stroke="#fb7185" stroke-width="1.6"/>
+  <text class="st" x="216" y="154" text-anchor="middle" fill="#fb7185">HELD</text>
+  <text class="nm" x="216" y="176" text-anchor="middle">a separate store</text>
+  <text class="sb" x="216" y="196" text-anchor="middle">your agent cannot read it</text>
+  <line x1="216" y1="208" x2="216" y2="232" stroke="#fb718566" stroke-width="1.5"/>
+  <circle cx="216" cy="232" r="4.5" fill="#08090c" stroke="#fb7185" stroke-width="2"/>
+</g>
+
+<!-- 3 · SCANNED -->
+<g>
+  <rect x="304" y="130" width="128" height="78" rx="13" fill="url(#gChk)" stroke="#fbbf24" stroke-width="1.6"/>
+  <text class="st" x="368" y="154" text-anchor="middle" fill="#fbbf24">SCANNED</text>
+  <text class="nm" x="368" y="176" text-anchor="middle">injection · secrets</text>
+  <text class="sb" x="368" y="196" text-anchor="middle">executable payloads</text>
+  <line x1="368" y1="208" x2="368" y2="232" stroke="#fbbf2466" stroke-width="1.5"/>
+  <circle cx="368" cy="232" r="4.5" fill="#08090c" stroke="#fbbf24" stroke-width="2"/>
+</g>
+
+<!-- 4 · GRADED & SIGNED — the load-bearing stage, visually dominant -->
+<g>
+  <rect x="456" y="120" width="152" height="88" rx="14" fill="url(#gOk)" stroke="#34d399" stroke-width="2" filter="url(#glow)"/>
+  <text class="st" x="532" y="146" text-anchor="middle" fill="#34d399">GRADED &amp; SIGNED</text>
+  <text class="nm" x="532" y="170" text-anchor="middle">by a reviewer that</text>
+  <text class="nm" x="532" y="188" text-anchor="middle">did not write it</text>
+  <line x1="532" y1="208" x2="532" y2="232" stroke="#34d39966" stroke-width="1.5"/>
+  <circle cx="532" cy="232" r="5" fill="#08090c" stroke="#34d399" stroke-width="2.2"/>
+</g>
+
+<!-- 5 · COUNTERSIGNED -->
+<g>
+  <rect x="632" y="130" width="140" height="78" rx="13" fill="url(#gLed)" stroke="#a78bfa" stroke-width="1.6"/>
+  <text class="st" x="702" y="154" text-anchor="middle" fill="#a78bfa">COUNTERSIGNED</text>
+  <text class="nm" x="702" y="176" text-anchor="middle">a second gate,</text>
+  <text class="sb" x="702" y="196" text-anchor="middle">its own judgement</text>
+  <line x1="702" y1="208" x2="702" y2="232" stroke="#a78bfa66" stroke-width="1.5"/>
+  <circle cx="702" cy="232" r="4.5" fill="#08090c" stroke="#a78bfa" stroke-width="2"/>
+</g>
+
+<!-- 6 · READABLE -->
+<g>
+  <rect x="796" y="130" width="180" height="78" rx="13" fill="url(#gCyn)" stroke="#22d3ee" stroke-width="1.6"/>
+  <text class="st" x="886" y="154" text-anchor="middle" fill="#22d3ee">READABLE COMPANY-WIDE</text>
+  <text class="nm" x="886" y="176" text-anchor="middle">arrives pre-approved</text>
+  <text class="sb" x="886" y="196" text-anchor="middle">signatures travel with it</text>
+  <line x1="886" y1="208" x2="886" y2="232" stroke="#22d3ee66" stroke-width="1.5"/>
+  <circle cx="886" cy="232" r="4.5" fill="#08090c" stroke="#22d3ee" stroke-width="2"/>
+</g>
+
+<!-- author fast lane: branches up off the rail -->
+<path d="M 560 232 Q 640 232 640 92" stroke="#34d399" stroke-opacity=".4" stroke-width="1.6"
+      stroke-dasharray="4 4" fill="none"/>
+<g>
+  <rect class="panel" x="640" y="62" width="196" height="46" rx="11" stroke="#34d399" stroke-opacity=".45"/>
+  <text class="nm" x="738" y="82" text-anchor="middle">visible to you straight away</text>
+  <text class="sb" x="738" y="99" text-anchor="middle">others wait for the signature, you do not</text>
+</g>
+
+<!-- rejection: dips below the rail and returns -->
+<path d="M 596 232 Q 620 232 620 258 L 200 258 Q 176 258 176 232"
+      stroke="#fb7185" stroke-opacity=".35" stroke-width="1.6" stroke-dasharray="4 4" fill="none"/>
+<text class="sb" x="216" y="278" fill="#fb7185" fill-opacity=".85">a failed verdict sends it back to holding, with its reasons — it can be re-earned</text>
+
+<!-- ════════ RECORDS: the bypass path ════════ -->
+<line x1="24" y1="300" x2="1056" y2="300" stroke="#171c25" stroke-width="1"/>
+<text class="zn" x="24" y="322">RECORDS — WHAT ACTUALLY HAPPENED</text>
+<path d="M 92 330 L 1000 330" stroke="#1e3a5f" stroke-width="2" stroke-dasharray="6 5" fill="none"/>
+<g>
+  <circle cx="76" cy="330" r="4" fill="#0e1118" stroke="#60a5fa" stroke-width="1.5"/>
+  <circle cx="1010" cy="330" r="4" fill="#0e1118" stroke="#60a5fa" stroke-width="1.5"/>
+  <text class="nm" x="660" y="316" text-anchor="middle" fill="#93c5fd">transcripts · tool output · logs — straight through, never held</text>
+  <text class="sb" x="660" y="350" text-anchor="middle">they record what happened; they do not claim anything is true</text>
+</g>
+
+<!-- punchline -->
+<text x="540" y="384" text-anchor="middle" font-size="14.5" font-weight="600" fill="#e6e9ef">
+  All the checking happens on the way in — nothing sits in the read path.
+</text>
+
+<!-- ════════ animation: dots ride the rail, never crossing a label ════════ -->
+<g fill="#fb7185"><circle r="5.5">
+  <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRail"/></animateMotion>
+  <animate attributeName="fill" dur="8s" repeatCount="indefinite"
+    values="#8d97a9;#fb7185;#fbbf24;#34d399;#a78bfa;#22d3ee;#22d3ee"
+    keyTimes="0;0.15;0.32;0.5;0.68;0.88;1"/>
+  <animate attributeName="opacity" dur="8s" repeatCount="indefinite" values="0;1;1;1;0" keyTimes="0;0.04;0.5;0.94;1"/>
+  <animate attributeName="r" dur="8s" repeatCount="indefinite" values="5.5;5.5;7;5.5;5.5" keyTimes="0;0.46;0.5;0.56;1"/>
+</circle></g>
+<g fill="#fb7185"><circle r="5.5">
+  <animateMotion dur="8s" begin="2.7s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRail"/></animateMotion>
+  <animate attributeName="fill" dur="8s" begin="2.7s" repeatCount="indefinite"
+    values="#8d97a9;#fb7185;#fbbf24;#34d399;#a78bfa;#22d3ee;#22d3ee"
+    keyTimes="0;0.15;0.32;0.5;0.68;0.88;1"/>
+  <animate attributeName="opacity" dur="8s" begin="2.7s" repeatCount="indefinite" values="0;1;1;1;0" keyTimes="0;0.04;0.5;0.94;1"/>
+  <animate attributeName="r" dur="8s" begin="2.7s" repeatCount="indefinite" values="5.5;5.5;7;5.5;5.5" keyTimes="0;0.46;0.5;0.56;1"/>
+</circle></g>
+<g fill="#fb7185"><circle r="5.5">
+  <animateMotion dur="8s" begin="5.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRail"/></animateMotion>
+  <animate attributeName="fill" dur="8s" begin="5.4s" repeatCount="indefinite"
+    values="#8d97a9;#fb7185;#fbbf24;#34d399;#a78bfa;#22d3ee;#22d3ee"
+    keyTimes="0;0.15;0.32;0.5;0.68;0.88;1"/>
+  <animate attributeName="opacity" dur="8s" begin="5.4s" repeatCount="indefinite" values="0;1;1;1;0" keyTimes="0;0.04;0.5;0.94;1"/>
+  <animate attributeName="r" dur="8s" begin="5.4s" repeatCount="indefinite" values="5.5;5.5;7;5.5;5.5" keyTimes="0;0.46;0.5;0.56;1"/>
+</circle></g>
+
+<!-- author copy peels off after signing -->
+<g fill="#34d399"><circle r="4.5">
+  <animateMotion dur="8s" begin="4.1s" repeatCount="indefinite" calcMode="linear"><mpath href="#mMine"/></animateMotion>
+  <animate attributeName="opacity" dur="8s" begin="4.1s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.3;0.42;1"/>
+</circle></g>
+
+<!-- one in three turns back -->
+<g fill="#fb7185"><circle r="4.5">
+  <animateMotion dur="16s" begin="3.6s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRej"/></animateMotion>
+  <animate attributeName="opacity" dur="16s" begin="3.6s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.02;0.2;0.27;1"/>
+</circle></g>
+
+<!-- records: faster, unimpeded -->
+<g fill="#60a5fa"><circle r="4">
+  <animateMotion dur="4.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRec"/></animateMotion>
+  <animate attributeName="opacity" dur="4.4s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.05;0.9;1"/>
+</circle></g>
+<g fill="#60a5fa"><circle r="4">
+  <animateMotion dur="4.4s" begin="1.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRec"/></animateMotion>
+  <animate attributeName="opacity" dur="4.4s" begin="1.5s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.05;0.9;1"/>
+</circle></g>
+<g fill="#60a5fa"><circle r="4">
+  <animateMotion dur="4.4s" begin="2.9s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRec"/></animateMotion>
+  <animate attributeName="opacity" dur="4.4s" begin="2.9s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.05;0.9;1"/>
+</circle></g>
+
+<!-- the signing moment pulses -->
+<rect x="456" y="120" width="152" height="88" rx="14" fill="none" stroke="#34d399" stroke-width="2">
+  <animate attributeName="stroke-opacity" dur="8s" repeatCount="indefinite" values="0;0;.85;0;0" keyTimes="0;0.44;0.5;0.6;1"/>
+  <animate attributeName="stroke-width" dur="8s" repeatCount="indefinite" values="2;2;4.5;2;2" keyTimes="0;0.44;0.5;0.6;1"/>
+</rect>
+</svg>

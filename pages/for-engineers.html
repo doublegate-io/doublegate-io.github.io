@@ -1,0 +1,197 @@
+<section id="top">
+  <div class="wrap hero narrow">
+    <p class="eyebrow">For engineers</p>
+    <h1>It replaces your memory provider.<br><span class="grad">Your read path does not change.</span></h1>
+    <p class="lede">
+      doublegate speaks the interface your agent already speaks for storing and searching what it
+      learns. Swapping to it changes one thing: what gets in. Everything below is what that costs
+      and what it does not yet do.
+    </p>
+  </div>
+</section>
+
+<section id="shape" class="band">
+  <div class="wrap">
+    <h2>Where it sits</h2>
+    <p class="sub">Not a proxy in front of a provider. It <em>is</em> the provider.</p>
+    <table class="cmp wide">
+      <thead>
+        <tr><th>Layer</th><th>Responsible for</th><th>Decides whether content is trustworthy?</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Your agent <span class="dim">Hermes · Claude Code · opencode · Codex</span></td>
+          <td>doing the work, calling tools</td>
+          <td class="no">no</td>
+        </tr>
+        <tr>
+          <td>Today's memory tools <span class="dim">mem0 · Zep · Letta · Mnemosyne</span></td>
+          <td>storing and ranking what it learns</td>
+          <td class="no">ranks it — never blocks it</td>
+        </tr>
+        <tr class="hl">
+          <td>doublegate</td>
+          <td>storing, searching, <b>and checking on the way in</b></td>
+          <td class="yes">yes</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="micro">
+      Sitting in front of an existing provider was considered and rejected — you cannot enforce a
+      read boundary you do not own.
+      a deliberate decision, not an oversight
+    </p>
+  </div>
+</section>
+
+<section id="stores" class="band alt">
+  <div class="wrap">
+    <h2>What it stores</h2>
+    <p class="sub">
+      One store, several kinds of artifact, all on the same write path. A skill is not special-cased
+      — it is content with a different shape and a scanner that knows about executables.
+    </p>
+    <table class="cmp wide">
+      <thead>
+        <tr><th>Artifact</th><th>What it is</th><th>Reviewed?</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Memories</b></td>
+          <td>claims your agent will act on as true</td>
+          <td class="yes">yes — held until signed</td>
+        </tr>
+        <tr>
+          <td><b>Skills</b></td>
+          <td>installable capability, including whatever it can execute</td>
+          <td class="yes">yes — scanned for payloads, then graded</td>
+        </tr>
+        <tr>
+          <td><b>Connector output</b></td>
+          <td>beliefs proposed by an existing system</td>
+          <td class="yes">yes — same path, scoped by contract</td>
+        </tr>
+        <tr>
+          <td><b>Verdicts</b></td>
+          <td>the record of who approved or refused what, and why</td>
+          <td class="no">not reviewed — it <em>is</em> the review</td>
+        </tr>
+        <tr>
+          <td><b>Records</b></td>
+          <td>transcripts, tool output, logs</td>
+          <td class="no">no — they report events, they do not claim truth</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">
+      Every artifact above is <b>audited, traceable, versioned and discoverable</b> — the same four
+      properties, because they share one write path and one journal. Nothing is edited in place:
+      a correction is a new version linked to what it replaced, so an artifact you depend on cannot
+      quietly become something else.
+    </p>
+  </div>
+</section>
+
+<section id="costs" class="band">
+  <div class="wrap">
+    <h2>What it costs you</h2>
+    <p class="sub">Three real costs. Two are design targets, one is unavoidable.</p>
+    <div class="cards three">
+      <div class="card">
+        <span class="card-ico check">⊘</span>
+        <h3>Read latency: unchanged</h3>
+        <p>The gate is not in the query path at all. Approved content sits in an ordinary store and
+        is searched normally — no reviewer call, no per-query check, no extra round trip.</p>
+        <p class="card-tag">design requirement, not yet benchmarked</p>
+      </div>
+      <div class="card">
+        <span class="card-ico held">◫</span>
+        <h3>Write latency: under 50&thinsp;ms</h3>
+        <p>Writes are fire-and-forget — your agent enqueues and continues. Review happens in a
+        background loop, so a slow reviewer never blocks the agent that wrote the content.</p>
+        <p class="card-tag">target budget for the synchronous path</p>
+      </div>
+      <div class="card warn">
+        <span class="card-ico audit">⎔</span>
+        <h3>Tokens: a real new cost</h3>
+        <p>Grading calls a model. That is spend the alternatives do not have, and it scales with
+        how much your agents write. The system is required to report it rather than hide it.</p>
+        <p class="card-tag">unavoidable — measure before you commit</p>
+      </div>
+    </div>
+    <p class="note">
+      Only <b>claims</b> are reviewed. Transcripts, tool output and logs pass straight through as
+      records. On our machines an agent produced roughly ninety times more records than claims, so
+      the fraction actually reaching a model is small — but that ratio is from our machines, not a
+      population finding, and yours will differ.
+    </p>
+  </div>
+</section>
+
+<section id="deps" class="band alt">
+  <div class="wrap tight">
+    <h2>What it drags into your environment</h2>
+    <div class="cards two">
+      <div class="card">
+        <h3>Python, SQLite, one crypto library</h3>
+        <p>The core is standard library plus SQLite plus a signing library. No vector database to
+        operate, no message broker, no container orchestration. It is designed to run as a sidecar
+        on the machine that already runs your agent.</p>
+        <span class="src">A deliberate dependency budget, recorded as a design decision</span>
+      </div>
+      <div class="card">
+        <h3>Your models, your keys</h3>
+        <p>Grading runs through whatever inference you already pay for. There is no doublegate
+        inference service in the path, and content stays on your machine by default — sharing
+        outward is opt-in per scope, not a default.</p>
+        <span class="src">Gate agents run on inference you already pay for</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="broken" class="band">
+  <div class="wrap tight">
+    <h2>What is not built, and what breaks</h2>
+    <p class="lede">
+      This is design-phase software. The list below is the reason you should not deploy it into
+      production this quarter, written by the people building it.
+    </p>
+    <div class="anti">
+      <ul>
+        <li><b>Gate accuracy is unmeasured.</b> We do not know how often review is wrong in
+        either direction. No false-alarm rate has been published.</li>
+        <li><b>There is no read-authorisation model yet.</b> Who may read what, by identity and
+        team, is designed but not built. Until it is, treat every gate as one trust domain.</li>
+        <li><b>Append-only conflicts with erasure requests.</b> A permanent signed record and
+        "delete everything about this person" are in direct tension. Real deletion is a planned
+        feature, not a shipped one.</li>
+        <li><b>Independent review is less independent than it sounds.</b> Research on judge panels
+        found nine models across seven families gave roughly 2.2 effective independent votes.
+        More reviewers is not linearly more assurance.</li>
+        <li><b>A quota-exhausted backend stalls the queue.</b> If the model behind grading starts
+        returning rate-limit errors, content stays held. That is the safe direction, but it is
+        still a stall you have to operate around.</li>
+      </ul>
+    </div>
+    <p class="micro">
+      Each of these is tracked with an owner, a target and an exit criterion —
+      the roadmap
+      includes the case for not building the project at all.
+    </p>
+  </div>
+</section>
+
+<section id="try" class="band alt">
+  <div class="wrap tight center">
+    <h2>When you can actually run it</h2>
+    <p class="lede">
+      Release 2 is the one that matters to you: storage, search, and an importer, so it can replace
+      what you use today. Release 3 adds the checking. Release 4 adds team sharing.
+    </p>
+    <div class="cta-row center">
+      <a class="btn primary" href="https://github.com/doublegate-io/doublegate-site">The site source on GitHub</a>
+      <a class="btn" href="how-it-works.html">Walk the write path</a>
+    </div>
+  </div>
+</section>

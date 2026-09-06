@@ -1,0 +1,219 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Evidence — every claim, with its source</title>
+<meta name="description" content="The research behind the pitch: the 66-firm field experiment, Meta's in-house build, the provider survey, and the skill security data. Each one linked to its primary source.">
+<meta property="og:title" content="Evidence — every claim, with its source">
+<meta property="og:description" content="The research behind the pitch: the 66-firm field experiment, Meta's in-house build, the provider survey, and the skill security data. Each one linked to its primary source.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<meta property="og:image" content="assets/social-card.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/logo.svg" width="22" height="22" alt="" aria-hidden="true"> doublegate</a>
+    <nav><a href="how-it-works.html">How it works</a><a href="for-organizations.html">For organizations</a><a href="for-engineers.html">For engineers</a><a href="governance.html">Governance</a><a href="commons.html">Commons</a><a href="pricing.html">Pricing</a><a href="evidence.html" class="here">Evidence</a><a class="ghost" href="https://github.com/doublegate-io/doublegate-site">GitHub</a></nav>
+  </div>
+</header>
+
+<section id="top">
+  <div class="wrap hero narrow">
+    <p class="eyebrow">Evidence</p>
+    <h1>Every claim, <span class="grad">with its source</span></h1>
+    <p class="lede">
+      Nothing on this site is asserted. Each number below links to where it came from, including
+      the findings that work against us. If a claim cannot be sourced, it is marked as
+      unverified or it is not here.
+    </p>
+  </div>
+</section>
+
+<section id="findings" class="band">
+  <div class="wrap">
+    <h2>The findings the pitch rests on</h2>
+    <div class="evidence">
+
+      <article class="ev">
+        <h3>Per-seat AI does not become organizational capability</h3>
+        <p>A large-scale field experiment across <b>66 firms</b> found that giving workers AI tools
+        produced individual time savings and <b>no broader shift in the quantity or composition of
+        work</b>. The same source frames the gap as "single-player AI" and cites Y Combinator
+        calling the shift ahead AI's "multiplayer moment".</p>
+        <p class="ev-use"><b>What we use it for:</b> the entire organizational pitch. It is the
+        reason the product is aimed at a company rather than a developer.</p>
+        <a class="src" href="https://www.weforum.org/stories/artificial-intelligence/workplace-ai-has-a-visibility-problem-here-s-how-to-fix-it/">World Economic Forum, 3 September 2026</a>
+      </article>
+
+      <article class="ev">
+        <h3>A hyperscaler built this rather than buy it</h3>
+        <p>Meta's "organizational second brain" uses adversarial review by an agent that shares no
+        context with the author, validation that passes or fails rather than scoring, human expert
+        sign-off, and a complete audit trail. They state they had <b>not seen that level of
+        validation rigor applied to an institutional knowledge base</b> elsewhere, and describe the
+        output as "compounding institutional memory".</p>
+        <p class="ev-use"><b>What we use it for:</b> evidence the architecture is right, and that
+        the category is unserved — they built it in-house because there was nothing to buy.</p>
+        <a class="src" href="https://engineering.fb.com/2026/09/02/data-infrastructure/an-organizational-second-brain-compounding-institutional-memory-with-ai/">Meta Engineering, 2 September 2026</a>
+      </article>
+
+      <article class="ev">
+        <h3>No memory provider gates content before it is readable</h3>
+        <p>Across <b>fourteen providers</b> we surveyed, a write is retrievable immediately.
+        Veracity scores, confidence ratings and decay tiers change <b>ranking</b> — never
+        <b>visibility</b>. Nothing in the category holds content back pending review.</p>
+        <p class="ev-use"><b>What we use it for:</b> the claim that this is a gap rather than a
+        feature we are duplicating. It is our own survey, so read the method.</p>
+        <span class="src">Our survey of fourteen providers — method and per-provider notes available on request</span>
+      </article>
+
+      <article class="ev">
+        <h3>Public agent skills carry real security flaws</h3>
+        <p>Of <b>3,984 public agent skills</b> scanned, 36.8% had at least one security flaw and
+        13.4% a critical one. 76 confirmed malicious payloads were found, 8 still live at
+        publication, and <b>91% of the malicious ones paired prompt injection with conventional
+        malware</b>. The barrier to publishing was a single file and a git repository.</p>
+        <p class="ev-use"><b>What we use it for:</b> why skills are gated on the same path as
+        memories rather than trusted as configuration.</p>
+        <a class="src" href="https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/">Snyk, ToxicSkills</a>
+      </article>
+
+      <article class="ev">
+        <h3>Public registries exclude curation by design, and say so</h3>
+        <p>The official registry for the standard agent-tool protocol commits itself, in its
+        published design principles, to <b>"no built-in ranking, curation, or quality
+        judgments"</b> and to <b>"avoid features that require constant human intervention or
+        moderation"</b>. Its ecosystem document expects that role to be filled by
+        <b>"subregistries [that] add value […] by providing curation"</b>.</p>
+        <p>Hugging Face, the most mature artifact registry in AI, scans uploads and states:
+        <b>"this is not 100% foolproof. It is your responsibility as a user to check if something
+        is safe or not. We are not actively auditing python packages for safety."</b></p>
+        <p class="ev-use"><b>What we use it for:</b> evidence that a reviewed public library is an
+        unfilled architectural role rather than a category we invented. Also a caution — these are
+        deliberate choices with stated reasons (operational cost, vendor neutrality, liability),
+        and anyone claiming to fix them inherits those costs.</p>
+        <a class="src" href="https://github.com/modelcontextprotocol/registry/blob/main/docs/design/design-principles.md">The registry's published design principles</a>
+      </article>
+
+      <article class="ev">
+        <h3>A correction we made to our own case</h3>
+        <p>A great deal of published material states that <b>BCBS 239 requires data lineage</b>. We
+        searched the full 2013 text: <b>zero occurrences</b> of "lineage", "provenance",
+        "traceability" or "audit trail". The document requires reconciliation with source systems
+        and striving toward "a single authoritative source for risk data per each type of risk" —
+        which is different, and weaker, than a lineage mandate.</p>
+        <p>The lineage requirement is real, but it lives in the ECB's <b>2024 implementation
+        guide</b>, which states lineage must let a bank "track back the source of the issue in a
+        timely manner" and "allow traceability for (external) validation". That is the document we
+        cite.</p>
+        <p class="ev-use"><b>Why this is here:</b> quoting the better-known document as a lineage
+        mandate is the kind of borrowed authority a bank's second line is paid to catch. We would
+        rather lose the stronger-sounding citation than get caught using it.</p>
+        <a class="src" href="https://www.bankingsupervision.europa.eu/ecb/pub/pdf/ssm.supervisory_guides240503_riskreporting.en.pdf">ECB Guide on effective RDARR, 3 May 2024</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="against" class="band alt">
+  <div class="wrap tight">
+    <h2>Findings that work against us</h2>
+    <p class="lede">
+      These are on the site because leaving them off would make the rest less believable.
+    </p>
+    <div class="evidence">
+      <article class="ev warn">
+        <h3>Independent reviewers are less independent than they look</h3>
+        <p>A study of judge panels found that <b>nine models across seven families produced roughly
+        2.2 effective independent votes</b>. Correlated training makes correlated judgement, so
+        adding reviewers does not add assurance linearly. Our design has to survive this rather
+        than assume it away.</p>
+        <a class="src" href="https://arxiv.org/abs/2605.29800">arXiv 2605.29800</a>
+      </article>
+      <article class="ev warn">
+        <h3>None of 25 supervised banks had followed the principles fully</h3>
+        <p>The ECB's own thematic review found that <b>"none of the significant institutions in the
+        sample […] including those classified as global systemically important institutions, had
+        fully followed the BCBS 239 principles"</b>. Read one way this is our market; read honestly
+        it is a warning — these organizations have large, long-running data-governance programmes,
+        and we are one component inside one, not a replacement for it.</p>
+        <a class="src" href="https://www.bankingsupervision.europa.eu/ecb/pub/pdf/ssm.supervisory_guides240503_riskreporting.en.pdf">ECB Guide on effective RDARR, May 2024</a>
+      </article>
+      <article class="ev warn">
+        <h3>Willingness to share knowledge falls as the audience widens</h3>
+        <p>A study of 80 professionals found people were willing to share their AI interaction
+        traces within <b>bounded groups</b>, with comfort dropping as the audience grew. This
+        validates our author&nbsp;→&nbsp;group&nbsp;→&nbsp;organization tiering, and it also warns
+        that company-wide sharing will meet resistance we have to design for, not assert past.</p>
+        <span class="src">Our summary, with the citation above</span>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="refuse" class="band">
+  <div class="wrap tight">
+    <h2>Claims we refuse to make</h2>
+    <p class="lede">
+      All of these were available. Each was left out for a stated reason.
+    </p>
+    <div class="anti">
+      <ul>
+        <li><b>Onboarding-time reduction.</b> The figures in circulation are vendor-blog
+        statistics of unverifiable provenance. We found them and did not use them.</li>
+        <li><b>Productivity multiples and headcount equivalence.</b> Nobody has measured what
+        shared reviewed memory does to output. Any number here would be invented.</li>
+        <li><b>Gate accuracy.</b> Unmeasured until we publish a false-alarm rate. We will not
+        claim the checking is reliable before we can show how often it is wrong.</li>
+        <li><b>Compliance readiness.</b> A permanent signed record is in direct tension with
+        erasure requests. Until real deletion ships, we do not claim to satisfy them.</li>
+      </ul>
+    </div>
+    <p class="note">
+      The rule we work to: if a claim reads like a snapshot of one machine, it is an anecdote and
+      it gets labelled as one. Our own measurements — including the ratio of records to claims
+      quoted elsewhere on this site — are illustrations, not population findings.
+    </p>
+  </div>
+</section>
+
+<section id="all" class="band alt">
+  <div class="wrap tight center">
+    <h2>The full research set</h2>
+    <p class="lede">
+      Every claim above carries its primary source, linked directly. Our own analysis behind them
+      is governed by one rule: a citation, or an explicit unverified label. Nothing sits on an
+      assertion of ours that you cannot check at the source.
+    </p>
+    <div class="cta-row center">
+      <a class="btn primary" href="for-organizations.html">What this means for your company</a>
+      <a class="btn" href="governance.html">How an auditor verifies it</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <b>doublegate</b> · design phase · every claim traces to cited research
+      <p class="dim">Open source. Solo use is free and stays that way.</p>
+    </div>
+    <div class="foot-links">
+      <a href="how-it-works.html">How it works</a>
+      <a href="for-organizations.html">For organizations</a>
+      <a href="for-engineers.html">For engineers</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="https://github.com/doublegate-io/doublegate-site">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

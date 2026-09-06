@@ -1,0 +1,651 @@
+/* doublegate — landing page
+   Dark, dense, technical. Restrained: one accent gradient, no motion on load. */
+
+:root {
+  --bg:        #08090c;
+  --bg-alt:    #0c0e13;
+  --panel:     #10131a;
+  --line:      #1e2430;
+  --line-soft: #171c25;
+  --ink:       #e6e9ef;
+  --ink-dim:   #97a1b2;
+  --ink-faint: #8d97a9;   /* was #5f6a7d — 3.64:1 on --bg, below WCAG AA; now 6.76:1 */
+  --red:       #fb7185;
+  --grn:       #34d399;
+  --cyn:       #22d3ee;
+  --amb:       #fbbf24;
+  --vio:       #a78bfa;
+  --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 16px/1.65 var(--sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+a { color: var(--cyn); text-decoration: none; }
+a:hover { text-decoration: underline; }
+code { font: 13px/1.5 var(--mono); color: var(--amb); }
+em { color: var(--ink); font-style: italic; }
+.dim { color: var(--ink-faint); }
+
+/* ---------- nav ---------- */
+.nav {
+  position: sticky; top: 0; z-index: 50;
+  background: rgba(8,9,12,.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--line-soft);
+}
+.nav-inner { display: flex; align-items: center; justify-content: space-between; height: 58px; }
+.brand { color: var(--ink); font-weight: 650; letter-spacing: -.01em; font-size: 17px; }
+.brand:hover { text-decoration: none; }
+.brand-mark { margin-right: 8px; vertical-align: -5px; }
+.nav nav { display: flex; align-items: center; gap: 26px; }
+.nav nav a { color: var(--ink-dim); font-size: 14px; }
+.nav nav a:hover { color: var(--ink); text-decoration: none; }
+.nav nav a.ghost {
+  border: 1px solid var(--line);
+  padding: 6px 13px; border-radius: 7px; color: var(--ink);
+}
+.nav nav a.ghost:hover { border-color: var(--ink-faint); background: var(--panel); }
+
+/* ---------- hero ---------- */
+.hero { padding: 92px 0 76px; border-bottom: 1px solid var(--line-soft); }
+.eyebrow {
+  font: 12px/1 var(--mono);
+  letter-spacing: .1em; text-transform: uppercase;
+  color: var(--amb); margin: 0 0 22px;
+}
+h1 {
+  margin: 0 0 26px;
+  font-size: clamp(38px, 6.4vw, 66px);
+  line-height: 1.04;
+  letter-spacing: -.032em;
+  font-weight: 680;
+}
+.grad {
+  background: linear-gradient(96deg, var(--red), var(--vio) 55%, var(--cyn));
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.lede { max-width: 66ch; font-size: 18px; color: var(--ink-dim); margin: 0 0 16px; }
+.lede.strong { color: var(--ink); font-size: 19px; font-weight: 550; }
+
+.cta-row { display: flex; gap: 12px; margin: 32px 0 46px; flex-wrap: wrap; }
+.cta-row.center { justify-content: center; margin-bottom: 0; }
+.btn {
+  display: inline-block; padding: 11px 20px;
+  border: 1px solid var(--line); border-radius: 8px;
+  color: var(--ink); font-size: 14.5px; font-weight: 550;
+  background: var(--panel);
+}
+.btn:hover { border-color: var(--ink-faint); text-decoration: none; }
+.btn.primary {
+  background: var(--ink); color: #07080b; border-color: var(--ink);
+}
+.btn.primary:hover { background: #fff; }
+
+/* ---------- terminal ---------- */
+.terminal {
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #05060a;
+  overflow: hidden;
+  box-shadow: 0 22px 50px -28px rgba(0,0,0,.9);
+}
+.term-bar {
+  display: flex; align-items: center; gap: 7px;
+  padding: 10px 14px;
+  background: var(--panel);
+  border-bottom: 1px solid var(--line-soft);
+}
+.term-bar i {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: var(--line); display: block;
+}
+.term-bar i:first-child { background: #3a2027; }
+.term-bar span {
+  margin-left: 8px; font: 11.5px/1 var(--mono);
+  color: var(--ink-faint); letter-spacing: .06em; text-transform: uppercase;
+}
+.terminal pre { margin: 0; padding: 22px 24px; overflow-x: auto; }
+.terminal code { font: 13.5px/1.85 var(--mono); color: var(--ink); }
+.c-dim { color: var(--ink-faint); }
+.c-red { color: var(--red); font-weight: 600; }
+.c-grn { color: var(--grn); font-weight: 600; }
+.c-cyn { color: var(--cyn); font-weight: 600; }
+.micro { font-size: 13.5px; color: var(--ink-faint); margin: 16px 0 0; }
+
+/* ---------- bands ---------- */
+.band { padding: 84px 0; border-bottom: 1px solid var(--line-soft); }
+.band.alt { background: var(--bg-alt); }
+h2 {
+  margin: 0 0 14px;
+  font-size: clamp(27px, 3.6vw, 37px);
+  letter-spacing: -.024em; font-weight: 650;
+}
+.sub { max-width: 72ch; color: var(--ink-dim); margin: 0 0 38px; font-size: 16.5px; }
+h3 { margin: 0 0 10px; font-size: 16.5px; font-weight: 620; letter-spacing: -.01em; }
+
+/* ---------- diagram ---------- */
+.diagram {
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: #05060a;
+  padding: 26px 18px;
+  overflow-x: auto;
+  margin-bottom: 34px;
+}
+.diagram .mermaid { display: flex; justify-content: center; min-width: 640px; }
+
+/* ---------- cards ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 16px; }
+.card {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 22px;
+  background: var(--panel);
+}
+.card p { margin: 0; color: var(--ink-dim); font-size: 15px; }
+
+/* ---------- stats ---------- */
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(272px, 1fr)); gap: 18px; }
+.stat {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--red);
+  border-radius: 10px;
+  padding: 22px;
+  background: var(--panel);
+}
+.stat b {
+  display: block; font-size: 30px; line-height: 1.1;
+  letter-spacing: -.028em; margin-bottom: 11px; color: var(--ink);
+}
+.stat p { margin: 0 0 13px; font-size: 14.5px; color: var(--ink-dim); }
+.stat a, .stat .src { font: 12px/1.4 var(--mono); color: var(--ink-faint); }
+.stat a:hover { color: var(--cyn); }
+.note {
+  margin: 30px 0 0; padding: 18px 22px;
+  border-left: 2px solid var(--amb);
+  background: var(--panel);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink-dim); font-size: 15.5px; max-width: 82ch;
+}
+
+/* ---------- comparison table ---------- */
+.cmp { width: 100%; border-collapse: collapse; margin-bottom: 44px; font-size: 15px; }
+.cmp th {
+  text-align: left; padding: 11px 14px;
+  font: 11.5px/1 var(--mono); letter-spacing: .09em; text-transform: uppercase;
+  color: var(--ink-faint); border-bottom: 1px solid var(--line);
+}
+.cmp td { padding: 15px 14px; border-bottom: 1px solid var(--line-soft); vertical-align: top; }
+.cmp td .dim { display: block; font: 12px/1.5 var(--mono); margin-top: 3px; }
+.cmp tr.hl td { background: rgba(52,211,153,.055); }
+.cmp tr.hl td:first-child { font-weight: 620; box-shadow: inset 2px 0 0 var(--grn); }
+.cmp .no  { color: var(--ink-faint); }
+.cmp .yes { color: var(--grn); font-weight: 600; }
+
+/* ---------- prior art ---------- */
+.prior {
+  border: 1px solid var(--line);
+  border-radius: 10px; padding: 26px; background: var(--panel);
+}
+.prior p { color: var(--ink-dim); font-size: 15.5px; margin: 0 0 14px; }
+blockquote {
+  margin: 4px 0 0; padding: 16px 20px;
+  border-left: 2px solid var(--vio);
+  background: rgba(167,139,250,.06);
+  border-radius: 0 8px 8px 0;
+  color: var(--ink); font-size: 15.5px;
+}
+
+/* ---------- anti-claims ---------- */
+.anti { list-style: none; padding: 0; margin: 0 0 40px; max-width: 82ch; }
+.anti li {
+  padding: 15px 0 15px 26px;
+  border-bottom: 1px solid var(--line-soft);
+  color: var(--ink-dim); font-size: 15.5px;
+  position: relative;
+}
+.anti li::before {
+  content: "✕"; position: absolute; left: 0; top: 15px;
+  color: var(--red); font-size: 13px;
+}
+.anti b { color: var(--ink); font-weight: 600; }
+
+.open {
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--amb);
+  border-radius: 0 10px 10px 0;
+  padding: 22px 24px; background: var(--panel);
+  margin-bottom: 40px;
+}
+.open p { margin: 0; color: var(--ink-dim); font-size: 15.5px; }
+
+/* ---------- footer ---------- */
+footer { padding: 40px 0; }
+.foot { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.foot p { margin: 0; font-size: 13.5px; color: var(--ink-dim); }
+
+/* ---------- responsive ---------- */
+@media (max-width: 720px) {
+  .nav nav { gap: 15px; }
+  .hero { padding: 60px 0 52px; }
+  .band { padding: 58px 0; }
+  .diagram { padding: 16px 10px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+}
+
+/* ---------- use-case cards: highlighted variant ---------- */
+.card.best {
+  position: relative;
+  border-color: color-mix(in oklab, var(--grn) 45%, var(--line));
+  background: linear-gradient(180deg, color-mix(in oklab, var(--grn) 7%, var(--panel)), var(--panel));
+}
+.card .tag {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font: 600 10.5px/1.5 var(--mono);
+  letter-spacing: .08em;
+  text-transform: uppercase;
+  color: var(--grn);
+  background: color-mix(in oklab, var(--grn) 14%, transparent);
+  border: 1px solid color-mix(in oklab, var(--grn) 35%, transparent);
+}
+.card h3 { margin: 0 0 8px; font-size: 16.5px; letter-spacing: -.01em; }
+
+/* ---------- "don't use it if" — honest disqualifier ---------- */
+.notfor {
+  margin-top: 26px;
+  padding: 20px 22px;
+  border: 1px dashed color-mix(in oklab, var(--red) 38%, var(--line));
+  border-radius: 10px;
+  background: color-mix(in oklab, var(--red) 4%, transparent);
+}
+.notfor h3 { margin: 0 0 8px; font-size: 15px; color: var(--red); }
+.notfor p  { margin: 0; color: var(--ink-dim); font-size: 15px; }
+
+/* ---------- roadmap timeline ---------- */
+.timeline { list-style: none; margin: 30px 0 0; padding: 0 0 0 4px; }
+.timeline li {
+  position: relative;
+  padding: 0 0 26px 30px;
+  border-left: 1px solid var(--line);
+}
+.timeline li:last-child { border-left-color: transparent; padding-bottom: 4px; }
+.timeline li::before {
+  content: "";
+  position: absolute; left: -5px; top: 4px;
+  width: 9px; height: 9px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--ink-faint);
+}
+.timeline li.key::before { border-color: var(--grn); box-shadow: 0 0 0 4px color-mix(in oklab, var(--grn) 16%, transparent); }
+.timeline .ms {
+  display: inline-block; min-width: 30px; margin-right: 10px;
+  font: 600 11px/1.6 var(--mono); letter-spacing: .06em;
+  color: var(--ink-faint);
+}
+.timeline li.key .ms { color: var(--grn); }
+.timeline b { font-size: 15.5px; letter-spacing: -.01em; }
+.timeline .d { display: block; margin-top: 5px; color: var(--ink-dim); font-size: 14.5px; }
+.timeline .d em { color: var(--ink); font-style: normal; font-weight: 500; }
+
+/* ---------- hero flow figure (animated SVG) ---------- */
+.flowfig {
+  margin: 34px 0 10px;
+  padding: 0;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: linear-gradient(180deg, #0a0c11, var(--bg));
+  overflow: hidden;
+}
+.flowfig img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* The diagram carries 12px labels at its natural 1040px width. Scaling below
+   that makes them unreadable (measured: 8.9px at a 770px render), so past the
+   breakpoint we let it scroll sideways at full size instead of shrinking it. */
+@media (max-width: 1040px) {
+  .flowfig { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .flowfig img { width: 1040px; max-width: none; }
+  .flowfig figcaption { position: sticky; left: 0; }
+}
+.flowfig figcaption {
+  padding: 12px 18px 14px;
+  border-top: 1px solid var(--line-soft);
+  color: var(--ink-faint);
+  font-size: 12.5px;
+  letter-spacing: .01em;
+}
+@media (max-width: 780px) {
+  .flowfig figcaption { font-size: 11.5px; }
+}
+
+
+/* ── deployment tiers ─────────────────────────────────────────────────────── */
+.tiers {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+  margin: 26px 0 6px;
+}
+.tier {
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 20px 22px;
+  background: var(--bg-alt);
+  display: flex;
+  flex-direction: column;
+}
+.tier.mid {
+  border-color: #1f5f52;
+  background: linear-gradient(180deg, #08110e, var(--bg-alt));
+}
+.tier h3 {
+  margin: 0 0 4px;
+  font-size: 16.5px;
+  color: var(--ink);
+}
+.tier .who {
+  color: var(--cyn);
+  font-size: 12.5px;
+  font-weight: 600;
+  margin: 0 0 14px;
+}
+.tier .runs {
+  color: var(--ink-faint);
+  font-size: 12px;
+  margin: 0 0 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--line-soft);
+}
+.tier ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  flex: 1;
+}
+.tier li {
+  position: relative;
+  padding-left: 20px;
+  margin-bottom: 9px;
+  font-size: 13.5px;
+  color: var(--ink-dim);
+  line-height: 1.5;
+}
+.tier li::before {
+  content: "";
+  position: absolute;
+  left: 2px;
+  top: 7px;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  border: 1.5px solid var(--grn);
+}
+.tier li.off { color: var(--ink-faint); }
+.tier li.off::before { border-color: var(--line); }
+.tier .price {
+  margin: 16px 0 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--line-soft);
+  font-size: 12.5px;
+  color: var(--ink-faint);
+}
+@media (max-width: 860px) {
+  .tiers { grid-template-columns: 1fr; }
+}
+
+/* ==========================================================================
+   MULTI-PAGE COMPONENTS
+   Added when the single landing page was split into six. Everything above
+   this line is shared with the original one-page layout and still in use.
+   ========================================================================== */
+
+/* --- nav current-page marker ------------------------------------------- */
+.nav nav a.here {
+  color: var(--ink);
+  border-bottom: 2px solid var(--cyn);
+  padding-bottom: 2px;
+}
+
+/* --- footer link column ------------------------------------------------ */
+.foot-links { display: flex; flex-wrap: wrap; gap: 4px 18px; align-items: flex-start; }
+.foot-links a { color: var(--ink-faint); font-size: 13.5px; }
+.foot-links a:hover { color: var(--cyn); }
+
+/* --- width + alignment modifiers -------------------------------------- */
+.wrap.narrow { max-width: 780px; }
+.wrap.tight  { max-width: 900px; }
+.wrap.center, .wrap .center { text-align: center; }
+.diagram.wide { max-width: 1120px; margin-inline: auto; }
+.cmp.wide { width: 100%; }
+
+/* --- card grids: explicit column counts ------------------------------- */
+.cards.two   { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.cards.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.cards.four  { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* --- card icon: colour carries the same meaning as the diagrams ------- */
+.card-ico {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 9px;
+  font-size: 17px; line-height: 1; margin-bottom: 12px;
+  border: 1px solid var(--line);
+}
+.card-ico.held  { color: var(--red); background: #4c051933; border-color: #fb718544; }
+.card-ico.check { color: var(--amb); background: #78350f33; border-color: #fbbf2444; }
+.card-ico.share { color: var(--grn); background: #064e3b33; border-color: #34d39944; }
+.card-ico.audit { color: var(--vio); background: #4c1d9533; border-color: #a78bfa44; }
+
+.card.warn { border-color: #fb718533; background: linear-gradient(180deg, #4c05190f, transparent); }
+.card-tag {
+  margin-top: 10px; font-family: var(--mono); font-size: 11.5px;
+  color: var(--ink-faint); letter-spacing: .02em;
+}
+
+/* --- route cards: the three-audience split on the front page ---------- */
+.routes { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin-top: 26px; }
+.route {
+  display: block; padding: 22px; border: 1px solid var(--line); border-radius: 14px;
+  background: var(--panel); color: inherit; transition: border-color .18s, transform .18s;
+}
+.route:hover { border-color: var(--cyn); transform: translateY(-2px); }
+.route-tag {
+  display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: .06em;
+  text-transform: uppercase; color: var(--cyn); margin-bottom: 10px;
+}
+.route h3 { margin: 0 0 8px; }
+.route p { color: var(--ink-dim); font-size: 14.5px; margin: 0 0 14px; }
+.route-go { font-size: 13.5px; color: var(--cyn); font-weight: 600; }
+
+/* --- numbered stage list (how it works) ------------------------------- */
+.stages { list-style: none; padding: 0; margin: 26px 0 0; counter-reset: none; }
+.stage {
+  display: grid; grid-template-columns: 46px 1fr; gap: 20px;
+  padding: 22px 0; border-top: 1px solid var(--line-soft);
+}
+.stage:first-child { border-top: 0; }
+.stage-n {
+  display: flex; align-items: center; justify-content: center;
+  width: 40px; height: 40px; border-radius: 50%;
+  border: 1px solid var(--cyn); color: var(--cyn);
+  font-family: var(--mono); font-size: 16px; font-weight: 600;
+}
+.stage h3 { margin: 6px 0 8px; }
+.stage p { color: var(--ink-dim); margin: 0 0 10px; }
+.stage-risk {
+  border-left: 2px solid var(--amb); padding: 8px 0 8px 14px;
+  font-size: 14px; color: var(--ink-dim); background: #78350f14;
+}
+.stage-risk b { color: var(--amb); }
+.inline-list { margin: 0 0 12px; padding-left: 20px; color: var(--ink-dim); }
+.inline-list li { margin: 5px 0; font-size: 14.5px; }
+
+/* --- oversized single stat (business page) ---------------------------- */
+.bigstat {
+  display: grid; grid-template-columns: 190px 1fr; gap: 28px; align-items: start;
+  padding: 26px 0; border-top: 1px solid var(--line-soft);
+}
+.bigstat:first-of-type { border-top: 0; }
+.bigstat-n {
+  font-size: 58px; line-height: .95; font-weight: 700; color: var(--cyn);
+  letter-spacing: -.02em;
+}
+.bigstat-n.meta { font-size: 42px; color: var(--vio); }
+.bigstat-n span {
+  display: block; font-size: 14px; font-weight: 500; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--ink-faint); margin-top: 6px;
+}
+.bigstat-body p { margin: 0 0 12px; }
+
+/* --- evidence articles ------------------------------------------------ */
+.evidence { display: grid; gap: 18px; margin-top: 24px; }
+.ev {
+  padding: 22px; border: 1px solid var(--line); border-radius: 14px;
+  background: var(--panel); border-left: 3px solid var(--grn);
+}
+.ev.warn { border-left-color: var(--red); }
+.ev h3 { margin: 0 0 10px; }
+.ev p { color: var(--ink-dim); margin: 0 0 12px; }
+.ev-use { font-size: 14px; border-top: 1px dashed var(--line); padding-top: 12px; }
+.ev-use b { color: var(--ink); }
+
+/* --- pricing extras --------------------------------------------------- */
+.tier.featured { border-color: var(--cyn); box-shadow: 0 0 0 1px #22d3ee22; position: relative; }
+.tier-flag {
+  position: absolute; top: -11px; left: 20px;
+  background: var(--cyn); color: #04121a; font-size: 11px; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase; padding: 3px 10px; border-radius: 20px;
+}
+.tier li.no-item { color: var(--ink-faint); }
+.tier li.no-item::marker { color: var(--red); }
+.warnline {
+  display: inline-block; margin-top: 18px; padding: 9px 14px;
+  border: 1px solid #fbbf2444; background: #78350f1f; border-radius: 9px;
+  color: var(--ink-dim);
+}
+.warnline b { color: var(--amb); }
+.note.big { font-size: 15.5px; padding: 18px 20px; }
+
+/* --- responsive ------------------------------------------------------- */
+@media (max-width: 1100px) {
+  .cards.four { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .routes     { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 700px) {
+  .routes { grid-template-columns: 1fr; }
+}
+@media (max-width: 880px) {
+  .cards.three { grid-template-columns: 1fr; }
+  .bigstat { grid-template-columns: 1fr; gap: 12px; }
+  .bigstat-n { font-size: 46px; }
+  .bigstat-n.meta { font-size: 34px; }
+}
+@media (max-width: 700px) {
+  .cards.two, .cards.four { grid-template-columns: 1fr; }
+  .stage { grid-template-columns: 34px 1fr; gap: 14px; }
+  .stage-n { width: 30px; height: 30px; font-size: 14px; }
+  .foot-links { flex-direction: column; gap: 6px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .route:hover { transform: none; }
+}
+
+/* --- diagram legibility on narrow screens -----------------------------
+   A 1080px-wide flow diagram scaled into a 674px column renders its
+   smallest label at 7.2px, which is unreadable. Below the point where the
+   text would drop under ~10px, stop scaling and let the figure scroll
+   horizontally at a legible size instead. Measured, not guessed. */
+.diagram.wide { position: relative; }
+
+@media (max-width: 900px) {
+  .diagram.wide {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    padding-bottom: 10px;
+  }
+  .diagram.wide img {
+    width: 1000px;      /* keeps smallest label at ~10.6px */
+    max-width: none;
+  }
+  /* tell the reader it scrolls, rather than letting them miss half of it */
+  .diagram.wide::after {
+    content: "scroll to see the whole flow →";
+    display: block;
+    font-family: var(--mono);
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    padding-top: 8px;
+    position: sticky;
+    left: 0;
+  }
+}
+
+/* --- wide comparison tables on small screens --------------------------
+   A three-column requirement table with quoted regulation text cannot
+   compress below about 640px without the cells becoming unreadable
+   slivers. Let it scroll inside its own container rather than pushing the
+   whole page sideways (measured: TABLE.cmp overflowed the body at 400px). */
+@media (max-width: 780px) {
+  .cmp.wide {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+  }
+  .cmp.wide thead,
+  .cmp.wide tbody { display: table; width: 640px; }
+  .cmp.wide th,
+  .cmp.wide td { font-size: 13px; }
+}
+
+/* --- Commons tier: free and outward-facing, so it reads differently ---- */
+.tier.commons { border-color: #a78bfa55; background: linear-gradient(180deg, #4c1d9514, transparent); }
+.tier-flag.alt { background: var(--vio); color: #140b2e; }
+.tiers { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+@media (max-width: 1180px) { .tiers { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 720px)  { .tiers { grid-template-columns: 1fr; } }
+
+/* --- nav with eight destinations ---------------------------------------
+   Hiding every link below 720px left mobile readers with no way between
+   pages; showing all eight overflowed the bar at 760px (measured: NAV and
+   A.ghost past the viewport on all 8 pages). Scroll the nav instead — it
+   keeps every destination reachable and the page itself never moves. */
+@media (max-width: 1040px) {
+  .nav-inner { gap: 14px; }
+  .nav nav {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    mask-image: linear-gradient(to right, transparent 0, #000 14px);
+  }
+  .nav nav::-webkit-scrollbar { display: none; }
+  .nav nav a { white-space: nowrap; flex: 0 0 auto; }
+}
+@media (max-width: 620px) {
+  .brand span:not(.brand-mark) { display: none; }
+  .nav nav { font-size: 13.5px; gap: 13px; }
+}

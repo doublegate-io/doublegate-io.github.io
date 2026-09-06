@@ -1,0 +1,150 @@
+<section id="top">
+  <div class="wrap hero narrow">
+    <p class="eyebrow">Deployment and pricing</p>
+    <h1>The same engine,<br><span class="grad">scoped to who it serves</span></h1>
+    <p class="lede">
+      Four scopes, one mechanism. Each tier is the same open-source engine — what you pay for is
+      the shared gate, the identity model, and the operational surface around them. The outermost
+      scope is free and points outward: knowledge your organization chooses to publish.
+    </p>
+    <p class="micro warnline">
+      <b>Solo arrives with release 2, Team and Organization with release 4.</b> The model below is
+      what we are building toward, not a price list you can buy from today.
+    </p>
+  </div>
+</section>
+
+<section id="tiers" class="band">
+  <div class="wrap">
+    <div class="tiers">
+      <div class="tier">
+        <h3>Solo</h3>
+        <p class="who">One developer, one machine</p>
+        <p class="runs">Runs entirely on your hardware. Nothing leaves it.</p>
+        <ul>
+          <li>Review before your agent can act on what it wrote</li>
+          <li>Skills scanned before they reach your skill directory</li>
+          <li>Every agent on the machine shares one approved store</li>
+          <li>Signed local history you can export</li>
+          <li class="no-item">No shared gate — nothing to redistribute to</li>
+        </ul>
+        <p class="price">Open source. Free, and stays that way.</p>
+      </div>
+
+      <div class="tier featured">
+        <span class="tier-flag">most teams start here</span>
+        <h3>Team</h3>
+        <p class="who">A squad or a department</p>
+        <p class="runs">One gate for the group — a shared runner, or each machine reporting to it.</p>
+        <ul>
+          <li><b>Everything in Solo</b></li>
+          <li>Approved knowledge shared across the team automatically</li>
+          <li>Reviewers who are never the author, enforced</li>
+          <li>New joiners inherit the team's reviewed knowledge on setup</li>
+          <li>A review queue someone actually owns, with a daily digest</li>
+          <li class="no-item">Single gate — no cross-department policy</li>
+        </ul>
+        <p class="price">Per active contributor, monthly. Self-host or managed.</p>
+      </div>
+
+      <div class="tier">
+        <h3>Organization</h3>
+        <p class="who">Company-wide, multiple teams</p>
+        <p class="runs">Team gates submit upward to one or more organization gates you control.</p>
+        <ul>
+          <li><b>Everything in Team</b></li>
+          <li>Independent second review before anything goes company-wide</li>
+          <li>Who may read what, by identity and team</li>
+          <li>Exportable audit trail for regulators and internal audit</li>
+          <li>Deletion that is real, for erasure requests</li>
+          <li>Your own reviewing models and rules, not ours</li>
+        </ul>
+        <p class="price">Annual, by organization size. Runs in your infrastructure or ours.</p>
+      </div>
+
+      <div class="tier commons">
+        <span class="tier-flag alt">free, and outward-facing</span>
+        <h3>Commons</h3>
+        <p class="who">Anyone, publicly</p>
+        <p class="runs">A hosted gate for knowledge published beyond one organization.</p>
+        <ul>
+          <li>Skills, memories and knowledge artifacts anyone can draw on</li>
+          <li>Nothing readable until a reviewer that did not write it has signed it</li>
+          <li>Published verdicts — including the rejections, with their reasons</li>
+          <li>Signatures travel with an artifact, so it arrives already vouched for</li>
+          <li>Contributors keep attribution; a bad approval can be traced and withdrawn</li>
+          <li class="no-item">Not a substitute for your own gate — treat it as reviewed intake</li>
+        </ul>
+        <p class="price">Free to read, free to contribute. Reading it needs no account.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="boundary" class="band alt">
+  <div class="wrap tight">
+    <h2>Why the tiers are drawn where they are</h2>
+    <p class="lede">
+      The boundaries follow the trust model, not the price sheet. That is deliberate, and it is
+      checkable.
+    </p>
+    <div class="cards four">
+      <div class="card">
+        <h3>Solo — one reviewer, one beneficiary</h3>
+        <p>You get the scanning and the signed history. You do not get sharing, because there is
+        nobody to share with. That is most of the value, which is why this tier is free rather
+        than crippled.</p>
+      </div>
+      <div class="card">
+        <h3>Team — one gate's authority</h3>
+        <p>A group agrees to trust one gate's verdicts. Everything it signs is readable by
+        everyone on it. One authority, one trust domain.</p>
+      </div>
+      <div class="card">
+        <h3>Organization — a second authority</h3>
+        <p>A second, independent gate reviews on its own judgement before anything crosses between
+        teams. That second authority <b>is the double gate</b> — the tier boundary and the
+        architecture are the same line.</p>
+      </div>
+      <div class="card">
+        <h3>Commons — the boundary moves outward</h3>
+        <p>Your gate signs, the commons gate countersigns on its own authority. Exactly the
+        Organization mechanism with the trust boundary one step further out — which is why the
+        commons costs nothing to run alongside a paid tier.</p>
+      </div>
+    </div>
+    <p class="note big">
+      A team can start on Solo and grow into Organization <b>without migrating anything</b> — same
+      store format, same signatures, same export. Growth adds gates; it does not replace the
+      engine. Publishing to the Commons is the same act as promoting between teams, aimed at a
+      wider audience.
+    </p>
+  </div>
+</section>
+
+<section id="notfor" class="band">
+  <div class="wrap tight">
+    <h2>When not to buy this</h2>
+    <div class="anti">
+      <ul>
+        <li><b>If agent memory must be readable the instant it is written.</b> Checking on the way
+        in is the wrong design for that requirement. mem0, Zep and Mnemosyne serve it well.</li>
+        <li><b>If nobody will own the review queue.</b> An unowned queue becomes a backlog, and
+        the gate becomes friction with no payoff. This needs a person, not just a licence.</li>
+        <li><b>If you want a productivity number in the business case.</b> We do not have one and
+        will not invent one. If the case has to be quantified in output terms today, we cannot
+        help you make it.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="next" class="band alt">
+  <div class="wrap tight center">
+    <h2>Next</h2>
+    <div class="cta-row center">
+      <a class="btn primary" href="for-organizations.html">The business case</a>
+      <a class="btn" href="for-engineers.html">What it costs to run</a>
+    </div>
+  </div>
+</section>

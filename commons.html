@@ -1,0 +1,257 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>The Commons — a reviewed public library of agent knowledge</title>
+<meta name="description" content="Skills, memories and knowledge artifacts anyone can draw on, held and signed by a reviewer that did not write them. Free to read, free to contribute, every verdict published — including the rejections.">
+<meta property="og:title" content="The Commons — a reviewed public library of agent knowledge">
+<meta property="og:description" content="Skills, memories and knowledge artifacts anyone can draw on, held and signed by a reviewer that did not write them. Free to read, free to contribute, every verdict published — including the rejections.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<meta property="og:image" content="assets/social-card.svg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/logo.svg" width="22" height="22" alt="" aria-hidden="true"> doublegate</a>
+    <nav><a href="how-it-works.html">How it works</a><a href="for-organizations.html">For organizations</a><a href="for-engineers.html">For engineers</a><a href="governance.html">Governance</a><a href="commons.html" class="here">Commons</a><a href="pricing.html">Pricing</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io/doublegate-site">GitHub</a></nav>
+  </div>
+</header>
+
+<section id="top">
+  <div class="wrap hero narrow">
+    <p class="eyebrow">The Commons</p>
+    <h1>A shared library of agent knowledge<br><span class="grad">where nothing arrives unvouched</span></h1>
+    <p class="lede">
+      Skills, memories and knowledge artifacts anyone can draw on — held, scanned, and signed by a
+      reviewer that did not write them before anyone can install them. Free to read, free to
+      contribute, and every verdict is published, including the refusals.
+    </p>
+  </div>
+</section>
+
+<section id="gap" class="band">
+  <div class="wrap">
+    <h2>Why this does not exist yet</h2>
+    <p class="sub">
+      Not because nobody thought of it. Because the registries that hold this content decided,
+      deliberately, that reviewing it was somebody else's job.
+    </p>
+
+    <div class="evidence">
+      <article class="ev warn">
+        <h3>The canonical registry excludes curation on purpose</h3>
+        <p>The official registry for the standard agent-tool protocol states as a design principle:
+        <b>"No preferential treatment for specific servers or organizations. No built-in ranking,
+        curation, or quality judgments. Let consumers make their own curation decisions."</b>
+        A separate principle commits it to <b>"avoid features that require constant human
+        intervention or moderation."</b></p>
+        <p class="ev-use"><b>They are right to.</b> Moderation is an operational cost, and
+        neutrality is a governance commitment curation would break. What they built is an index —
+        and their own ecosystem document says curation belongs to
+        <b>"subregistries [that] add value […] by providing curation."</b> That role is the one
+        this page describes.</p>
+        <a class="src" href="https://github.com/modelcontextprotocol/registry/blob/main/docs/design/design-principles.md">The registry's published design principles</a>
+      </article>
+
+      <article class="ev warn">
+        <h3>The most mature registry scans, then hands you the decision</h3>
+        <p>Hugging Face runs pickle-import and antivirus scanning over uploads, and says of it:
+        <b>"Disclaimer: this is not 100% foolproof. It is your responsibility as a user to check
+        if something is safe or not. We are not actively auditing python packages for safety."</b>
+        Their recommended mitigation is to load only from <b>"users and organizations you
+        trust."</b></p>
+        <p class="ev-use"><b>Scanning is table stakes; a verdict is not on offer.</b> That is not
+        a criticism — it is the honest limit of automated checking at scale, from the team with the
+        most experience of it.</p>
+        <a class="src" href="https://huggingface.co/docs/hub/security-pickle">Hugging Face Hub — Pickle Scanning</a>
+      </article>
+
+      <article class="ev warn">
+        <h3>And the measured result in agent skills</h3>
+        <p>Of <b>3,984 public agent skills</b> surveyed, 36.8% carried at least one security flaw
+        and 13.4% a critical one. 76 were confirmed malicious, <b>8 still live at publication</b>,
+        and 91% of the malicious ones paired prompt injection with conventional malware. The
+        barrier to publishing one is a file and a git repository.</p>
+        <p class="ev-use"><b>This is the status quo the Commons is aimed at</b> — not a
+        hypothetical risk. The community's own guidance is to "validate the source yourself,"
+        which does not scale to anybody.</p>
+        <a class="src" href="https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/">Snyk, ToxicSkills</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="how" class="band alt">
+  <div class="wrap">
+    <h2>How publishing outward works</h2>
+    <p class="sub">
+      The same mechanism as promoting knowledge between teams, aimed at a wider audience.
+    </p>
+    <div class="cards four">
+      <div class="card">
+        <span class="card-ico share">◈</span>
+        <h3>You choose what leaves</h3>
+        <p>Nothing is published by default. An organization nominates the artifacts it is willing
+        to share — typically the generic ones, where correct operation of a common tool is not
+        anybody's competitive advantage.</p>
+      </div>
+      <div class="card">
+        <span class="card-ico held">◫</span>
+        <h3>Your gate signs it first</h3>
+        <p>An artifact reaching the Commons has already passed your own review. The publishing
+        signature says which organization vouched for it, so a reader knows who stood behind it
+        before anyone else looked.</p>
+      </div>
+      <div class="card">
+        <span class="card-ico check">⊘</span>
+        <h3>The Commons gate reviews again</h3>
+        <p>On its own authority, not as a rubber stamp of yours. Two independent authorities have
+        to agree before an artifact is readable publicly — the same double gate, with the trust
+        boundary one step further out.</p>
+      </div>
+      <div class="card">
+        <span class="card-ico audit">⎔</span>
+        <h3>It arrives pre-vouched</h3>
+        <p>Signatures travel with the artifact. Someone installing it sees who wrote it, who
+        reviewed it, when, and on what basis — before it reaches their agent, not after.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="properties" class="band">
+  <div class="wrap tight">
+    <h2>Public artifacts carry the same four properties</h2>
+    <p class="lede">
+      Nothing is relaxed because the audience is wider. If anything the opposite — a wrong artifact
+      here reaches everyone who installs it.
+    </p>
+    <table class="cmp wide">
+      <thead>
+        <tr><th>Property</th><th>What it means in the Commons</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Audited</b></td>
+          <td>Every verdict is public, <b>including the rejections and their reasons</b>. A registry
+          that publishes only its approvals is a catalogue, not an audit trail.</td>
+        </tr>
+        <tr>
+          <td><b>Traceable</b></td>
+          <td>Each artifact links to its author, the organization that vouched for it, and the
+          evidence behind it. When something turns out to be wrong you can find everything else
+          from the same source.</td>
+        </tr>
+        <tr>
+          <td><b>Versioned</b></td>
+          <td>A correction is a new version with a link to what it replaced. Nothing is edited
+          under a reader's feet, and an artifact you installed cannot silently become something
+          else.</td>
+        </tr>
+        <tr>
+          <td><b>Discoverable</b></td>
+          <td>Searchable with provenance attached, so the search result tells you who stood behind
+          the answer rather than only what it says.</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note big">
+      Contributors keep attribution. Reviewed knowledge stops being a private asset without
+      stopping being <em>yours</em> — the signature naming you as author is the same record that
+      makes the artifact trustworthy to a stranger.
+    </p>
+  </div>
+</section>
+
+<section id="why-contribute" class="band alt">
+  <div class="wrap tight">
+    <h2>Why an organization would contribute</h2>
+    <p class="sub">Two arguments that hold, and one we are not making.</p>
+    <div class="cards two">
+      <div class="card">
+        <h3>Reviewed intake beats free intake</h3>
+        <p>The reason to contribute is the pool you draw from. Public artifacts that arrive
+        already reviewed, with signatures attached, turn a supply-chain risk into a supply line.
+        Today installing from a public registry means accepting unreviewed content or reviewing it
+        yourself, per artifact, forever.</p>
+      </div>
+      <div class="card">
+        <h3>Generic knowledge is not your moat</h3>
+        <p>How to operate a common tool correctly is not proprietary. Publishing it costs nothing
+        strategically and earns standing in a pool that then pays back. What stays private is
+        anything specific to your business — and that never leaves your own gate.</p>
+      </div>
+    </div>
+    <p class="note">
+      <b>The business case rests on the supply line, not on goodwill.</b> Contributing may well
+      help your recruiting, your brand and your models; all three are unmeasured, so none of them
+      belongs in your numbers.
+    </p>
+  </div>
+</section>
+
+<section id="limits" class="band">
+  <div class="wrap tight">
+    <h2>What the Commons is not</h2>
+    <p class="lede">
+      The registries above were honest about their limits, which is why their disclaimers are
+      quotable years later. Ours:
+    </p>
+    <div class="anti">
+      <ul>
+        <li><b>Not "safe".</b> Hugging Face, with far more resources, says its scanning "is not
+        100% foolproof." Ours is not either. What we offer is that nothing is readable until a
+        reviewer who did not write it has signed it, and that every verdict is published — not
+        that a bad artifact is impossible.</li>
+        <li><b>Not a replacement for your own gate.</b> Treat the Commons as reviewed intake, not
+        as trusted input. A second opinion from your own gate costs little and is the entire point
+        of the architecture.</li>
+        <li><b>Not exhaustively reviewed on demand.</b> Review costs tokens and time. At public
+        volume there is a queue, and we will publish its depth rather than imply instant
+        publication.</li>
+        <li><b>No accuracy figure yet.</b> How often review is wrong in either direction is
+        unmeasured. On public volume a wrong rejection means a contributor lost, so this matters
+        more here than anywhere else, and we will publish a false-alarm rate before claiming the
+        checking is reliable.</li>
+        <li><b>Sybil resistance is undesigned.</b> Public contribution invites volume and
+        reputation attacks an internal deployment never sees. We have no answer yet, and this is
+        the honest reason the Commons follows the paid tiers rather than leading them.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="next" class="band alt">
+  <div class="wrap tight center">
+    <h2>Next</h2>
+    <div class="cta-row center">
+      <a class="btn primary" href="pricing.html">How the tiers fit together</a>
+      <a class="btn" href="evidence.html">Check every source</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot">
+    <div>
+      <b>doublegate</b> · design phase · every claim traces to cited research
+      <p class="dim">Open source. Solo use is free and stays that way.</p>
+    </div>
+    <div class="foot-links">
+      <a href="how-it-works.html">How it works</a>
+      <a href="for-organizations.html">For organizations</a>
+      <a href="for-engineers.html">For engineers</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="evidence.html">Evidence</a>
+      <a href="https://github.com/doublegate-io/doublegate-site">GitHub</a>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

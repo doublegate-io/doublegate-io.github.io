@@ -1,0 +1,253 @@
+<section id="top">
+  <div class="wrap hero narrow">
+    <p class="eyebrow">Connectors and governance</p>
+    <h1>Your systems already know things.<br><span class="grad">Your agents don't.</span></h1>
+    <p class="lede">
+      The knowledge your agents need is sitting in a core banking platform, a warehouse, a CRM,
+      a ticketing system. doublegate lets those systems propose what an agent should know — and
+      puts every proposal through the same review as anything a person writes.
+    </p>
+  </div>
+</section>
+
+<section id="how" class="band">
+  <div class="wrap">
+    <h2>A system proposes, the gate decides</h2>
+    <p class="sub">
+      A connector reads a slice of a source system and proposes beliefs. It cannot write directly
+      into what your agents read — nothing can.
+    </p>
+    <div class="cards three">
+      <div class="card">
+        <span class="card-ico held">◫</span>
+        <h3>Scoped by contract</h3>
+        <p>A connector declares which dataset, which fields, and which refresh cadence it may
+        derive from. Anything outside that scope is refused at the boundary rather than reviewed
+        and rejected later.</p>
+      </div>
+      <div class="card">
+        <span class="card-ico check">⊘</span>
+        <h3>Reviewed like everything else</h3>
+        <p>A proposal from a system goes through the same holding, scanning, grading and signing
+        as a memory typed by an engineer. A connector is not a trusted writer — it is another
+        author whose work needs a second party.</p>
+      </div>
+      <div class="card">
+        <span class="card-ico audit">⎔</span>
+        <h3>Traceable to the row it came from</h3>
+        <p>Every derived belief keeps a link to the source system, the dataset slice, the fields
+        in scope and the run that produced it. "Where did this come from?" resolves to a record,
+        not a guess.</p>
+      </div>
+    </div>
+    <p class="note">
+      A connector is a new kind of author, and that means a new kind of risk: one with your
+      organization's own credentials behind it. A misconfigured connector proposing thousands of
+      wrong beliefs is exactly what review is for — and why a connector cannot be its own
+      approver.
+    </p>
+  </div>
+</section>
+
+<section id="examples" class="band alt">
+  <div class="wrap">
+    <h2>What a connector actually produces</h2>
+    <p class="sub">Three shapes, from the concrete to the organizational.</p>
+
+    <div class="evidence">
+      <article class="ev">
+        <h3>From a dataset slice</h3>
+        <p>A connector reads a defined slice — say a product catalogue, a fee schedule, or a
+        reference table — and proposes the stable facts an agent keeps getting wrong. Reviewed
+        once, they stop being re-derived from scratch by every agent that needs them.</p>
+        <p class="ev-use"><b>What is recorded:</b> the source system, the slice, the fields in
+        scope, the run that produced it, the reviewer, and the signature.</p>
+      </article>
+      <article class="ev">
+        <h3>From operational history</h3>
+        <p>A ticketing or incident system holds the resolutions your team has already worked out.
+        A connector proposes those as reusable knowledge instead of leaving them to be
+        rediscovered by whoever is on call next.</p>
+        <p class="ev-use"><b>What is recorded:</b> which incidents a belief was derived from, so a
+        wrong generalisation can be traced back and withdrawn.</p>
+      </article>
+      <article class="ev">
+        <h3>From documented policy</h3>
+        <p>Internal standards, approved procedures and conventions live in wikis nobody reads.
+        Proposed through a gate, they become knowledge an agent holds and cites — with a
+        signature saying who confirmed it is current.</p>
+        <p class="ev-use"><b>What is recorded:</b> the document version a belief came from, so
+        knowledge goes stale visibly rather than silently.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section id="four" class="band">
+  <div class="wrap">
+    <h2>Four properties, every artifact</h2>
+    <p class="sub">
+      Memories, skills, connector output, review verdicts — the same four properties apply to all
+      of them, because they all go through the same gate.
+    </p>
+    <div class="cards four">
+      <div class="card">
+        <span class="card-ico audit">⎔</span>
+        <h3>Audited</h3>
+        <p>Every approval and rejection is a signed record: who decided, when, on what basis, and
+        what they were looking at. Including the rejections — a gate that only records its
+        successes is not an audit trail.</p>
+      </div>
+      <div class="card">
+        <span class="card-ico share">◈</span>
+        <h3>Traceable</h3>
+        <p>Every belief links back to the evidence it was derived from. When something turns out
+        to be wrong, you can find what produced it and what else came from the same source.</p>
+      </div>
+      <div class="card">
+        <span class="card-ico check">⊘</span>
+        <h3>Versioned</h3>
+        <p>Nothing is edited in place. A correction is a new version with a link to what it
+        replaced, so the history of what your organization believed — and when it changed its
+        mind — stays intact.</p>
+      </div>
+      <div class="card">
+        <span class="card-ico held">◫</span>
+        <h3>Discoverable</h3>
+        <p>Approved knowledge is searchable by the agents entitled to read it, with its
+        provenance attached. Content still under review is discoverable to reviewers only.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="regulatory" class="band alt">
+  <div class="wrap">
+    <h2>What regulators already ask for</h2>
+    <p class="sub">
+      Not our interpretation — the requirement in its own words, and the mechanism that answers it.
+    </p>
+
+    <table class="cmp wide">
+      <thead>
+        <tr><th>The requirement, quoted</th><th>Source</th><th>The mechanism</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>"rigorous documentation and audit trailing of changes, data overrides and sign-offs"
+          under a <b>four-eyes principle</b></td>
+          <td class="dim">ECB Guide on effective risk data aggregation and reporting, May 2024</td>
+          <td class="yes">the reviewer is never the author — enforced structurally</td>
+        </tr>
+        <tr>
+          <td>lineage must "in case of data quality incidents be able to track back the source of
+          the issue in a timely manner"</td>
+          <td class="dim">ECB Guide on effective RDARR, May 2024</td>
+          <td class="yes">every belief links to the evidence it came from</td>
+        </tr>
+        <tr>
+          <td>lineage must "allow traceability for (external) validation"</td>
+          <td class="dim">ECB Guide on effective RDARR, May 2024</td>
+          <td class="yes">signed records an auditor verifies without asking us</td>
+        </tr>
+        <tr>
+          <td>"shall technically allow for the automatic recording of events (logs) over the
+          lifetime of the system"</td>
+          <td class="dim">EU AI Act, Article 12(1) — applies from Dec 2027 / Aug 2028</td>
+          <td class="yes">append-only signed journal, from the first write</td>
+        </tr>
+        <tr>
+          <td>"shall maintain a record of processing activities under its responsibility"</td>
+          <td class="dim">GDPR Article 30(1)</td>
+          <td class="yes">per-artifact provenance: actor, purpose, source, time</td>
+        </tr>
+        <tr>
+          <td>the right "to obtain human intervention […] to express his or her point of view and
+          to contest the decision"</td>
+          <td class="dim">GDPR Article 22(3)</td>
+          <td class="yes">every belief resolves to who vouched for it and why</td>
+        </tr>
+        <tr>
+          <td>"strive towards a single authoritative source for risk data per each type of risk"</td>
+          <td class="dim">BCBS 239, Principle 3(d)</td>
+          <td class="yes">one reviewed store per gate, not one per agent</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p class="micro">
+      Every quote above is verbatim from the named source and checked against it.
+      <a href="evidence.html">See the full citations →</a>
+    </p>
+  </div>
+</section>
+
+<section id="standards" class="band">
+  <div class="wrap tight">
+    <h2>Speaking formats your governance team already has tools for</h2>
+    <p class="lede">
+      An audit trail nobody can import is an audit trail nobody reads. The records are designed to
+      express in established vocabularies rather than a private format.
+    </p>
+    <div class="cards two">
+      <div class="card">
+        <h3>Provenance as a standard graph</h3>
+        <p>Derivation records map onto the <b>W3C provenance vocabulary</b> — entity, activity,
+        agent, "was derived from", "was attributed to". A settled W3C Recommendation, not
+        something we invented for this.</p>
+        <a class="src" href="https://www.w3.org/TR/prov-o/">W3C PROV-O</a>
+      </div>
+      <div class="card">
+        <h3>Lineage your catalogue understands</h3>
+        <p>Connector runs are designed to emit <b>OpenLineage</b> events, the open lineage standard
+        under the Linux Foundation, including its field-level lineage facet. Your data catalogue
+        can consume our trail with no bespoke parser.</p>
+        <a class="src" href="https://openlineage.io/">OpenLineage — Apache-2.0, LF AI &amp; Data</a>
+      </div>
+    </div>
+    <p class="note">
+      One honest limit: a field-level mapping is clean for a direct transformation and genuinely
+      hard for a generative one. When a model reads two hundred rows and proposes one claim, we can
+      record the slice and the fields in scope — we will not pretend to a per-column derivation we
+      cannot compute.
+    </p>
+  </div>
+</section>
+
+<section id="honest" class="band alt">
+  <div class="wrap tight">
+    <h2>What we do not claim</h2>
+    <p class="lede">
+      This section exists because the alternative — "audit-ready", "compliant by design" — is what
+      a second-line risk function is paid to disbelieve.
+    </p>
+    <div class="anti">
+      <ul>
+        <li><b>No product makes you compliant.</b> Compliance is an assessment of your
+        organization against a control framework. We produce evidence that goes into one. Anyone
+        selling you the verdict rather than the evidence is selling something they cannot
+        deliver.</li>
+        <li><b>No regulator has reviewed this.</b> Not certified, not approved, not endorsed. The
+        defensible claim is that we produce the artefacts an auditor asks for.</li>
+        <li><b>BCBS 239 does not use the word "lineage".</b> We checked the 2013 text: zero
+        occurrences. The lineage requirement comes from the ECB's 2024 implementation guide, and
+        we cite it there rather than borrowing authority from the better-known document.</li>
+        <li><b>Retention and erasure are in genuine tension</b>, and ours is unresolved. A
+        permanent signed record and a valid deletion request pull in opposite directions. We have
+        an open design question, not a shipped answer, and we will not claim otherwise.</li>
+        <li><b>Read permissions are designed, not built.</b> Several requirements above assume
+        access control exists. Until it ships, treat one gate as one trust domain.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="next" class="band">
+  <div class="wrap tight center">
+    <h2>Next</h2>
+    <div class="cta-row center">
+      <a class="btn primary" href="for-organizations.html">The business case</a>
+      <a class="btn" href="for-engineers.html">What it costs to run</a>
+    </div>
+  </div>
+</section>

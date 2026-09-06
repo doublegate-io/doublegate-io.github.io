@@ -1,0 +1,277 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 1010" width="1040" height="1010"
+     font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif"
+     role="img" aria-labelledby="ttl desc">
+  <title id="ttl">How a memory travels from an agent to an organization</title>
+  <desc id="desc">Read top to bottom. An agent in any harness writes a memory. It goes to a client
+  gate, which may run on the same machine or on a separate environment, and which runs the first
+  checks: scanning, grading by a reviewer that did not write it, and signing. The author can use the
+  memory straight away. Once signed, their group can read it. The client gate then submits it to an
+  organization gate, which reviews, scores, categorises and records it independently. Content the
+  organization approves for distribution flows back out to every client gate. Rejected content stays
+  held with its reasons.</desc>
+
+  <defs>
+    <style><![CDATA[
+      .panel   { fill:#0c0e13; stroke:#1e2430; stroke-width:1.5; }
+      .panelIn { fill:#0a0c10; stroke:#1a202b; stroke-width:1.2; }
+      .chip    { fill:#0e1218; stroke:#2a3444; stroke-width:1.5; }
+      .zoneN   { font-size:12.5px; font-weight:700; letter-spacing:.06em; fill:#8d97a9; }
+      .sName   { font-size:15px;   font-weight:650; }
+      .cName   { font-size:13.5px; font-weight:600; fill:#e6e9ef; }
+      .cap     { font-size:12px;   fill:#8d97a9; }
+      .capB    { font-size:12.5px; font-weight:600; fill:#22d3ee; }
+      .capG    { font-size:12.5px; font-weight:600; fill:#6ee7b7; }
+      .capR    { font-size:12px;   fill:#fb7185; }
+      .tHeld   { font-size:12.5px; fill:#fecdd3; }
+      .tChk    { font-size:12.5px; fill:#fde68a; }
+      .tOk     { font-size:12.5px; fill:#a7f3d0; }
+      .tLed    { font-size:12.5px; fill:#ddd6fe; }
+      .tCyn    { font-size:12.5px; fill:#a5f3fc; }
+      .flow    { fill:none; stroke:#232b39; stroke-width:2.5; }
+      .rej     { fill:none; stroke:#4c1d24; stroke-width:2; stroke-dasharray:5 5; }
+
+      .crawl { stroke-dasharray:7 15; animation:crawl 1.5s linear infinite; }
+      @keyframes crawl { to { stroke-dashoffset:-44; } }
+      .breathe { animation:breathe 2.6s ease-in-out infinite; }
+      @keyframes breathe { 0%,100%{opacity:.55} 50%{opacity:1} }
+      .sweep { animation:sweep 2s cubic-bezier(.4,0,.6,1) infinite; }
+      @keyframes sweep { 0%{transform:translateX(0);opacity:0} 12%{opacity:.9}
+                         88%{opacity:.9} 100%{transform:translateX(150px);opacity:0} }
+      .stamp { animation:stamp 3.2s ease-out infinite; transform-origin:center; }
+      @keyframes stamp { 0%,62%{opacity:0;transform:scale(1.5)} 72%{opacity:1;transform:scale(1)}
+                         96%{opacity:1} 100%{opacity:0} }
+      .glowG { animation:breathe 3s ease-in-out infinite; }
+      .tick  { animation:tick 4s ease-in-out infinite; transform-origin:center; }
+      @keyframes tick { 0%,55%{opacity:.25} 65%,92%{opacity:1} 100%{opacity:.25} }
+
+      @media (prefers-reduced-motion: reduce) {
+        .crawl,.breathe,.sweep,.stamp,.glowG,.tick { animation:none; }
+        .mover { display:none; }
+      }
+    ]]></style>
+
+    <linearGradient id="gHeld" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4c0519"/><stop offset="1" stop-color="#3b0413"/></linearGradient>
+    <linearGradient id="gChk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#78350f"/><stop offset="1" stop-color="#5c2a0c"/></linearGradient>
+    <linearGradient id="gOk" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#064e3b"/><stop offset="1" stop-color="#04382b"/></linearGradient>
+    <linearGradient id="gLed" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#4c1d95"/><stop offset="1" stop-color="#3b1675"/></linearGradient>
+    <linearGradient id="gBus" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#a78bfa"/><stop offset="1" stop-color="#22d3ee"/></linearGradient>
+    <filter id="soft" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"/></filter>
+
+    <path id="pIn"   d="M 520 116 L 520 178"/>
+    <path id="pRow"  d="M 150 300 L 890 300"/>
+    <path id="pMine" d="M 882 348 L 882 392 Q 882 404 870 404 L 150 404 Q 138 404 138 416 L 138 448"/>
+    <path id="pGrp"  d="M 882 348 L 882 392 Q 882 404 870 404 L 520 404 Q 508 404 508 416 L 508 448"/>
+    <path id="pOrg"  d="M 520 556 L 520 622"/>
+    <path id="pDist" d="M 520 830 L 520 884"/>
+    <path id="pRej"  d="M 690 348 Q 690 368 660 368 L 180 368 Q 150 368 150 348"/>
+  </defs>
+
+  <rect width="1040" height="1010" fill="#08090c"/>
+
+  <!-- ═════ 1 · harnesses ═════ -->
+  <text class="zoneN" x="30" y="32">① AN AGENT WRITES SOMETHING DOWN</text>
+  <g>
+    <rect class="chip" x="30" y="46" width="186" height="44" rx="9"/>
+    <text class="cName" x="123" y="74" text-anchor="middle">Hermes</text>
+    <rect class="chip" x="226" y="46" width="186" height="44" rx="9"/>
+    <text class="cName" x="319" y="74" text-anchor="middle">Claude Code</text>
+    <rect class="chip" x="422" y="46" width="186" height="44" rx="9"/>
+    <text class="cName" x="515" y="74" text-anchor="middle">opencode</text>
+    <rect class="chip" x="618" y="46" width="186" height="44" rx="9"/>
+    <text class="cName" x="711" y="74" text-anchor="middle">Codex</text>
+    <rect class="chip" x="814" y="46" width="186" height="44" rx="9"/>
+    <text class="cName" x="907" y="74" text-anchor="middle">Copilot</text>
+  </g>
+  <text class="cap" x="30" y="108">a memory, a fact, an installed skill</text>
+
+  <path class="flow crawl" d="M 520 116 L 520 172"/>
+  <path class="flow" d="M 513 164 L 520 172 L 527 164" stroke-linejoin="round"/>
+
+  <!-- ═════ 2 · client gate ═════ -->
+  <rect class="panel" x="20" y="178" width="1000" height="192" rx="16"/>
+  <text class="zoneN" x="44" y="204">② CLIENT GATE — YOUR LAPTOP, A SHARED RUNNER, ANYWHERE YOU PUT IT</text>
+
+  <g>
+    <rect class="breathe" x="44" y="246" width="212" height="86" rx="10" fill="url(#gHeld)" stroke="#fb7185" stroke-width="1.5"/>
+    <text class="sName" x="150" y="280" fill="#fee2e2" text-anchor="middle">HELD</text>
+    <text class="tHeld" x="150" y="306" text-anchor="middle">nothing reads it yet</text>
+  </g>
+  <path class="flow crawl" d="M 256 290 L 288 290"/>
+  <path class="flow" d="M 281 283 L 288 290 L 281 297" stroke-linejoin="round"/>
+
+  <g>
+    <rect x="288" y="246" width="212" height="86" rx="10" fill="url(#gChk)" stroke="#fbbf24" stroke-width="1.5"/>
+    <clipPath id="clipScan"><rect x="288" y="246" width="212" height="86" rx="10"/></clipPath>
+    <g clip-path="url(#clipScan)">
+      <rect class="sweep" x="288" y="246" width="26" height="86" fill="#fbbf24" opacity=".18"/>
+    </g>
+    <text class="sName" x="394" y="280" fill="#fef3c7" text-anchor="middle">SCANNED</text>
+    <text class="tChk"  x="394" y="306" text-anchor="middle">injection · keys · scripts</text>
+  </g>
+  <path class="flow crawl" d="M 500 290 L 532 290"/>
+  <path class="flow" d="M 525 283 L 532 290 L 525 297" stroke-linejoin="round"/>
+
+  <g>
+    <rect x="532" y="246" width="212" height="86" rx="10" fill="url(#gChk)" stroke="#fbbf24" stroke-width="1.5"/>
+    <text class="sName" x="638" y="280" fill="#fef3c7" text-anchor="middle">GRADED</text>
+    <text class="tChk"  x="638" y="306" text-anchor="middle">by someone else</text>
+  </g>
+  <path class="flow crawl" d="M 744 290 L 776 290"/>
+  <path class="flow" d="M 769 283 L 776 290 L 769 297" stroke-linejoin="round"/>
+
+  <g>
+    <ellipse cx="882" cy="289" rx="58" ry="52" fill="#34d399" opacity=".16" filter="url(#soft)" class="glowG"/>
+    <rect x="776" y="246" width="212" height="86" rx="10" fill="url(#gOk)" stroke="#34d399" stroke-width="1.5"/>
+    <text class="sName" x="882" y="278" fill="#d1fae5" text-anchor="middle">SIGNED</text>
+    <text class="tOk"   x="882" y="302" text-anchor="middle">never self-approved</text>
+    <g class="stamp">
+      <circle cx="882" cy="318" r="7.5" fill="none" stroke="#34d399" stroke-width="2"/>
+      <path d="M 878.2 318 l 2.7 2.9 l 4.8 -5.5" fill="none" stroke="#34d399" stroke-width="2"
+            stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+  </g>
+
+  <path class="rej" d="M 690 332 Q 690 352 660 352 L 180 352 Q 150 352 150 332"/>
+  <path class="rej" d="M 143 340 L 150 332 L 157 340" stroke-dasharray="0"/>
+  <text class="capR" x="420" y="360" text-anchor="middle">rejected → stays held, with its reasons, and can be re-earned</text>
+
+  <!-- ═════ 3 · two audiences open up ═════ -->
+  <path class="flow" d="M 882 332 L 882 392 Q 882 404 870 404 L 150 404 Q 138 404 138 416 L 138 442"/>
+  <path d="M 882 332 L 882 392 Q 882 404 870 404 L 150 404" fill="none" stroke="url(#gBus)"
+        stroke-width="2.5" opacity=".4" class="crawl"/>
+  <path class="flow" d="M 508 404 L 508 442"/>
+  <path class="flow" d="M 132 434 L 138 442 L 144 434" stroke-linejoin="round"/>
+  <path class="flow" d="M 502 434 L 508 442 L 514 434" stroke-linejoin="round"/>
+
+  <text class="zoneN" x="30" y="432">③ WHO CAN READ IT, AND WHEN</text>
+
+  <g>
+    <rect class="panelIn" x="30" y="442" width="440" height="106" rx="12"/>
+    <rect x="46" y="462" width="180" height="68" rx="9" fill="url(#gOk)" stroke="#34d399" stroke-width="1.5" opacity=".85"/>
+    <text class="sName" x="136" y="490" fill="#d1fae5" text-anchor="middle">YOU</text>
+    <text class="tOk"   x="136" y="512" text-anchor="middle">straight away</text>
+    <text class="cap"   x="242" y="486">your own agents use it</text>
+    <text class="cap"   x="242" y="504">the moment you write it —</text>
+    <text class="cap"   x="242" y="522">no waiting on anyone</text>
+  </g>
+
+  <g>
+    <rect class="panelIn" x="490" y="442" width="440" height="106" rx="12"/>
+    <rect x="506" y="462" width="180" height="68" rx="9" fill="url(#gOk)" stroke="#34d399" stroke-width="1.5"/>
+    <text class="sName" x="596" y="490" fill="#d1fae5" text-anchor="middle">YOUR GROUP</text>
+    <text class="tOk"   x="596" y="512" text-anchor="middle">once signed</text>
+    <text class="cap"   x="702" y="486">teammates on this gate</text>
+    <text class="cap"   x="702" y="504">read it after review —</text>
+    <text class="cap"   x="702" y="522">signature attached</text>
+  </g>
+
+  <path class="flow crawl" d="M 520 556 L 520 616"/>
+  <path class="flow" d="M 513 608 L 520 616 L 527 608" stroke-linejoin="round"/>
+  <text class="cap" x="536" y="592">submitted onward, in the background</text>
+
+  <!-- ═════ 4 · organization gate ═════ -->
+  <rect class="panel" x="20" y="622" width="1000" height="208" rx="16"/>
+  <text class="zoneN" x="44" y="648">④ ORGANIZATION GATE — REVIEWS IT AGAIN, ON ITS OWN AUTHORITY</text>
+
+  <g>
+    <rect x="44" y="666" width="222" height="86" rx="10" fill="url(#gChk)" stroke="#fbbf24" stroke-width="1.5"/>
+    <text class="sName" x="155" y="700" fill="#fef3c7" text-anchor="middle">REVIEWED</text>
+    <text class="tChk"  x="155" y="726" text-anchor="middle">fresh judgement</text>
+  </g>
+  <path class="flow crawl" d="M 266 710 L 292 710"/>
+  <path class="flow" d="M 285 703 L 292 710 L 285 717" stroke-linejoin="round"/>
+
+  <g>
+    <rect x="292" y="666" width="222" height="86" rx="10" fill="url(#gChk)" stroke="#fbbf24" stroke-width="1.5"/>
+    <text class="sName" x="403" y="700" fill="#fef3c7" text-anchor="middle">SCORED</text>
+    <text class="tChk"  x="403" y="726" text-anchor="middle">rated and filed</text>
+  </g>
+  <path class="flow crawl" d="M 514 710 L 540 710"/>
+  <path class="flow" d="M 533 703 L 540 710 L 533 717" stroke-linejoin="round"/>
+
+  <g>
+    <rect x="540" y="666" width="222" height="86" rx="10" fill="url(#gOk)" stroke="#34d399" stroke-width="1.5"/>
+    <text class="sName" x="651" y="700" fill="#d1fae5" text-anchor="middle">VALIDATED</text>
+    <text class="tOk"   x="651" y="726" text-anchor="middle">second signature</text>
+  </g>
+  <path class="flow crawl" d="M 762 710 L 788 710"/>
+  <path class="flow" d="M 781 703 L 788 710 L 781 717" stroke-linejoin="round"/>
+
+  <g>
+    <rect x="788" y="666" width="200" height="86" rx="10" fill="url(#gLed)" stroke="#a78bfa" stroke-width="1.5"/>
+    <text class="sName" x="888" y="700" fill="#ede9fe" text-anchor="middle">RECORDED</text>
+    <text class="tLed"  x="888" y="724" text-anchor="middle">who · when · why</text>
+    <g opacity=".9">
+      <rect x="824" y="736" width="128" height="4" rx="2" fill="#a78bfa" opacity=".3"/>
+      <rect x="824" y="736" width="128" height="4" rx="2" fill="#a78bfa">
+        <animate attributeName="width" values="0;128" dur="3.2s" repeatCount="indefinite"/>
+      </rect>
+    </g>
+  </g>
+
+  <g class="tick">
+    <rect x="44" y="776" width="944" height="38" rx="9" fill="#062c3a" stroke="#22d3ee" stroke-width="1.5" opacity=".55"/>
+    <rect x="60" y="787" width="16" height="16" rx="4" fill="none" stroke="#22d3ee" stroke-width="2"/>
+    <path d="M 64 795 l 3.4 3.6 l 6 -7" fill="none" stroke="#22d3ee" stroke-width="2.2"
+          stroke-linecap="round" stroke-linejoin="round"/>
+    <text class="capB" x="90" y="801">cleared for distribution — send this one back out to everyone</text>
+  </g>
+
+  <path class="flow crawl" d="M 520 830 L 520 878"/>
+  <path d="M 520 830 L 520 878" fill="none" stroke="url(#gBus)" stroke-width="2.5" opacity=".45" class="crawl"/>
+  <path class="flow" d="M 513 870 L 520 878 L 527 870" stroke-linejoin="round"/>
+
+  <!-- ═════ 5 · back out ═════ -->
+  <text class="zoneN" x="30" y="908">⑤ EVERY OTHER CLIENT GATE PICKS IT UP</text>
+  <g>
+    <rect class="chip" x="30" y="920" width="300" height="34" rx="8" stroke="#22d3ee" stroke-opacity=".45"/>
+    <text class="tCyn" x="180" y="942" text-anchor="middle">a teammate's laptop</text>
+    <rect class="chip" x="346" y="920" width="300" height="34" rx="8" stroke="#22d3ee" stroke-opacity=".45"/>
+    <text class="tCyn" x="496" y="942" text-anchor="middle">your build runner</text>
+    <rect class="chip" x="662" y="920" width="326" height="34" rx="8" stroke="#22d3ee" stroke-opacity=".45"/>
+    <text class="tCyn" x="825" y="942" text-anchor="middle">a gate in another office</text>
+  </g>
+  <text class="capG" x="30" y="982">Arriving pre-approved: their gate does not review what yours already proved.</text>
+
+  <!-- ═════ travelling artifacts ═════ -->
+  <g class="mover">
+    <circle r="6" fill="#94a3b8">
+      <animateMotion dur="6.4s" repeatCount="indefinite"><mpath href="#pIn"/></animateMotion>
+      <animate attributeName="opacity" values="0;1;1;0" keyTimes="0;.12;.8;1" dur="6.4s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="6.5" fill="#fb7185">
+      <animateMotion dur="6.4s" begin="-.5s" repeatCount="indefinite"><mpath href="#pRow"/></animateMotion>
+      <animate attributeName="fill" values="#fb7185;#fb7185;#fbbf24;#fbbf24;#34d399;#34d399"
+               keyTimes="0;.18;.32;.66;.8;1" dur="6.4s" begin="-.5s" repeatCount="indefinite"/>
+      <animate attributeName="r" values="6.5;6.5;7.5;6.5" keyTimes="0;.6;.72;1" dur="6.4s" begin="-.5s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="6.5" fill="#fb7185">
+      <animateMotion dur="6.4s" begin="-3.7s" repeatCount="indefinite"><mpath href="#pRow"/></animateMotion>
+      <animate attributeName="fill" values="#fb7185;#fb7185;#fbbf24;#fbbf24;#34d399;#34d399"
+               keyTimes="0;.18;.32;.66;.8;1" dur="6.4s" begin="-3.7s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="6" fill="#34d399">
+      <animateMotion dur="6.4s" begin="-1.7s" repeatCount="indefinite"><mpath href="#pMine"/></animateMotion>
+    </circle>
+    <circle r="6" fill="#34d399">
+      <animateMotion dur="6.4s" begin="-2.4s" repeatCount="indefinite"><mpath href="#pGrp"/></animateMotion>
+    </circle>
+    <circle r="6" fill="#34d399">
+      <animateMotion dur="6.4s" begin="-3.1s" repeatCount="indefinite"><mpath href="#pOrg"/></animateMotion>
+      <animate attributeName="fill" values="#34d399;#fbbf24" keyTimes="0;.8" dur="6.4s" begin="-3.1s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="6" fill="#a78bfa">
+      <animateMotion dur="6.4s" begin="-4.8s" repeatCount="indefinite"><mpath href="#pDist"/></animateMotion>
+      <animate attributeName="fill" values="#a78bfa;#22d3ee" keyTimes="0;.7" dur="6.4s" begin="-4.8s" repeatCount="indefinite"/>
+    </circle>
+    <circle r="5.5" fill="#fb7185" opacity=".85">
+      <animateMotion dur="12.8s" begin="-1s" repeatCount="indefinite"><mpath href="#pRej"/></animateMotion>
+      <animate attributeName="opacity" values="0;.9;.9;0" keyTimes="0;.06;.46;.52" dur="12.8s" begin="-1s" repeatCount="indefinite"/>
+    </circle>
+  </g>
+</svg>

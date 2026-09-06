@@ -1,0 +1,134 @@
+<section id="top">
+  <div class="wrap hero narrow">
+    <p class="eyebrow">How it works</p>
+    <h1>One memory's journey</h1>
+    <p class="lede">
+      An agent writes something down. Follow it from that moment to the point where a colleague in
+      another office can read it — and see exactly where it could have been stopped.
+    </p>
+  </div>
+</section>
+
+<section id="diagram" class="band">
+  <div class="wrap">
+    <div class="diagram wide">
+      <img src="assets/artifact-flow.svg" width="100%"
+        alt="Five stages: an agent writes a memory; a client gate holds, scans, grades and signs it; visibility opens to the author immediately and to their group once signed; an organization gate reviews, scores, validates and records it; every other client gate picks it up pre-approved.">
+    </div>
+  </div>
+</section>
+
+<section id="stages" class="band alt">
+  <div class="wrap">
+    <h2>The five stages</h2>
+    <p class="sub">What happens, and what would happen if it went wrong.</p>
+
+    <ol class="stages">
+      <li class="stage">
+        <span class="stage-n">1</span>
+        <div>
+          <h3>An agent writes something down</h3>
+          <p>A memory, a fact it worked out, a convention you corrected it on, or a skill it just
+          installed. Any agent — Hermes, Claude Code, opencode, Codex, Copilot — because
+          doublegate sits where its memory provider normally sits.</p>
+          <p class="stage-risk"><b>Without a gate:</b> that content is searchable the instant it
+          lands, and it shapes every future answer until somebody notices it was wrong.</p>
+        </div>
+      </li>
+
+      <li class="stage">
+        <span class="stage-n">2</span>
+        <div>
+          <h3>The client gate holds it</h3>
+          <p>It goes into a separate database that your agent has no read path to. Not a flag on a
+          row — a different store. Then three things happen to it:</p>
+          <ul class="inline-list">
+            <li><b>Scanned</b> — prompt injection, credentials, executable payloads in skills</li>
+            <li><b>Graded</b> — by a reviewer running in its own process, with no tools and no
+            network, that did not write the content</li>
+            <li><b>Signed</b> — the verdict is recorded with a cryptographic signature</li>
+          </ul>
+          <p class="stage-risk"><b>If it fails:</b> it stays held, with its reasons attached. It is
+          not deleted and it is not silently dropped — it can be corrected and re-submitted.</p>
+        </div>
+      </li>
+
+      <li class="stage">
+        <span class="stage-n">3</span>
+        <div>
+          <h3>Visibility opens in two steps</h3>
+          <p>You are not blocked while review happens. <b>Your own agents use it straight
+          away</b> — you wrote it, you already trust it. <b>Your group reads it once
+          signed</b>, with the signature attached so they can see who vouched for it.</p>
+          <p class="stage-risk"><b>Why this matters:</b> a gate that makes you wait is a gate people
+          route around. The delay only applies to other people reading your work, which is exactly
+          where the risk is.</p>
+        </div>
+      </li>
+
+      <li class="stage">
+        <span class="stage-n">4</span>
+        <div>
+          <h3>The organization gate reviews it again</h3>
+          <p>Anything heading company-wide is submitted upward in the background and reviewed
+          again on <b>its own authority</b> — a fresh judgement, not a rubber stamp of the first
+          one. It is scored, given a second signature, and the decision is recorded with who,
+          when and why.</p>
+          <p class="stage-risk"><b>This is the second gate</b>, and it is the one that makes
+          company-wide sharing defensible. One authority approving its own submissions is not
+          independent review.</p>
+        </div>
+      </li>
+
+      <li class="stage">
+        <span class="stage-n">5</span>
+        <div>
+          <h3>Every other gate picks it up</h3>
+          <p>Cleared content is distributed to every client gate in the organization — a
+          teammate's laptop, your build runner, a gate in another office. It arrives
+          <b>pre-approved</b>: their gate does not re-review what yours already proved, because
+          the signatures travel with it.</p>
+          <p class="stage-risk"><b>The compounding bit:</b> one correction, reviewed once, reaches
+          everyone. Today that same wrong assumption gets fixed separately in five hundred
+          private agents, or not at all.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="reads" class="band">
+  <div class="wrap tight">
+    <h2>What this costs your agent at read time</h2>
+    <p class="sub">Nothing. That is the point of checking on the way in.</p>
+    <div class="cards two">
+      <div class="card">
+        <h3>Reads are ordinary reads</h3>
+        <p>Once content is approved it sits in a normal store and is searched like any other
+        memory. There is no reviewer in the read path, no per-query approval check, no added
+        round trip. Your agent does not know a gate exists.</p>
+      </div>
+      <div class="card">
+        <h3>Records are never held up</h3>
+        <p>Transcripts, tool output and logs pass straight through — they are records of what
+        happened, not claims about the world. Only <b>claims</b> wait for review, which is a small
+        fraction of what an agent writes.</p>
+      </div>
+    </div>
+    <p class="note">
+      In our own measurements an agent produced roughly ninety times more records than claims.
+      Gating everything would be unaffordable; gating only claims is cheap. Those numbers come
+      from our machines, so treat them as illustration rather than a population finding.
+    </p>
+  </div>
+</section>
+
+<section id="next" class="band alt">
+  <div class="wrap tight center">
+    <h2>Next</h2>
+    <div class="cta-row center">
+      <a class="btn primary" href="for-engineers.html">What it costs to run</a>
+      <a class="btn" href="for-organizations.html">Why it is worth running</a>
+    </div>
+  </div>
+</section>
