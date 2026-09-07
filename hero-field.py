@@ -11,10 +11,17 @@ figures, one idea, and the smaller one was the site's front door. Redrawing the
 rail four different ways never fixed that, because the staleness was the choice
 of subject, not the routing of its connectors.
 
-So this draws the five hundred. Left: every agent taught separately, the same
-lesson bought over and over, nothing shared. Right: taught once, reviewed once,
-signed once, and every agent inherits it. The count IS the argument, so the count
-is what the reader sees.
+So this draws the five hundred, in three states. Siloed: every agent taught
+separately, the same lesson bought over and over. Pooled: taught once and
+inherited by all -- which is what every memory provider already sells, and the
+panel shows what comes with it, because a write that is readable immediately
+spreads a wrong memory exactly as fast as a right one. Gated: taught once,
+reviewed by someone who did not write it, signed, and only then inherited.
+
+The middle panel is the point of the figure. Without it the argument is "pool your
+knowledge", which needs no product. With it the argument is the site's own: the
+risk of pooling is what doublegate removes, and removing it is what makes the
+knowledge worth collecting.
 
 Why it is also structurally safer
 ---------------------------------
@@ -46,25 +53,45 @@ CHROME = os.environ.get("CHROME_PATH", "")
 FONT = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif"
 
 # ── canvas ──────────────────────────────────────────────────────────────────
+# THREE panels, not two. Two panels argued for pooling, and pooling is what every
+# memory provider already sells -- a reader who knows the category saw panel 2
+# ("one writes, everyone inherits") and thought "so, mem0". The figure has to earn
+# the product, which means showing the naive fix failing. The middle panel is the
+# objection the site's own copy raises and answers: "one wrong memory would reach
+# everyone, and nobody could say who vouched for it."
 W = 1080
 PAD = 24
-GUT = 56                      # the divide between the two halves
-COLW = (W - 2 * PAD - GUT) / 2
-LX = PAD                      # left column origin
-RX = PAD + COLW + GUT         # right column origin
+GUT = 40
+NPANEL = 3
+COLW = (W - 2 * PAD - GUT * (NPANEL - 1)) / NPANEL
+PX = [PAD + (COLW + GUT) * i for i in range(NPANEL)]
+LX, MX, RX = PX             # siloed, pooled, gated
 
 # ── the population ──────────────────────────────────────────────────────────
 # 500 agents, drawn as a 25x20 field. Not "about five hundred": exactly the
 # number the headline says, because a reader who counts the columns and finds
 # 500 has just verified the claim themselves.
-COLS, ROWS = 25, 20
+# 20x25 in a 317px column instead of 25x20 in a 488px one: still exactly 500, and
+# still countable. Not "about five hundred" -- a reader who counts a row and a
+# column has verified the headline's number themselves.
+COLS, ROWS = 20, 25
 TOTAL = COLS * ROWS
 assert TOTAL == 500, TOTAL
 
-DOT_R = 3.0
+DOT_R = 2.9
 FIELD_TOP = 150
+
+# In the pooled panel the wrong memory travels at the speed of the right one --
+# that is the whole objection. A share of the field carries it, seeded so the
+# spread is identical every run. 1 in 7 is illustrative of contagion, not a
+# measured rate, and the caption says "the mistake too" rather than a number, so
+# the picture never asserts a statistic the evidence page cannot support.
+TAINT_EVERY = 7
 CELL_W = COLW / COLS
-CELL_H = 7.4
+# 8.6 not 7.4: at 25 rows in a 317px column the dots merged into vertical stripes
+# and the field read as 20 bars rather than 500 individuals, which is the whole
+# unit of the argument.
+CELL_H = 8.6
 JITTER = 0.55                 # a hand-placed feel without breaking the grid
 SEED = 20260907               # fixed: the figure must be byte-identical each run
 
@@ -80,9 +107,18 @@ STYLE = """    .zn  { font-size:11.5px; font-weight:700; letter-spacing:.1em; fi
        animation only re-states what the layout already shows. */
     @media (prefers-reduced-motion: reduce) { .mover { display:none; } }"""
 
+# Panel 1 is SLATE, not red. Nothing is wrong in the siloed panel -- its cost is
+# waste and isolation, not error -- and using red there while panel 2 uses red for
+# "carrying the wrong memory" gave one colour two meanings side by side. Red now
+# appears exactly once, where the argument needs alarm, which also makes its
+# ABSENCE in panel 3 legible as "the red is gone".
 DEFS = """  <linearGradient id="fAlone" x1="0" y1="0" x2="0" y2="1">
-    <stop offset="0" stop-color="#fb7185" stop-opacity=".85"/>
-    <stop offset="1" stop-color="#fb7185" stop-opacity=".38"/>
+    <stop offset="0" stop-color="#94a3b8" stop-opacity=".72"/>
+    <stop offset="1" stop-color="#64748b" stop-opacity=".38"/>
+  </linearGradient>
+  <linearGradient id="fPool" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fbbf24" stop-opacity=".8"/>
+    <stop offset="1" stop-color="#fbbf24" stop-opacity=".42"/>
   </linearGradient>
   <linearGradient id="fShared" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#22d3ee" stop-opacity=".9"/>
@@ -141,7 +177,48 @@ def field(x0, cols, rows, seed, taught_idx=None):
     return out, pos
 
 
-# ── copy: the argument, stated once ─────────────────────────────────────────
+# ── copy: three panels, one argument ────────────────────────────────────────
+# Each panel is (zone, numeral, unit, head, prose lines). The numeral counts LIT
+# dots in that panel, so every number is verifiable by looking -- the first draft
+# paired a 500 meaning "lessons bought" with 500 dots meaning "agents", and the
+# unit only resolved from the footer.
+PANELS = [
+    dict(
+        key="silo", x=None, zone="SILOED \u2014 TODAY", zc="#94a3b8",
+        big="500", unit="taught separately", head="Every correction stops",
+        head2="where it was made.",
+        lines=[("sb", "The next engineer hits the"),
+               ("sb", "same wall and pays again."),
+               ("sb", "No record of who decided"),
+               ("sb", "what, or on what basis.")],
+    ),
+    dict(
+        key="pool", x=None, zone="POOLED \u2014 MEMORY TOOLS", zc="#fbbf24",
+        big="1", unit="taught, 499 inherit", head="One writes, all read",
+        head2="\u2014 the mistake too.",
+        lines=[("sb", "Across fourteen providers a"),
+               ("sb", "write is readable at once."),
+               ("sb", "Scores change ranking,"),
+               ("sb", "never visibility.")],
+    ),
+    dict(
+        key="gate", x=None, zone="GATED \u2014 DOUBLEGATE", zc="#22d3ee",
+        big="1", unit="taught, 499 inherit", head="Reviewed first, then",
+        head2="inherited by all.",
+        lines=[("sb", "A reviewer that did not write"),
+               ("sb", "it grades and signs it."),
+               ("sb", "Nothing unsigned is ever"),
+               ("sb", "readable by anyone.")],
+    ),
+]
+for _p, _x in zip(PANELS, PX):
+    _p["x"] = _x
+
+FOOT3 = ("Same five hundred agents, same correction. Pooling moves it faster; the gate "
+         "decides whether what moves is worth having.")
+
+
+# ── legacy two-panel copy, kept for reference ───────────────────────────────
 # The numeral must count THE SAME THING the field counts, or the reader has to
 # work out mid-glance that the dots are agents while the big number is lessons.
 # The first draft did exactly that -- 500 dots meaning agents beside a 500 meaning
@@ -172,111 +249,125 @@ ZONE_R = "WITH DOUBLEGATE"
 
 
 def build(Wd):
-    _, lpos = field(LX, COLS, ROWS, SEED)
-    _, rpos = field(RX, COLS, ROWS, SEED + 1)
     field_bot = FIELD_TOP + CELL_H * ROWS
-
     o = []
 
-    # ── the seam. One stroke, vertical, in a gutter that holds no text. It is
-    #    the only line in the upper half, so there is nothing for it to cross.
-    o.append(f'<path d="M {LX+COLW+GUT/2:g} 96 L {LX+COLW+GUT/2:g} {field_bot+34:g}" '
-             f'stroke="url(#seam)" stroke-width="1.4" fill="none"/>')
+    # ── two seams, in gutters that hold no text. The only strokes in the upper
+    #    half, so there is nothing for them to cross.
+    for gx in (PX[1] - GUT / 2, PX[2] - GUT / 2):
+        o.append(f'<path d="M {gx:g} 96 L {gx:g} {field_bot + 30:g}" '
+                 f'stroke="url(#seam)" stroke-width="1.4" fill="none"/>')
 
-    # ── zone labels
-    o.append(f'<text class="zn" x="{LX}" y="52" fill="#fb7185" fill-opacity=".75">{ZONE_L}</text>')
-    o.append(f'<text class="zn" x="{RX}" y="52" fill="#22d3ee" fill-opacity=".8">{ZONE_R}</text>')
+    author_label = None
 
-    # ── the counters. This is the whole argument in two numerals: 500 against 1.
-    o.append(f'<text class="big" x="{LX}" y="98" fill="url(#fAlone)">{L_BIG}</text>')
-    o.append(f'<text class="tiny" x="{LX + Wd[L_BIG] + 10:g}" y="98" fill="#fb7185" '
-             f'fill-opacity=".8">{L_BIGSUB}</text>')
-    o.append(f'<text class="hd" x="{LX}" y="124">{L_HEAD}</text>')
+    for p in PANELS:
+        x0 = p["x"]
+        _, pos = field(x0, COLS, ROWS, SEED + PANELS.index(p))
 
-    o.append(f'<text class="big" x="{RX}" y="98" fill="url(#fShared)" filter="url(#soft)">{R_BIG}</text>')
-    o.append(f'<text class="tiny" x="{RX + Wd[R_BIG] + 10:g}" y="98" fill="#22d3ee" '
-             f'fill-opacity=".85">{R_BIGSUB}</text>')
-    o.append(f'<text class="hd" x="{RX}" y="124">{R_HEAD}</text>')
+        # zone, numeral, unit, heading
+        o.append(f'<text class="zn" x="{x0}" y="52" fill="{p["zc"]}" '
+                 f'fill-opacity=".8">{p["zone"]}</text>')
+        grad = {"silo": "fAlone", "pool": "fPool", "gate": "fShared"}[p["key"]]
+        soft = ' filter="url(#soft)"' if p["key"] == "gate" else ""
+        o.append(f'<text class="big" x="{x0}" y="98" fill="url(#{grad})"{soft}>{p["big"]}</text>')
+        o.append(f'<text class="tiny" x="{x0 + Wd[p["big"]] + 9:g}" y="98" fill="{p["zc"]}" '
+                 f'fill-opacity=".85">{p["unit"]}</text>')
+        # 18px of leading, not 16: at 15px type the ascender of the second line
+        # met the descender of the first and svg-geometry.js measured 2px of
+        # overlap on all three panels at once.
+        o.append(f'<text class="hd" x="{x0}" y="122">{p["head"]}</text>')
+        o.append(f'<text class="hd" x="{x0}" y="140">{p["head2"]}</text>')
 
-    # ── LEFT FIELD: every dot lit its own colour, none connected to any other.
-    #    Each is a separate purchase of the same lesson. The visual fact that
-    #    there are no lines here IS the point: nothing is shared.
-    o.append('<!-- 500 agents, each taught separately. No connectors, by argument:\n'
-             '     nothing passes between them, which is the problem being shown. -->')
-    o.append('<g fill="url(#fAlone)">')
-    for cx, cy in lpos:
-        o.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{DOT_R}"/>')
-    o.append("</g>")
+        # ── the field itself. No connectors anywhere: what each panel shows is a
+        #    STATE of the population, and colour carries it.
+        if p["key"] == "silo":
+            # every dot lit on its own. The absence of any shared marking IS the
+            # problem being shown: 500 separate purchases of one lesson.
+            o.append('<g fill="url(#fAlone)">')
+            for cx, cy in pos:
+                o.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{DOT_R}"/>')
+            o.append("</g>")
 
-    # ── RIGHT FIELD: one dot is the author (bright, ringed); the rest inherit.
-    #    Drawn dimmer and filled, so the eye reads "same population, one source".
-    # The author sits on the field's BOTTOM-left corner. Mid-grid it was
-    # unfindable at r=3.6 among 500 identical dots -- and if the numeral beside
-    # this field says "1", this dot IS the subject and must read first. Top-left
-    # was the obvious corner but it sits directly under the column heading, so
-    # any label there collides with it (svg-geometry.js measured 5px of overlap
-    # and svg-clearance.js caught the leader 1px off the same heading). The band
-    # below the field is clear for 34px, so the label goes there instead.
-    author = (ROWS - 1) * COLS
-    o.append('<!-- the same 500. One is the author; the rest inherit what it wrote,\n'
-             '     already signed. Again no connectors: inheritance is a state, not\n'
-             '     a journey, and the journey is what how-it-works.html draws. -->')
-    o.append('<g fill="url(#fShared)" fill-opacity=".46">')
-    for i, (cx, cy) in enumerate(rpos):
-        if i == author:
-            continue
-        o.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{DOT_R}"/>')
-    o.append("</g>")
-    acx, acy = rpos[author]
-    AR = DOT_R + 2.2                      # materially larger than an inheritor
-    o.append(f'<circle class="mover" cx="{acx:.1f}" cy="{acy:.1f}" r="{AR:g}" '
-             f'fill="none" stroke="#34d399" stroke-width="1.6">'
-             f'<animate attributeName="r" dur="4s" repeatCount="indefinite" '
-             f'values="{AR:g};{AR+9:g};{AR:g}" keyTimes="0;0.5;1"/>'
-             f'<animate attributeName="stroke-opacity" dur="4s" repeatCount="indefinite" '
-             f'values=".9;0;.9" keyTimes="0;0.5;1"/></circle>')
-    o.append(f'<circle cx="{acx:.1f}" cy="{acy:.1f}" r="{AR:g}" fill="#34d399" '
-             f'filter="url(#soft)"/>')
-    # The label goes in the clear band ABOVE the field, never inside it. Placed
-    # beside the dot it sat on top of 14 inheritors -- measured, after a first
-    # collision detector wrongly reported zero. One short vertical leader connects
-    # them; it is the only connector in the body of the figure.
+        elif p["key"] == "pool":
+            # one author, everyone inherits -- and so does the wrong memory. The
+            # tainted share is seeded, and deliberately scattered rather than
+            # clustered: a bad memory does not spread by adjacency, it spreads by
+            # retrieval, so it surfaces anywhere someone asks the same question.
+            o.append('<g fill="url(#fPool)" fill-opacity=".5">')
+            for i, (cx, cy) in enumerate(pos):
+                if i % TAINT_EVERY == 3:
+                    continue
+                o.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{DOT_R}"/>')
+            o.append("</g>")
+            o.append('<g fill="#fb7185" fill-opacity=".92">')
+            for i, (cx, cy) in enumerate(pos):
+                if i % TAINT_EVERY == 3:
+                    o.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{DOT_R + 0.5:g}"/>')
+            o.append("</g>")
+
+        else:
+            # gated: the same inheritance, with the wrong memory held back. The
+            # author is marked because the numeral beside this panel says 1, so
+            # that dot is the subject and has to read first.
+            author = (ROWS - 1) * COLS
+            o.append('<g fill="url(#fShared)" fill-opacity=".5">')
+            for i, (cx, cy) in enumerate(pos):
+                if i == author:
+                    continue
+                o.append(f'<circle cx="{cx:.1f}" cy="{cy:.1f}" r="{DOT_R}"/>')
+            o.append("</g>")
+            acx, acy = pos[author]
+            AR = DOT_R + 2.2
+            o.append(f'<circle class="mover" cx="{acx:.1f}" cy="{acy:.1f}" r="{AR:g}" '
+                     f'fill="none" stroke="#34d399" stroke-width="1.6">'
+                     f'<animate attributeName="r" dur="4s" repeatCount="indefinite" '
+                     f'values="{AR:g};{AR + 9:g};{AR:g}" keyTimes="0;0.5;1"/>'
+                     f'<animate attributeName="stroke-opacity" dur="4s" '
+                     f'repeatCount="indefinite" values=".9;0;.9" keyTimes="0;0.5;1"/></circle>')
+            o.append(f'<circle cx="{acx:.1f}" cy="{acy:.1f}" r="{AR:g}" fill="#34d399" '
+                     f'filter="url(#soft)"/>')
+            author_label = (acx, acy, AR)
+
+        # prose under the field, inside this panel's own column width
+        y = field_bot + 34
+        for cls, line in p["lines"]:
+            o.append(f'<text class="{cls}" x="{x0}" y="{y}">{line}</text>')
+            y += 18
+
+    # the author's leader, drawn last so it sits above the field. One short
+    # vertical into the clear band below; the only connector in the body.
+    acx, acy, AR = author_label
     lab_y = field_bot + 17
     o.append(f'<path d="M {acx:.1f} {acy + AR + 2:.1f} L {acx:.1f} {lab_y - 11:.1f}" '
              f'stroke="#34d399" stroke-opacity=".5" stroke-width="1.3" fill="none"/>')
     o.append(f'<text class="nm" x="{acx:.1f}" y="{lab_y:.1f}" fill="#6ee7b7">'
              f'this one writes it</text>')
 
-    # ── prose columns, each under its own field, inside its own column width
-    y = field_bot + 34
-    for cls, line in L_LINES:
-        o.append(f'<text class="{cls}" x="{LX}" y="{y}">{line}</text>')
-        y += 19
-    y2 = field_bot + 34
-    for cls, line in R_LINES:
-        o.append(f'<text class="{cls}" x="{RX}" y="{y2}">{line}</text>')
-        y2 += 19
-
-    base = max(y, y2) + 16
-    o.append(f'<line x1="{PAD}" y1="{base:g}" x2="{W-PAD}" y2="{base:g}" '
+    base = field_bot + 34 + 18 * max(len(p["lines"]) for p in PANELS) + 4
+    o.append(f'<line x1="{PAD}" y1="{base:g}" x2="{W - PAD}" y2="{base:g}" '
              f'stroke="#1b212c" stroke-width="1"/>')
-    o.append(f'<text x="{W/2:g}" y="{base+30:g}" text-anchor="middle" font-size="14.5" '
-             f'font-weight="600" fill="#e6e9ef">{FOOT}</text>')
+    o.append(f'<text x="{W / 2:g}" y="{base + 30:g}" text-anchor="middle" '
+             f'font-size="14.5" font-weight="600" fill="#e6e9ef">{FOOT3}</text>')
 
     height = int(base + 54)
-    desc = ("Two fields of five hundred dots each, one dot per AI agent. On the left, "
-            "without a shared gate, every dot is lit separately: each agent is taught "
-            "the same lesson on its own, five hundred lessons bought for one lesson "
-            "learned, with no record of who decided what. On the right, with "
-            "doublegate, a single bright agent writes the lesson, a reviewer that did "
-            "not write it grades and signs it, and every remaining agent inherits it "
-            "already approved with the signature travelling with it: one lesson, "
-            "signed. The same five hundred agents and the same correction in both "
-            "halves; the difference is whether the company keeps it.")
+    desc = ("Three fields of five hundred dots each, one dot per AI agent, showing the "
+            "same population in three states. Siloed, as things are today: every dot "
+            "is lit separately, five hundred agents taught the same lesson one at a "
+            "time, and no record of who decided what. Pooled, as memory tools do it: "
+            "one agent is taught and the other four hundred and ninety-nine inherit "
+            "it, but scattered red dots show that the wrong memory travels with the "
+            "right one, because across fourteen surveyed providers a write is readable "
+            "immediately and confidence scores change ranking rather than visibility. "
+            "Gated, with doublegate: the same one-taught, four-hundred-and-ninety-nine-"
+            "inherit spread, with one bright agent marked as the one that writes it, a "
+            "reviewer that did not write it grading and signing it, and nothing "
+            "unsigned readable by anyone, so no red dots remain. Same five hundred "
+            "agents and the same correction throughout; pooling moves it faster, and "
+            "the gate decides whether what moves is worth having.")
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {height}" width="{W}" height="{height}"
      role="img" aria-labelledby="t d" font-family="{FONT}">
-<title id="t">Five hundred agents taught separately, against one signed lesson inherited by all</title>
+<title id="t">Five hundred agents siloed, pooled, and gated</title>
 <desc id="d">{desc}</desc>
 <defs>
   <style><![CDATA[
@@ -291,22 +382,35 @@ def build(Wd):
 
 
 def main():
-    Wd = measure([("big", L_BIG), ("big", R_BIG), ("hd", L_HEAD), ("hd", R_HEAD),
-                  ("tiny", L_BIGSUB), ("tiny", R_BIGSUB),
-                  *L_LINES, *R_LINES, ("nm", FOOT),
-                  ("zn", ZONE_L), ("zn", ZONE_R), ("tiny", "one agent writes it")])
+    pairs = [("nm", FOOT3), ("nm", "this one writes it")]
+    for p in PANELS:
+        pairs += [("big", p["big"]), ("tiny", p["unit"]), ("zn", p["zone"]),
+                  ("hd", p["head"]), ("hd", p["head2"]), *p["lines"]]
+    Wd = measure(pairs)
 
-    # every prose line must fit its own column, or the two halves collide
-    overflow = [(t, Wd[t]) for _, t in L_LINES + R_LINES if Wd[t] > COLW]
-    if overflow:
-        for t, w in overflow:
-            print(f"  OVERFLOW {w:.0f}px > column {COLW:.0f}px: {t}")
-        raise SystemExit("prose does not fit its column -- shorten it, do not widen the canvas")
+    # Every label must fit the panel that holds it, numerals and units included --
+    # a numeral plus its unit sit side by side, so their combined width is what has
+    # to clear the column, not either one alone.
+    bad = []
+    for p in PANELS:
+        for _, t in p["lines"]:
+            if Wd[t] > COLW:
+                bad.append((p["key"], t, Wd[t]))
+        for t in (p["head"], p["head2"], p["zone"]):
+            if Wd[t] > COLW:
+                bad.append((p["key"], t, Wd[t]))
+        pair_w = Wd[p["big"]] + 9 + Wd[p["unit"]]
+        if pair_w > COLW:
+            bad.append((p["key"], f'{p["big"]} + {p["unit"]}', pair_w))
+    if bad:
+        for k, t, w in bad:
+            print(f"  OVERFLOW [{k}] {w:.0f}px > column {COLW:.0f}px: {t}")
+        raise SystemExit("copy does not fit its panel -- shorten it, do not widen the canvas")
 
     svg = build(Wd)
     OUT.write_text(svg)
-    print(f"wrote {OUT.relative_to(ROOT)}  ({len(svg)} bytes, {TOTAL} agents per side, "
-          f"column {COLW:.0f}px)")
+    print(f"wrote {OUT.relative_to(ROOT)}  ({len(svg)} bytes, {NPANEL} panels x {TOTAL} "
+          f"agents, column {COLW:.0f}px)")
 
 
 if __name__ == "__main__":

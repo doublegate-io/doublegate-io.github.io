@@ -67,7 +67,7 @@ flowchart LR
 | `assets/logo-dark.svg` | brand mark, forced dark — nav (site is always dark) |
 | `assets/wordmark.svg` | mark + name + tagline, for README embedding |
 | `assets/social-card.svg` | 1200×630 link-preview card (`og:image`) |
-| `assets/hero-field.svg` | five hundred agent dots, taught separately against inherited once, front page |
+| `assets/hero-field.svg` | five hundred agent dots in three states — siloed, pooled, gated — front page |
 | `assets/artifact-flow.svg` | tall walkthrough diagram, how-it-works |
 | `assets/scope-flow.svg` | the four scopes and where each trust boundary sits, commons |
 | `assets/cost-flow.svg` | one correction with and without a gate, for-organizations |
@@ -170,6 +170,34 @@ GROUP`) was green, which made four different things green — two signature stag
 two audience stages. Those boxes answer *who can read it*, so they now take cyan, which
 already means "readable / distributed" in the same vocabulary. Green is left to `SIGNED`
 and `VALIDATED`.
+
+**A two-panel figure argued for pooling, which needs no product.** The field figure
+started as silo-versus-share, and share is what every memory provider already sells --
+a reader who knows the category saw "one writes, 499 inherit" and thought "so, mem0".
+The site's own copy has the missing panel in it: *"one wrong memory would reach
+everyone, and nobody could say who vouched for it"*, and *"across fourteen providers a
+write is retrievable immediately; scores change ranking, never visibility."* So the
+figure is three panels now -- **siloed, pooled, gated** -- and the middle one is the
+naive fix visibly failing, with the wrong memory travelling at exactly the speed of the
+right one. Panel 3 is that same speed with the mistake stopped. The argument stops being
+"pool your knowledge" and becomes the site's actual one: the risk of pooling is what the
+gate removes, and removing it is what makes the knowledge worth collecting.
+
+Contagion is the one thing a dot field carries for free, and it needs no connectors --
+just colour. Which produced the trap: panel 1 was red for "taught alone" while panel 2
+was red for "carrying a mistake", one colour with two meanings sitting side by side.
+That is the same defect class as the 500-meaning-two-units bug from the round before,
+reintroduced one panel over. Panel 1 is slate now; nothing is *wrong* there, its cost is
+waste. Red appears exactly once, so its absence in panel 3 reads as "the red is gone".
+Row pitch went 7.4 to 8.6 for the narrower column, because at 25 rows the dots merged
+into vertical stripes and the field read as 20 bars rather than 500 individuals -- and
+the individual is the unit the whole argument is counted in.
+
+Two review notes I declined, recorded because declining them was the judgement: making
+panel 3's single author dot louder (the numeral beside it says 1, and 499 teal dots
+*are* the inheritance -- a louder dot would have the picture contradict its own count),
+and rewording the footer's "whether what moves is worth having", which is the thesis and
+the only line not restating a panel.
 
 **Two figures were drawing the same idea, and the smaller one was the front door.**
 The index headline argues a population: "Your company is paying to teach five hundred
