@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — PAPER · copper rear, granat front.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #0A1F44; }
+    .tag { font-size: 20px; fill: #55606f; }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <rect x="3" y="3" width="18" height="18" fill="none" stroke="#B45F06" stroke-width="2.5"/>
+    <rect x="11" y="11" width="18" height="18" fill="none" stroke="#0A1F44" stroke-width="2.5"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>

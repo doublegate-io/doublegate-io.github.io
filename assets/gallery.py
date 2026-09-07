@@ -32,6 +32,20 @@ SANS = "ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif"
 
 # Ordered newest-first: the current recommendation should be the first thing seen.
 GROUPS = [
+    ("Round 10 — GRANAT (navy) + blue: ink-square recoloured, one file works on both grounds",
+     "gate-v2/round10", [
+        ("themed", "RECOMMENDED — ONE FILE: granat+blue on paper, blue+ink on dark. 24 scanlines, ink 0.336"),
+        ("ink-navy-blue", "PAPER · granat #0A1F44 rear, blue #3b82f6 front — 4.42:1 ink-vs-ink"),
+        ("ink-blue-navy", "PAPER · blue rear, granat front"),
+        ("ink-navy-copper", "PAPER · granat + COPPER #B45F06 — two hues, reads 'a window'"),
+        ("ink-copper-navy", "PAPER · copper rear, granat front"),
+        ("dark-blue-ink", "DARK · the role swap — blue rear, ink front"),
+        ("dark-ink-blue", "DARK · ink rear, blue front"),
+        ("dark-blue-copper", "DARK · blue + copper, both clear 3:1 on black"),
+        ("ink-navy-only", "PAPER · granat alone, control — MARGINAL, reads 'THREE squares'"),
+        ("ink-two-navy", "PAPER · two navies 1.14:1 INK-VS-INK — merges, reads 'THREE squares'"),
+        ("dark-navy-proof", "DARK · granat on black 1.23:1 — reads 'A SIMPLE OUTLINED SQUARE', it vanished"),
+    ]),
     ("Round 9 — baseline in GARNET and BLACK (garnet is a paper colour: fails 3:1 on black)",
      "gate-v2/round9", [
         ("ink-square", "BEST MEASURED OF ALL 81 — 24 scanlines at ink 0.336, square corners"),

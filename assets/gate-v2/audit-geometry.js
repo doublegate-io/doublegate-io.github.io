@@ -141,6 +141,41 @@ function audit(file) {
                   'near-white ink is invisible on a light browser tab');
   }
 
+  // ---- ink-vs-ink separation
+  //
+  // Contrast against the GROUND is not sufficient for a mark whose elements touch.
+  // Round 10 drew two navies, #0A1F44 and #12275C, which measure 16.25:1 and
+  // 14.28:1 on white — both excellent — and 1.14:1 against EACH OTHER. Where the
+  // two squares crossed they merged into a single shape, and no ground-contrast
+  // check could see it.
+  //
+  // 3:1 is the WCAG 1.4.11 figure for a graphical object against what adjoins it.
+  // Applied only to literal stroke colours: themed classes are resolved per ground
+  // and knockout gaps deliberately match the background.
+  const strokeCols = [...new Set(
+    [...svg.matchAll(/stroke="(#[0-9a-fA-F]{6})"/g)].map(m => m[1].toLowerCase())
+  )].filter(c => !['#08090c', '#0c0e13', '#ffffff', '#10131a'].includes(c));
+  if (strokeCols.length >= 2) {
+    const lin = c => { c /= 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; };
+    const lum = h => 0.2126 * lin(parseInt(h.slice(1, 3), 16)) +
+                     0.7152 * lin(parseInt(h.slice(3, 5), 16)) +
+                     0.0722 * lin(parseInt(h.slice(5, 7), 16));
+    const ratio = (a, b) => {
+      const la = lum(a), lb = lum(b);
+      return (Math.max(la, lb) + 0.05) / (Math.min(la, lb) + 0.05);
+    };
+    for (let i = 0; i < strokeCols.length; i++) {
+      for (let j = i + 1; j < strokeCols.length; j++) {
+        const r = ratio(strokeCols[i], strokeCols[j]);
+        if (r < 3) {
+          findings.push(`${strokeCols[i]} vs ${strokeCols[j]} is only ${r.toFixed(2)}:1 ` +
+                        `ink-vs-ink — the strokes touch at the crossing and will merge; ` +
+                        `3:1 (WCAG 1.4.11) is the figure against what adjoins them`);
+        }
+      }
+    }
+  }
+
   return findings;
 }
 
