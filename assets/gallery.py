@@ -32,6 +32,32 @@ SANS = "ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif"
 
 # Ordered newest-first: the current recommendation should be the first thing seen.
 GROUPS = [
+    ("Round 12 — the PORTRAIT mark: deeper overlap, visible on both grounds (THE PICK)",
+     "gate-v2/round12", [
+        ("themed-v-6", "RECOMMENDED — ONE FILE · offset 6 · granat+blue600 paper / blue600+ink dark · 'a document'"),
+        ("v-6", "PAPER · offset 6 — the pick. 19 scanlines, reads 'a document', phones gone"),
+        ("v-7", "PAPER · offset 7 — 20 scanlines, reads 'stacked DOCUMENTS OR WINDOWS', phones gone"),
+        ("v-8", "PAPER · offset 8 — round 11's portrait — reads 'PHONES OR TABLETS', kept as the boundary"),
+        ("v-5", "PAPER · offset 5 — 19 scanlines, 'layered documents', deeper still"),
+        ("v-4", "PAPER · offset 4 — reads 'A PILL OR CAPSULE' — one shape, fusion boundary"),
+        ("v-6-rx4", "PAPER · offset 6, rx4 — softer corners, same 19 scanlines"),
+        ("dark-v-6", "DARK · blue 600 rear + ink front — the constant + partner, 3.85:1 and 4.25:1"),
+    ]),
+    ("Round 11 — two navies, ROUNDED corners, STRETCHED to rectangles",
+     "gate-v2/round11", [
+        ("themed-3x2", "RECOMMENDED — 3:2, rx2, one file. 21 scanlines · reads 'INTERLOCK' with no gap"),
+        ("r-3x2", "PAPER · 3:2 rx2 granat #0A1F44 + blue600 #2563eb — 'interlock, window-like'"),
+        ("r-3x2-rx4", "PAPER · 3:2 with rx4 — softer, ink 0.414 vs 0.453"),
+        ("r-4x3", "PAPER · 4:3 — BEST scanlines (22) but heaviest ink (0.484)"),
+        ("r-16x9", "PAPER · 16:9 — 20 scanlines, the stretch starts costing"),
+        ("r-2x1", "PAPER · 2:1 — 18 scanlines, dropping"),
+        ("r-5x2", "PAPER · 5:2 hard letterbox — 16 scanlines, worst of the round"),
+        ("r-3x2-vert", "PAPER · PORTRAIT — reads 'STACKED PHONES OR TABLETS', device affordance"),
+        ("r-3x2-shift", "PAPER · offset mostly sideways — 19 scanlines"),
+        ("dark-3x2", "DARK · blue 500 rear, ink front — the role swap"),
+        ("dark-3x2-navy2", "DARK · blue 600 both grounds at 3.85:1"),
+        ("r-3x2-failed-pair", "PAPER · the ORIGINAL two-navy 1.14:1 pair — audit flags it, shown as proof"),
+    ]),
     ("Round 10 — GRANAT (navy) + blue: ink-square recoloured, one file works on both grounds",
      "gate-v2/round10", [
         ("themed", "RECOMMENDED — ONE FILE: granat+blue on paper, blue+ink on dark. 24 scanlines, ink 0.336"),

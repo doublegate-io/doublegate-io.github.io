@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — THEMED · one file: granat+blue600 on paper, blue600+ink on dark.</desc>
+  <style>
+    .rear { stroke: #2563eb; }
+    .front { stroke: #e6e9ef; }
+    @media (prefers-color-scheme: light) {
+      .rear { stroke: #0A1F44; }
+      .front { stroke: #2563eb; }
+    }
+  </style>
+  <rect x="6" y="3" width="13" height="20" rx="2" fill="none" class="rear" stroke-width="2.5"/>
+  <rect x="12" y="9" width="13" height="20" rx="2" fill="none" class="front" stroke-width="2.5"/>
+</svg>
