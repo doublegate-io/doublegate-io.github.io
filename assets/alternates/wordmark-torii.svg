@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>Two torii gates in perspective: admission, then ratification. Nothing is remembered until it has passed through both.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag  { font-size: 20px; fill: #97a1b2; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag  { fill: #55606f; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M 12.9 11.4 Q 21.5 9.1 30.1 11.4" stroke="#34d399" stroke-width="2.30" stroke-linecap="round" fill="none"/><path d="M 17.0 14.0 H 26.0" stroke="#34d399" stroke-width="1.79" stroke-linecap="round" fill="none"/><path d="M 15.7 10.5 V 25.0" stroke="#34d399" stroke-width="2.30" stroke-linecap="round" fill="none"/><path d="M 27.3 10.5 V 25.0" stroke="#34d399" stroke-width="2.30" stroke-linecap="round" fill="none"/>
+    <path d="M -0.5 7.2 Q 11.0 4.2 22.5 7.2" stroke="#fb7185" stroke-width="3.05" stroke-linecap="round" fill="none"/><path d="M 5.0 11.4 H 17.0" stroke="#fb7185" stroke-width="2.38" stroke-linecap="round" fill="none"/><path d="M 3.3 6.0 V 28.5" stroke="#fb7185" stroke-width="3.05" stroke-linecap="round" fill="none"/><path d="M 18.7 6.0 V 28.5" stroke="#fb7185" stroke-width="3.05" stroke-linecap="round" fill="none"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
