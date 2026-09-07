@@ -23,6 +23,7 @@ node    svg-geometry.js    # SVG text nodes must not collide      (needs a brows
 node    svg-bounds.js      # ...nor run outside their viewBox     (needs a browser)
 node    svg-scale.js       # ...nor scale under 10px in the page  (needs a browser)
 node    svg-routes.js      # no connector may run through a box   (pure geometry)
+node    svg-fit.js         # ...and every label fits its own box   (needs a browser)
 ```
 
 `*.html` at the root is **generated**. Edit `pages/*.html` and rebuild — a change made
@@ -33,7 +34,7 @@ flowchart LR
   P["pages/*.html<br/><i>bodies only</i>"] --> B["build.py<br/><i>shared shell</i>"]
   B --> O["*.html<br/><i>generated</i>"]
   O --> C["check.py<br/><i>15 checks</i>"]
-  O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/>svg-routes.js<br/><i>measured, not eyeballed</i>"]
+  O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/>svg-routes.js<br/>svg-fit.js<br/><i>measured, not eyeballed</i>"]
   C --> D["GitHub Pages<br/><i>domain root</i>"]
 
   style P fill:#10131a,stroke:#8d97a9,color:#e6e9ef
@@ -56,6 +57,7 @@ flowchart LR
 | `svg-bounds.js` | text must not extend past the viewBox — the overlap check cannot see this |
 | `svg-scale.js` | the smallest label in every embedded figure must render ≥10px at 1280/900/390px |
 | `svg-routes.js` | no visible connector may be routed through a box interior — pure path/rect geometry, no browser |
+| `svg-fit.js` | every label must fit inside the box that contains it, with 8px clear on each side |
 | `check.py` 7b | a button label names its destination — it may not argue for the click, price it, or tell the reader they are wrong |
 | `assets/style.css` | one stylesheet for all eight pages |
 | `assets/logo.svg` | brand mark, themed — favicon (follows the tab strip) |
@@ -165,6 +167,35 @@ GROUP`) was green, which made four different things green — two signature stag
 two audience stages. Those boxes answer *who can read it*, so they now take cyan, which
 already means "readable / distributed" in the same vocabulary. Green is left to `SIGNED`
 and `VALIDATED`.
+
+**A label must fit the box that holds it, and only measurement knows.** The hero
+figure looked cheap and the reason was mechanical, not aesthetic: eleven labels were
+wider than the boxes drawn around them. "READABLE COMPANY-WIDE" was 198px of text in a
+180px box, so it bled 9px past the border on both sides; every one of the six stages
+overflowed somewhere. Box widths had been picked by hand (104, 128, 128, 152, 140, 180)
+and the copy was written afterwards, so nothing ever reconciled the two.
+
+The four existing SVG checks all passed it, because none of them asks this question.
+`svg-geometry.js` compares text to other text, `svg-bounds.js` compares text to the
+viewBox, `svg-scale.js` compares rendered size to a legibility floor, `svg-routes.js`
+compares paths to rects. An overflowing label is on-canvas, legible, and not touching
+another label, so the suite reported the file clean while it looked like a draft.
+
+The row is now generated from measured text: each box is its widest label plus 13px
+padding a side, the 24px leftover is distributed evenly so the row spans exactly
+24…1056, and the copy was cut where the measurement demanded it ("your agent cannot
+read it" → "no read path to it", "THE SECOND GATE" → "SECOND GATE", "READABLE
+COMPANY-WIDE" split across two lines). `svg-fit.js` is the gate — 169 labels across 9
+assets, every one fitting with 8px clear. It caught two more the moment it existed: the
+author callout was hand-sized at 200px around 254px of text.
+
+One warning for later, learned twice in one sitting. Vision review found the overflow
+but then invented two defects that were not there — it reported the callout as
+off-centre (it is centred to 0.5px) and the two dashed lanes as crossing (closest
+approach, by `getPointAtLength` sampling at 800 points each: **140.72px**). A
+hue-based pixel detector I wrote to settle it also returned false positives, because it
+cannot tell a dashed connector from a box border. Measure with the geometry, not with
+an eye and not with a quick detector.
 
 **A button label is a signpost, not an argument.** The primary CTA on the landing
 page read *"Why this costs you money"*. It scolds the reader in the second person and

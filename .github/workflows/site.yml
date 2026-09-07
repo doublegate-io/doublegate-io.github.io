@@ -76,3 +76,10 @@ jobs:
       # neither of the above can see: both measure the SVG at its natural size.
       - name: svg label scale in the page
         run: node svg-scale.js
+
+      # ...and must fit the box that contains it. The three checks above compare
+      # text to other text, to the viewBox, and to a minimum size — never to its
+      # own container, so hero-flow.svg shipped with eleven labels wider than
+      # their boxes and the whole suite called it clean.
+      - name: svg labels fit their boxes
+        run: node svg-fit.js
