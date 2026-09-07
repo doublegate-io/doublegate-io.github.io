@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — control — a d/g monogram on a shared stem.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M15 4 v24" stroke="#34d399" stroke-width="3" stroke-linecap="round"/>
+  <path d="M15 10 h-6 a5 5 0 0 0 0 12 h6 M15 22 h6 a5 5 0 0 1 0 6 h-4" fill="none" class="ink-s" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/>
+</svg>

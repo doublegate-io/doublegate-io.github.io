@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — one wedge with a slot cut through it.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M16 3 l13 26 h-26 z M9 20 h14 l-2 -4 h-10 z" class="ink" fill-rule="evenodd"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
