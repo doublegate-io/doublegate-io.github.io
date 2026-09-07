@@ -32,6 +32,19 @@ SANS = "ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif"
 
 # Ordered newest-first: the current recommendation should be the first thing seen.
 GROUPS = [
+    ("Round 9 — baseline in GARNET and BLACK (garnet is a paper colour: fails 3:1 on black)",
+     "gate-v2/round9", [
+        ("ink-square", "BEST MEASURED OF ALL 81 — 24 scanlines at ink 0.336, square corners"),
+        ("ink-garnet-front", "PAPER · black rear, garnet #7B1E3C front — two inks state the order"),
+        ("ink-garnet-rear", "PAPER · garnet rear, black front"),
+        ("ink-deep", "PAPER · two garnets, one hue two values — #5C0A18 + #7B1E3C"),
+        ("ink-occluded", "PAPER · garnet front OPAQUE — crossing gone, but 15 scanlines / ink 0.566"),
+        ("ink-occluded-rev", "PAPER · black front opaque over garnet"),
+        ("ink-mono-black", "PAPER · black only, the control — MARGINAL, so garnet earns its place"),
+        ("dark-garnet-front", "DARK · #C2334D, garnet pushed until it clears 3:1 — now a crimson"),
+        ("dark-garnet-rear", "DARK · #C2334D rear, ink front"),
+        ("dark-true-garnet", "DARK · TRUE garnet on black at 1.98:1 — FAILS WCAG, shown as proof"),
+    ]),
     ("Round 8 — offset developed: overlap resolved, colour measured (best candidate)",
      "gate-v2/round8", [
         ("fix-themed", "RECOMMENDED — knockout + accent themed #34d399 dark / #059669 light"),
