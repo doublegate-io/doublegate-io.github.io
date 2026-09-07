@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two shutters from opposite edges, offset along the path.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M2 8 h8 v16" fill="none" stroke="#64748b" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M30 24 h-8 v-16" fill="none" stroke="#34d399" stroke-width="3.2" stroke-linejoin="round" stroke-linecap="round"/>
+  <rect x="13.5" y="13.5" width="5" height="5" rx="1.2" fill="#fbbf24"/>
+</svg>

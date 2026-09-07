@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two steps of a stair, artifact standing on the first.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M2.5 26 h13" stroke="#64748b" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M15.5 26 v-9" stroke="#64748b" stroke-width="3.4" stroke-linecap="round"/>
+  <path d="M15.5 16 h14" stroke="#34d399" stroke-width="3.4" stroke-linecap="round"/>
+  <rect x="5" y="18.5" width="5.5" height="5.5" rx="1.3" fill="#fbbf24"/>
+</svg>
