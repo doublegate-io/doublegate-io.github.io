@@ -112,6 +112,21 @@ for page in pages:
     if name != "index.html" and 'class="btn' not in markup:
         fail(f"{name}: no call to action")
 
+    # 7b. a button label names the destination; it does not argue for clicking.
+    #     The landing page shipped "Why this costs you money" as its primary CTA —
+    #     it scolds the reader and promises a cost as the reward for the click. Two
+    #     other pages pointed at the same destination under two more editorial
+    #     labels ("Why it is worth running", "What this means for your company"),
+    #     so the same page had three names and none of them was its name.
+    #     A label may say what a thing is. It may not say whether it is worth it,
+    #     what it costs the reader, or why they are wrong.
+    for label in re.findall(r'<a class="btn[^"]*"[^>]*>([^<]+)</a>', markup):
+        flat = re.sub(r"\s+", " ", label).strip()
+        if re.match(r"(?i)^(why|what this means|whether)\b", flat):
+            fail(f"{name}: CTA argues instead of naming a destination -> {flat!r}")
+        if re.search(r"(?i)\bcosts? you\b|\bworth (?:it|running)\b", flat):
+            fail(f"{name}: CTA editorializes -> {flat!r}")
+
     # 8. images need real alt text — the diagram carries the whole argument.
     #    Exception: an image that merely repeats adjacent text (the brand mark
     #    beside the word "doublegate") is decorative, and the correct answer is

@@ -56,6 +56,7 @@ flowchart LR
 | `svg-bounds.js` | text must not extend past the viewBox — the overlap check cannot see this |
 | `svg-scale.js` | the smallest label in every embedded figure must render ≥10px at 1280/900/390px |
 | `svg-routes.js` | no visible connector may be routed through a box interior — pure path/rect geometry, no browser |
+| `check.py` 7b | a button label names its destination — it may not argue for the click, price it, or tell the reader they are wrong |
 | `assets/style.css` | one stylesheet for all eight pages |
 | `assets/logo.svg` | brand mark, themed — favicon (follows the tab strip) |
 | `assets/logo-dark.svg` | brand mark, forced dark — nav (site is always dark) |
@@ -164,6 +165,21 @@ GROUP`) was green, which made four different things green — two signature stag
 two audience stages. Those boxes answer *who can read it*, so they now take cyan, which
 already means "readable / distributed" in the same vocabulary. Green is left to `SIGNED`
 and `VALIDATED`.
+
+**A button label is a signpost, not an argument.** The primary CTA on the landing
+page read *"Why this costs you money"*. It scolds the reader in the second person and
+offers a cost as the reward for clicking — and it sat directly under a headline that
+already opens with what the reader is losing, so the first two things a visitor saw
+were both accusations. Worse, it was one of three different editorial labels pointing
+at the *same* page: `how-it-works` called it "Why it is worth running", `evidence`
+called it "What this means for your company". One destination, three names, none of
+them the page's name. All three now read "The business case", which is what
+`governance` and `pricing` already called it. Two headings went the same way ("What it
+costs you" → "What it costs"; "So why doesn't everyone pool it already?" → "Why nobody
+pools it today"), and the evidence route card dropped *"If you think this is hype"* —
+putting an objection in the reader's mouth and then arguing with it. `check.py` 7b
+holds the line: a label may say what a thing is, not whether it is worth it, what it
+costs the reader, or why they are wrong.
 
 **A connector must route around a box, and only geometry can prove it does.**
 Separating those three crowded attachments moved the author fast lane from x=640 to
