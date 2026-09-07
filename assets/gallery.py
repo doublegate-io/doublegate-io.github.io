@@ -32,6 +32,16 @@ SANS = "ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif"
 
 # Ordered newest-first: the current recommendation should be the first thing seen.
 GROUPS = [
+    ("Round 6 — keystone and channel developed with detail (requested)",
+     "gate-v2/round6", [
+        ("channel-ajar-both", "BOTH LEAVES AJAR — 17 scanlines at ink 0.352, breaks the H · reads 'a folded ribbon / lightning bolt'"),
+        ("channel-ajar", "one leaf swung open — the H-breaker · reads 'a folded ribbon, a bookmark'"),
+        ("keystone-marked", "BEST 1-ELEMENT — mason's mark struck in · 0 to 8 scanlines vs parent"),
+        ("keystone-joints", "voussoir joints cut through · reads 'a funnel with depth'"),
+        ("channel-jambs", "stepped jambs but still symmetric — reads as 'E', proves symmetry makes the letter"),
+        ("channel-threshold", "3 elements, floor + artifact — heaviest in round, back to 'H'"),
+        ("keystone-seated", "3 elements, flanking stones — FUSED, reads as 'a bell or flask'"),
+    ]),
     ("Round 5 — untried stances: borrowed symbols, negative space, impressions",
      "gate-v2/round5", [
         ("caret", "STRONGEST MEASURED — proofreader's insert mark · reads 'an arrow or a mountain peak', NOT a tick"),

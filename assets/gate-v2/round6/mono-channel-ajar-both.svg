@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves ajar by different amounts — order by asymmetry. Monochrome.</desc>
+  <path d="M3 3 v26 l9 -6 l-4 -7 l4 -7 z" fill="currentColor"/>
+  <path d="M29 3 v26 l-6 -3 l3 -10 l-3 -10 z" fill="currentColor"/>
+</svg>
