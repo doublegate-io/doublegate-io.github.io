@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 534" width="1000" height="534"
+     role="img" aria-labelledby="t d" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif">
+<title id="t">Where an arriving claim goes, and the loop that runs when it matches one already held</title>
+<desc id="d">A claim arriving at the gate, and the loop that runs when it matches something already held. On the left, memory limbo: the claim is held here while it is judged, and no consumer read path reaches this store. It passes through five stages in order — ADMIT, which records the envelope, trust class and any derives_from edges; SCAN, for injection, keys and scripts; GRADE, by an identity that did not write it; RATIFY, a k-of-n count in which no verdict from the writer is counted; and RECORD, a signed event in the ledger. Only then does a single arrow cross into active memory, the only store a query can open, and one component is its only writer. Below the pipe, one dashed arrow shows what happens when the arriving claim matches one already held: consolidation proposes a new claim carrying edges to every parent, and that candidate takes a second full trip through the same gate, graded by an identity that did not propose it. Nothing is edited in place. Four endings are possible: PROMOTED, a new claim readable once signed; MERGE ACCEPTED, with the parents superseded and kept, never deleted; MERGE REFUSED, where both parents stay live and the store stays contradictory on purpose; and REFUSED, which stays in the ledger with its reasons and is readable by nobody. The figure shows mechanism only — what connects to what and who may not act — and claims no rates, volumes or timings.</desc>
+<defs>
+  <style><![CDATA[
+    .eyebrow { font-size:11.5px; font-weight:700; letter-spacing:.09em; fill:#8d97a9; }
+    .stage   { font-size:12.5px; font-weight:700; letter-spacing:.05em; fill:#e6e9ef; }
+    .sub     { font-size:11px; fill:#7c8698; }
+    .store   { font-size:12.5px; font-weight:700; letter-spacing:.05em; }
+    .storesub{ font-size:11px; fill:#7c8698; }
+    .lane    { font-size:11.5px; font-weight:700; letter-spacing:.04em; }
+    .lanesub { font-size:11.5px; fill:#8d97a9; }
+    .out     { font-size:11.5px; font-weight:600; }
+    .outsub  { font-size:11px; fill:#7c8698; }
+    .foot    { font-size:13px; font-weight:600; fill:#e6e9ef; }
+    .cav     { font-size:11px; fill:#6b7484; }
+    .no      { font-size:11px; font-weight:600; fill:#fb7185; }
+
+    /* The only motion is two dots tracing the two journeys. A reader who asks
+       the OS for less motion gets the same figure standing still -- the paths,
+       the marks and every label are static. */
+    @media (prefers-reduced-motion: reduce) { .mover { display:none; } }
+  ]]></style>
+  <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0" stop-color="#1e2430" stop-opacity="0"/>
+    <stop offset=".07" stop-color="#232b39"/>
+    <stop offset=".93" stop-color="#232b39"/>
+    <stop offset="1" stop-color="#1e2430" stop-opacity="0"/>
+  </linearGradient>
+  <marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5"
+          markerHeight="5.5" orient="auto-start-reverse">
+    <path d="M 0 1 L 9 5 L 0 9 z" fill="#8d97a9"/>
+  </marker>
+  <marker id="ar1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5"
+          markerHeight="5.5" orient="auto-start-reverse">
+    <path d="M 0 1 L 9 5 L 0 9 z" fill="#fb7185"/>
+  </marker>
+  <marker id="ar2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5"
+          markerHeight="5.5" orient="auto-start-reverse">
+    <path d="M 0 1 L 9 5 L 0 9 z" fill="#22d3ee"/>
+  </marker>
+  <marker id="ar3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5"
+          markerHeight="5.5" orient="auto-start-reverse">
+    <path d="M 0 1 L 9 5 L 0 9 z" fill="#60a5fa"/>
+  </marker>
+  <marker id="ar4" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5"
+          markerHeight="5.5" orient="auto-start-reverse">
+    <path d="M 0 1 L 9 5 L 0 9 z" fill="#34d399"/>
+  </marker>
+  <marker id="arc" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5"
+          markerHeight="5.5" orient="auto-start-reverse">
+    <path d="M 0 1 L 9 5 L 0 9 z" fill="#22d3ee"/>
+  </marker>
+  <marker id="arv" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5.5"
+          markerHeight="5.5" orient="auto-start-reverse">
+    <path d="M 0 1 L 9 5 L 0 9 z" fill="#a78bfa"/>
+  </marker>
+</defs>
+<rect width="1000" height="534" fill="#08090c"/>
+<text class="eyebrow" x="24" y="34">ONE CLAIM ARRIVES — WHERE IT GOES, AND WHAT HAPPENS IF SOMETHING LIKE IT IS ALREADY THERE</text>
+<path d="M 24 48 L 976 48" stroke="url(#rule)" fill="none"/>
+<rect x="24" y="144" width="140" height="92" rx="7" fill="#0d1017" stroke="#232b39" stroke-width="1.5"/>
+<text class="store" x="38" y="170" fill="#fbbf24">memory limbo</text>
+<text class="storesub" x="38" y="188">held here while</text>
+<text class="storesub" x="38" y="202">it is judged</text>
+<text class="no" x="38" y="220">no read path</text>
+<text class="no" x="38" y="232">reaches this</text>
+<rect x="814" y="144" width="162" height="92" rx="7" fill="#0d1017" stroke="#232b39" stroke-width="1.5"/>
+<text class="store" x="828" y="170" fill="#34d399">active memory</text>
+<text class="storesub" x="828" y="189">the only store</text>
+<text class="storesub" x="828" y="204">a query can open</text>
+<text class="storesub" x="828" y="224">one writer, ever</text>
+<rect x="184" y="161" width="112" height="58" rx="6" fill="#10141d" stroke="#fbbf24" stroke-width="1.5" stroke-opacity=".5"/>
+<path d="M 185.5 167 L 185.5 213" stroke="#fbbf24" stroke-width="3" stroke-linecap="round" fill="none"/>
+<text class="stage" x="195" y="177" fill="#fbbf24">ADMIT</text>
+<text class="sub" x="195" y="192">class, and edges</text>
+<text class="sub" x="195" y="205">to any parent</text>
+<rect x="305" y="161" width="112" height="58" rx="6" fill="#10141d" stroke="#fb7185" stroke-width="1.5" stroke-opacity=".5"/>
+<path d="M 306.5 167 L 306.5 213" stroke="#fb7185" stroke-width="3" stroke-linecap="round" fill="none"/>
+<text class="stage" x="316" y="177" fill="#fb7185">SCAN</text>
+<text class="sub" x="316" y="192">injection, keys,</text>
+<text class="sub" x="316" y="205">scripts</text>
+<path d="M 298 190 L 301 190" stroke="#fb7185" stroke-width="1.5" stroke-opacity=".7" fill="none" marker-end="url(#ar1)"/>
+<rect x="426" y="161" width="112" height="58" rx="6" fill="#10141d" stroke="#22d3ee" stroke-width="1.5" stroke-opacity=".5"/>
+<path d="M 427.5 167 L 427.5 213" stroke="#22d3ee" stroke-width="3" stroke-linecap="round" fill="none"/>
+<text class="stage" x="437" y="177" fill="#22d3ee">GRADE</text>
+<text class="sub" x="437" y="192">never by</text>
+<text class="sub" x="437" y="205">the writer</text>
+<path d="M 419 190 L 422 190" stroke="#22d3ee" stroke-width="1.5" stroke-opacity=".7" fill="none" marker-end="url(#ar2)"/>
+<rect x="547" y="161" width="112" height="58" rx="6" fill="#10141d" stroke="#60a5fa" stroke-width="1.5" stroke-opacity=".5"/>
+<path d="M 548.5 167 L 548.5 213" stroke="#60a5fa" stroke-width="3" stroke-linecap="round" fill="none"/>
+<text class="stage" x="558" y="177" fill="#60a5fa">RATIFY</text>
+<text class="sub" x="558" y="192">writer votes</text>
+<text class="sub" x="558" y="205">are discarded</text>
+<path d="M 540 190 L 543 190" stroke="#60a5fa" stroke-width="1.5" stroke-opacity=".7" fill="none" marker-end="url(#ar3)"/>
+<rect x="668" y="161" width="112" height="58" rx="6" fill="#10141d" stroke="#34d399" stroke-width="1.5" stroke-opacity=".5"/>
+<path d="M 669.5 167 L 669.5 213" stroke="#34d399" stroke-width="3" stroke-linecap="round" fill="none"/>
+<text class="stage" x="679" y="177" fill="#34d399">RECORD</text>
+<text class="sub" x="679" y="192">a signed event</text>
+<text class="sub" x="679" y="205">in the ledger</text>
+<path d="M 661 190 L 664 190" stroke="#34d399" stroke-width="1.5" stroke-opacity=".7" fill="none" marker-end="url(#ar4)"/>
+<path d="M 167 190 L 180 190" stroke="#8d97a9" stroke-width="1.4" fill="none" marker-end="url(#ar)"/>
+<path d="M 783 190 L 810 190" stroke="#34d399" stroke-width="1.8" fill="none" marker-end="url(#ar)"/>
+<text class="lane" x="24" y="114" fill="#22d3ee">A CLAIM ARRIVES</text>
+<circle cx="161.1" cy="110" r="5" fill="#22d3ee" fill-opacity=".9"/>
+<text class="lanesub" x="173.1" y="114">an agent wrote something down</text>
+<circle class="mover" r="4.4" fill="#22d3ee"><animateMotion dur="7s" repeatCount="indefinite" keyPoints="0;1" keyTimes="0;1" calcMode="linear" path="M 170 190 L 874 190"/><animate attributeName="fill-opacity" dur="7s" repeatCount="indefinite" values="0;.95;.95;0" keyTimes="0;.06;.9;1"/></circle>
+<path d="M 797 227 L 797 286 Q 797 300 781 300 L 280.0 300 Q 240.0 300 240.0 278 L 240.0 226" stroke="#a78bfa" stroke-width="1.7" fill="none" stroke-dasharray="5 4" marker-end="url(#arv)"/>
+<text class="lane" x="24" y="294" fill="#a78bfa">IT MATCHES</text>
+<text class="lane" x="24" y="310" fill="#a78bfa">SOMETHING</text>
+<circle cx="25" cy="335.4" r="3.2" fill="#a78bfa" fill-opacity=".34"/>
+<circle cx="31.2" cy="336.4" r="3.2" fill="#a78bfa" fill-opacity=".34"/>
+<circle cx="30" cy="332" r="5" fill="#a78bfa" fill-opacity=".95"/>
+<text class="lanesub" x="44" y="336">a second trip through the same gate — nothing is edited in place</text>
+<text class="no" x="310" y="319">graded by an identity that did not propose it</text>
+<circle class="mover" r="4.2" fill="#a78bfa"><animateMotion dur="7s" begin="2.2s" repeatCount="indefinite" calcMode="linear" keyPoints="0;1" keyTimes="0;1" path="M 797 227 L 797 286 Q 797 300 781 300 L 280.0 300 Q 240.0 300 240.0 278 L 240.0 226"/><animate attributeName="fill-opacity" dur="7s" begin="2.2s" repeatCount="indefinite" values="0;.95;.95;0" keyTimes="0;.08;.85;1"/></circle>
+<path d="M 24 374 L 976 374" stroke="url(#rule)" fill="none"/>
+<circle cx="29" cy="392" r="4.8" fill="#34d399" fill-opacity=".9"/>
+<text class="out" x="40" y="396" fill="#34d399">PROMOTED</text>
+<text class="outsub" x="40" y="412">a new claim, readable once signed</text>
+<circle cx="494.4" cy="395.2" r="3.1" fill="#a78bfa" fill-opacity=".34"/>
+<circle cx="500.1" cy="396.1" r="3.1" fill="#a78bfa" fill-opacity=".34"/>
+<circle cx="499" cy="392" r="4.8" fill="#a78bfa" fill-opacity=".9"/>
+<text class="out" x="510" y="396" fill="#a78bfa">MERGE ACCEPTED</text>
+<text class="outsub" x="510" y="412">parents superseded, both kept, never deleted</text>
+<circle cx="25.7" cy="432" r="3.2" fill="#fbbf24" fill-opacity=".9"/>
+<circle cx="32.3" cy="432" r="3.2" fill="#fbbf24" fill-opacity=".9"/>
+<text class="out" x="40" y="436" fill="#fbbf24">MERGE REFUSED</text>
+<text class="outsub" x="40" y="452">both parents stay live — the store stays contradictory, on purpose</text>
+<circle cx="499" cy="432" r="4.2" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-opacity=".8"/>
+<text class="out" x="510" y="436" fill="#fb7185">REFUSED</text>
+<text class="outsub" x="510" y="452">stays in the ledger with its reasons, readable by nobody</text>
+<path d="M 24 470 L 976 470" stroke="url(#rule)" fill="none"/>
+<text class="foot" x="24" y="496">A merge is not an edit. Consolidation proposes a new claim and sends it back through the gate, judged by someone else.</text>
+<text class="cav" x="24" y="515">Mechanism only — what connects to what, and who may not act. No rates, volumes or timings are claimed.</text>
+</svg>

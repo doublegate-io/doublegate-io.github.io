@@ -97,7 +97,23 @@
   </div>
 </section>
 
-<section id="reads" class="band">
+<section id="path" class="band">
+  <div class="wrap">
+    <h2>Where a claim goes, and what happens when it meets one already there</h2>
+    <p class="sub">
+      The two stores are two separate databases, not two shelves of one &mdash; which is why
+      &ldquo;nothing unapproved is readable&rdquo; is a property you can check rather than a filter
+      somebody has to remember to apply. A claim that matches something already held does not
+      overwrite it: consolidation proposes a new claim and sends it back through the same gate.
+    </p>
+    <div class="diagram wide">
+      <img src="assets/claim-path.svg" width="100%"
+        alt="A claim arriving at the gate, and the loop that runs when it matches something already held. On the left, memory limbo: the claim is held here while it is judged, and no consumer read path reaches this store. It passes through five stages in order — ADMIT, which records the trust class and any edges to a parent; SCAN, for injection, keys and scripts; GRADE, by someone who did not write it; RATIFY, a k-of-n count with the writer's own votes discarded; and RECORD, a signed event in the ledger. Only then does a single arrow cross into active memory, the only store a query can open, and one component is its only writer. Below the pipe, one dashed return arrow shows what happens when the arriving claim matches one already held: consolidation proposes a new claim carrying edges to every parent, and that candidate takes a second trip through the same gate, graded by an identity that did not propose it. Nothing is edited in place. Four endings are possible: PROMOTED, a new claim readable once signed; MERGE ACCEPTED, with the parents superseded and kept, never deleted; MERGE REFUSED, where both parents stay live and the store stays contradictory on purpose; and REFUSED, which stays in the ledger with its reasons and is readable by nobody.">
+    </div>
+  </div>
+</section>
+
+<section id="reads" class="band alt">
   <div class="wrap tight">
     <h2>What this costs your agent at read time</h2>
     <p class="sub">Nothing. That is the point of checking on the way in.</p>
@@ -123,7 +139,7 @@
   </div>
 </section>
 
-<section id="next" class="band alt">
+<section id="next" class="band">
   <div class="wrap tight center">
     <h2>Next</h2>
     <div class="cta-row center">

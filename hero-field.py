@@ -15,11 +15,16 @@ skill, and what comes back? Five verdicts, and every submission lands in exactly
 one of them. That is the thing no other figure on the site shows, and the thing a
 reader evaluating a *gate* wants to know.
 
-The five verdicts are the design's own, not invented for the picture:
+Four of the five verdicts are the design's own; SHARPENED is a named-for-the-figure
+reading of single-parent consolidation, flagged as such below:
 
   NEW        nothing like it existed; promoted as a new artifact
-  SHARPENED  it corrects an existing skill, so a revision supersedes the parent
-             (ADR-0024: sharpening IS a consolidation with the skill as parent)
+  SHARPENED  it corrects an existing skill, so a revision supersedes the parent.
+             Read from ADR-0016 + ratification §4 pre-processing step 3 ("a
+             revision supersedes, both retained"): sharpening is a consolidation
+             whose parent set happens to be a single artifact. This is an
+             inference from those two, NOT a separately stated decision -- there
+             is no ADR naming "sharpening", so do not cite one.
   MERGED     several beliefs reconciled into one; parents superseded, not edited
              (ADR-0016: consolidation proposes, never decides; parents keep
               derives_from edges and are never deleted)
