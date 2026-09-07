@@ -81,6 +81,61 @@ h1 {
 .lede { max-width: 66ch; font-size: 18px; color: var(--ink-dim); margin: 0 0 16px; }
 .lede.strong { color: var(--ink); font-size: 19px; font-weight: 550; }
 
+/* Contact block. The first version bolted a mailto onto the "Next" nav row and
+   buried the address in a paragraph of prose — three buttons reading as a menu,
+   with the one thing a reader came for as the least prominent element on it.
+   Routing readers onward and inviting contact are two different jobs; this is
+   the second one, so the address is the largest thing in the block. */
+.contact {
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 0;
+  margin: 26px 0 0; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--panel); overflow: hidden;
+}
+.contact-main { padding: 26px 28px; }
+/* The divider is a border on the right column, not a spare element, so it
+   collapses to a top border in one line at the mobile breakpoint. */
+.contact-side {
+  padding: 26px 28px; border-left: 1px solid var(--line);
+  background: color-mix(in oklab, var(--line-soft) 55%, transparent);
+}
+.contact-eyebrow {
+  margin: 0 0 10px; font: 600 10.5px/1.5 var(--mono);
+  letter-spacing: .1em; text-transform: uppercase; color: var(--ink-faint);
+}
+/* Clamped rather than fixed: the address is the destination and should be the
+   biggest text here, but it must not wrap. The lower bound is 15px, not 17px,
+   because at 390px a 17px address measured 276px inside a 340px column and broke
+   as "…gmail.co / m" — an orphaned TLD character reads as a typo, not a wrap.
+   break-word is deliberately NOT used for the same reason: it breaks anywhere,
+   including mid-TLD. If it ever must fold, it folds at the @ (below). */
+.contact-addr { margin: 0 0 10px; font-size: clamp(15px, 2.4vw, 23px); font-weight: 600; }
+.contact-addr a { color: var(--cyn); text-decoration: none; white-space: nowrap; }
+.contact-addr a:hover { text-decoration: underline; }
+/* Under ~380px even 15px will not fit. CSS alone cannot choose the fold point:
+   overflow-wrap:anywhere breaks at the narrowest opportunity, measured as
+   "…ail.co | m" at 360px, and word-break:keep-all does nothing to Latin script.
+   So the markup carries one explicit <wbr> after the @ and CSS allows normal
+   wrapping to use it -- the address folds to "eugene.korniichuk@ / gmail.com",
+   which reads as an address on two lines rather than as a typo. */
+@media (max-width: 380px) {
+  .contact-addr a { white-space: normal; }
+}
+.contact-who { margin: 0; font-size: 13px; color: var(--ink-faint); }
+/* Cyan is the site's link colour everywhere, so the address is distinguished by
+   size and weight rather than hue. The consequence is that an ordinary inline
+   link in the small print below reads as a peer of the address at a glance;
+   underlining the small-print links separates "prose link" from "destination"
+   without inventing a second link colour for one paragraph. */
+.contact + .cta-row + .micro a,
+.contact + .micro a { text-decoration: underline; text-underline-offset: 2px; }
+.contact-side ul { margin: 0; padding-left: 18px; }
+.contact-side li { font-size: 13.5px; color: var(--ink-dim); margin-bottom: 7px; line-height: 1.55; }
+.contact-side li:last-child { margin-bottom: 0; }
+@media (max-width: 760px) {
+  .contact { grid-template-columns: 1fr; }
+  .contact-side { border-left: 0; border-top: 1px solid var(--line); }
+}
+
 .cta-row { display: flex; gap: 12px; margin: 32px 0 46px; flex-wrap: wrap; }
 .cta-row.center { justify-content: center; margin-bottom: 0; }
 .btn {

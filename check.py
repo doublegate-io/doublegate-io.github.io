@@ -289,12 +289,25 @@ else:
         fail(f"build.py: EMAIL is not an address -> {addr!r}")
     for page in pages:
         markup = page.read_text()
-        if addr not in markup:
+        # <wbr> is a legal break opportunity inside a rendered address (the pricing
+        # CTA uses one after the @ so a 320px screen folds it as
+        # "eugene.korniichuk@ / gmail.com" instead of "…gmail.co / m"). It splits
+        # the literal in the SOURCE, so strip it before matching — otherwise this
+        # check silently stops protecting any page whose only copy is the split
+        # one, which is exactly how a typo would slip through unnoticed.
+        flat = markup.replace("<wbr>", "").replace("&shy;", "")
+        if addr not in flat:
             fail(f"{page.name}: no contact address — the page is a dead end")
         # any mailto: on any page must point at the one declared address
-        for got in re.findall(r'href="mailto:([^"?]+)', markup):
+        for got in re.findall(r'href="mailto:([^"?]+)', flat):
             if got != addr:
                 fail(f"{page.name}: mailto {got!r} disagrees with build.py EMAIL {addr!r}")
+        # a visible address must not be broken anywhere except immediately after
+        # the @ — a fold inside the TLD renders as a typo.
+        for vis in re.findall(r'>([^<>]*@[^<>]*)<wbr>([^<>]*)<', markup):
+            if not vis[0].rstrip().endswith("@"):
+                fail(f"{page.name}: <wbr> splits an address somewhere other than "
+                     f"after the @ -> {vis[0]!r}|{vis[1]!r}")
 
 # ---------------------------------------------------------------- report
 if fails:
