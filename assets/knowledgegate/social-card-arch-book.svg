@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630" role="img" aria-label="KnowledgeGate — reviewed, signed, shared">
+  <title>KnowledgeGate</title>
+  <desc>An open book passing beneath the gate arch. Reviewed before it is readable.</desc>
+  <style>.ink { fill: #e6e9ef; } .cut { stroke: #08090c; }</style>
+  <rect width="1200" height="630" fill="#08090c"/>
+  <rect x="0" y="0" width="600" height="4" fill="#fb7185"/>
+  <rect x="600" y="0" width="600" height="4" fill="#34d399"/>
+  <g transform="translate(104 226) scale(5.2)">
+    <path d="M2.5 15 a13.5 13.5 0 0 1 27 0" stroke="#fb7185" stroke-width="3.4" stroke-linecap="round" fill="none"/>
+    <path d="M15.2 28.5 c-2.3 -2.6 -4.8 -3 -7.4 -2.2 v-6.6 c2.6 -0.8 5.1 -0.4 7.4 2.2 z" class="ink"/>
+    <path d="M16.8 28.5 c2.3 -2.6 4.8 -3 7.4 -2.2 v-6.6 c-2.6 -0.8 -5.1 -0.4 -7.4 2.2 z" fill="#34d399"/>
+  </g>
+  <text x="300" y="286" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif" font-size="72" font-weight="650" letter-spacing="-1.6" fill="#e6e9ef">KnowledgeGate</text>
+  <text x="302" y="344" font-family="ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif" font-size="29" fill="#97a1b2">Your organization's AI knowledge, reviewed and shared</text>
+</svg>
