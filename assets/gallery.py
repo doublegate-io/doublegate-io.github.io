@@ -32,6 +32,21 @@ SANS = "ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif"
 
 # Ordered newest-first: the current recommendation should be the first thing seen.
 GROUPS = [
+    ("Round 8 — offset developed: overlap resolved, colour measured (best candidate)",
+     "gate-v2/round8", [
+        ("fix-themed", "RECOMMENDED — knockout + accent themed #34d399 dark / #059669 light"),
+        ("knockout", "rear outline STOPS at the crossing — read shifts to 'interlocking'"),
+        ("weave", "interlocked: front at one crossing, behind at the other"),
+        ("fix-oneshade", "accent fix A — single #059669, passes 3:1 on both grounds"),
+        ("tight", "knockout, offset 8->6px, square corners"),
+        ("solidfront", "front square solid — order unmistakable, ink 0.52"),
+        ("axis", "sideways offset only — dropped to 15 scanlines, reads 'window pane'"),
+        ("baseline", "round-4 control — strokes just cross, reads 'overlapping'"),
+        ("colour-cyn", "colour study: cyan accent"),
+        ("colour-amb", "colour study: amber accent"),
+        ("colour-vio", "colour study: violet accent"),
+        ("colour-dim", "colour study: no accent at all, grey"),
+    ]),
     ("Round 7 — channel family pushed to exhaustion (8 variants, ALL read as letters)",
      "gate-v2/round7", [
         ("interlock", "two combs meshing — 19 scanlines but reads as 'E' / 'M'"),

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — knockout, displaced sideways only — not the duplicate-icon diagonal. Monochrome.</desc>
+  <path d="M3 7 h17 v18 h-17 z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+  <path d="M12 7 v18" fill="none" stroke="#08090c" stroke-width="4.5"/>
+  <path d="M12 7 h17 v18 h-17 z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="round"/>
+</svg>

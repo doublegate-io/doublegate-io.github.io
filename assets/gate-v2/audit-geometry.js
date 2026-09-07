@@ -58,8 +58,22 @@ function audit(file) {
   const findings = [];
 
   // ---- one stroke weight per icon (IBM: no mixed weights in a single icon)
-  const widths = [...svg.matchAll(/stroke-width="([\d.]+)"/g)].map(m => Number(m[1]));
-  const uniqueW = [...new Set(widths)].sort((a, b) => a - b);
+  //
+  // Only VISIBLE strokes count. A knockout gap is a stroke painted in the
+  // background colour: it deletes ink rather than adding any, so its width is
+  // invisible by construction and comparing it against the outline weight is
+  // meaningless. Such a gap SHOULD be heavier than the line it interrupts —
+  // matched to the outline it closes up under anti-aliasing at 16px, which is the
+  // whole reason for drawing it.
+  //
+  // Flagged the six knockout variants in round 8 before this exclusion existed.
+  // Detected two ways: class="cut" (this project's convention) or a stroke set
+  // literally to a background colour.
+  const BG_STROKE = /stroke="(#08090c|#0c0e13|#ffffff|#fff)"/i;
+  const visibleStrokes = [...svg.matchAll(/<[^>]*stroke-width="([\d.]+)"[^>]*>/g)]
+    .filter(m => !/class="[^"]*\bcut\b[^"]*"/.test(m[0]) && !BG_STROKE.test(m[0]))
+    .map(m => Number(m[1]));
+  const uniqueW = [...new Set(visibleStrokes)].sort((a, b) => a - b);
   if (uniqueW.length > 1) {
     findings.push(`mixed stroke weights: ${uniqueW.join(', ')} — IBM requires one ` +
                   `weight per icon; a mix "looks like a mistake"`);
