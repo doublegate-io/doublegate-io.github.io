@@ -157,7 +157,10 @@ for page in pages:
 #     The site is public; the design package is not. A deep link into it renders
 #     as a 404 for every visitor, and the visitor cannot tell a broken link from
 #     evidence that does not exist. Primary sources are cited directly instead.
-PRIVATE_REPO = re.compile(r"github\.com/(?:e8kor/doublegate|doublegate-io/doublegate-design)")
+#     Old names stay in the pattern: GitHub keeps redirecting them forever, so a
+#     stale link still resolves to the private repo and still 404s the visitor.
+PRIVATE_REPO = re.compile(
+    r"github\.com/(?:e8kor/doublegate|doublegate-io/(?:design|doublegate-design))(?:[/#?]|$)")
 for page in pages:
     for url in re.findall(r'(?:href|src)="([^"]+)"', page.read_text()):
         if PRIVATE_REPO.search(url):
@@ -264,6 +267,35 @@ if ev.exists():
         if not any(w in claim for w in ("our survey", "our own", "unverified", "on request")):
             fail(f"evidence.html: claim without a resolvable source -> {label!r}")
 
+# 16. THERE IS EXACTLY ONE CONTACT ADDRESS, AND EVERY PAGE HAS A WAY TO REACH IT.
+#     The readiness review found no contact path anywhere on the site: no mailto,
+#     no form, no signup. A product site with no way to reach anyone is a
+#     brochure. Two failure modes are checked here.
+#
+#     (a) Drift. build.py owns EMAIL/MAILTO and injects them into the footer, but
+#         pricing.html hardcodes the same address in its own CTA, because page
+#         bodies are read raw and are not .format()ed — a placeholder there would
+#         ship as literal "{mailto}". A second literal address is how a typo'd or
+#         stale address survives a rename, so the two must agree byte for byte.
+#     (b) Absence. If a page loses its footer, it loses its only contact path
+#         silently. Assert every page carries the address.
+build_src = (ROOT / "build.py").read_text()
+declared = re.search(r'^EMAIL = "([^"]+)"', build_src, re.M)
+if not declared:
+    fail("build.py: no EMAIL declared — the footer contact path has no source")
+else:
+    addr = declared.group(1)
+    if "@" not in addr or "." not in addr.split("@")[-1]:
+        fail(f"build.py: EMAIL is not an address -> {addr!r}")
+    for page in pages:
+        markup = page.read_text()
+        if addr not in markup:
+            fail(f"{page.name}: no contact address — the page is a dead end")
+        # any mailto: on any page must point at the one declared address
+        for got in re.findall(r'href="mailto:([^"?]+)', markup):
+            if got != addr:
+                fail(f"{page.name}: mailto {got!r} disagrees with build.py EMAIL {addr!r}")
+
 # ---------------------------------------------------------------- report
 if fails:
     print(f"FAIL — {len(fails)} problem(s):")
@@ -274,4 +306,4 @@ if fails:
 print(f"PASS — {len(pages)} pages: " + ", ".join(p.name for p in pages))
 print("  tag balance · anchors · cross-page links · assets · vocabulary")
 print("  metadata · calls to action · alt text · nav parity · svg motion paths")
-print("  README inline HTML integrity")
+print("  README inline HTML integrity · one contact address, reachable everywhere")

@@ -83,9 +83,24 @@ TITLES = {
 
 GH = "https://github.com/doublegate-io/doublegate-io.github.io"
 DOCS = f"{GH}/blob/main/docs"
-# Where a convinced reader goes. There is no product repo, no form and no list yet,
-# so this is the one contact surface that actually exists and answers.
+# Two contact surfaces, because they answer different questions and one of them
+# has to be public.
+#
+# CONTACT (issues) is for anything the answer belongs in public: a question about
+# the mechanism, an objection, a correction to a cited claim. A site that stakes
+# its identity on "every claim traces to cited research" should take its
+# corrections where everyone can see both the correction and the reply.
+#
+# EMAIL is for the conversation that cannot happen in an issue tracker: what a
+# deployment would cost, whether the boundary fits an org, when a tier lands.
+# Nobody files a public issue to ask about their own company.
 CONTACT = f"{GH}/issues"
+EMAIL = "eugene.korniichuk@gmail.com"
+# A subject line, so a cold mail arrives already sorted. The pricing page states
+# that there is nothing to buy yet, so the label and the subject both say
+# "deployment", not "sales" -- inviting a purchase conversation for a release-2
+# product would be the one dishonest thing on the page.
+MAILTO = f"mailto:{EMAIL}?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing"
 SITE = "https://doublegate-io.github.io/"
 
 SHELL = """<!doctype html>
@@ -124,7 +139,8 @@ SHELL = """<!doctype html>
       <b>doublegate</b> · design phase · every claim traces to cited research
       <p class="dim">Open source. Solo use is free and stays that way.
       <a href="{contact}">Questions, objections and corrections go here</a> — including
-      "you got this wrong".</p>
+      "you got this wrong". Ask about deployment or pricing at
+      <a href="{mailto}">{email}</a>.</p>
     </div>
     <div class="foot-links">
       <a href="how-it-works.html">How it works</a>
@@ -134,6 +150,7 @@ SHELL = """<!doctype html>
       <a href="evidence.html">Evidence</a>
       <a href="{gh}">GitHub</a>
       <a href="{contact}">Ask a question</a>
+      <a href="{mailto}">Email</a>
     </div>
   </div>
 </footer>
@@ -161,7 +178,7 @@ def render(page: str) -> str:
     canonical = SITE if page == "index.html" else SITE + page
     return SHELL.format(
         title=title, desc=desc, nav=nav_html(page), body=body, gh=GH,
-        contact=CONTACT, canonical=canonical,
+        contact=CONTACT, mailto=MAILTO, email=EMAIL, canonical=canonical,
     )
 
 
@@ -218,6 +235,8 @@ def render_404() -> str:
         body=NOT_FOUND_BODY.format(contact=CONTACT),
         gh=GH,
         contact=CONTACT,
+        mailto=MAILTO,
+        email=EMAIL,
         canonical=SITE,
     )
     # An error page must not invite indexing, and must not claim to BE the home
