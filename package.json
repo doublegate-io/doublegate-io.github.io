@@ -1,6 +1,5 @@
 {
   "devDependencies": {
-    "puppeteer-core": "^25.10.0",
-    "svgo": "^4.1.0"
+    "puppeteer-core": "^25.10.0"
   }
 }

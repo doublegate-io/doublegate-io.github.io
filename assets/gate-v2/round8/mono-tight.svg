@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate" color="#e6e9ef">
-  <title>doublegate</title>
-  <desc>doublegate — knockout, offset 8->6px, square corners. Monochrome.</desc>
-  <path d="M4 4 h18 v18 h-18 z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter"/>
-  <path d="M10 12 v10 h10" fill="none" stroke="#08090c" stroke-width="4.5"/>
-  <path d="M10 10 h18 v18 h-18 z" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linejoin="miter"/>
-</svg>

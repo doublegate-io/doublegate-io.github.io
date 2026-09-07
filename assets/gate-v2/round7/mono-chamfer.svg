@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate" color="#e6e9ef">
-  <title>doublegate</title>
-  <desc>doublegate — one corner cut from each block, diagonally opposite. Monochrome.</desc>
-  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" fill="currentColor" fill-rule="evenodd"/>
-  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="currentColor" fill-rule="evenodd"/>
-</svg>

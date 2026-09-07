@@ -50,7 +50,8 @@ flowchart LR
 | `check.py` | gate checks; exits non-zero on any failure |
 | `svg-geometry.js` | text-overlap and viewBox-bounds check for every SVG asset |
 | `assets/style.css` | one stylesheet for all eight pages |
-| `assets/logo.svg` | brand mark — favicon and nav |
+| `assets/logo.svg` | brand mark, themed — favicon (follows the tab strip) |
+| `assets/logo-dark.svg` | brand mark, forced dark — nav (site is always dark) |
 | `assets/wordmark.svg` | mark + name + tagline, for README embedding |
 | `assets/social-card.svg` | 1200×630 link-preview card (`og:image`) |
 | `assets/hero-flow.svg` | wide animated flow diagram, front page |

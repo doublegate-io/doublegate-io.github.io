@@ -104,7 +104,7 @@ SHELL = """<!doctype html>
 
 <header class="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><img class="brand-mark" src="assets/logo.svg" width="22" height="22" alt="" aria-hidden="true"> doublegate</a>
+    <a class="brand" href="index.html"><img class="brand-mark" src="assets/logo-dark.svg" width="22" height="22" alt="" aria-hidden="true"> doublegate</a>
     <nav>{nav}<a class="ghost" href="{gh}">GitHub</a></nav>
   </div>
 </header>

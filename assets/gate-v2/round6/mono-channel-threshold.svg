@@ -1,7 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate" color="#e6e9ef">
-  <title>doublegate</title>
-  <desc>doublegate — channel with a threshold and the artifact on it — 3 elements. Monochrome.</desc>
-  <path d="M3 3 h10 v9 h-3 v4 h3 v9 h-10 z" fill="currentColor"/>
-  <path d="M29 3 h-10 v9 h3 v4 h-3 v9 h10 z" fill="currentColor"/>
-  <path d="M3 28 h26 M14 17 h4 v4 h-4 z" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"/>
-</svg>
