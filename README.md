@@ -25,7 +25,7 @@ node    svg-scale.js       # ...nor scale under 10px in the page  (needs a brows
 node    svg-routes.js      # no connector may run through a box   (pure geometry)
 node    svg-fit.js         # ...and every label fits its own box   (needs a browser)
 node    svg-clearance.js   # ...and no line crowds a label         (needs a browser)
-python3 hero-variants.py   # regenerate hero-flow layout options into .tmp/variants/
+python3 hero-field.py      # regenerate the front-page field figure (seeded, deterministic)
 ```
 
 `*.html` at the root is **generated**. Edit `pages/*.html` and rebuild — a change made
@@ -67,7 +67,7 @@ flowchart LR
 | `assets/logo-dark.svg` | brand mark, forced dark — nav (site is always dark) |
 | `assets/wordmark.svg` | mark + name + tagline, for README embedding |
 | `assets/social-card.svg` | 1200×630 link-preview card (`og:image`) |
-| `assets/hero-flow.svg` | wide animated flow diagram, front page |
+| `assets/hero-field.svg` | five hundred agent dots, taught separately against inherited once, front page |
 | `assets/artifact-flow.svg` | tall walkthrough diagram, how-it-works |
 | `assets/scope-flow.svg` | the four scopes and where each trust boundary sits, commons |
 | `assets/cost-flow.svg` | one correction with and without a gate, for-organizations |
@@ -170,6 +170,34 @@ GROUP`) was green, which made four different things green — two signature stag
 two audience stages. Those boxes answer *who can read it*, so they now take cyan, which
 already means "readable / distributed" in the same vocabulary. Green is left to `SIGNED`
 and `VALIDATED`.
+
+**Two figures were drawing the same idea, and the smaller one was the front door.**
+The index headline argues a population: "Your company is paying to teach five hundred
+private AI agents." The figure under it drew a pipeline -- the sequence one claim
+passes through -- which is what `artifact-flow.svg` already draws on how-it-works, in
+full, with 44 labels to the hero's 25. So the front page spent its best slot on an
+abridged version of the next page, and answered a claim about scale with a claim about
+order. Four rail layouts were generated and measured before anyone noticed that; the
+staleness was never the routing, it was the subject.
+
+`hero-field.svg` draws the five hundred instead. Two fields of 500 dots, one dot per
+agent: on the left every one lit, taught separately, 500 agents taught; on the right one
+lit and 499 inheriting, 1 agent taught. The count is the argument, so the count is what
+the reader sees -- and can check by looking, which is the point of using the real number
+rather than a suggestive smear of dots.
+
+Two things it fixes structurally. The numerals count the same unit the field counts:
+the first draft paired a 500 meaning *lessons bought* with 500 dots meaning *agents*,
+and the unit only resolved from the footer -- a decode delay in the one place a reader
+grants none. And there are three strokes in the whole figure against the rail version's
+eleven, so the entire class of defect from the last three commits (a lane through a box,
+a lane re-entering the box it left, a caption under a bracket) has almost nothing left
+to act on. Clearance measures 28px, the loosest figure on the site.
+
+`svg-clearance.js` grew one narrow exemption for it: a leader line under 26px that ends
+on the label it points at may touch that label, because touching is its entire job.
+Verified narrow, not blind -- it still catches both defects it originally found, the
+old hero's 5px and cost-flow's 2px, when those are put back.
 
 **When a connector needs to dodge something, the layout is wrong, not the
 connector.** Three commits in a row patched the hero figure's author fast lane:

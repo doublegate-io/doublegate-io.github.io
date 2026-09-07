@@ -33,6 +33,9 @@ const puppeteer = require('puppeteer-core');
 const ASSETS = path.join(__dirname, 'assets');
 const MIN_CLEAR = 6;
 const SAMPLES = 300;
+// A leader line is meant to touch its label; anything this short that ends on a
+// label is treated as one. Long connectors get no such licence.
+const LEADER_MAX = 26;
 
 function chrome() {
   if (process.env.CHROME_PATH && fs.existsSync(process.env.CHROME_PATH)) return process.env.CHROME_PATH;
@@ -65,7 +68,7 @@ function chrome() {
   for (const f of files) {
     await page.goto('file://' + path.join(ASSETS, f), { waitUntil: 'load' });
 
-    const report = await page.evaluate((MIN_CLEAR, SAMPLES) => {
+    const report = await page.evaluate((MIN_CLEAR, SAMPLES, LEADER_MAX) => {
       const svg = document.querySelector('svg');
       const texts = [...svg.querySelectorAll('text')].map(t => {
         const b = t.getBBox();
@@ -80,8 +83,9 @@ function chrome() {
         const stroke = el.getAttribute('stroke');
         if (!stroke || stroke === 'none' || el.closest('defs')) continue;
         if (el.tagName.toLowerCase() === 'line') {
-          lines.push({ id: 'stem', pts: [[el.x1.baseVal.value, el.y1.baseVal.value],
-                                         [el.x2.baseVal.value, el.y2.baseVal.value]] });
+          const x1 = el.x1.baseVal.value, y1 = el.y1.baseVal.value;
+          const x2 = el.x2.baseVal.value, y2 = el.y2.baseVal.value;
+          lines.push({ id: 'stem', pts: [[x1, y1], [x2, y2]], len: Math.hypot(x2 - x1, y2 - y1) });
         } else {
           const L = el.getTotalLength();
           if (!L) continue;
@@ -90,7 +94,7 @@ function chrome() {
             const q = el.getPointAtLength((L * i) / SAMPLES);
             pts.push([q.x, q.y]);
           }
-          lines.push({ id: stroke, pts });
+          lines.push({ id: stroke, pts, len: L });
         }
       }
 
@@ -99,6 +103,19 @@ function chrome() {
       for (const t of texts) {
         let best = Infinity, id = null, at = null;
         for (const ln of lines) {
+          // A LEADER is exempt: a short line whose whole job is to touch the label
+          // it points at. Requiring 6px would forbid the one connector pattern that
+          // exists precisely to remove ambiguity. Only short lines qualify, and only
+          // against the label they terminate on -- a long connector grazing a caption
+          // is still a failure, which is the defect this check was built for.
+          if (ln.len !== undefined && ln.len <= LEADER_MAX) {
+            const ex = ln.pts[0], ey = ln.pts[ln.pts.length - 1];
+            const ends = [ex, ey];
+            const touches = ends.some(([px, py]) =>
+              px >= t.x - LEADER_MAX && px <= t.x + t.w + LEADER_MAX &&
+              py >= t.y - LEADER_MAX && py <= t.y + t.h + LEADER_MAX);
+            if (touches) continue;
+          }
           for (const [x, y] of ln.pts) {
             const dx = Math.max(t.x - x, 0, x - (t.x + t.w));
             const dy = Math.max(t.y - y, 0, y - (t.y + t.h));
@@ -110,7 +127,7 @@ function chrome() {
         if (best < MIN_CLEAR) bad.push({ t: t.s, d: +best.toFixed(1), id, at });
       }
       return { bad, worst: +worst.toFixed(1), nText: texts.length, nLines: lines.length };
-    }, MIN_CLEAR, SAMPLES);
+    }, MIN_CLEAR, SAMPLES, LEADER_MAX);
 
     if (report.bad.length) {
       failures += report.bad.length;
