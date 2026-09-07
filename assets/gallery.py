@@ -290,8 +290,8 @@ def main():
 <h1>doublegate — every candidate mark, one page</h1>
 <p class="lead">Generated from the SVGs on disk by <code>assets/gallery.py</code>.
 Each mark at 16/22/32/64/128&nbsp;px on dark then light, with its measured 16&nbsp;px
-verdict. <strong>Nothing here is wired into the site</strong> — the live mark is still
-<code>assets/logo.svg</code>, which is the first entry under Round&nbsp;1.
+verdict. The live mark is <code>assets/logo.svg</code> — the themed portrait from Round 12,
+wired in 2026-09-07. Everything else here remains unwired candidates.
 The <code>prefers-color-scheme</code> query is resolved in code for both panes, so
 neither pane depends on your OS theme.</p>
 {"".join(blocks)}
