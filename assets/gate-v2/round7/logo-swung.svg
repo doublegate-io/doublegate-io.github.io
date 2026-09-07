@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>

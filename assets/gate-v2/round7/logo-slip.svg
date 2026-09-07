@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>

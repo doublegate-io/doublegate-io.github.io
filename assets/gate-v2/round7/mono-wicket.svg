@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate. Monochrome.</desc>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" fill="currentColor" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="currentColor"/>
+</svg>

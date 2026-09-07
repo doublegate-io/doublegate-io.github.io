@@ -1,0 +1,1390 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>doublegate — round 7, the channel family</title>
+<style>
+  body { margin:0; font:14px ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+  section { padding:26px 30px 34px; }
+  h2 { font-size:12px; letter-spacing:2.5px; opacity:.5; margin:0 0 20px; }
+  h3 { font-size:14px; margin:24px 0 8px; font-weight:650; }
+  h3 em { font-weight:400; opacity:.5; font-style:normal; margin-left:10px; font-size:13px; }
+  .row { display:flex; align-items:flex-end; gap:20px; }
+  .s { text-align:center; }
+  .s i { display:block; font-size:10px; opacity:.4; margin-top:5px; font-style:normal; }
+  .h { display:flex; align-items:center; justify-content:center; height:130px; }
+  .lock { margin-top:12px; } .lock svg { width:360px; height:auto; }
+</style></head><body><section style="background:#08090c;color:#e6e9ef"><h2>DARK</h2><h3>slip<em>two overlapping leaves, one behind the other — a sliver, not a slot</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot. Monochrome.</desc>
+  <path d="M3 6 h14 v20 h-14 z" fill="currentColor"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+    <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>shear<em>one block cut through and the halves slid past each other</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other. Monochrome.</desc>
+  <path d="M4 4 h22 l-8 12 h-14 z" fill="currentColor"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+    <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>swung<em>both leaves rotated the same way — a revolving door mid-turn</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn. Monochrome.</desc>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="currentColor"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+    <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>stagger<em>masses at different heights — the void is an L-shaped dogleg</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg. Monochrome.</desc>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="currentColor"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+    <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>chamfer<em>one corner cut from each block, diagonally opposite</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite. Monochrome.</desc>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" fill="currentColor" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="currentColor" fill-rule="evenodd"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+    <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>funnel<em>the channel narrows once, off-centre — a weir</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir. Monochrome.</desc>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="currentColor"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+    <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>wicket<em>a small gate cut into one leaf of a big gate</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate. Monochrome.</desc>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" fill="currentColor" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+    <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>interlock<em>two combs meshing without touching — a maze, not a doorway</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#e6e9ef">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway. Monochrome.</desc>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" fill="currentColor"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+      </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+    <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div></section><section style="background:#ffffff;color:#10131a"><h2>LIGHT</h2><h3>slip<em>two overlapping leaves, one behind the other — a sliver, not a slot</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#10131a">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot. Monochrome.</desc>
+  <path d="M3 6 h14 v20 h-14 z" fill="currentColor"/>
+  <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — two overlapping leaves, one behind the other — a sliver, not a slot.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #10131a; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 6 h14 v20 h-14 z" fill="#64748b"/>
+    <path d="M20 3 h9 v26 h-9 l-3 -13 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>shear<em>one block cut through and the halves slid past each other</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#10131a">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other. Monochrome.</desc>
+  <path d="M4 4 h22 l-8 12 h-14 z" fill="currentColor"/>
+  <path d="M28 28 h-22 l8 -12 h14 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — one block cut through and the halves slid past each other.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #10131a; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M4 4 h22 l-8 12 h-14 z" class="ink"/>
+    <path d="M28 28 h-22 l8 -12 h14 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>swung<em>both leaves rotated the same way — a revolving door mid-turn</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#10131a">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn. Monochrome.</desc>
+  <path d="M3 4 h9 l-4 24 h-9 z" fill="currentColor"/>
+  <path d="M31 4 h-9 l-4 24 h9 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — both leaves rotated the same way — a revolving door mid-turn.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #10131a; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 4 h9 l-4 24 h-9 z" fill="#64748b"/>
+    <path d="M31 4 h-9 l-4 24 h9 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>stagger<em>masses at different heights — the void is an L-shaped dogleg</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#10131a">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg. Monochrome.</desc>
+  <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="currentColor"/>
+  <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — masses at different heights — the void is an L-shaped dogleg.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #10131a; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h12 v13 h-6 v3 h6 v10 h-12 z" fill="#64748b"/>
+    <path d="M29 29 h-12 v-13 h6 v-3 h-6 v-10 h12 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>chamfer<em>one corner cut from each block, diagonally opposite</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#10131a">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite. Monochrome.</desc>
+  <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" fill="currentColor" fill-rule="evenodd"/>
+  <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="currentColor" fill-rule="evenodd"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — one corner cut from each block, diagonally opposite.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #10131a; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h11 v26 h-11 z M14 3 l-11 11 v-11 z" class="ink" fill-rule="evenodd"/>
+    <path d="M29 29 h-11 v-26 h11 z M18 29 l11 -11 v11 z" fill="#34d399" fill-rule="evenodd"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>funnel<em>the channel narrows once, off-centre — a weir</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#10131a">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir. Monochrome.</desc>
+  <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="currentColor"/>
+  <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — the channel narrows once, off-centre — a weir.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #10131a; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h10 v9 l4 8 v10 h-14 z" fill="#64748b"/>
+    <path d="M29 3 h-8 v9 l-2 8 v10 h10 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>wicket<em>a small gate cut into one leaf of a big gate</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#10131a">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate. Monochrome.</desc>
+  <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" fill="currentColor" fill-rule="evenodd"/>
+  <path d="M25 3 h4 v26 h-4 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — a small gate cut into one leaf of a big gate.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #10131a; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h18 v26 h-18 z M8 12 h8 v17 h-8 z" class="ink" fill-rule="evenodd"/>
+    <path d="M25 3 h4 v26 h-4 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div><h3>interlock<em>two combs meshing without touching — a maze, not a doorway</em></h3><div class="row"><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>16</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="22" height="22" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>22</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>32</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>64</i></div><div class="s"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="128" height="128" role="img" aria-label="doublegate">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+</svg>
+</div><i>128</i></div><div class="s" style="margin-left:16px"><div class="h"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="64" height="64" role="img" aria-label="doublegate" color="#10131a">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway. Monochrome.</desc>
+  <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" fill="currentColor"/>
+  <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="currentColor"/>
+</svg>
+</div><i>mono</i></div></div><div class="lock"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — reviewed before it is remembered">
+  <title>doublegate</title>
+  <desc>doublegate — two combs meshing without touching — a maze, not a doorway.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #10131a; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #10131a; }
+    .ink-s { stroke: #10131a; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 3 h13 v5 h-6 v6 h6 v5 h-6 v6 h6 v4 h-13 z" class="ink"/>
+    <path d="M29 3 h-9 v8 h4 v4 h-4 v8 h4 v6 h5 z" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">doublegate</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>
+</div></section></body></html>

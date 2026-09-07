@@ -32,6 +32,17 @@ SANS = "ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif"
 
 # Ordered newest-first: the current recommendation should be the first thing seen.
 GROUPS = [
+    ("Round 7 — channel family pushed to exhaustion (8 variants, ALL read as letters)",
+     "gate-v2/round7", [
+        ("interlock", "two combs meshing — 19 scanlines but reads as 'E' / 'M'"),
+        ("swung", "both leaves rotated same way — reads as QUOTATION MARKS"),
+        ("chamfer", "one corner cut off each block — reads as 'P' or a flag"),
+        ("wicket", "a small gate inside one leaf — reads as a lowercase letter"),
+        ("shear", "one block cut through, halves slid — reads as 'Z' or 'N'"),
+        ("funnel", "channel narrows once, off-centre — reads as 'M'"),
+        ("stagger", "masses at different heights, L-shaped void — reads as 'E'"),
+        ("slip", "overlapping leaves, negative sliver — FUSED, 0 scanlines"),
+    ]),
     ("Round 6 — keystone and channel developed with detail (requested)",
      "gate-v2/round6", [
         ("channel-ajar-both", "BOTH LEAVES AJAR — 17 scanlines at ink 0.352, breaks the H · reads 'a folded ribbon / lightning bolt'"),
