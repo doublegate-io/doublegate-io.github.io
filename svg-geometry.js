@@ -7,7 +7,9 @@
 // so this check needs a real one — but it skips cleanly when none is available,
 // so it is safe to wire into CI unconditionally.
 //
-// Usage:  CHROME_PATH=/path/to/chrome node site/svg-geometry.js
+// Usage:  CHROME_PATH=/path/to/chrome node svg-geometry.js
+
+const path = require('path');
 
 let puppeteer;
 try {
@@ -18,7 +20,13 @@ try {
 }
 
 const CHROME = process.env.CHROME_PATH || '/usr/bin/chromium';
-const ASSETS = 'file://' + process.cwd() + '/site/assets/';
+// Path is resolved relative to this script, not to process.cwd(). The site was
+// split out of the design repo into its own repo, so assets moved from
+// <root>/site/assets/ to <root>/assets/ — the old hardcoded 'site/assets' pointed
+// at nothing and the check died with ERR_FILE_NOT_FOUND. It went unnoticed because
+// puppeteer-core was not installed, so the script exited 0 on its SKIP path and
+// looked like a passing gate.
+const ASSETS = 'file://' + path.join(__dirname, 'assets') + '/';
 const SVGS = ['hero-flow.svg', 'artifact-flow.svg', 'social-card.svg', 'logo.svg', 'wordmark.svg'];
 
 (async () => {

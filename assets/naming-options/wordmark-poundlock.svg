@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 120" width="820" height="120" role="img" aria-label="PoundLock">
+  <title>PoundLock</title>
+  <desc>A canal pound lock from above: a gate at each end, never both open, with the load held in the chamber between them.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+    .cut { stroke: #08090c; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+      .cut { stroke: #ffffff; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M3 5.5 v21" stroke="#fb7185" stroke-width="4" stroke-linecap="round"/>
+    <path d="M29 5.5 v21" stroke="#34d399" stroke-width="4" stroke-linecap="round"/>
+    <rect x="12" y="11" width="8" height="10" rx="1.6" class="ink"/>
+  </g>
+  <text class="wm name" x="112" y="60">PoundLock</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>

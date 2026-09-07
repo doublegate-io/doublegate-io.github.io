@@ -46,8 +46,21 @@ Recorded so nobody re-argues it from taste:
   gaps closed and the mark became a solid rectangle. Two heavier lines survive.
 - **A book below ~22px is a silhouette, nothing more.** Page detail is dropped
   rather than drawn finer, because finer strokes disappear instead of shrinking.
-- **Two arches fuse.** `arches` reads as one wavy shape at 16px. It has that
-  problem today, on the live site; the rename does not introduce it.
+- **Do not trust an eyeball read of 16px — measure it.** `measure.js` (copied here
+  from `assets/naming-options/`) rasterises each mark and counts scanlines that
+  separate two inked runs. Run `node assets/knowledgegate/measure.js`. It
+  overturned a claim previously written in this file: `arches` was described as
+  fusing into one wavy shape at 16px, and it does not — 11 separating scanlines,
+  the same order as the rest of the set. All four variants measure separable.
+  `posts-book` is the closest to trouble on ink coverage (0.50 at 16px).
+
+## Preview correctness
+
+`force()` resolves `prefers-color-scheme` in **both** directions. Headless Chrome
+defaults to light, so a dark preview pane that leans on the media query renders
+dark ink on dark ground and the marks look like they are missing elements. This
+file had that bug; a vision review of the dark pane before the fix was measuring
+the harness, not the mark.
 
 ## Open, not resolved
 

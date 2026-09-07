@@ -182,12 +182,18 @@ def sz(svg, px):
 
 
 def force(svg, light):
-    """The preview needs both themes side by side, so resolve the media query by hand."""
-    if not light:
-        return svg
-    return (svg.replace(f"fill: {INK_D}", f"fill: {INK_L}")
-               .replace(f"stroke: {BG_D}", f"stroke: {BG_L}")
-               .replace(f'fill="{INK_D}"', f'fill="{INK_L}"'))
+    """Resolve the media query by hand, in BOTH directions.
+
+    A browser applies prefers-color-scheme from the OS and headless Chrome defaults
+    to *light*, so a dark preview pane that leans on the media query renders dark
+    ink on dark ground — the mark then looks like it is missing elements when it is
+    not. Both branches have to be resolved explicitly for the sheet to be evidence.
+    """
+    if light:
+        return (svg.replace(f"fill: {INK_D}", f"fill: {INK_L}")
+                   .replace(f"stroke: {BG_D}", f"stroke: {BG_L}")
+                   .replace(f'fill="{INK_D}"', f'fill="{INK_L}"'))
+    return re.sub(r"@media \(prefers-color-scheme: light\) \{.*?\n\s*\}\n", "", svg, flags=re.S)
 
 
 def preview(assets):
