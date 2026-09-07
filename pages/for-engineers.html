@@ -127,23 +127,63 @@
   </div>
 </section>
 
-<section id="deps" class="band alt">
-  <div class="wrap tight">
-    <h2>What it drags into your environment</h2>
+<section id="connect" class="band alt">
+  <div class="wrap">
+    <h2>What plugging it in actually looks like</h2>
+    <p class="sub">
+      Your agent does not learn a new protocol. doublegate speaks the standard agent-tool
+      protocol already built into Hermes, Claude Code, opencode and Codex &mdash; add it like any
+      other tool server and the agent gains its four everyday tools &mdash; no adapter code, no SDK
+      to install. A fifth and sixth exist for review queues and the organization side; the
+      everyday surface is the four below.
+    </p>
+    <div class="cards four">
+      <div class="card">
+        <h3>remember</h3>
+        <p>Your agent writes something down. It gets back an artifact id and a state &mdash; the
+        content exists but is not readable by anyone until review finishes. Submission returns
+        immediately; grading happens after.</p>
+      </div>
+      <div class="card">
+        <h3>recall</h3>
+        <p>Search the approved store. Every result carries its provenance &mdash; who signed it,
+        on what basis, when. The read path is an ordinary search, so it stays fast and cheap.</p>
+      </div>
+      <div class="card">
+        <h3>why</h3>
+        <p>The audit answer for any one thing in the store: every event that moved it, in order,
+        with signatures. &ldquo;Audited&rdquo; stops being a word on a slide and becomes a query
+        your agent or your compliance team can run.</p>
+      </div>
+      <div class="card">
+        <h3>gaps</h3>
+        <p>What this folder is still missing: topics its queries keep failing to find, and what
+        connected folders already hold. The agent asks; the system proposes which reviewed items
+        would fill the hole; a person acts on it.</p>
+      </div>
+    </div>
+    <p class="micro">
+      A fifth tool reports what is waiting in review &mdash; ids and states only, never the
+      content itself, so even the queue view respects the boundary. On the organization side a
+      sixth, <span class="mono">submit</span>, is the only way in: content reaches the company
+      gate solely from a client gate that already admitted it. No tool anywhere in the surface can
+      change a verdict, set a trust class, or promote its own output.
+    </p>
     <div class="cards two">
       <div class="card">
         <h3>Python, SQLite, one crypto library</h3>
         <p>The core is standard library plus SQLite plus a signing library. No vector database to
-        operate, no message broker, no container orchestration. It is designed to run as a sidecar
-        on the machine that already runs your agent.</p>
+        operate, no message broker, no container orchestration. It runs as a sidecar on the
+        machine that already runs your agent, and grading goes through whatever inference you
+        already pay for &mdash; there is no doublegate service in the path.</p>
         <span class="src">A deliberate dependency budget, recorded as a design decision</span>
       </div>
       <div class="card">
-        <h3>Your models, your keys</h3>
-        <p>Grading runs through whatever inference you already pay for. There is no doublegate
-        inference service in the path, and content stays on your machine by default — sharing
-        outward is opt-in per scope, not a default.</p>
-        <span class="src">Gate agents run on inference you already pay for</span>
+        <h3>Content stays where you put it</h3>
+        <p>Everything &mdash; the review store, the approved store, the event record &mdash; runs
+        on your hardware. Sharing outward is opt-in per folder, never a default, and a deployment
+        with no outgoing connections is a complete, working one.</p>
+        <span class="src">Content stays on your machine by default; sharing is opt-in per scope</span>
       </div>
     </div>
   </div>
