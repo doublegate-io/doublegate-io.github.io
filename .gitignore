@@ -1,3 +1,4 @@
 .tmp_*
 .tmp/
 node_modules/
+.commitmsg

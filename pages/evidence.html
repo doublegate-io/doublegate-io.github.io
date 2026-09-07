@@ -154,8 +154,10 @@
         shared reviewed memory does to output. Any number here would be invented.</li>
         <li><b>Gate accuracy.</b> Unmeasured until we publish a false-alarm rate. We will not
         claim the checking is reliable before we can show how often it is wrong.</li>
-        <li><b>Compliance readiness.</b> A permanent signed record is in direct tension with
-        erasure requests. Until real deletion ships, we do not claim to satisfy them.</li>
+        <li><b>Compliance readiness.</b> Deletion is designed &mdash; decisions stay signed, the
+        erased content becomes unreadable because its keys are destroyed, and the erasure itself
+        is a recorded event &mdash; but it is not shipped, so we do not claim to satisfy erasure
+        requests yet.</li>
       </ul>
     </div>
     <p class="note">

@@ -128,7 +128,8 @@
         <h3>Audited</h3>
         <p>Every approval and rejection is a signed record: who decided, when, on what basis, and
         what they were looking at. Including the rejections — a gate that only records its
-        successes is not an audit trail.</p>
+        successes is not an audit trail. Nothing is ever silently dropped: reject, demote and
+        expire are themselves recorded events with their reasons.</p>
       </div>
       <div class="card">
         <span class="card-ico share">◈</span>
@@ -207,6 +208,11 @@
       </tbody>
     </table>
 
+    <p class="note">
+      Even the checking can stay inside your walls: the gate&rsquo;s small preparation models run
+      on your CPU with no key and no quota, and they prepare evidence only &mdash; grading is a
+      signal the reviewers weigh, never a verdict. No model output quietly becomes a decision.
+    </p>
     <p class="micro">
       Every quote above is verbatim from the named source and checked against it.
       <a href="evidence.html">See the full citations →</a>
@@ -264,8 +270,8 @@
       Two specifics, because precision here is the product. BCBS 239 does not contain the word
       &ldquo;lineage&rdquo; &mdash; we checked the 2013 text and found zero occurrences, so we cite
       the requirement to the ECB&rsquo;s 2024 implementation guide, which is where it actually
-      lives. And read permissions are designed rather than shipped, so today one gate is one trust
-      domain.
+      lives. And read permissions have no design yet &mdash; scheduled, not drawn &mdash; so today
+      one gate is one trust domain.
     </p>
   </div>
 </section>

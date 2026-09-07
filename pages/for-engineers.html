@@ -169,7 +169,7 @@
       gate solely from a client gate that already admitted it. No tool anywhere in the surface can
       change a verdict, set a trust class, or promote its own output.
     </p>
-    <div class="cards two">
+    <div class="cards three">
       <div class="card">
         <h3>Python, SQLite, one crypto library</h3>
         <p>The core is standard library plus SQLite plus a signing library. No vector database to
@@ -177,6 +177,15 @@
         machine that already runs your agent, and grading goes through whatever inference you
         already pay for &mdash; there is no doublegate service in the path.</p>
         <span class="src">A deliberate dependency budget, recorded as a design decision</span>
+      </div>
+      <div class="card">
+        <h3>Review keeps running offline</h3>
+        <p>Checking does not need paid inference: the small local models run on your CPU with no
+        key and no quota, so grading works with the network down. When a second gate sits above
+        yours and cannot be reached, the items it has not confirmed carry a provisional mark
+        &mdash; visible everywhere the content appears &mdash; until its verdict lands on
+        reconnect.</p>
+        <span class="src">Offline is a working state, not a degraded one</span>
       </div>
       <div class="card">
         <h3>Content stays where you put it</h3>
@@ -198,10 +207,12 @@
     <div class="anti">
       <ul>
         <li><b>There is no read-authorisation model yet.</b> Who may read what, by identity and
-        team, is designed but not built. Until it ships, treat every gate as one trust domain.</li>
-        <li><b>Real deletion is planned, not shipped.</b> A permanent signed record and "delete
-        everything about this person" pull in opposite directions, and that tension is an open
-        design question rather than a solved one.</li>
+        team, is scheduled for release 4 &mdash; the design does not exist yet. Until it ships,
+        treat every gate as one trust domain.</li>
+        <li><b>Deletion is designed, not shipped.</b> Decisions stay signed and permanent; the
+        content they refer to does not. Erasing a subject means destroying the keys that unlock
+        their content and recording that as an event &mdash; the audit trail stays verifiable
+        after the erasure, and nothing disappears silently.</li>
       </ul>
     </div>
     <p class="micro">
