@@ -76,19 +76,28 @@ INK_STYLE = f"""  <style>
 def g_twoseals(i="  "):
     """A tablet carrying two seals, struck at different depths on its edge.
 
-    Dodges all four: the outer form is a rectangle with a chamfered corner (not
-    round-topped, so no n), the seals are lozenges rather than circles (no Q or
-    pin), nothing is a horizontal bar stack, and the silhouette is wide rather
-    than a narrow centred column (no person).
+    Dodges all four failure classes: the outer form is a rectangle with a
+    chamfered corner (not round-topped, so no n), the seals are lozenges rather
+    than circles (no Q or pin), nothing is a horizontal bar stack, and the
+    silhouette is wide rather than a narrow centred column (no person).
 
     Sequence is stated by depth of strike: the slate seal is struck flush into
     the edge (done, absorbed) and the green one still stands proud of it.
+
+    GRID DISCIPLINE (IBM Design Language, UI icons). Every coordinate sits on the
+    pixel or half-pixel grid — "avoid random decimal points in the x and y
+    coordinates" — so the lozenges are built from whole-number offsets (3 and 4)
+    rather than the 3.2/3.6 the first draft used. The audit caught twelve
+    off-grid values here; they are gone, and the shape is unchanged to the eye.
+
+    One stroke weight throughout (2px), per IBM's rule that a single icon must
+    not mix weights. The seals are fills, so they do not count against it.
     """
     return "\n".join(f"{i}{ln}" for ln in [
-        '<path d="M5 4.5 h13 l5.5 5.5 v17.5 h-18.5 z" fill="none" class="ink-s"'
-        ' stroke-width="2.4" stroke-linejoin="round"/>',
-        f'<path d="M11 16.5 l3.2 3.2 l-3.2 3.2 l-3.2 -3.2 z" fill="{SLATE}"/>',
-        f'<path d="M19.5 16.5 l3.6 3.6 l-3.6 3.6 l-3.6 -3.6 z" fill="{GRN}"/>',
+        '<path d="M5 4 h13 l5 5 v19 h-18 z" fill="none" class="ink-s"'
+        ' stroke-width="2" stroke-linejoin="round"/>',
+        f'<path d="M11 16 l3 3 l-3 3 l-3 -3 z" fill="{SLATE}"/>',
+        f'<path d="M20 15 l4 4 l-4 4 l-4 -4 z" fill="{GRN}"/>',
     ])
 
 

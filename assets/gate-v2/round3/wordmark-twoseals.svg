@@ -15,9 +15,9 @@
     }
   </style>
   <g transform="translate(14 12) scale(2.0)">
-    <path d="M5 4.5 h13 l5.5 5.5 v17.5 h-18.5 z" fill="none" class="ink-s" stroke-width="2.4" stroke-linejoin="round"/>
-    <path d="M11 16.5 l3.2 3.2 l-3.2 3.2 l-3.2 -3.2 z" fill="#64748b"/>
-    <path d="M19.5 16.5 l3.6 3.6 l-3.6 3.6 l-3.6 -3.6 z" fill="#34d399"/>
+    <path d="M5 4 h13 l5 5 v19 h-18 z" fill="none" class="ink-s" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M11 16 l3 3 l-3 3 l-3 -3 z" fill="#64748b"/>
+    <path d="M20 15 l4 4 l-4 4 l-4 -4 z" fill="#34d399"/>
   </g>
   <text class="wm name" x="112" y="60">doublegate</text>
   <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
