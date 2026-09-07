@@ -51,10 +51,10 @@ TITLES = {
         "why, and what it costs you.",
     ),
     "for-engineers.html": (
-        "For engineers — what it is, what it costs, what breaks",
+        "For engineers — what it is, what it costs, what it does not do yet",
         "doublegate replaces your memory provider. Read path is unchanged, checking "
-        "happens on the way in. Latency, token cost, failure modes and the things "
-        "that are not built yet.",
+        "happens on the way in. Latency, token cost, and the two gaps that change how "
+        "you would wire it today.",
     ),
     "governance.html": (
         "Governance — connectors, provenance, and what regulators ask for",

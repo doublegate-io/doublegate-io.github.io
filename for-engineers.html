@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>For engineers — what it is, what it costs, what breaks</title>
-<meta name="description" content="doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, failure modes and the things that are not built yet.">
-<meta property="og:title" content="For engineers — what it is, what it costs, what breaks">
-<meta property="og:description" content="doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, failure modes and the things that are not built yet.">
+<title>For engineers — what it is, what it costs, what it does not do yet</title>
+<meta name="description" content="doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, and the two gaps that change how you would wire it today.">
+<meta property="og:title" content="For engineers — what it is, what it costs, what it does not do yet">
+<meta property="og:description" content="doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, and the two gaps that change how you would wire it today.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -179,35 +179,22 @@
 
 <section id="broken" class="band">
   <div class="wrap tight">
-    <h2>What is not built, and what breaks</h2>
+    <h2>What is not built yet</h2>
     <p class="lede">
-      This is design-phase software. The list below is the reason you should not deploy it into
-      production this quarter, written by the people building it.
+      Design-phase software, and two gaps change how you would wire it today.
     </p>
     <div class="anti">
       <ul>
-        <li><b>Gate accuracy is unmeasured.</b> We do not know how often review is wrong in
-        either direction. No false-alarm rate has been published.</li>
         <li><b>There is no read-authorisation model yet.</b> Who may read what, by identity and
-        team, is designed but not built. Until it is, treat every gate as one trust domain.</li>
-        <li><b>Append-only conflicts with erasure requests.</b> A permanent signed record and
-        "delete everything about this person" are in direct tension. Real deletion is a planned
-        feature, not a shipped one.</li>
-        <li><b>Independent review is less independent than it sounds.</b> Research on judge panels
-        found nine models across seven families gave roughly 2.2 effective independent votes.
-        More reviewers is not linearly more assurance.</li>
-        <li><b>A quota-exhausted backend stalls the queue.</b> If the model behind grading starts
-        returning rate-limit errors, content stays held. That is the safe direction, but it is
-        still a stall you have to operate around.</li>
-        <li><b>Folders, gap reports and skill revisions are designed, not built.</b> The
-        store's folder partitioning, the agent-facing "what am I missing" diagnostic, and
-        skill-revision proposals all have a decided design and a target release. None of
-        it has code behind it yet — the same is true of everything else on this page.</li>
+        team, is designed but not built. Until it ships, treat every gate as one trust domain.</li>
+        <li><b>Real deletion is planned, not shipped.</b> A permanent signed record and "delete
+        everything about this person" pull in opposite directions, and that tension is an open
+        design question rather than a solved one.</li>
       </ul>
     </div>
     <p class="micro">
-      Each of these is tracked with an owner, a target and an exit criterion. The same list
-      carries the case for not building the project at all.
+      Everything on this page is designed and scheduled rather than running, and each item is
+      tracked with an owner, a target and an exit criterion.
     </p>
   </div>
 </section>
