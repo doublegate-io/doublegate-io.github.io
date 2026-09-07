@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 820 120" width="820" height="120" role="img" aria-label="HoldShelf">
+  <title>HoldShelf</title>
+  <desc>A shelf with one item held behind a barrier while the rest are through: the library's own name for content awaiting release.</desc>
+  <style>
+    .wm { font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif; }
+    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
+    .tag { font-size: 20px; fill: #97a1b2; }
+    .ink { fill: #e6e9ef; }
+    .ink-s { stroke: #e6e9ef; }
+    .cut { stroke: #08090c; }
+    @media (prefers-color-scheme: light) {
+      .name { fill: #10131a; }
+      .tag { fill: #55606f; }
+      .ink { fill: #10131a; }
+      .ink-s { stroke: #10131a; }
+      .cut { stroke: #ffffff; }
+    }
+  </style>
+  <g transform="translate(14 12) scale(2.0)">
+    <path d="M2.5 25.5 h14" stroke="#97a1b2" stroke-width="2.4" stroke-linecap="round"/>
+    <rect x="3.5" y="12" width="4.6" height="11" rx="1.2" class="ink"/>
+    <rect x="9.6" y="15" width="4.6" height="8" rx="1.2" class="ink"/>
+    <path d="M19 1.5 v29" stroke="#fb7185" stroke-width="3.4" stroke-linecap="round"/>
+    <path d="M22 25.5 h7.5" stroke="#97a1b2" stroke-width="2.4" stroke-linecap="round"/>
+    <rect x="24" y="13" width="4.6" height="10" rx="1.2" fill="#34d399"/>
+  </g>
+  <text class="wm name" x="112" y="60">HoldShelf</text>
+  <text class="wm tag"  x="114" y="92">reviewed before it is remembered</text>
+</svg>

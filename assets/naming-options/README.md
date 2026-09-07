@@ -11,16 +11,26 @@ node    assets/naming-options/measure.js                    # objective 16px leg
 open    assets/naming-options/preview.html                  # every size, both themes
 ```
 
-## The six
+## The twelve
 
 | Mark | Name it serves | What it draws |
 |---|---|---|
-| `accession` | Accession | Spines on a shelf rule, one tilted item still outside the collection |
-| `assayoffice` | AssayOffice | A hallmark punch: a lozenge with the fineness struck inside it |
-| `poundlock` | PoundLock | A canal lock from above — a gate at each end, load held between |
+| `adlectio` | adlect.io | Items on the roll, one arriving — admission by a separate authority |
+| `escrow` | KnowledgeEscrow | Two parties bracketing a held artifact neither can reach alone |
+| `countersigned` | Countersigned | Two signatures stacked, each on its own rule |
+| `correctorium` | Correctorium | Exemplar and copy, the copy carrying the corrector's mark |
+| `lectorium` | Lectorium | A lectern with a leaf on it — the reading room |
+| `holdshelf` | HoldShelf | Items on a shelf, with a gate line running past it |
+| `accession` | Accession | Spines on a shelf rule, one tilted item still outside |
+| `assayoffice` | AssayOffice | A hallmark punch: a lozenge with the fineness struck inside |
+| `poundlock` | PoundLock | A canal lock from above — a gate at each end, load between |
 | `knowledgediode` | KnowledgeDiode | The diode glyph, rotated vertical |
 | `agentlibrarian` | AgentLibrarian | An open book with a date stamp struck across the corner |
 | `knowledgeporter` | KnowledgePorter | A lodge hatch with something presented on the counter |
+
+`countersigned` is the recommendation, matching the evidence repo's shortlist. It is
+also the lightest mark in the set at ink 0.234 — two signatures and two rules,
+nothing else.
 
 ## Measure the small sizes, do not look at them
 
@@ -48,14 +58,38 @@ this file.
 
 ### Standing results
 
-Two marks are `marginal` and the reasons are structural, not fixable by nudging:
+Three marks are `marginal` and the reasons are structural, not fixable by nudging:
 
 - **knowledgediode** has `gapR 0` at every size. A solid triangle is one unbroken
   run on every row it occupies, so the horizontal axis can never separate. It
   separates fine vertically (`gapC 6`). Acceptable for a mark whose whole point is
   a single directional glyph; worth knowing before it becomes a favicon.
+- **lectorium** has the same `gapR 0` for the same reason — the lectern's desk is a
+  solid quadrilateral spanning the full width.
 - **agentlibrarian** is the busiest in the set — an open book *plus* a stamp is two
   objects with internal detail, in 256 pixels. It reads well from 32px up.
+
+### Defects the measurement caught that looking did not
+
+- **`countersigned` read as a tick twice.** First draft: both strokes in the same
+  diagonal. Second draft: opposite diagonals so they genuinely cross — still a tick.
+  The real rule is **any two strokes meeting at a low vertex read as a tick**,
+  whatever direction each travels, because the eye resolves the lower junction
+  first. Abandoning the crossing for two signatures stacked on their own rules took
+  it from 4 separating scanlines to 17.
+- **`correctorium` breached the ink threshold** at 0.566, against the 0.45 documented
+  above. A filled rectangle covering a third of a 16px field is simply too much
+  paint. Outlining it brought it to 0.465 and cost nothing in meaning.
+- **`holdshelf`'s barrier needed to differ in kind, not degree.** Making it thicker
+  failed — a thick vertical bar among vertical bars is just another bar, and the mark
+  stayed a bar chart. Running it *past* the shelf line at both ends, which no book on
+  a shelf can do, is what makes it a gate.
+- **`preview.png` was silently cropping.** The sheet grows one block per candidate on
+  each of two panes, while `--window-size` was hardcoded — so the newest candidates
+  were cut off the bottom, and a vision review reported half the light pane as "not
+  visible". Height is now derived from `len(CANDIDATES)`. Same class of bug as the
+  theme-resolution one below: **the harness lied, and the vision model faithfully
+  reported the lie.**
 
 ## Rules carried over, not rediscovered
 

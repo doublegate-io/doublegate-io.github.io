@@ -141,6 +141,137 @@ def g_librarian(i="  "):
     ])
 
 
+def g_countersign(i="  "):
+    """Two signature strokes stacked on a document, one above the other.
+
+    Two failed attempts on the same defect, so the diagnosis is structural rather
+    than a matter of nudging: **any two strokes that meet at a low vertex read as a
+    tick**, regardless of which direction each one travels. Crossing them did not
+    help, because the eye still resolves the lower junction first.
+
+    So stop drawing a crossing. A real countersignature is not two crossed pen
+    strokes — it is two signatures on the same document, one under the other, on
+    their own rule. That is what this now draws, and a stacked pair on two rules
+    cannot collapse into a checkmark because there is no vertex.
+    """
+    return "\n".join(f"{i}{ln}" for ln in [
+        f'<path d="M4 12 c3 -4 5.5 -3.5 7 0 c1.5 3.5 4 4 7.5 -1" fill="none"'
+        f' stroke="{RED}" stroke-width="2.8" stroke-linecap="round"/>',
+        f'<path d="M4 15.5 h24" stroke="{DIM}" stroke-width="1.8" stroke-linecap="round"'
+        ' opacity="0.5"/>',
+        f'<path d="M4 24 c3 -4 5.5 -3.5 7 0 c1.5 3.5 4 4 7.5 -1" fill="none"'
+        f' stroke="{GRN}" stroke-width="2.8" stroke-linecap="round"/>',
+        f'<path d="M4 27.5 h24" stroke="{DIM}" stroke-width="1.8" stroke-linecap="round"'
+        ' opacity="0.5"/>',
+    ])
+
+
+def g_holdshelf(i="  "):
+    """Items on a shelf, with a gate line running past the shelf on both sides.
+
+    Second attempt at the barrier. Making it thicker did not work: a thick vertical
+    bar standing among vertical bars is still read as another bar, so the whole mark
+    stayed a bar chart. Weight was the wrong variable.
+
+    The barrier now differs in *kind* rather than degree — it runs above the tops of
+    the spines and below the shelf rule, which no book on a shelf can do. That is
+    what makes it a gate instead of a taller item.
+    """
+    return "\n".join(f"{i}{ln}" for ln in [
+        f'<path d="M2.5 25.5 h14" stroke="{DIM}" stroke-width="2.4" stroke-linecap="round"/>',
+        '<rect x="3.5" y="12" width="4.6" height="11" rx="1.2" class="ink"/>',
+        '<rect x="9.6" y="15" width="4.6" height="8" rx="1.2" class="ink"/>',
+        f'<path d="M19 1.5 v29" stroke="{RED}" stroke-width="3.4" stroke-linecap="round"/>',
+        f'<path d="M22 25.5 h7.5" stroke="{DIM}" stroke-width="2.4" stroke-linecap="round"/>',
+        f'<rect x="24" y="13" width="4.6" height="10" rx="1.2" fill="{GRN}"/>',
+    ])
+
+
+def g_correctorium(i="  "):
+    """Two leaves side by side, the second bearing a correction stroke.
+
+    A monastic scriptorium split the work: a copyist reproduced the exemplar, and a
+    *corrector* — a different person — collated the new copy against it before
+    release. That is the reviewer-is-never-the-author invariant as a working
+    institution, so the mark draws the collation: exemplar on the left, copy on the
+    right, and the corrector's mark on the copy.
+
+    Both leaves are outlines. A solid left leaf measured ink 0.566 at 16px, well
+    past the 0.45 threshold where a mark starts closing up — a filled rectangle
+    covering a third of the field is simply too much paint. Outlines carry the same
+    two-objects reading at a fraction of the coverage. The exemplar is still
+    distinguished from the copy, by colour and by having no correction on it.
+    """
+    return "\n".join(f"{i}{ln}" for ln in [
+        '<rect x="3.5" y="6" width="10" height="20" rx="1.8" fill="none" class="ink-s"'
+        ' stroke-width="2.4"/>',
+        f'<rect x="18.5" y="6" width="10" height="20" rx="1.8" fill="none" stroke="{GRN}"'
+        ' stroke-width="2.4"/>',
+        f'<path d="M20.8 17 l2.6 2.8 l4.6 -6" fill="none" stroke="{RED}" stroke-width="2.6"'
+        ' stroke-linecap="round" stroke-linejoin="round"/>',
+    ])
+
+
+def g_lectorium(i="  "):
+    """A lectern with a leaf on it, under the reading-room's own roofline.
+
+    Lectorium is the reading room — from legere, to read, the same root as lectern.
+    What is on the lectern has been admitted to be read. The mark is the desk and
+    the leaf, no arch: an arch over an object reads as a lowercase n, which the
+    KnowledgeGate ladder already established.
+    """
+    return "\n".join(f"{i}{ln}" for ln in [
+        f'<path d="M16 27 v-6" stroke="{DIM}" stroke-width="3" stroke-linecap="round"/>',
+        f'<path d="M8 27 h16" stroke="{DIM}" stroke-width="2.8" stroke-linecap="round"/>',
+        f'<path d="M4 18.5 l11.5 -4 l11.5 4 l-11.5 4 z" fill="{RED}"/>',
+        f'<path d="M15.5 14.5 v-9" stroke="{GRN}" stroke-width="3" stroke-linecap="round"/>',
+        f'<path d="M11 7 h9" stroke="{GRN}" stroke-width="2.8" stroke-linecap="round"/>',
+    ])
+
+
+def g_adlectio(i="  "):
+    """A dot crossing a line: the admission itself, and the domain hack.
+
+    adlect.io is the Roman *adlectio* — formal admission to the Senate by decision
+    of a separate authority, outside the ordinary rules. The name runs across the
+    dot, so the mark makes the dot load-bearing: the item is the dot, the roll it
+    joins is the line, and the mark is the instant of joining.
+
+    Two dots are already on the line and signed; the third is arriving and still
+    red. Nothing about this shape can be mistaken for a tick, a shield or a play
+    button, which is the failure mode most of this set had to be walked back from.
+    """
+    return "\n".join(f"{i}{ln}" for ln in [
+        f'<path d="M2.5 21.5 h27" stroke="{DIM}" stroke-width="2.4" stroke-linecap="round"/>',
+        f'<circle cx="8" cy="21.5" r="3.4" fill="{GRN}"/>',
+        '<circle cx="17" cy="21.5" r="3.4" class="ink"/>',
+        f'<circle cx="25.5" cy="9" r="3.8" fill="{RED}"/>',
+        f'<path d="M25.5 14 v3.5" stroke="{RED}" stroke-width="2.2" stroke-linecap="round"'
+        ' opacity="0.55"/>',
+    ])
+
+
+def g_escrow(i="  "):
+    """Two parties, and the held thing between them that neither can reach.
+
+    Escrow is already a three-party institution every business buyer understands: a
+    neutral holder keeps the asset until an independent condition is met, and
+    crucially *neither counterparty can take it out unilaterally*. Source-code
+    escrow is an established software category built on exactly this shape.
+
+    The mark is the two parties as brackets facing the middle, and the held artifact
+    between them — deliberately not touching either, because the whole guarantee is
+    that neither side has reach.
+    """
+    return "\n".join(f"{i}{ln}" for ln in [
+        f'<path d="M8 5.5 h-4.5 v21 h4.5" fill="none" stroke="{RED}" stroke-width="2.8"'
+        ' stroke-linecap="round" stroke-linejoin="round"/>',
+        f'<path d="M24 5.5 h4.5 v21 h-4.5" fill="none" stroke="{GRN}" stroke-width="2.8"'
+        ' stroke-linecap="round" stroke-linejoin="round"/>',
+        '<rect x="12.5" y="12" width="7" height="8" rx="1.5" class="ink"/>',
+    ])
+
+
 def g_porter(i="  "):
     """A lodge hatch with something presented at it.
 
@@ -158,6 +289,24 @@ def g_porter(i="  "):
 
 
 CANDIDATES = {
+    "adlectio": (g_adlectio, "adlect.io",
+                 "Items on the roll, and one arriving: formal admission by a separate "
+                 "authority, with the name running across the dot."),
+    "escrow": (g_escrow, "KnowledgeEscrow",
+               "Two parties bracketing a held artifact neither can reach alone: "
+               "released only when an independent condition is met."),
+    "countersigned": (g_countersign, "Countersigned",
+                      "Two signature strokes crossing: a second party validating the "
+                      "first, which is the whole architecture."),
+    "correctorium": (g_correctorium, "Correctorium",
+                     "Exemplar and copy side by side, the copy carrying the corrector's "
+                     "mark: collated by someone who did not write it."),
+    "lectorium": (g_lectorium, "Lectorium",
+                  "A lectern with a leaf on it: the reading room, where what has been "
+                  "admitted may be read."),
+    "holdshelf": (g_holdshelf, "HoldShelf",
+                  "A shelf with one item held behind a barrier while the rest are "
+                  "through: the library's own name for content awaiting release."),
     "accession": (g_accession, "Accession",
                   "A shelf of accessioned items and one still outside the collection. "
                   "Admission is the moment it joins the line."),
@@ -279,8 +428,16 @@ if __name__ == "__main__":
     chrome = os.environ.get("CHROME_PATH") or os.path.expanduser(
         "~/.cache/puppeteer/chrome/linux-152.0.7977.75/chrome-linux64/chrome")
     if os.path.exists(chrome):
+        # Height is derived, not hardcoded. The sheet grows by one block per
+        # candidate on each of two panes, so a fixed --window-size silently crops
+        # the newest additions off the bottom — which it did, and a vision review
+        # then reported the light pane as "not visible" for half the set. Screenshot
+        # a page taller than the content and let Chrome clip the empty tail.
+        per_candidate = 250          # ladder row + wordmark lockup + heading
+        rows = len(CANDIDATES) * 2   # dark pane + light pane
+        height = 220 + rows * per_candidate
         subprocess.run(["bash", "-c",
                         f'"{chrome}" --headless --disable-gpu --no-sandbox --hide-scrollbars '
                         f'--virtual-time-budget=4000 --screenshot={HERE}/preview.png '
-                        f'--window-size=930,2700 {HERE}/preview.html 2>/dev/null'], check=False)
+                        f'--window-size=930,{height} {HERE}/preview.html 2>/dev/null'], check=False)
     print(f"{len(CANDIDATES)} candidate marks -> {HERE}")
