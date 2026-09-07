@@ -13,6 +13,11 @@ jobs:
       - uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97  # v7.0.0
         with:
           python-version: '3.11'
+      # svg-routes.js is pure geometry, no browser and no npm deps — but it does
+      # need a node runtime in this job.
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903  # v6.0.0
+        with:
+          node-version: '22'
 
       # the built pages must match what pages/*.html + build.py produce
       - name: built output is not stale
@@ -23,6 +28,13 @@ jobs:
       # sentence fragments, evidence sources
       - name: gate checks
         run: python3 check.py
+
+      # Pure path/rect geometry — no browser needed, so it runs in this job rather
+      # than behind the browser gate. None of the three browser SVG checks involve
+      # a path/rect comparison, so this defect shipped once: separating two crowded
+      # branches moved a connector through 78px of a stage box's interior.
+      - name: svg connector routing
+        run: node svg-routes.js
 
   # The SVG checks need a real browser to measure rendered text, so they run in
   # their own job. Both tools exit 0 on a SKIP path when no browser is found --

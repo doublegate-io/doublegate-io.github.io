@@ -51,7 +51,7 @@ and logs bypass review entirely.</desc>
 
   <!-- motion tracks run BELOW the boxes on a rail, so a moving dot never crosses a label -->
   <path id="mRail" d="M 92 232 L 1000 232" fill="none"/>
-  <path id="mMine" d="M 594 232 Q 648 232 648 210" fill="none"/>
+  <path id="mMine" d="M 596 232 Q 620 232 620 210" fill="none"/>
   <path id="mRej"  d="M 470 232 Q 446 232 446 258 L 200 258 Q 176 258 176 232" fill="none"/>
   <path id="mRec"  d="M 92 330 L 1000 330" fill="none"/>
 </defs>
@@ -124,12 +124,12 @@ and logs bypass review entirely.</desc>
 </g>
 
 <!-- author fast lane: branches up off the rail -->
-<path d="M 594 232 Q 648 232 648 92" stroke="#34d399" stroke-opacity=".45" stroke-width="1.6"
+<path d="M 596 232 Q 620 232 620 112" stroke="#34d399" stroke-opacity=".45" stroke-width="1.6"
       stroke-dasharray="4 4" fill="none"/>
 <g>
-  <rect class="panel" x="648" y="62" width="196" height="46" rx="11" stroke="#34d399" stroke-opacity=".45"/>
-  <text class="nm" x="746" y="82" text-anchor="middle">visible to you straight away</text>
-  <text class="sb" x="746" y="99" text-anchor="middle">others wait for the signature, you do not</text>
+  <rect class="panel" x="522" y="62" width="196" height="46" rx="11" stroke="#34d399" stroke-opacity=".45"/>
+  <text class="nm" x="620" y="82" text-anchor="middle">visible to you straight away</text>
+  <text class="sb" x="620" y="99" text-anchor="middle">others wait for the signature, you do not</text>
 </g>
 
 <!-- rejection: dips below the rail and returns -->

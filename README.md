@@ -22,6 +22,7 @@ python3 check.py           # fifteen gate checks
 node    svg-geometry.js    # SVG text nodes must not collide      (needs a browser)
 node    svg-bounds.js      # ...nor run outside their viewBox     (needs a browser)
 node    svg-scale.js       # ...nor scale under 10px in the page  (needs a browser)
+node    svg-routes.js      # no connector may run through a box   (pure geometry)
 ```
 
 `*.html` at the root is **generated**. Edit `pages/*.html` and rebuild — a change made
@@ -32,7 +33,7 @@ flowchart LR
   P["pages/*.html<br/><i>bodies only</i>"] --> B["build.py<br/><i>shared shell</i>"]
   B --> O["*.html<br/><i>generated</i>"]
   O --> C["check.py<br/><i>15 checks</i>"]
-  O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/><i>measured, not eyeballed</i>"]
+  O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/>svg-routes.js<br/><i>measured, not eyeballed</i>"]
   C --> D["GitHub Pages<br/><i>domain root</i>"]
 
   style P fill:#10131a,stroke:#8d97a9,color:#e6e9ef
@@ -54,6 +55,7 @@ flowchart LR
 | `svg-geometry.js` | text nodes must not overlap each other, in every SVG asset |
 | `svg-bounds.js` | text must not extend past the viewBox — the overlap check cannot see this |
 | `svg-scale.js` | the smallest label in every embedded figure must render ≥10px at 1280/900/390px |
+| `svg-routes.js` | no visible connector may be routed through a box interior — pure path/rect geometry, no browser |
 | `assets/style.css` | one stylesheet for all eight pages |
 | `assets/logo.svg` | brand mark, themed — favicon (follows the tab strip) |
 | `assets/logo-dark.svg` | brand mark, forced dark — nav (site is always dark) |
@@ -162,6 +164,21 @@ GROUP`) was green, which made four different things green — two signature stag
 two audience stages. Those boxes answer *who can read it*, so they now take cyan, which
 already means "readable / distributed" in the same vocabulary. Green is left to `SIGNED`
 and `VALIDATED`.
+
+**A connector must route around a box, and only geometry can prove it does.**
+Separating those three crowded attachments moved the author fast lane from x=640 to
+x=648 — which is *inside* the `THE SECOND GATE` box (x 632..772). The dashed line and
+its animated dot climbed vertically through 78px of that box's interior, and it
+shipped. Every existing check passed it: `svg-geometry.js` compares text nodes to each
+other, `svg-bounds.js` compares text to the viewBox, `svg-scale.js` measures rendered
+font size. A path crossing a rect involves no text at all, so none of them could see
+it. The fast lane now climbs the 24px corridor between `GRADED & SIGNED` (…608) and
+`THE SECOND GATE` (632…) at x=620 — the only vertical route out of the rail after
+signing that crosses nothing, and semantically the right one, since the author's copy
+becomes readable the moment signing completes and before the second gate. `svg-routes.js`
+flattens every visible path and tests it against every leaf box, so this cannot recur.
+Confirmed in pixels either way: at y=118 the branch sat at x=647 before and sits at
+x=619 now.
 
 **A branch needs a marked origin, not just a correct one.** Three routes left the hero's
 rail within the 152px under `GRADED & SIGNED` — the stage dot at x=532, the author fast
