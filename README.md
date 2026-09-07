@@ -24,6 +24,8 @@ node    svg-bounds.js      # ...nor run outside their viewBox     (needs a brows
 node    svg-scale.js       # ...nor scale under 10px in the page  (needs a browser)
 node    svg-routes.js      # no connector may run through a box   (pure geometry)
 node    svg-fit.js         # ...and every label fits its own box   (needs a browser)
+node    svg-clearance.js   # ...and no line crowds a label         (needs a browser)
+python3 hero-variants.py   # regenerate hero-flow layout options into .tmp/variants/
 ```
 
 `*.html` at the root is **generated**. Edit `pages/*.html` and rebuild — a change made
@@ -34,7 +36,7 @@ flowchart LR
   P["pages/*.html<br/><i>bodies only</i>"] --> B["build.py<br/><i>shared shell</i>"]
   B --> O["*.html<br/><i>generated</i>"]
   O --> C["check.py<br/><i>15 checks</i>"]
-  O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/>svg-routes.js<br/>svg-fit.js<br/><i>measured, not eyeballed</i>"]
+  O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/>svg-routes.js<br/>svg-fit.js<br/>svg-clearance.js<br/><i>measured, not eyeballed</i>"]
   C --> D["GitHub Pages<br/><i>domain root</i>"]
 
   style P fill:#10131a,stroke:#8d97a9,color:#e6e9ef
@@ -58,6 +60,7 @@ flowchart LR
 | `svg-scale.js` | the smallest label in every embedded figure must render ≥10px at 1280/900/390px |
 | `svg-routes.js` | no visible connector may be routed through a box interior — pure path/rect geometry, no browser |
 | `svg-fit.js` | every label must fit inside the box that contains it, with 8px clear on each side |
+| `svg-clearance.js` | no stroked line may pass within 6px of any label's rendered box |
 | `check.py` 7b | a button label names its destination — it may not argue for the click, price it, or tell the reader they are wrong |
 | `assets/style.css` | one stylesheet for all eight pages |
 | `assets/logo.svg` | brand mark, themed — favicon (follows the tab strip) |
@@ -167,6 +170,37 @@ GROUP`) was green, which made four different things green — two signature stag
 two audience stages. Those boxes answer *who can read it*, so they now take cyan, which
 already means "readable / distributed" in the same vocabulary. Green is left to `SIGNED`
 and `VALIDATED`.
+
+**When a connector needs to dodge something, the layout is wrong, not the
+connector.** Three commits in a row patched the hero figure's author fast lane:
+reroute it away from a box, then re-centre its callout, then jog it to reach the
+callout again. Each edit was locally right and they composed into nonsense -- the
+lane left the GRADED & SIGNED box, curved right, climbed, ran back left and
+re-entered the same box it started from. Right, up, left, up, for a branch whose
+whole meaning is "this stage, immediately".
+
+The lesson is that a single horizontal rail with three kinds of branch hanging off
+it gives a branch nowhere to go but around, and "around" means curves, and curves
+have to weave between labels. So the figure is now GENERATED (`hero-variants.py`)
+from one geometry source under two rules that the old one broke: a branch leaves
+and enters at a JUNCTION -- the dot on a stage centre line, never an arbitrary
+point inside a box -- and connectors are orthogonal, straight runs with a small
+corner radius, never quadratics threading past text.
+
+Four layouts were built and measured rather than argued about: a banded rail, a
+two-column vertical spine, a three-lane version with no branches at all, and a
+rail-less chain of edge-to-edge boxes. The banded rail won on numbers -- tightest
+line-to-label clearance 9px against the old figure's 5px, 436px tall so it stays a
+glance where the two-column version needs 795px and becomes a scroll. Curvature
+fell from 8.5% of sampled connector length to 3.5%, and that remainder is just the
+two rounded corners of the rejection bracket.
+
+`svg-clearance.js` is the gate: no stroked line may pass within 6px of any label's
+rendered box. It reproduces the 5px violation in the old figure, and it found a
+third asset with the same defect that nobody had reported -- a `cost-flow.svg`
+caption sitting 2px above a box border. Worth recording that I first "fixed" that
+by excluding it as a false positive; it was real, and the reflex to explain away
+an inconvenient true positive is the more dangerous bug.
 
 **A label must fit the box that holds it, and only measurement knows.** The hero
 figure looked cheap and the reason was mechanical, not aesthetic: eleven labels were

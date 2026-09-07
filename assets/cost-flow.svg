@@ -49,26 +49,26 @@ organization keeps what it paid for.</desc>
 <text class="sb" x="410" y="41">four colleagues hit the same wrong assumption — each pays for it alone</text>
 <!-- bracket ties the label to the four boxes it describes; floating it above them
      left the connection to inference -->
-<path d="M 410 46 L 410 50 L 1016 50 L 1016 46" fill="none" stroke="#4c0519" stroke-width="1.3"/>
+<path d="M 410 54 L 410 58 L 1016 58 L 1016 54" fill="none" stroke="#4c0519" stroke-width="1.3"/>
 <g>
-  <rect x="410" y="52" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
-  <text class="sb" x="480" y="76" text-anchor="middle" fill="#fecdd3">corrects it again</text>
-  <text class="sb" x="480" y="93" text-anchor="middle">pays again</text>
+  <rect x="410" y="60" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <text class="sb" x="480" y="84" text-anchor="middle" fill="#fecdd3">corrects it again</text>
+  <text class="sb" x="480" y="101" text-anchor="middle">pays again</text>
 </g>
 <g>
-  <rect x="562" y="52" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
-  <text class="sb" x="632" y="76" text-anchor="middle" fill="#fecdd3">corrects it again</text>
-  <text class="sb" x="632" y="93" text-anchor="middle">pays again</text>
+  <rect x="562" y="60" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <text class="sb" x="632" y="84" text-anchor="middle" fill="#fecdd3">corrects it again</text>
+  <text class="sb" x="632" y="101" text-anchor="middle">pays again</text>
 </g>
 <g>
-  <rect x="714" y="52" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
-  <text class="sb" x="784" y="76" text-anchor="middle" fill="#fecdd3">corrects it again</text>
-  <text class="sb" x="784" y="93" text-anchor="middle">pays again</text>
+  <rect x="714" y="60" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <text class="sb" x="784" y="84" text-anchor="middle" fill="#fecdd3">corrects it again</text>
+  <text class="sb" x="784" y="101" text-anchor="middle">pays again</text>
 </g>
 <g>
-  <rect x="866" y="52" width="150" height="54" rx="10" class="agent" stroke="#4c0519"/>
-  <text class="sb" x="941" y="76" text-anchor="middle" fill="#fecdd3">corrects it again</text>
-  <text class="sb" x="941" y="93" text-anchor="middle">pays again</text>
+  <rect x="866" y="60" width="150" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <text class="sb" x="941" y="84" text-anchor="middle" fill="#fecdd3">corrects it again</text>
+  <text class="sb" x="941" y="101" text-anchor="middle">pays again</text>
 </g>
 
 <text class="big" x="24" y="140" fill="#fb7185">Five payments, one lesson — and no record of who decided any of it.</text>

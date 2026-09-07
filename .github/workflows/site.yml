@@ -83,3 +83,9 @@ jobs:
       # their boxes and the whole suite called it clean.
       - name: svg labels fit their boxes
         run: node svg-fit.js
+
+      # ...and must not be crowded by a line. The five checks above never compare
+      # a stroke to a label, so a connector could run 2px under a descender and
+      # the whole suite still called the file clean.
+      - name: svg label clearance from lines
+        run: node svg-clearance.js
