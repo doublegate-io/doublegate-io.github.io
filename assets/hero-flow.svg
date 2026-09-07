@@ -14,6 +14,13 @@ and logs bypass review entirely.</desc>
     .nm   { font-size:14px; font-weight:600; fill:#e6e9ef; }
     .sb   { font-size:12.5px; fill:#97a1b2; }
     .panel{ fill:#0e1118; stroke:#1e2430; stroke-width:1.4; }
+
+    /* A reader who asks the OS for less motion gets the static diagram. Every
+       moving part here is decoration over a figure that already reads standing
+       still, so stopping it costs nothing and keeps the argument intact. */
+    @media (prefers-reduced-motion: reduce) {
+      .mover { display: none; }
+    }
   ]]></style>
 
   <linearGradient id="gHold" x1="0" y1="0" x2="0" y2="1">
@@ -147,7 +154,7 @@ and logs bypass review entirely.</desc>
 </text>
 
 <!-- ════════ animation: dots ride the rail, never crossing a label ════════ -->
-<g fill="#fb7185"><circle r="5.5">
+<g class="mover" fill="#fb7185"><circle r="5.5">
   <animateMotion dur="8s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRail"/></animateMotion>
   <animate attributeName="fill" dur="8s" repeatCount="indefinite"
     values="#8d97a9;#fb7185;#fbbf24;#34d399;#a78bfa;#22d3ee;#22d3ee"
@@ -155,7 +162,7 @@ and logs bypass review entirely.</desc>
   <animate attributeName="opacity" dur="8s" repeatCount="indefinite" values="0;1;1;1;0" keyTimes="0;0.04;0.5;0.94;1"/>
   <animate attributeName="r" dur="8s" repeatCount="indefinite" values="5.5;5.5;7;5.5;5.5" keyTimes="0;0.46;0.5;0.56;1"/>
 </circle></g>
-<g fill="#fb7185"><circle r="5.5">
+<g class="mover" fill="#fb7185"><circle r="5.5">
   <animateMotion dur="8s" begin="2.7s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRail"/></animateMotion>
   <animate attributeName="fill" dur="8s" begin="2.7s" repeatCount="indefinite"
     values="#8d97a9;#fb7185;#fbbf24;#34d399;#a78bfa;#22d3ee;#22d3ee"
@@ -163,7 +170,7 @@ and logs bypass review entirely.</desc>
   <animate attributeName="opacity" dur="8s" begin="2.7s" repeatCount="indefinite" values="0;1;1;1;0" keyTimes="0;0.04;0.5;0.94;1"/>
   <animate attributeName="r" dur="8s" begin="2.7s" repeatCount="indefinite" values="5.5;5.5;7;5.5;5.5" keyTimes="0;0.46;0.5;0.56;1"/>
 </circle></g>
-<g fill="#fb7185"><circle r="5.5">
+<g class="mover" fill="#fb7185"><circle r="5.5">
   <animateMotion dur="8s" begin="5.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRail"/></animateMotion>
   <animate attributeName="fill" dur="8s" begin="5.4s" repeatCount="indefinite"
     values="#8d97a9;#fb7185;#fbbf24;#34d399;#a78bfa;#22d3ee;#22d3ee"
@@ -173,33 +180,33 @@ and logs bypass review entirely.</desc>
 </circle></g>
 
 <!-- author copy peels off after signing -->
-<g fill="#34d399"><circle r="4.5">
+<g class="mover" fill="#34d399"><circle r="4.5">
   <animateMotion dur="8s" begin="4.1s" repeatCount="indefinite" calcMode="linear"><mpath href="#mMine"/></animateMotion>
   <animate attributeName="opacity" dur="8s" begin="4.1s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.06;0.3;0.42;1"/>
 </circle></g>
 
 <!-- one in three turns back -->
-<g fill="#fb7185"><circle r="4.5">
+<g class="mover" fill="#fb7185"><circle r="4.5">
   <animateMotion dur="16s" begin="3.6s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRej"/></animateMotion>
   <animate attributeName="opacity" dur="16s" begin="3.6s" repeatCount="indefinite" values="0;1;1;0;0" keyTimes="0;0.02;0.2;0.27;1"/>
 </circle></g>
 
 <!-- records: faster, unimpeded -->
-<g fill="#60a5fa"><circle r="4">
+<g class="mover" fill="#60a5fa"><circle r="4">
   <animateMotion dur="4.4s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRec"/></animateMotion>
   <animate attributeName="opacity" dur="4.4s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.05;0.9;1"/>
 </circle></g>
-<g fill="#60a5fa"><circle r="4">
+<g class="mover" fill="#60a5fa"><circle r="4">
   <animateMotion dur="4.4s" begin="1.5s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRec"/></animateMotion>
   <animate attributeName="opacity" dur="4.4s" begin="1.5s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.05;0.9;1"/>
 </circle></g>
-<g fill="#60a5fa"><circle r="4">
+<g class="mover" fill="#60a5fa"><circle r="4">
   <animateMotion dur="4.4s" begin="2.9s" repeatCount="indefinite" calcMode="linear"><mpath href="#mRec"/></animateMotion>
   <animate attributeName="opacity" dur="4.4s" begin="2.9s" repeatCount="indefinite" values="0;1;1;0" keyTimes="0;0.05;0.9;1"/>
 </circle></g>
 
 <!-- the signing moment pulses -->
-<rect x="456" y="120" width="152" height="88" rx="14" fill="none" stroke="#34d399" stroke-width="2">
+<rect class="mover" x="456" y="120" width="152" height="88" rx="14" fill="none" stroke="#34d399" stroke-width="2">
   <animate attributeName="stroke-opacity" dur="8s" repeatCount="indefinite" values="0;0;.85;0;0" keyTimes="0;0.44;0.5;0.6;1"/>
   <animate attributeName="stroke-width" dur="8s" repeatCount="indefinite" values="2;2;4.5;2;2" keyTimes="0;0.44;0.5;0.6;1"/>
 </rect>

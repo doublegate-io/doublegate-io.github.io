@@ -9,8 +9,11 @@
 <meta property="og:description" content="The research behind the pitch: the 66-firm field experiment, Meta's in-house build, the provider survey, and the skill security data. Each one linked to its primary source.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <meta property="og:image" content="https://doublegate-io.github.io/assets/social-card.svg">
-<meta property="og:url" content="https://doublegate-io.github.io/">
+<meta property="og:url" content="https://doublegate-io.github.io/evidence.html">
+<link rel="canonical" href="https://doublegate-io.github.io/evidence.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -48,16 +51,19 @@
         calling the shift ahead AI's "multiplayer moment".</p>
         <p class="ev-use"><b>What we use it for:</b> the entire organizational pitch. It is the
         reason the product is aimed at a company rather than a developer.</p>
-        <a class="src" href="https://www.weforum.org/stories/artificial-intelligence/workplace-ai-has-a-visibility-problem-here-s-how-to-fix-it/">World Economic Forum, 3 September 2026</a>
+        <p class="ev-use dim"><b>How we read it:</b> this reaches us through the Forum's summary of
+        the experiment, not the experiment's own paper. We have not read the underlying study, so
+        treat the framing as theirs and the figure as reported rather than verified at source.</p>
+        <a class="src" href="https://www.weforum.org/stories/artificial-intelligence/workplace-ai-has-a-visibility-problem-here-s-how-to-fix-it/">World Economic Forum, Reese Wong, 3 September 2026</a>
       </article>
 
       <article class="ev">
         <h3>A hyperscaler built this rather than buy it</h3>
         <p>Meta's "organizational second brain" uses adversarial review by an agent that shares no
         context with the author, validation that passes or fails rather than scoring, human expert
-        sign-off, and a complete audit trail. They state they had <b>not seen that level of
-        validation rigor applied to an institutional knowledge base</b> elsewhere, and describe the
-        output as "compounding institutional memory".</p>
+        sign-off, and a complete audit trail. They state they had <b>not seen this level of
+        validation rigor applied to a structured knowledge base without model retraining</b>, and
+        describe the output as "permanent, compounding institutional memory".</p>
         <p class="ev-use"><b>What we use it for:</b> evidence the architecture is right, and that
         the category is unserved — they built it in-house because there was nothing to buy.</p>
         <a class="src" href="https://engineering.fb.com/2026/09/02/ml-applications/organizational-second-brain-ai-learns-from-experts/">Meta Engineering, 2 September 2026</a>
@@ -99,6 +105,7 @@
         deliberate choices with stated reasons (operational cost, vendor neutrality, liability),
         and anyone claiming to fix them inherits those costs.</p>
         <a class="src" href="https://github.com/modelcontextprotocol/registry/blob/main/docs/design/design-principles.md">The registry's published design principles</a>
+        <a class="src" href="https://github.com/modelcontextprotocol/registry/blob/main/docs/design/ecosystem-vision.md">and its ecosystem vision, for the subregistry role</a>
       </article>
 
       <article class="ev">
@@ -148,11 +155,14 @@
       </article>
       <article class="ev warn">
         <h3>Willingness to share knowledge falls as the audience widens</h3>
-        <p>A study of 80 professionals found people were willing to share their AI interaction
-        traces within <b>bounded groups</b>, with comfort dropping as the audience grew. This
-        validates our author&nbsp;→&nbsp;group&nbsp;→&nbsp;organization tiering, and it also warns
-        that company-wide sharing will meet resistance we have to design for, not assert past.</p>
-        <span class="src">Our summary, with the citation above</span>
+        <p>In a study of <b>80 professionals</b>, people were <b>"broadly willing to share these
+        traces […] but only within bounded groups"</b>, and <b>"comfort drops sharply as audience
+        expands beyond close teams"</b>. The authors also found that the level of detail shared
+        mattered less than who could see it.</p>
+        <p class="ev-use"><b>What we use it for:</b> it supports our
+        author&nbsp;→&nbsp;group&nbsp;→&nbsp;organization tiering, and it warns that company-wide
+        sharing meets resistance we have to design for rather than assert past.</p>
+        <a class="src" href="https://arxiv.org/abs/2606.02763">Morris and Maes, MIT Media Lab — arXiv 2606.02763, 1 June 2026</a>
       </article>
     </div>
   </div>
@@ -179,7 +189,9 @@
     <p class="note">
       The rule we work to: if a claim reads like a snapshot of one machine, it is an anecdote and
       it gets labelled as one. Our own measurements — including the ratio of records to claims
-      quoted elsewhere on this site — are illustrations, not population findings.
+      quoted elsewhere on this site — are illustrations, not population findings. The same applies
+      to the front page's five hundred agents: it is a picture of scale, not a count of anyone's
+      estate, and nothing in the argument depends on the number.
     </p>
   </div>
 </section>
@@ -203,7 +215,9 @@
   <div class="wrap foot">
     <div>
       <b>doublegate</b> · design phase · every claim traces to cited research
-      <p class="dim">Open source. Solo use is free and stays that way.</p>
+      <p class="dim">Open source. Solo use is free and stays that way.
+      <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
+      "you got this wrong".</p>
     </div>
     <div class="foot-links">
       <a href="how-it-works.html">How it works</a>
@@ -212,6 +226,7 @@
       <a href="pricing.html">Pricing</a>
       <a href="evidence.html">Evidence</a>
       <a href="https://github.com/doublegate-io/doublegate-io.github.io">GitHub</a>
+      <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
     </div>
   </div>
 </footer>

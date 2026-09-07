@@ -83,6 +83,10 @@ TITLES = {
 
 GH = "https://github.com/doublegate-io/doublegate-io.github.io"
 DOCS = f"{GH}/blob/main/docs"
+# Where a convinced reader goes. There is no product repo, no form and no list yet,
+# so this is the one contact surface that actually exists and answers.
+CONTACT = f"{GH}/issues"
+SITE = "https://doublegate-io.github.io/"
 
 SHELL = """<!doctype html>
 <html lang="en">
@@ -95,8 +99,11 @@ SHELL = """<!doctype html>
 <meta property="og:description" content="{desc}">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
+<link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
 <meta property="og:image" content="https://doublegate-io.github.io/assets/social-card.svg">
-<meta property="og:url" content="https://doublegate-io.github.io/">
+<meta property="og:url" content="{canonical}">
+<link rel="canonical" href="{canonical}">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/style.css">
 </head>
@@ -115,7 +122,9 @@ SHELL = """<!doctype html>
   <div class="wrap foot">
     <div>
       <b>doublegate</b> · design phase · every claim traces to cited research
-      <p class="dim">Open source. Solo use is free and stays that way.</p>
+      <p class="dim">Open source. Solo use is free and stays that way.
+      <a href="{contact}">Questions, objections and corrections go here</a> — including
+      "you got this wrong".</p>
     </div>
     <div class="foot-links">
       <a href="how-it-works.html">How it works</a>
@@ -124,6 +133,7 @@ SHELL = """<!doctype html>
       <a href="pricing.html">Pricing</a>
       <a href="evidence.html">Evidence</a>
       <a href="{gh}">GitHub</a>
+      <a href="{contact}">Ask a question</a>
     </div>
   </div>
 </footer>
@@ -146,30 +156,111 @@ def nav_html(current: str) -> str:
 def render(page: str) -> str:
     title, desc = TITLES[page]
     body = (PAGES / page).read_text().strip()
+    # index.html is served at the domain root, so its canonical is the bare
+    # domain — not "/index.html", which would be a second URL for one page.
+    canonical = SITE if page == "index.html" else SITE + page
     return SHELL.format(
-        title=title, desc=desc, nav=nav_html(page), body=body, gh=GH
+        title=title, desc=desc, nav=nav_html(page), body=body, gh=GH,
+        contact=CONTACT, canonical=canonical,
     )
+
+
+def render_sitemap() -> str:
+    """Generated from NAV so a new page cannot be missing from the sitemap."""
+    urls = "\n".join(
+        f"  <url><loc>{SITE if p == 'index.html' else SITE + p}</loc></url>"
+        for p, _ in NAV
+    )
+    return (
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{urls}\n</urlset>\n"
+    )
+
+
+def render_robots() -> str:
+    return f"User-agent: *\nAllow: /\n\nSitemap: {SITE}sitemap.xml\n"
+
+
+# GitHub Pages serves /404.html for any unmatched path. It goes through the same
+# shell as every page so a lost reader still gets the nav, the footer and a way
+# on -- a bare "not found" is a dead end, which is the one thing check 7 forbids
+# everywhere else.
+NOT_FOUND_BODY = """<section id="top">
+  <div class="wrap hero narrow">
+    <p class="eyebrow">404</p>
+    <h1>That page <span class="grad">is not here</span></h1>
+    <p class="lede">
+      The link is wrong, or it pointed at something that moved. Nothing is broken on your side.
+    </p>
+    <div class="cta-row">
+      <a class="btn primary" href="index.html">Start at the overview</a>
+      <a class="btn" href="how-it-works.html">See how it works</a>
+    </div>
+    <p class="micro">
+      If a link on this site brought you here, that is our bug —
+      <a href="{contact}">tell us where it was</a>.
+    </p>
+  </div>
+</section>"""
+
+
+def render_404() -> str:
+    # Absolute asset and link paths: /404.html can be served from any depth, and
+    # a relative "assets/style.css" would 404 alongside it.
+    markup = SHELL.format(
+        title="Not found — doublegate",
+        desc=(
+            "That page is not here. The link is wrong or it pointed at something that "
+            "moved — start from the overview, or tell us which link was broken."
+        ),
+        nav=nav_html("404.html"),
+        body=NOT_FOUND_BODY.format(contact=CONTACT),
+        gh=GH,
+        contact=CONTACT,
+        canonical=SITE,
+    )
+    # An error page must not invite indexing, and must not claim to BE the home
+    # page it points at: drop the canonical, keep og:url pointing at the root so
+    # a shared 404 previews as the site rather than as nothing.
+    markup = markup.replace(
+        f'<link rel="canonical" href="{SITE}">\n',
+        '<meta name="robots" content="noindex">\n',
+    )
+    markup = markup.replace('href="assets/', 'href="/assets/')
+    markup = markup.replace('src="assets/', 'src="/assets/')
+    for page, _ in NAV:
+        markup = markup.replace(f'href="{page}"', f'href="/{page}"')
+    return markup
 
 
 def main() -> int:
     check = "--check" in sys.argv
     stale, written = [], []
-    for page, _ in NAV:
-        want = render(page)
-        out = ROOT / page
+
+    # (path, content) for everything generated, pages and crawler files alike,
+    # so --check covers all of it and a drifted sitemap fails CI like a
+    # drifted page does.
+    targets = [(page, render(page)) for page, _ in NAV]
+    targets.append(("sitemap.xml", render_sitemap()))
+    targets.append(("robots.txt", render_robots()))
+    targets.append(("404.html", render_404()))
+
+    for name, want in targets:
+        out = ROOT / name
         if check:
             if not out.exists() or out.read_text() != want:
-                stale.append(page)
+                stale.append(name)
         else:
             out.write_text(want)
-            written.append(page)
+            written.append(name)
     if check:
         if stale:
             print("STALE (run python3 site/build.py):", ", ".join(stale))
             return 1
-        print(f"all {len(NAV)} pages up to date")
+        print(f"all {len(targets)} files up to date")
         return 0
-    print(f"wrote {len(written)} pages: {', '.join(written)}")
+    print(f"wrote {len(written)} files: {', '.join(written)}")
     return 0
 
 

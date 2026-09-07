@@ -49,6 +49,19 @@ pages = sorted(p for p in ROOT.glob("*.html") if not p.name.startswith(".tmp"))
 if not pages:
     fail("no built pages — run python3 site/build.py")
 
+# 404.html is a page in every respect except addressing. GitHub Pages serves it
+# for an unmatched path at ANY depth, so its links and assets must be
+# root-absolute ("/assets/style.css") where every other page is relative. That
+# makes it exempt from two checks below — link resolution reads the leading
+# slash off first, and nav parity ignores it — and from the current-page marker,
+# since no nav entry is ever "here" on a 404.
+NOT_FOUND = "404.html"
+
+
+def resolve(href: str) -> str:
+    """Strip the leading slash so a root-absolute href resolves on disk."""
+    return href[1:] if href.startswith("/") else href
+
 for page in pages:
     markup = page.read_text()
     name = page.name
@@ -69,11 +82,11 @@ for page in pages:
     # 3. internal page links resolve. Six pages cross-link heavily; a renamed
     #    file used to break silently because nothing checked across pages.
     for href in re.findall(r'href="([^"#:]+\.html)(?:#[^"]*)?"', markup):
-        if not (ROOT / href).exists():
+        if not (ROOT / resolve(href)).exists():
             fail(f"{name}: link to missing page {href}")
 
     # 4. referenced assets exist.
-    for src in re.findall(r'(?:src|href)="(assets/[^"]+)"', markup):
+    for src in re.findall(r'(?:src|href)="/?(assets/[^"]+)"', markup):
         if not (ROOT / src).exists():
             fail(f"{name}: missing asset {src}")
 
@@ -144,9 +157,9 @@ for page in pages:
         fail(f"{page.name}: no nav")
         continue
     links = re.findall(r'href="([^"]+)"', block.group(1))
-    navs[page.name] = links
+    navs[page.name] = [resolve(h) for h in links]
     here = re.findall(r'class="here"', block.group(1))
-    if page.name != "index.html" and len(here) != 1:
+    if page.name not in ("index.html", NOT_FOUND) and len(here) != 1:
         fail(f"{page.name}: expected exactly 1 current-page marker, found {len(here)}")
 if len({tuple(v) for v in navs.values()}) > 1:
     fail(f"nav differs between pages: {navs}")
@@ -188,6 +201,53 @@ if readme.exists():
     for src in re.findall(r'<img[^>]*src="(site/[^"]+)"', text):
         if not (REPO / src.removeprefix("site/")).exists():
             fail(f"README.md: missing asset {src}")
+
+# 14. NO ORPHANED SENTENCE FRAGMENTS IN VISIBLE COPY.
+#     Stripping the links to the private design repo left two captions behind as
+#     fragments — "…you do not own." followed by "a deliberate decision, not an
+#     oversight" — which read as broken English and shipped that way, because
+#     nothing checked prose shape. A sentence that starts lowercase after a full
+#     stop, or a paragraph that never terminates, is the signature of that edit.
+SENTENCE_START = re.compile(r"[.!?]\s+([a-z])")
+for page in pages:
+    for attrs, para in re.findall(r"(?s)<p([^>]*)>(.*?)</p>", page.read_text()):
+        text = re.sub(r"\s+", " ", visible(para)).strip()
+        if not text:
+            continue
+        # a lowercase word opening a new sentence
+        for m in SENTENCE_START.finditer(text):
+            frag = text[max(0, m.start() - 40): m.start() + 40]
+            # tolerate deliberate lowercase: the product name, and file/URL-ish tokens
+            word = re.match(r"[a-z][\w-]*", text[m.start(1):])
+            if word and word.group(0) in ("doublegate", "mem0", "arxiv"):
+                continue
+            fail(f"{page.name}: sentence starts lowercase -> …{frag}…")
+        # a visible paragraph that never terminates: the fragment's other shape.
+        # Eyebrow labels and "→" link captions are deliberately unpunctuated, so
+        # only prose is held to this — a paragraph with a sentence in it.
+        is_label = "→" in text or "eyebrow" in attrs
+        if len(text) > 40 and not is_label and text[-1] not in ".!?:;”\"')»…—":
+            fail(f"{page.name}: paragraph does not end in punctuation -> …{text[-50:]}")
+
+# 15. EVERY EVIDENCE CLAIM CARRIES A RESOLVABLE SOURCE.
+#     The evidence page promises "if a claim cannot be sourced, it is marked as
+#     unverified or it is not here", then shipped an <article> whose source line
+#     read "Our summary, with the citation above" pointing at nothing. On the one
+#     page whose entire job is citation integrity, an uncited claim is the worst
+#     possible defect, so it is now an assertion.
+ev = ROOT / "evidence.html"
+if ev.exists():
+    for art in re.findall(r"(?s)<article[^>]*>(.*?)</article>", ev.read_text()):
+        heading = re.search(r"(?s)<h3[^>]*>(.*?)</h3>", art)
+        label = re.sub(r"\s+", " ", visible(heading.group(1))).strip() if heading else "?"
+        linked = re.search(r'<a class="src" href="(https?://[^"]+)"', art)
+        if linked:
+            continue
+        # an unlinked source is allowed ONLY when it says so in plain words
+        span = re.search(r"(?s)<span class=\"src\">(.*?)</span>", art)
+        claim = re.sub(r"\s+", " ", visible(span.group(1))).lower() if span else ""
+        if not any(w in claim for w in ("our survey", "our own", "unverified", "on request")):
+            fail(f"evidence.html: claim without a resolvable source -> {label!r}")
 
 # ---------------------------------------------------------------- report
 if fails:
