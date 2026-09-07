@@ -32,6 +32,15 @@ SANS = "ui-sans-serif, system-ui, -apple-system, Segoe UI, Inter, sans-serif"
 
 # Ordered newest-first: the current recommendation should be the first thing seen.
 GROUPS = [
+    ("Round 5 — untried stances: borrowed symbols, negative space, impressions",
+     "gate-v2/round5", [
+        ("caret", "STRONGEST MEASURED — proofreader's insert mark · reads 'an arrow or a mountain peak', NOT a tick"),
+        ("deboss", "one block with a struck impression · reads 'a square containing a diamond'"),
+        ("chainlink", "two interlocking links, chain of custody"),
+        ("channel", "gates are ONLY the void between two blocks — reads as 'H', new failure class"),
+        ("notchpair", "one form cut twice — reads as an hourglass/bowtie"),
+        ("keystone", "the stone that locks an arch — FUSED, 0 scanlines, reads as a play button"),
+    ]),
     ("Round 4 — one or two elements, no diagram (Rand: a logo does not explain the business)",
      "gate-v2/round4", [
         ("offset", "STRONGEST — two identical squares, one offset · reads 'two overlapping squares'"),
