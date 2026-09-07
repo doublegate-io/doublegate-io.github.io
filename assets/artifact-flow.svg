@@ -28,6 +28,9 @@
       .tLed    { font-size:12.5px; fill:#ddd6fe; }
       .tCyn    { font-size:12.5px; fill:#a5f3fc; }
       .flow    { fill:none; stroke:#232b39; stroke-width:2.5; }
+      /* joins between zones must be followable, not inferred: the quiet
+         #232b39 within-zone stroke is 1.35:1 on this ground. */
+      .join    { fill:none; stroke:#4a5568; stroke-width:2.5; }
       .rej     { fill:none; stroke:#4c1d24; stroke-width:2; stroke-dasharray:5 5; }
 
       .crawl { stroke-dasharray:7 15; animation:crawl 1.5s linear infinite; }
@@ -56,6 +59,8 @@
       <stop offset="0" stop-color="#78350f"/><stop offset="1" stop-color="#5c2a0c"/></linearGradient>
     <linearGradient id="gOk" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#064e3b"/><stop offset="1" stop-color="#04382b"/></linearGradient>
+    <linearGradient id="gAud" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#062c3a"/><stop offset="1" stop-color="#04212c"/></linearGradient>
     <linearGradient id="gLed" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#4c1d95"/><stop offset="1" stop-color="#3b1675"/></linearGradient>
     <linearGradient id="gBus" x1="0" y1="0" x2="1" y2="0">
@@ -89,8 +94,8 @@
   </g>
   <text class="cap" x="30" y="108">a memory, a fact, an installed skill</text>
 
-  <path class="flow crawl" d="M 520 116 L 520 172"/>
-  <path class="flow" d="M 513 164 L 520 172 L 527 164" stroke-linejoin="round"/>
+  <path class="join crawl" d="M 520 116 L 520 172"/>
+  <path class="join" d="M 513 164 L 520 172 L 527 164" stroke-linejoin="round"/>
 
   <!-- ═════ 2 · client gate ═════ -->
   <rect class="panel" x="20" y="178" width="1000" height="192" rx="16"/>
@@ -141,20 +146,20 @@
   <text class="capR" x="420" y="360" text-anchor="middle">rejected → stays held, with its reasons, and can be re-earned</text>
 
   <!-- ═════ 3 · two audiences open up ═════ -->
-  <path class="flow" d="M 882 332 L 882 392 Q 882 404 870 404 L 150 404 Q 138 404 138 416 L 138 442"/>
+  <path class="join" d="M 882 332 L 882 392 Q 882 404 870 404 L 150 404 Q 138 404 138 416 L 138 442"/>
   <path d="M 882 332 L 882 392 Q 882 404 870 404 L 150 404" fill="none" stroke="url(#gBus)"
         stroke-width="2.5" opacity=".4" class="crawl"/>
-  <path class="flow" d="M 508 404 L 508 442"/>
-  <path class="flow" d="M 132 434 L 138 442 L 144 434" stroke-linejoin="round"/>
-  <path class="flow" d="M 502 434 L 508 442 L 514 434" stroke-linejoin="round"/>
+  <path class="join" d="M 508 404 L 508 442"/>
+  <path class="join" d="M 132 434 L 138 442 L 144 434" stroke-linejoin="round"/>
+  <path class="join" d="M 502 434 L 508 442 L 514 434" stroke-linejoin="round"/>
 
   <text class="zoneN" x="30" y="432">③ WHO CAN READ IT, AND WHEN</text>
 
   <g>
     <rect class="panelIn" x="30" y="442" width="440" height="106" rx="12"/>
-    <rect x="46" y="462" width="180" height="68" rx="9" fill="url(#gOk)" stroke="#34d399" stroke-width="1.5" opacity=".85"/>
-    <text class="sName" x="136" y="490" fill="#d1fae5" text-anchor="middle">YOU</text>
-    <text class="tOk"   x="136" y="512" text-anchor="middle">straight away</text>
+    <rect x="46" y="462" width="180" height="68" rx="9" fill="url(#gAud)" stroke="#22d3ee" stroke-width="1.5" opacity=".85"/>
+    <text class="sName" x="136" y="490" fill="#a5f3fc" text-anchor="middle">YOU</text>
+    <text class="tCyn"  x="136" y="512" text-anchor="middle">straight away</text>
     <text class="cap"   x="242" y="486">your own agents use it</text>
     <text class="cap"   x="242" y="504">the moment you write it —</text>
     <text class="cap"   x="242" y="522">no waiting on anyone</text>
@@ -162,16 +167,16 @@
 
   <g>
     <rect class="panelIn" x="490" y="442" width="440" height="106" rx="12"/>
-    <rect x="506" y="462" width="180" height="68" rx="9" fill="url(#gOk)" stroke="#34d399" stroke-width="1.5"/>
-    <text class="sName" x="596" y="490" fill="#d1fae5" text-anchor="middle">YOUR GROUP</text>
-    <text class="tOk"   x="596" y="512" text-anchor="middle">once signed</text>
+    <rect x="506" y="462" width="180" height="68" rx="9" fill="url(#gAud)" stroke="#22d3ee" stroke-width="1.5"/>
+    <text class="sName" x="596" y="490" fill="#a5f3fc" text-anchor="middle">YOUR GROUP</text>
+    <text class="tCyn"  x="596" y="512" text-anchor="middle">once signed</text>
     <text class="cap"   x="702" y="486">teammates on this gate</text>
     <text class="cap"   x="702" y="504">read it after review —</text>
     <text class="cap"   x="702" y="522">signature attached</text>
   </g>
 
-  <path class="flow crawl" d="M 520 556 L 520 616"/>
-  <path class="flow" d="M 513 608 L 520 616 L 527 608" stroke-linejoin="round"/>
+  <path class="join crawl" d="M 520 556 L 520 616"/>
+  <path class="join" d="M 513 608 L 520 616 L 527 608" stroke-linejoin="round"/>
   <text class="cap" x="536" y="592">submitted onward, in the background</text>
 
   <!-- ═════ 4 · organization gate ═════ -->
@@ -208,7 +213,7 @@
     <text class="tLed"  x="888" y="724" text-anchor="middle">who · when · why</text>
     <g opacity=".9">
       <rect x="824" y="736" width="128" height="4" rx="2" fill="#a78bfa" opacity=".3"/>
-      <rect x="824" y="736" width="128" height="4" rx="2" fill="#a78bfa">
+      <rect class="mover" x="824" y="736" width="128" height="4" rx="2" fill="#a78bfa">
         <animate attributeName="width" values="0;128" dur="3.2s" repeatCount="indefinite"/>
       </rect>
     </g>
@@ -222,9 +227,9 @@
     <text class="capB" x="90" y="801">cleared for distribution — send this one back out to everyone</text>
   </g>
 
-  <path class="flow crawl" d="M 520 830 L 520 878"/>
+  <path class="join crawl" d="M 520 830 L 520 878"/>
   <path d="M 520 830 L 520 878" fill="none" stroke="url(#gBus)" stroke-width="2.5" opacity=".45" class="crawl"/>
-  <path class="flow" d="M 513 870 L 520 878 L 527 870" stroke-linejoin="round"/>
+  <path class="join" d="M 513 870 L 520 878 L 527 870" stroke-linejoin="round"/>
 
   <!-- ═════ 5 · back out ═════ -->
   <text class="zoneN" x="30" y="908">⑤ EVERY OTHER CLIENT GATE PICKS IT UP</text>
@@ -255,10 +260,10 @@
       <animate attributeName="fill" values="#fb7185;#fb7185;#fbbf24;#fbbf24;#34d399;#34d399"
                keyTimes="0;.18;.32;.66;.8;1" dur="6.4s" begin="-3.7s" repeatCount="indefinite"/>
     </circle>
-    <circle r="6" fill="#34d399">
+    <circle r="6" fill="#22d3ee">
       <animateMotion dur="6.4s" begin="-1.7s" repeatCount="indefinite"><mpath href="#pMine"/></animateMotion>
     </circle>
-    <circle r="6" fill="#34d399">
+    <circle r="6" fill="#22d3ee">
       <animateMotion dur="6.4s" begin="-2.4s" repeatCount="indefinite"><mpath href="#pGrp"/></animateMotion>
     </circle>
     <circle r="6" fill="#34d399">

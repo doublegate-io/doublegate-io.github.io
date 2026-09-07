@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 440" width="1040" height="440"
+     font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif"
+     role="img" aria-labelledby="ctitle cdesc">
+<title id="ctitle">One correction, with and without a shared gate</title>
+<desc id="cdesc">Two rows showing the same correction. Above, per-seat AI today: an engineer corrects
+their agent, the fix stays in that one agent, and four colleagues hit the same wrong assumption and
+each pay to correct it separately — the same lesson bought five times, with no record of who decided
+what. Below, with a shared gate: the same correction is reviewed once by someone who did not write
+it, signed, and then every agent inherits it already vouched for, with one signed record naming who
+approved it and when. The mechanism is the same either way; the difference is whether the
+organization keeps what it paid for.</desc>
+
+<defs>
+  <style><![CDATA[
+    .zn   { font-size:11.5px; font-weight:700; letter-spacing:.1em; }
+    .nm   { font-size:13px; font-weight:600; fill:#e6e9ef; }
+    .sb   { font-size:11.5px; fill:#8d97a9; }
+    .big  { font-size:13.5px; font-weight:650; }
+    .agent{ fill:#0e1118; stroke:#232b39; stroke-width:1.3; }
+  ]]></style>
+  <linearGradient id="cBad" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#4c0519" stop-opacity=".5"/><stop offset="1" stop-color="#4c0519" stop-opacity=".14"/>
+  </linearGradient>
+  <linearGradient id="cOk" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#064e3b" stop-opacity=".6"/><stop offset="1" stop-color="#064e3b" stop-opacity=".16"/>
+  </linearGradient>
+</defs>
+
+<rect width="1040" height="440" fill="#08090c"/>
+
+<!-- ════════ TODAY ════════ -->
+<text class="zn" x="24" y="26" fill="#fb7185">PER-SEAT AI TODAY — THE SAME LESSON, BOUGHT FIVE TIMES</text>
+
+<!-- the one who learns it -->
+<g>
+  <rect x="24" y="44" width="150" height="62" rx="11" fill="url(#cBad)" stroke="#fb7185" stroke-width="1.5"/>
+  <text class="nm" x="99" y="70" text-anchor="middle">one engineer</text>
+  <text class="sb" x="99" y="88" text-anchor="middle">corrects their agent</text>
+</g>
+<path d="M 174 75 L 214 75" stroke="#fb7185" stroke-opacity=".5" stroke-width="1.6" fill="none"/>
+<path d="M 207 69 L 214 75 L 207 81" stroke="#fb7185" stroke-opacity=".5" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+<g>
+  <rect x="214" y="44" width="164" height="62" rx="11" class="agent"/>
+  <text class="nm" x="296" y="70" text-anchor="middle">it stays there</text>
+  <text class="sb" x="296" y="88" text-anchor="middle">one agent, one machine</text>
+</g>
+
+<!-- and the four who pay for it again -->
+<text class="sb" x="410" y="41">four colleagues hit the same wrong assumption — each pays for it alone</text>
+<!-- bracket ties the label to the four boxes it describes; floating it above them
+     left the connection to inference -->
+<path d="M 410 46 L 410 50 L 1016 50 L 1016 46" fill="none" stroke="#4c0519" stroke-width="1.3"/>
+<g>
+  <rect x="410" y="52" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <text class="sb" x="480" y="76" text-anchor="middle" fill="#fecdd3">corrects it again</text>
+  <text class="sb" x="480" y="93" text-anchor="middle">pays again</text>
+</g>
+<g>
+  <rect x="562" y="52" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <text class="sb" x="632" y="76" text-anchor="middle" fill="#fecdd3">corrects it again</text>
+  <text class="sb" x="632" y="93" text-anchor="middle">pays again</text>
+</g>
+<g>
+  <rect x="714" y="52" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <text class="sb" x="784" y="76" text-anchor="middle" fill="#fecdd3">corrects it again</text>
+  <text class="sb" x="784" y="93" text-anchor="middle">pays again</text>
+</g>
+<g>
+  <rect x="866" y="52" width="150" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <text class="sb" x="941" y="76" text-anchor="middle" fill="#fecdd3">corrects it again</text>
+  <text class="sb" x="941" y="93" text-anchor="middle">pays again</text>
+</g>
+
+<text class="big" x="24" y="140" fill="#fb7185">Five payments, one lesson — and no record of who decided any of it.</text>
+<text class="sb" x="24" y="162">A field experiment across 66 firms found individual AI tools produced individual time savings and no broader shift in how the organization works.</text>
+
+<line x1="24" y1="192" x2="1016" y2="192" stroke="#171c25" stroke-width="1"/>
+
+<!-- ════════ WITH A GATE ════════ -->
+<text class="zn" x="24" y="228" fill="#34d399">WITH A SHARED GATE — REVIEWED ONCE, INHERITED BY EVERYONE</text>
+
+<g>
+  <rect x="24" y="246" width="150" height="62" rx="11" fill="url(#cOk)" stroke="#34d399" stroke-width="1.5"/>
+  <text class="nm" x="99" y="272" text-anchor="middle">one engineer</text>
+  <text class="sb" x="99" y="290" text-anchor="middle">corrects their agent</text>
+</g>
+<path d="M 174 277 L 214 277" stroke="#34d399" stroke-opacity=".5" stroke-width="1.6" fill="none"/>
+<path d="M 207 271 L 214 277 L 207 283" stroke="#34d399" stroke-opacity=".5" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+
+<g>
+  <rect x="214" y="240" width="196" height="74" rx="12" fill="url(#cOk)" stroke="#34d399" stroke-width="1.8"/>
+  <text class="nm" x="312" y="266" text-anchor="middle">reviewed once, signed</text>
+  <text class="sb" x="312" y="284" text-anchor="middle">by someone who did not</text>
+  <text class="sb" x="312" y="300" text-anchor="middle">write it</text>
+</g>
+<path d="M 410 277 L 450 277" stroke="#34d399" stroke-opacity=".5" stroke-width="1.6" fill="none"/>
+<path d="M 443 271 L 450 277 L 443 283" stroke="#34d399" stroke-opacity=".5" stroke-width="1.6" fill="none" stroke-linejoin="round"/>
+
+<!-- everyone inherits -->
+<g>
+  <rect x="450" y="234" width="566" height="86" rx="12" fill="#062c3a" fill-opacity=".5" stroke="#22d3ee" stroke-width="1.4"/>
+  <text class="nm" x="733" y="262" text-anchor="middle" fill="#a5f3fc">every agent inherits it, already vouched for</text>
+  <text class="sb" x="733" y="282" text-anchor="middle">the joiner who starts next month gets it too, without asking anyone</text>
+  <text class="sb" x="733" y="302" text-anchor="middle">one signed record: who approved it, when, and on what basis</text>
+</g>
+
+<text class="big" x="24" y="356" fill="#6ee7b7">One payment, one lesson, one record — and it keeps paying after the author leaves.</text>
+<text class="sb" x="24" y="378">The gate is what makes pooling safe: without review, pooling spreads a company's mistakes at the same speed as its insights.</text>
+
+<text class="zn" x="24" y="416" fill="#8d97a9">SAME PEOPLE · SAME CORRECTION · THE DIFFERENCE IS WHETHER THE COMPANY KEEPS WHAT IT PAID FOR</text>
+</svg>

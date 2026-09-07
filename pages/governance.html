@@ -90,6 +90,10 @@
       Memories, skills, connector output, review verdicts — the same four properties apply to all
       of them, because they all go through the same gate.
     </p>
+    <div class="diagram wide">
+      <img src="assets/record-fields.svg" width="100%"
+        alt="One signed record, field by field, with the requirement each field answers. The record holds: the artifact and its version, linked to the version it replaced; the claim itself; where it came from, including source system, slice, fields in scope and the run that produced it, answering the ECB requirement to track back the source of an issue and allow traceability for external validation; what the scanners found, every check pass or fail, answering EU AI Act Article 12 on automatic recording of events over the lifetime of the system; who reviewed it, never the author, and the human who signed off, answering GDPR Article 22(3) on human intervention; the verdict and its reasons, answering GDPR Article 30(1) on maintaining a record of processing activities; when it was decided and from when it is valid, answering BCBS 239 Principle 3 on a single authoritative source; and a signature over every field above, so changing any field stops the signature verifying. A refusal produces the same record with a refused verdict.">
+    </div>
     <div class="cards four">
       <div class="card">
         <span class="card-ico audit">⎔</span>

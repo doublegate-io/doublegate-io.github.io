@@ -19,7 +19,9 @@
 python3 build.py           # regenerate *.html from pages/*.html
 python3 build.py --check   # fail if output is stale (CI does this)
 python3 check.py           # fifteen gate checks
-node    svg-geometry.js    # SVG text-overlap and bounds (optional, needs a browser)
+node    svg-geometry.js    # SVG text nodes must not collide      (needs a browser)
+node    svg-bounds.js      # ...nor run outside their viewBox     (needs a browser)
+node    svg-scale.js       # ...nor scale under 10px in the page  (needs a browser)
 ```
 
 `*.html` at the root is **generated**. Edit `pages/*.html` and rebuild — a change made
@@ -30,7 +32,7 @@ flowchart LR
   P["pages/*.html<br/><i>bodies only</i>"] --> B["build.py<br/><i>shared shell</i>"]
   B --> O["*.html<br/><i>generated</i>"]
   O --> C["check.py<br/><i>15 checks</i>"]
-  O --> G["svg-geometry.js<br/><i>measured, not eyeballed</i>"]
+  O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/><i>measured, not eyeballed</i>"]
   C --> D["GitHub Pages<br/><i>domain root</i>"]
 
   style P fill:#10131a,stroke:#8d97a9,color:#e6e9ef
@@ -49,7 +51,9 @@ flowchart LR
 | `build.py` | shared shell, site map, per-page titles and meta descriptions |
 | `check.py` | gate checks; exits non-zero on any failure |
 | `robots.txt`, `sitemap.xml`, `404.html` | **generated** by `build.py` from `NAV`, so a new page cannot be missing from them |
-| `svg-geometry.js` | text-overlap and viewBox-bounds check for every SVG asset |
+| `svg-geometry.js` | text nodes must not overlap each other, in every SVG asset |
+| `svg-bounds.js` | text must not extend past the viewBox — the overlap check cannot see this |
+| `svg-scale.js` | the smallest label in every embedded figure must render ≥10px at 1280/900/390px |
 | `assets/style.css` | one stylesheet for all eight pages |
 | `assets/logo.svg` | brand mark, themed — favicon (follows the tab strip) |
 | `assets/logo-dark.svg` | brand mark, forced dark — nav (site is always dark) |
@@ -57,6 +61,9 @@ flowchart LR
 | `assets/social-card.svg` | 1200×630 link-preview card (`og:image`) |
 | `assets/hero-flow.svg` | wide animated flow diagram, front page |
 | `assets/artifact-flow.svg` | tall walkthrough diagram, how-it-works |
+| `assets/scope-flow.svg` | the four scopes and where each trust boundary sits, commons |
+| `assets/cost-flow.svg` | one correction with and without a gate, for-organizations |
+| `assets/record-fields.svg` | what a signed record holds, field by requirement, governance |
 | `assets/favicon-32.png` | PNG favicon fallback, light-tab colours baked in |
 | `assets/apple-touch-icon.png` | 180×180 iOS home-screen icon, dark ground + padding |
 | `AGENTS.md` | working agreement: copy craft, positioning, claim limits |
@@ -140,6 +147,30 @@ step. Animation is SMIL, which degrades to a static diagram where unsupported. M
 tracks run on a rail *below* the boxes — an earlier version sent animated dots through the
 labels, legible in a still and unreadable in motion.
 
+**The hero and the walkthrough must use the same words for the same stage.** They
+did not. The hero called the organization gate `COUNTERSIGNED` and drew it as one box;
+the walkthrough called it `REVIEWED → SCORED → VALIDATED → RECORDED` and never used
+the word "countersigned" at all — which appeared nowhere in the prose either. A reader
+who learned the front page met different stage names one click later. The hero now uses
+the walkthrough's own framing (`THE SECOND GATE — reviews it again, on its own
+authority`), because the walkthrough is the one that matches the copy. No gate catches
+this class of defect: `svg-geometry.js` passed both files cleanly the whole time, since
+nothing overlapped and nothing overflowed. It is a story bug, and it needs reading.
+
+**Green means signed, and only signed.** Zone 3 of the walkthrough (`YOU`, `YOUR
+GROUP`) was green, which made four different things green — two signature stages and
+two audience stages. Those boxes answer *who can read it*, so they now take cyan, which
+already means "readable / distributed" in the same vocabulary. Green is left to `SIGNED`
+and `VALIDATED`.
+
+**A branch needs a marked origin, not just a correct one.** Three routes left the hero's
+rail within the 152px under `GRADED & SIGNED` — the stage dot at x=532, the author fast
+lane at x=560, the rejection at x=596. All three were geometrically right and visually
+unreadable: an independent read of the render traced the up-branch to the wrong box.
+They are now 124px apart, direction carries meaning (rejection arcs back left, the fast
+lane climbs forward right), and the rejection's departure carries its own ringed dot
+like every other junction on the rail.
+
 **Both diagrams honour `prefers-reduced-motion`.** Every animated element sits inside a
 `.mover` group the media query hides, so a reader who asks the OS for less motion gets the
 static figure — which still carries the whole argument. Verified by rendering the SVG twice
@@ -149,6 +180,15 @@ pixels on the rails: 168 with motion, 38 without (the 38 are the static stage te
 **Narrow screens do not shrink the diagrams.** Scaling a 1080px figure into a 674px column
 renders its smallest label at 7.2px. Below 900px the figure keeps a legible 1000px width
 and scrolls horizontally instead.
+
+**The container decides legibility, so the container is measured too.** A figure can pass
+the overlap and bounds checks and still be unreadable on the page: `cost-flow.svg` was
+dropped into a `.wrap tight` section (max-width 900px), scaled to 0.783, and rendered its
+11.5px labels at **9.0px** — under the floor this stylesheet commits to, and invisible to
+every gate that measures an SVG in isolation. `svg-scale.js` now walks every built page at
+1280/900/390px, reads each figure's smallest declared `font-size`, multiplies by the
+rendered scale, and fails under 10px. Wide figures belong in a full `.wrap`, not the tight
+prose wrap.
 
 ## Related
 

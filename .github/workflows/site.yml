@@ -19,6 +19,48 @@ jobs:
         run: python3 build.py --check
 
       # tag balance, anchors, cross-page links, assets, vocabulary, metadata,
-      # CTAs, alt text, no private-repo links, nav parity, motion paths
+      # CTAs, alt text, no private-repo links, nav parity, motion paths,
+      # sentence fragments, evidence sources
       - name: gate checks
         run: python3 check.py
+
+  # The SVG checks need a real browser to measure rendered text, so they run in
+  # their own job. Both tools exit 0 on a SKIP path when no browser is found --
+  # that once made a broken check look green for weeks -- so this job asserts the
+  # browser exists before trusting either result.
+  svg:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903  # v6.0.0
+        with:
+          node-version: '22'
+
+      - name: install puppeteer-core
+        run: npm ci || npm install
+
+      # svg-scale.js measures figures inside the BUILT pages, so they must exist.
+      # build.py is stdlib-only, and ubuntu-latest ships python3.
+      - name: build the pages
+        run: python3 build.py
+
+      - name: locate a browser
+        run: |
+          for c in "$CHROME_PATH" /usr/bin/google-chrome /usr/bin/chromium-browser /usr/bin/chromium; do
+            if [ -x "$c" ]; then echo "CHROME_PATH=$c" >> "$GITHUB_ENV"; echo "using $c"; exit 0; fi
+          done
+          echo "no browser found — the SVG gates would silently SKIP" >&2
+          exit 1
+
+      # text nodes must not collide with each other
+      - name: svg text overlap
+        run: node svg-geometry.js
+
+      # ...and must not run outside the viewBox, which the overlap check cannot see
+      - name: svg text bounds
+        run: node svg-bounds.js
+
+      # ...and must still be legible once a page container scales them down, which
+      # neither of the above can see: both measure the SVG at its natural size.
+      - name: svg label scale in the page
+        run: node svg-scale.js

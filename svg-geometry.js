@@ -10,6 +10,7 @@
 // Usage:  CHROME_PATH=/path/to/chrome node svg-geometry.js
 
 const path = require('path');
+const fs = require('fs');
 
 let puppeteer;
 try {
@@ -27,7 +28,12 @@ const CHROME = process.env.CHROME_PATH || '/usr/bin/chromium';
 // puppeteer-core was not installed, so the script exited 0 on its SKIP path and
 // looked like a passing gate.
 const ASSETS = 'file://' + path.join(__dirname, 'assets') + '/';
-const SVGS = ['hero-flow.svg', 'artifact-flow.svg', 'social-card.svg', 'logo.svg', 'wordmark.svg'];
+// Discovered, not listed. A hardcoded array silently skips any SVG added later —
+// scope-flow.svg was measured by nothing until this changed — and the script still
+// exits 0, so the gate looks green over an unmeasured asset.
+const SVGS = fs.readdirSync(path.join(__dirname, 'assets'))
+  .filter(f => f.endsWith('.svg'))
+  .sort();
 
 (async () => {
   let browser;

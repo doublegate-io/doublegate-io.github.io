@@ -70,6 +70,15 @@
       collecting in the first place. <b>The gate is the enabler, not the product.</b>
     </p>
   </div>
+  <!-- The figure lives in a full-width wrap, not the tight prose wrap above it: at
+       900px a 1040px figure scales to 0.78 and its smallest label renders at 9.0px,
+       under the 10px floor the diagram CSS commits to. Measured, not guessed. -->
+  <div class="wrap">
+    <div class="diagram wide">
+      <img src="assets/cost-flow.svg" width="100%"
+        alt="The same correction, twice over. Above, per-seat AI today: one engineer corrects their agent, the fix stays in that one agent, and four colleagues hit the same wrong assumption and each pay to correct it separately — five payments for one lesson, with no record of who decided any of it. Below, with a shared gate: the same correction is reviewed once by someone who did not write it, signed, and then every agent inherits it already vouched for, including a joiner who starts next month, with one signed record of who approved it and when. Same people, same correction; the difference is whether the company keeps what it paid for.">
+    </div>
+  </div>
 </section>
 
 <section id="changes" class="band">
