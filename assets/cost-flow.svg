@@ -17,6 +17,44 @@ organization keeps what it paid for.</desc>
     .sb   { font-size:11.5px; fill:#8d97a9; }
     .big  { font-size:13.5px; font-weight:650; }
     .agent{ fill:#0e1118; stroke:#232b39; stroke-width:1.3; }
+
+    /* The argument of this figure is a count: the same lesson bought five times
+       above, once below. So the top row bills one box at a time, in sequence,
+       and the bottom row resolves in a single pass — the eye counts four
+       separate charges against one. Nothing loops faster than the reader can
+       follow, and both rows share an 8s cycle so they stay legible together.
+
+       The four charges must not overlap, or they stop reading as a count and
+       become a patch of red. Each box therefore owns a 9% slice of the cycle
+       (0.72s: in, hold, out) and the delays step by 0.8s, so charge N has
+       cleared before charge N+1 lands.
+
+       `backwards` is load-bearing, not tidiness: during an animation-delay the
+       element renders its ORDINARY state, not the 0% keyframe, so without a
+       fill mode all four overlays sat fully lit until their turn came and then
+       switched off — the exact reverse of the intended count. Measured with the
+       Web Animations API, not by eye. */
+    .bill { animation:bill 8s ease-in-out infinite backwards; opacity:0; }
+    .bill1 { animation-delay:.6s } .bill2 { animation-delay:1.4s }
+    .bill3 { animation-delay:2.2s } .bill4 { animation-delay:3s }
+    @keyframes bill { 0%      { opacity:0 }
+                      2%,7%   { opacity:1 }
+                      9%,100% { opacity:0 } }
+    /* one pass across the inherit bar: reviewed once, arriving everywhere */
+    .spread { animation:spread 8s cubic-bezier(.33,0,.24,1) infinite; }
+    @keyframes spread { 0%,40%{ transform:translateX(0); opacity:0 }
+                        46%   { opacity:.85 }
+                        88%   { opacity:.85 }
+                        100%  { transform:translateX(536px); opacity:0 } }
+    .once { animation:once 8s ease-out infinite; transform-origin:center; }
+    @keyframes once { 0%,34%{ opacity:0; transform:scale(1.4) }
+                      42%   { opacity:1; transform:scale(1) }
+                      92%   { opacity:1 } 100%{ opacity:0 } }
+
+    @media (prefers-reduced-motion: reduce) {
+      .bill,.spread,.once { animation:none; }
+      .mover { display:none; }
+    }
   ]]></style>
   <linearGradient id="cBad" x1="0" y1="0" x2="0" y2="1">
     <stop offset="0" stop-color="#4c0519" stop-opacity=".5"/><stop offset="1" stop-color="#4c0519" stop-opacity=".14"/>
@@ -52,21 +90,41 @@ organization keeps what it paid for.</desc>
 <path d="M 410 54 L 410 58 L 1016 58 L 1016 54" fill="none" stroke="#4c0519" stroke-width="1.3"/>
 <g>
   <rect x="410" y="60" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <!-- the charge landing on this one: same shape, lit, on this box's turn -->
+  <g class="mover">
+    <rect class="bill bill1" x="410" y="60" width="140" height="54" rx="10"
+          fill="#fb7185" fill-opacity=".07" stroke="#fb7185" stroke-width="1.5"/>
+  </g>
   <text class="sb" x="480" y="84" text-anchor="middle" fill="#fecdd3">corrects it again</text>
   <text class="sb" x="480" y="101" text-anchor="middle">pays again</text>
 </g>
 <g>
   <rect x="562" y="60" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <!-- the charge landing on this one: same shape, lit, on this box's turn -->
+  <g class="mover">
+    <rect class="bill bill2" x="562" y="60" width="140" height="54" rx="10"
+          fill="#fb7185" fill-opacity=".07" stroke="#fb7185" stroke-width="1.5"/>
+  </g>
   <text class="sb" x="632" y="84" text-anchor="middle" fill="#fecdd3">corrects it again</text>
   <text class="sb" x="632" y="101" text-anchor="middle">pays again</text>
 </g>
 <g>
   <rect x="714" y="60" width="140" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <!-- the charge landing on this one: same shape, lit, on this box's turn -->
+  <g class="mover">
+    <rect class="bill bill3" x="714" y="60" width="140" height="54" rx="10"
+          fill="#fb7185" fill-opacity=".07" stroke="#fb7185" stroke-width="1.5"/>
+  </g>
   <text class="sb" x="784" y="84" text-anchor="middle" fill="#fecdd3">corrects it again</text>
   <text class="sb" x="784" y="101" text-anchor="middle">pays again</text>
 </g>
 <g>
   <rect x="866" y="60" width="150" height="54" rx="10" class="agent" stroke="#4c0519"/>
+  <!-- the charge landing on this one: same shape, lit, on this box's turn -->
+  <g class="mover">
+    <rect class="bill bill4" x="866" y="60" width="150" height="54" rx="10"
+          fill="#fb7185" fill-opacity=".07" stroke="#fb7185" stroke-width="1.5"/>
+  </g>
   <text class="sb" x="941" y="84" text-anchor="middle" fill="#fecdd3">corrects it again</text>
   <text class="sb" x="941" y="101" text-anchor="middle">pays again</text>
 </g>
@@ -89,6 +147,8 @@ organization keeps what it paid for.</desc>
 
 <g>
   <rect x="214" y="240" width="196" height="74" rx="12" fill="url(#cOk)" stroke="#34d399" stroke-width="1.8"/>
+  <!-- the one review that does happen, stamped once per cycle -->
+  <g class="mover"><circle class="once" cx="396" cy="252" r="5" fill="#34d399" fill-opacity=".9"/></g>
   <text class="nm" x="312" y="266" text-anchor="middle">reviewed once, signed</text>
   <text class="sb" x="312" y="284" text-anchor="middle">by someone who did not</text>
   <text class="sb" x="312" y="300" text-anchor="middle">write it</text>
@@ -99,6 +159,12 @@ organization keeps what it paid for.</desc>
 <!-- everyone inherits -->
 <g>
   <rect x="450" y="234" width="566" height="86" rx="12" fill="#062c3a" fill-opacity=".5" stroke="#22d3ee" stroke-width="1.4"/>
+  <!-- one pass, left to right: the single signed correction arriving everywhere.
+       Clipped to the bar so the sweep cannot bleed over the figure's edge. -->
+  <clipPath id="cInherit"><rect x="450" y="234" width="566" height="86" rx="12"/></clipPath>
+  <g class="mover" clip-path="url(#cInherit)">
+    <rect class="spread" x="450" y="234" width="30" height="86" fill="#22d3ee" fill-opacity=".16"/>
+  </g>
   <text class="nm" x="733" y="262" text-anchor="middle" fill="#a5f3fc">every agent inherits it, already vouched for</text>
   <text class="sb" x="733" y="282" text-anchor="middle">the joiner who starts next month gets it too, without asking anyone</text>
   <text class="sb" x="733" y="302" text-anchor="middle">one signed record: who approved it, when, and on what basis</text>
