@@ -92,7 +92,12 @@ TITLES = {
     ),
 }
 
-GH = "https://github.com/doublegate-io/doublegate-io.github.io"
+# ORG is where the nav's "GitHub" goes: the organization profile makes the case
+# for the project and lists every repo. GH is this site's own repo, which is what
+# issues and docs links need — a visitor who clicks "GitHub" and lands on the
+# source of the page they were just reading has learned nothing.
+ORG = "https://github.com/doublegate-io"
+GH = f"{ORG}/doublegate-io.github.io"
 DOCS = f"{GH}/blob/main/docs"
 # Two contact surfaces, because they answer different questions and one of them
 # has to be public.
@@ -137,7 +142,7 @@ SHELL = """<!doctype html>
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html"><img class="brand-mark" src="assets/logo-dark.svg" width="22" height="22" alt="" aria-hidden="true"> doublegate</a>
-    <nav>{nav}<a class="ghost" href="{gh}">GitHub</a></nav>
+    <nav>{nav}<a class="ghost" href="{org}">GitHub</a></nav>
   </div>
 </header>
 
@@ -158,7 +163,7 @@ SHELL = """<!doctype html>
       <a href="for-engineers.html">For engineers</a>
       <a href="governance.html">Governance</a>
       <a href="evidence.html">Evidence</a>
-      <a href="{gh}">GitHub</a>
+      <a href="{org}">GitHub</a>
       <a href="{contact}">Ask a question</a>
       <a href="{mailto}">Email</a>
     </div>
@@ -187,7 +192,7 @@ def render(page: str) -> str:
     # domain — not "/index.html", which would be a second URL for one page.
     canonical = SITE if page == "index.html" else SITE + page
     markup = SHELL.format(
-        title=title, desc=desc, nav=nav_html(page), body=body, gh=GH,
+        title=title, desc=desc, nav=nav_html(page), body=body, gh=GH, org=ORG,
         contact=CONTACT, mailto=MAILTO, email=EMAIL, canonical=canonical,
         first_release=FIRST_RELEASE,
     )
@@ -254,6 +259,7 @@ def render_404() -> str:
         nav=nav_html("404.html"),
         body=NOT_FOUND_BODY.format(contact=CONTACT),
         gh=GH,
+        org=ORG,
         contact=CONTACT,
         mailto=MAILTO,
         email=EMAIL,

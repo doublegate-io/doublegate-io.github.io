@@ -6,7 +6,7 @@
 
 [![live](https://img.shields.io/badge/live-doublegate--io.github.io-a78bfa?style=flat-square)](https://doublegate-io.github.io)
 [![build](https://img.shields.io/badge/build-python%203.11%20only-22d3ee?style=flat-square)](#build)
-[![gate](https://img.shields.io/badge/gate-15%20checks-34d399?style=flat-square)](#what-checkpy-enforces)
+[![gate](https://img.shields.io/badge/gate-17%20checks-34d399?style=flat-square)](#what-checkpy-enforces)
 [![deps](https://img.shields.io/badge/runtime%20deps-none-fbbf24?style=flat-square)](#build)
 
 </div>
@@ -18,7 +18,7 @@
 ```bash
 python3 build.py           # regenerate *.html from pages/*.html
 python3 build.py --check   # fail if output is stale (CI does this)
-python3 check.py           # fifteen gate checks
+python3 check.py           # seventeen gate checks
 node    svg-geometry.js    # SVG text nodes must not collide      (needs a browser)
 node    svg-bounds.js      # ...nor run outside their viewBox     (needs a browser)
 node    svg-scale.js       # ...nor scale under 10px in the page  (needs a browser)
@@ -35,7 +35,7 @@ directly to a built page is lost on the next build.
 flowchart LR
   P["pages/*.html<br/><i>bodies only</i>"] --> B["build.py<br/><i>shared shell</i>"]
   B --> O["*.html<br/><i>generated</i>"]
-  O --> C["check.py<br/><i>15 checks</i>"]
+  O --> C["check.py<br/><i>17 checks</i>"]
   O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/>svg-routes.js<br/>svg-fit.js<br/>svg-clearance.js<br/><i>measured, not eyeballed</i>"]
   C --> D["GitHub Pages<br/><i>domain root</i>"]
 
