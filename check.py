@@ -404,6 +404,57 @@ if (ROOT / "sky-data.py").exists():
             if f'id="{el_id}"' not in markup:
                 fail(f"{page.name}: loads sky.js but has no #{el_id}")
 
+# 19. A FIGURE MADE OF WORDS IS MARKUP, NOT AN IMAGE.
+#     scope-flow.svg and record-fields.svg were tables of prose and quoted
+#     regulation shipped as 1040px images. Three costs, none of which any gate
+#     above could see: the text was not selectable, not findable by search, and
+#     not reachable by a screen reader beyond one alt attribute; and because a
+#     1040px image cannot reflow, style.css had to pin it to its natural width
+#     below the breakpoint and let a phone scroll sideways — at 390px the figure
+#     rendered its 11.5px labels at 3.8px. As markup they reflow and the type can
+#     grow instead of shrink.
+#
+#     The regression this guards is re-adding a text-heavy figure as an <img>.
+#     The test is the figure's own words: the pages must carry them as copy, so
+#     that check 5 (vocabulary), check 14 (sentence shape) and check 17 (phase
+#     language) all reach them — which is the second reason markup beats an
+#     image, and the reason a returning SVG must not pass silently.
+FIGURE_COPY = {
+    "commons.html": ("ladder", [
+        "Four scopes — one mechanism, a wider audience each time",
+        "you, on your own machine",
+        "a group sharing one gate",
+        "many teams, one authority",
+        "anyone, outside your company",
+        "Same write path at every scope — only the signing authority changes",
+    ]),
+    "governance.html": ("record", [
+        "One signed record — what it holds, and what each field is for",
+        "The requirement it answers",
+        "reviewer identity — never the author",
+        "over every field above — verifiable without asking us",
+        "change any field and the signature stops verifying",
+    ]),
+}
+for name, (container, phrases) in FIGURE_COPY.items():
+    page = ROOT / name
+    if not page.exists():
+        continue
+    markup = page.read_text()
+    if f'class="{container}"' not in markup:
+        fail(f"{name}: .{container} is gone — the figure it replaced was an image "
+             f"of text, and must not come back as one")
+        continue
+    body = re.sub(r"\s+", " ", visible(markup))
+    for phrase in phrases:
+        if re.sub(r"\s+", " ", phrase) not in body:
+            fail(f"{name}: figure copy missing from visible text -> {phrase!r}")
+for page in pages:
+    for src in re.findall(r'<img[^>]*src="/?assets/([^"]+)"', page.read_text()):
+        if src in ("scope-flow.svg", "record-fields.svg"):
+            fail(f"{page.name}: {src} is back as an image — it is a table of words; "
+                 f"keep it as markup so it reflows and the copy gates reach it")
+
 # ---------------------------------------------------------------- report
 if fails:
     print(f"FAIL — {len(fails)} problem(s):")
@@ -416,3 +467,4 @@ print("  tag balance · anchors · cross-page links · assets · vocabulary")
 print("  metadata · calls to action · alt text · nav parity · svg motion paths")
 print("  README inline HTML integrity · one contact address, reachable everywhere")
 print("  no phase language · knowledge-map scripts, data freshness and claim copy")
+print("  text figures are markup, not images")

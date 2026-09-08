@@ -73,9 +73,7 @@ flowchart LR
 | `assets/sky.js` | the knowledge map: canvas 2D, no dependencies — constellations, arrivals, five verdicts, turn / zoom / dive |
 | `assets/hero-field.svg` | five verdicts over sixty submissions, still figure — the front page's no-JavaScript fallback for the map |
 | `assets/artifact-flow.svg` | tall walkthrough diagram, how-it-works |
-| `assets/scope-flow.svg` | the four scopes and where each trust boundary sits, commons |
 | `assets/cost-flow.svg` | one correction with and without a gate, for-organizations |
-| `assets/record-fields.svg` | what a signed record holds, field by requirement, governance |
 | `assets/favicon-32.png` | PNG favicon fallback, light-tab colours baked in |
 | `assets/apple-touch-icon.png` | 180×180 iOS home-screen icon, dark ground + padding |
 | `AGENTS.md` | working agreement: copy craft, positioning, claim limits |

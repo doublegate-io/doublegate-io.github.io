@@ -851,3 +851,99 @@ footer { padding: 40px 0; }
   .sky-controls button { padding: 6px 9px; font-size: 12px; }
   .sky-legend { font-size: 11.5px; gap: 3px 10px; left: 8px; bottom: 8px; }
 }
+
+
+/* ── scope ladder (was assets/scope-flow.svg) ──────────────────────────────
+   Four scopes, each one step wider. This was a 1040px image of a table, so it
+   scrolled sideways on a phone and its text could not be selected, searched or
+   read by a screen reader beyond the alt attribute. As markup it reflows, and
+   the accent per scope is the site's own variable rather than a hex copied into
+   the SVG. The accent bar is the only decoration; nothing here animates. */
+.ladder { margin: 26px 0 34px; display: grid; gap: 10px; }
+.ladder-head,
+.ladder-foot {
+  font: 700 11.5px/1.5 var(--sans); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.ladder-foot { text-align: right; }
+.rung {
+  display: grid; grid-template-columns: 300px 1fr; align-items: center;
+  gap: 0 28px; padding: 18px 22px;
+  border: 1px solid var(--line); border-left: 4px solid var(--accent);
+  border-radius: 12px;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--accent) 14%, transparent), transparent 320px),
+    #0b0d12;
+}
+.rung > div:first-child { border-right: 1px solid var(--line); padding-right: 26px; }
+.rung b { display: block; font-size: 15px; font-weight: 650; color: var(--ink); }
+.rung .who { display: block; margin-top: 4px; font-size: 12.5px; color: var(--ink-dim); }
+.rung .tag {
+  display: block; margin-top: 8px; font: 700 11.5px/1.4 var(--sans);
+  letter-spacing: .06em; text-transform: uppercase; color: var(--accent);
+}
+.rung .says { margin: 0; font-size: 13px; line-height: 1.62; color: var(--ink-dim); }
+.rung.solo { --accent: var(--grn); }
+.rung.team { --accent: var(--cyn); }
+.rung.org  { --accent: var(--vio); }
+/* Commons is amber, not the blue the SVG used: #60a5fa was the only blue on the
+   site and was never a declared variable. Amber is the one accent the palette
+   was not already spending here, so the four scopes stay separable — green,
+   cyan, violet and amber are four different hues rather than three neighbours
+   on the same green-to-blue arc. */
+.rung.comm { --accent: var(--amb); }
+@media (max-width: 720px) {
+  .rung { grid-template-columns: 1fr; gap: 12px; padding: 16px 18px; }
+  .rung > div:first-child { border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 12px; }
+  .ladder-foot { text-align: left; }
+  /* The point of dropping the image: type can grow on a narrow screen. The SVG
+     scaled 1040px down to 342px here, rendering its 11.5px labels at 3.8px. */
+  .rung .says { font-size: 14px; }
+  .rung .who  { font-size: 13px; }
+}
+
+/* ── signed record (was assets/record-fields.svg) ──────────────────────────
+   Eight fields against the requirement each answers. Same reasoning as the
+   ladder above: a regulation quotation that cannot be selected or found by
+   search is worth less than one that can, and this figure is nine tenths
+   quotation. The signature row is the only emphasised one, because it is the
+   only field that covers all the others. */
+.record { margin: 26px 0 18px; display: grid; gap: 8px; }
+.record-head {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 0 26px;
+  padding: 0 22px 8px; border-bottom: 1px solid var(--line);
+  font: 700 11.5px/1.5 var(--sans); letter-spacing: .1em; text-transform: uppercase;
+  color: var(--ink-faint);
+}
+.record-head span:last-child { color: var(--cyn); }
+.rec {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 4px 26px;
+  padding: 14px 22px; border: 1px solid var(--line-soft); border-radius: 8px;
+  background: #0b0d12;
+}
+.rec:nth-child(even) { background: #0e1118; border-color: var(--line); }
+.rec dt { margin: 0; font-size: 12.5px; font-weight: 650; color: var(--ink); }
+.rec dd { margin: 0; grid-column: 1; font: 12px/1.55 var(--mono); color: var(--ink-dim); }
+.rec .req { grid-column: 2; grid-row: 1; font-size: 11.5px; color: var(--cyn); }
+.rec .reqd { grid-column: 2; font-size: 11.5px; line-height: 1.55; color: var(--ink-faint); }
+.rec q { quotes: none; font-style: normal; }
+.rec.sig {
+  border-color: var(--grn); border-width: 1.6px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--grn) 16%, transparent), #0b0d12);
+}
+.rec.sig dt { color: #d1fae5; }
+.rec.sig dd { color: #a7f3d0; }
+.rec.sig .req { color: var(--grn); }
+.record-note { margin: 14px 0 34px; font-size: 12.5px; line-height: 1.6; color: var(--ink-faint); }
+@media (max-width: 760px) {
+  .record-head { grid-template-columns: 1fr; }
+  .record-head span:last-child { display: none; }
+  .rec { grid-template-columns: 1fr; padding: 14px 16px; }
+  .rec .req, .rec .reqd { grid-column: 1; }
+  .rec .req { grid-row: auto; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--line); }
+  /* Nine tenths of this figure is quoted regulation; it has to be legible on the
+     device an auditor actually reads mail on. */
+  .rec dt   { font-size: 13.5px; }
+  .rec dd   { font-size: 12.5px; }
+  .rec .req, .rec .reqd { font-size: 12.5px; }
+}

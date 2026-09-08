@@ -118,10 +118,59 @@
       Memories, skills, connector output, review verdicts — the same four properties apply to all
       of them, because they all go through the same gate.
     </p>
-    <div class="diagram wide">
-      <img src="assets/record-fields.svg" width="100%"
-        alt="One signed record, field by field, with the requirement each field answers. The record holds: the artifact and its version, linked to the version it replaced; the claim itself; where it came from, including source system, slice, fields in scope and the run that produced it, answering the ECB requirement to track back the source of an issue and allow traceability for external validation; what the scanners found, every check pass or fail, answering EU AI Act Article 12 on automatic recording of events over the lifetime of the system; who reviewed it, never the author, and the human who signed off, answering GDPR Article 22(3) on human intervention; the verdict and its reasons, answering GDPR Article 30(1) on maintaining a record of processing activities; when it was decided and from when it is valid, answering BCBS 239 Principle 3 on a single authoritative source; and a signature over every field above, so changing any field stops the signature verifying. A refusal produces the same record with a refused verdict.">
-    </div>
+    <dl class="record">
+      <div class="record-head"><span>One signed record — what it holds, and what each field is for</span><span>The requirement it answers</span></div>
+      <div class="rec">
+        <dt>artifact</dt>
+        <dd>memory · v3 · replaces v2</dd>
+        <span class="req">Versioned, not edited in place</span>
+        <span class="reqd">a correction is a new version linked to what it replaced</span>
+      </div>
+      <div class="rec">
+        <dt>the claim</dt>
+        <dd>what is asserted to be true</dd>
+        <span class="req">The thing under review</span>
+        <span class="reqd">held in a separate store until this record exists</span>
+      </div>
+      <div class="rec">
+        <dt>where it came from</dt>
+        <dd>source system · slice · fields in scope<br>the run that produced it</dd>
+        <span class="req">ECB RDARR — lineage</span>
+        <span class="reqd"><q>track back the source of the issue in a timely manner</q> and <q>allow traceability for (external) validation</q></span>
+      </div>
+      <div class="rec">
+        <dt>what the scanners found</dt>
+        <dd>injection · secrets · executables<br>every check, pass or fail</dd>
+        <span class="req">EU AI Act, Article 12</span>
+        <span class="reqd"><q>automatic recording of events (logs) over the lifetime of the system</q></span>
+      </div>
+      <div class="rec">
+        <dt>who reviewed it</dt>
+        <dd>reviewer identity — never the author<br>the human who signed off, where one did</dd>
+        <span class="req">GDPR, Article 22(3)</span>
+        <span class="reqd">the right <q>to obtain human intervention</q> and <q>to express his or her point of view</q></span>
+      </div>
+      <div class="rec">
+        <dt>the verdict, and its reasons</dt>
+        <dd>approved · or refused, and why</dd>
+        <span class="req">GDPR, Article 30(1)</span>
+        <span class="reqd"><q>maintain a record of processing activities</q></span>
+      </div>
+      <div class="rec">
+        <dt>when</dt>
+        <dd>decided at · valid from</dd>
+        <span class="req">BCBS 239, Principle 3</span>
+        <span class="reqd"><q>a single authoritative source for risk data per each type of risk</q></span>
+      </div>
+      <div class="rec sig">
+        <dt>signature</dt>
+        <dd>over every field above — verifiable without asking us</dd>
+        <span class="req">Why an auditor can check it themselves</span>
+        <span class="reqd">change any field and the signature stops verifying</span>
+      </div>
+    </dl>
+    <p class="record-note">A refusal produces this same record with a refused verdict. The record
+    exists either way — a gate that only files its successes is not an audit trail.</p>
     <div class="cards four">
       <div class="card">
         <span class="card-ico audit">⎔</span>
