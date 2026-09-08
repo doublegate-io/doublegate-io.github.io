@@ -323,6 +323,53 @@ else:
                 fail(f"{page.name}: <wbr> splits an address somewhere other than "
                      f"after the @ -> {vis[0]!r}|{vis[1]!r}")
 
+# 17. THE SITE SELLS THE PRODUCT; IT NEVER ANNOUNCES ITS ABSENCE.
+#     On 2026-09-07 an "offering audit" carried the design repo's engineering-tier
+#     honesty list onto three pages as copy — "read permissions have no design
+#     yet — scheduled, not drawn", "designed, not shipped" — and every gate here
+#     stayed green, because none had an opinion on phase language. Three commits
+#     to unwind. The rule (site AGENTS.md rule 1): the phase is stated once, as a
+#     dated release (build.py FIRST_RELEASE); every limit is a dated roadmap item;
+#     nothing on a visitor-facing page says what does not exist. Same for the
+#     older class of defensive framing ("we are not claiming", "not just another")
+#     and negative-chapter headings ("What we will not tell you").
+#
+#     Visible copy only — link targets, alt text and the design repo's own words
+#     inside a quotation are not the page's voice. Phrases the site deliberately
+#     uses ("no built-in ranking" quoting the MCP registry; "not comparable")
+#     are not in the list, and adding one means checking every page still passes.
+PHASE_LANGUAGE = re.compile(
+    r"design[- ]phase"
+    r"|\bnot (?:yet )?(?:shipped|built|running|implemented)\b"
+    r"|\bno (?:design|code|dates?)\b(?! path)"
+    r"|\bnothing (?:is |here is )?(?:built|shipped|scheduled)\b"
+    r"|\bdesigned(?:,)? (?:rather than|but not|not) (?:shipped|built|running)\b"
+    r"|\bdoes not exist yet\b|\bnot (?:yet )?scheduled\b|\bscheduled, not drawn\b"
+    r"|\bplanned, not\b|\bnot a product yet\b|\bunbuilt\b",
+    re.I)
+DEFENSIVE_FRAMING = re.compile(
+    r"not just another|we (?:are|'re) not claiming|we (?:do not|don't) claim"
+    r"|to be clear|let'?s be clear|silver bullet|\bwe refuse\b|\bwe will not (?:tell|claim)\b",
+    re.I)
+NEGATIVE_HEADING = re.compile(
+    r"(?i)^what (?:we|this|it) (?:are|is|will|do|does|can)(?:n'?t| not) ",
+)
+for page in pages:
+    markup = page.read_text()
+    # drop quotations: the words inside <q> and <blockquote> belong to the source
+    quoted = re.sub(r"(?is)<(q|blockquote)[^>]*>.*?</\1>", " ", markup)
+    body = re.sub(r"\s+", " ", visible(quoted))
+    for m in PHASE_LANGUAGE.finditer(body):
+        fail(f"{page.name}: phase language in visible copy -> "
+             f"…{body[max(0, m.start() - 45): m.end() + 30]}…")
+    for m in DEFENSIVE_FRAMING.finditer(body):
+        fail(f"{page.name}: defensive framing in visible copy -> "
+             f"…{body[max(0, m.start() - 45): m.end() + 30]}…")
+    for h in re.findall(r"(?s)<h[1-3][^>]*>(.*?)</h[1-3]>", markup):
+        text = re.sub(r"\s+", " ", visible(h)).strip()
+        if NEGATIVE_HEADING.match(text):
+            fail(f"{page.name}: heading frames a disclaimer, not guidance -> {text!r}")
+
 # ---------------------------------------------------------------- report
 if fails:
     print(f"FAIL — {len(fails)} problem(s):")

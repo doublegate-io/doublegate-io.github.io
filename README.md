@@ -114,6 +114,8 @@ that was possible once recurs during the next rewrite.
 | 13 | README inline HTML well-formed | a string replacement dropped an `<img>` open tag; invisible in review |
 | 14 | No orphaned sentence fragments | stripping private-repo links left two captions as fragments — "…you do not own." then "a deliberate decision, not an oversight" — and they shipped |
 | 15 | Every evidence claim has a resolvable source | the evidence page promised "sourced or marked unverified", then carried a claim whose source line said "with the citation above" and pointed at nothing |
+| 16 | One contact address, reachable from every page | the readiness review found no way to reach anyone; a product site with no contact path is a brochure |
+| 17 | No phase language, defensive framing or disclaimer headings in visible copy | an offering audit carried the design repo's engineering-tier honesty list onto three pages as copy ("no design yet — scheduled, not drawn") and every other gate stayed green |
 
 ## Design notes
 
