@@ -17,16 +17,21 @@
 
       <article class="ev">
         <h3>Per-seat AI does not become organizational capability</h3>
-        <p>A large-scale field experiment across <b>66 firms</b> found that giving workers AI tools
-        produced individual time savings and <b>no broader shift in the quantity or composition of
-        work</b>. The same source frames the gap as "single-player AI" and cites Y Combinator
-        calling the shift ahead AI's "multiplayer moment".</p>
-        <p class="ev-use"><b>What we use it for:</b> the entire organizational pitch. It is the
-        reason the product is aimed at a company rather than a developer.</p>
-        <p class="ev-use dim"><b>How we read it:</b> this reaches us through the Forum's summary of
-        the experiment, not the experiment's own paper. We have not read the underlying study, so
-        treat the framing as theirs and the figure as reported rather than verified at source.</p>
-        <a class="src" href="https://www.weforum.org/stories/artificial-intelligence/workplace-ai-has-a-visibility-problem-here-s-how-to-fix-it/">World Economic Forum, Reese Wong, 3 September 2026</a>
+        <p>A six-month randomized field experiment across <b>66 firms and 7,137 knowledge
+        workers</b>, with a generative AI tool integrated into the email, meeting and writing
+        applications workers already used. The 80% of treated workers who used it spent two fewer
+        hours on email a week and reduced out-of-hours work. Apart from those individual time
+        savings, the authors <b>"do not detect shifts in the quantity or composition of workers'
+        tasks resulting from individual-level AI provision"</b>.</p>
+        <p class="ev-use"><b>What we use it for:</b> the organizational pitch. Individual
+        provision produced individual gains and nothing at the level of the organization; the
+        product exists to add the mechanism that carries individual learning across.</p>
+        <p class="ev-use dim"><b>How we read it:</b> the tool tested was an office assistant, not
+        a coding agent with memory, so the finding transfers as a pattern &mdash; per-seat tools
+        produce per-seat outcomes &mdash; not as a measurement of our category. The World Economic
+        Forum's <a href="https://www.weforum.org/stories/artificial-intelligence/workplace-ai-has-a-visibility-problem-here-s-how-to-fix-it/">September 2026 piece</a>
+        frames the same result as the "single-player" phase of workplace AI.</p>
+        <a class="src" href="https://www.aeaweb.org/articles?id=10.1257/aeri.20250275">Dillon, Jaffe, Immorlica &amp; Stanton, "Shifting Work Patterns with Generative AI", AER: Insights (forthcoming)</a>
       </article>
 
       <article class="ev">
@@ -142,22 +147,26 @@
 
 <section id="refuse" class="band">
   <div class="wrap tight">
-    <h2>Claims we refuse to make</h2>
+    <h2>Numbers we publish once we have measured them</h2>
     <p class="lede">
-      All of these were available. Each was left out for a stated reason.
+      Four figures the category usually quotes from vendor blogs. Each has a measurement attached
+      and a release it lands with, and until then it is not on this site.
     </p>
     <div class="anti">
       <ul>
-        <li><b>Onboarding-time reduction.</b> The figures in circulation are vendor-blog
-        statistics of unverifiable provenance. We found them and did not use them.</li>
-        <li><b>Productivity multiples and headcount equivalence.</b> Nobody has measured what
-        shared reviewed memory does to output. Any number here would be invented.</li>
-        <li><b>Gate accuracy.</b> Unmeasured until we publish a false-alarm rate. We will not
-        claim the checking is reliable before we can show how often it is wrong.</li>
-        <li><b>Compliance readiness.</b> Deletion is designed &mdash; decisions stay signed, the
-        erased content becomes unreadable because its keys are destroyed, and the erasure itself
-        is a recorded event &mdash; but it is not shipped, so we do not claim to satisfy erasure
-        requests yet.</li>
+        <li><b>Onboarding time.</b> Measured on the first organization deployments: time to a new
+        joiner's first productive agent session, with and without an inherited store. Published
+        with release 4, the multi-machine release.</li>
+        <li><b>Cost per correction.</b> What one reviewed correction costs against fixing the same
+        wrong assumption separately in every private agent. Measured on the same deployments,
+        published with release 4.</li>
+        <li><b>Gate accuracy.</b> A labelled false-positive and false-negative set, run against a
+        published poisoning benchmark, is the exit test for release 3. The catch rate and the
+        false-alarm rate ship together, because one without the other is marketing.</li>
+        <li><b>Erasure.</b> Decisions stay signed; the erased content becomes unreadable because its
+        keys are destroyed, and the erasure itself is a recorded event. The schema carries the keys
+        from release 1 and the tooling lands in release 4 &mdash; the compliance claim is made when
+        an erasure request has been satisfied end to end, not before.</li>
       </ul>
     </div>
     <p class="note">
