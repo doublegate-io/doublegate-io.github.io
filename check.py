@@ -167,6 +167,13 @@ for page in pages:
             fail(f"{page.name}: links into the private design repo -> {url}")
 
 # 9. nav is identical on every page, and marks the current one exactly once.
+#    Unlisted pages (build.py UNLISTED) are rendered and reachable but have no
+#    nav entry, so no marker is correct for them — the same exemption the 404
+#    page gets, for the same reason.
+build_src_nav = (ROOT / "build.py").read_text()
+unlisted = set(re.findall(r'^\s*\("([^"]+\.html)",\s*"[^"]*"\),\s*$',
+                          build_src_nav.split("UNLISTED = [", 1)[1].split("]", 1)[0], re.M)) \
+    if "UNLISTED = [" in build_src_nav else set()
 navs = {}
 for page in pages:
     markup = page.read_text()
@@ -177,8 +184,15 @@ for page in pages:
     links = re.findall(r'href="([^"]+)"', block.group(1))
     navs[page.name] = [resolve(h) for h in links]
     here = re.findall(r'class="here"', block.group(1))
-    if page.name not in ("index.html", NOT_FOUND) and len(here) != 1:
+    if page.name not in ("index.html", NOT_FOUND) and page.name not in unlisted and len(here) != 1:
         fail(f"{page.name}: expected exactly 1 current-page marker, found {len(here)}")
+    if page.name in unlisted:
+        if here:
+            fail(f"{page.name}: unlisted page must not mark itself current in the nav")
+        if page.name in navs[page.name]:
+            fail(f"{page.name}: unlisted page appears in the nav")
+        if '<meta name="robots" content="noindex">' not in markup:
+            fail(f"{page.name}: unlisted page must carry noindex")
 if len({tuple(v) for v in navs.values()}) > 1:
     fail(f"nav differs between pages: {navs}")
 

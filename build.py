@@ -27,9 +27,20 @@ NAV = [
     ("for-engineers.html", "For engineers"),
     ("governance.html", "Governance"),
     ("commons.html", "Commons"),
-    ("pricing.html", "Pricing"),
     ("evidence.html", "Evidence"),
 ]
+
+# Rendered and reachable by URL, but out of the nav, the footer and the sitemap,
+# and marked noindex. Pricing is unlisted until the tiers carry numbers: a
+# pricing page with no prices invites the one conversation the site cannot
+# yet finish. The fragment stays current so re-listing is a one-line change.
+UNLISTED = [
+    ("pricing.html", "Pricing"),
+]
+
+# What the first release is called, and when. One constant so every page
+# quotes the same date; change it here, rebuild, and nothing drifts.
+FIRST_RELEASE = "Q2 2027"
 
 TITLES = {
     "index.html": (
@@ -51,10 +62,10 @@ TITLES = {
         "why, and what it costs you.",
     ),
     "for-engineers.html": (
-        "For engineers — what it is, what it costs, what it does not do yet",
+        "For engineers — what it is, what it costs, when it ships",
         "doublegate replaces your memory provider. Read path is unchanged, checking "
-        "happens on the way in. Latency, token cost, and the two gaps that change how "
-        "you would wire it today.",
+        "happens on the way in. Latency, token cost, the four tools your agent gains, "
+        "and the release roadmap.",
     ),
     "governance.html": (
         "Governance — connectors, provenance, and what regulators ask for",
@@ -96,10 +107,9 @@ DOCS = f"{GH}/blob/main/docs"
 # Nobody files a public issue to ask about their own company.
 CONTACT = f"{GH}/issues"
 EMAIL = "eugene.korniichuk@gmail.com"
-# A subject line, so a cold mail arrives already sorted. The pricing page states
-# that there is nothing to buy yet, so the label and the subject both say
-# "deployment", not "sales" -- inviting a purchase conversation for a release-2
-# product would be the one dishonest thing on the page.
+# A subject line, so a cold mail arrives already sorted. "Deployment" rather
+# than "sales": the conversation on offer is where a gate fits an organization
+# and what it would cost there, ahead of the first release.
 MAILTO = f"mailto:{EMAIL}?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing"
 SITE = "https://doublegate-io.github.io/"
 
@@ -136,8 +146,8 @@ SHELL = """<!doctype html>
 <footer>
   <div class="wrap foot">
     <div>
-      <b>doublegate</b> · design phase · every claim traces to cited research
-      <p class="dim">Open source. Solo use is free and stays that way.
+      <b>doublegate</b> · open source · first release {first_release} · every claim traces to cited research
+      <p class="dim">Solo use is free and stays that way.
       <a href="{contact}">Questions, objections and corrections go here</a> — including
       "you got this wrong". Ask about deployment or pricing at
       <a href="{mailto}">{email}</a>.</p>
@@ -146,7 +156,7 @@ SHELL = """<!doctype html>
       <a href="how-it-works.html">How it works</a>
       <a href="for-organizations.html">For organizations</a>
       <a href="for-engineers.html">For engineers</a>
-      <a href="pricing.html">Pricing</a>
+      <a href="governance.html">Governance</a>
       <a href="evidence.html">Evidence</a>
       <a href="{gh}">GitHub</a>
       <a href="{contact}">Ask a question</a>
@@ -176,10 +186,20 @@ def render(page: str) -> str:
     # index.html is served at the domain root, so its canonical is the bare
     # domain — not "/index.html", which would be a second URL for one page.
     canonical = SITE if page == "index.html" else SITE + page
-    return SHELL.format(
+    markup = SHELL.format(
         title=title, desc=desc, nav=nav_html(page), body=body, gh=GH,
         contact=CONTACT, mailto=MAILTO, email=EMAIL, canonical=canonical,
+        first_release=FIRST_RELEASE,
     )
+    if page in dict(UNLISTED):
+        # Reachable, not advertised: no canonical to claim a place in the
+        # index, and an explicit noindex so a crawler that finds the URL
+        # anyway leaves it out.
+        markup = markup.replace(
+            f'<link rel="canonical" href="{canonical}">\n',
+            '<meta name="robots" content="noindex">\n',
+        )
+    return markup
 
 
 def render_sitemap() -> str:
@@ -238,6 +258,7 @@ def render_404() -> str:
         mailto=MAILTO,
         email=EMAIL,
         canonical=SITE,
+        first_release=FIRST_RELEASE,
     )
     # An error page must not invite indexing, and must not claim to BE the home
     # page it points at: drop the canonical, keep og:url pointing at the root so
@@ -248,7 +269,7 @@ def render_404() -> str:
     )
     markup = markup.replace('href="assets/', 'href="/assets/')
     markup = markup.replace('src="assets/', 'src="/assets/')
-    for page, _ in NAV:
+    for page, _ in NAV + UNLISTED:
         markup = markup.replace(f'href="{page}"', f'href="/{page}"')
     return markup
 
@@ -260,7 +281,7 @@ def main() -> int:
     # (path, content) for everything generated, pages and crawler files alike,
     # so --check covers all of it and a drifted sitemap fails CI like a
     # drifted page does.
-    targets = [(page, render(page)) for page, _ in NAV]
+    targets = [(page, render(page)) for page, _ in NAV + UNLISTED]
     targets.append(("sitemap.xml", render_sitemap()))
     targets.append(("robots.txt", render_robots()))
     targets.append(("404.html", render_404()))
