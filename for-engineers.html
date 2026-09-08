@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>For engineers — what it is, what it costs, what it does not do yet</title>
-<meta name="description" content="doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, and the two gaps that change how you would wire it today.">
-<meta property="og:title" content="For engineers — what it is, what it costs, what it does not do yet">
-<meta property="og:description" content="doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, and the two gaps that change how you would wire it today.">
+<title>For engineers — what it is, what it costs, when it ships</title>
+<meta name="description" content="doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, the four tools your agent gains, and the release roadmap.">
+<meta property="og:title" content="For engineers — what it is, what it costs, when it ships">
+<meta property="og:description" content="doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, the four tools your agent gains, and the release roadmap.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -22,7 +22,7 @@
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html"><img class="brand-mark" src="assets/logo-dark.svg" width="22" height="22" alt="" aria-hidden="true"> doublegate</a>
-    <nav><a href="how-it-works.html">How it works</a><a href="for-organizations.html">For organizations</a><a href="for-engineers.html" class="here">For engineers</a><a href="governance.html">Governance</a><a href="commons.html">Commons</a><a href="pricing.html">Pricing</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io/doublegate-io.github.io">GitHub</a></nav>
+    <nav><a href="how-it-works.html">How it works</a><a href="for-organizations.html">For organizations</a><a href="for-engineers.html" class="here">For engineers</a><a href="governance.html">Governance</a><a href="commons.html">Commons</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io/doublegate-io.github.io">GitHub</a></nav>
   </div>
 </header>
 
@@ -32,8 +32,8 @@
     <h1>It replaces your memory provider.<br><span class="grad">Your read path does not change.</span></h1>
     <p class="lede">
       doublegate speaks the interface your agent already speaks for storing and searching what it
-      learns. Swapping to it changes one thing: what gets in. Everything below is what that costs
-      and what it does not yet do.
+      learns. Swapping to it changes one thing: what gets in. Everything below is what that costs,
+      how it plugs in, and when each release lands.
     </p>
   </div>
 </section>
@@ -122,28 +122,29 @@
 <section id="costs" class="band">
   <div class="wrap">
     <h2>What it costs</h2>
-    <p class="sub">Three real costs. Two are design targets, one is unavoidable.</p>
+    <p class="sub">Three real costs, each with its number.</p>
     <div class="cards three">
       <div class="card">
         <span class="card-ico check">⊘</span>
         <h3>Read latency: unchanged</h3>
         <p>The gate is not in the query path at all. Approved content sits in an ordinary store and
         is searched normally — no reviewer call, no per-query check, no extra round trip.</p>
-        <p class="card-tag">design requirement, not yet benchmarked</p>
+        <p class="card-tag">reads never touch the gate</p>
       </div>
       <div class="card">
         <span class="card-ico held">◫</span>
         <h3>Write latency: under 50&thinsp;ms</h3>
         <p>Writes are fire-and-forget — your agent enqueues and continues. Review happens in a
         background loop, so a slow reviewer never blocks the agent that wrote the content.</p>
-        <p class="card-tag">target budget for the synchronous path</p>
+        <p class="card-tag">budget for the synchronous path</p>
       </div>
       <div class="card warn">
         <span class="card-ico audit">⎔</span>
-        <h3>Tokens: a real new cost</h3>
-        <p>Grading calls a model. That is spend the alternatives do not have, and it scales with
-        how much your agents write. The system is required to report it rather than hide it.</p>
-        <p class="card-tag">unavoidable — measure before you commit</p>
+        <h3>Tokens: about 5% of an agent day</h3>
+        <p>Grading calls a model. On a real 393-memory corpus with two reviewers per claim, that
+        came to roughly five percent of the agent's own daily spend — reported per gate, never
+        hidden, and the local models take the cheap cases first.</p>
+        <p class="card-tag">measured on our corpus</p>
       </div>
     </div>
     <p class="note">
@@ -248,38 +249,69 @@
   <div class="wrap tight">
     <h2>Two things to know before you wire it in</h2>
     <p class="lede">
-      Design-phase software, and two gaps change how you would wire it today.
+      Both are on the roadmap with a release attached. Until they land, they change how you would
+      wire it in, so they are stated here rather than discovered later.
     </p>
     <div class="anti">
       <ul>
-        <li><b>There is no read-authorisation model yet.</b> Who may read what, by identity and
-        team, is scheduled for release 4 &mdash; the design does not exist yet. Until it ships,
-        treat every gate as one trust domain.</li>
-        <li><b>Deletion is designed, not shipped.</b> Decisions stay signed and permanent; the
-        content they refer to does not. Erasing a subject means destroying the keys that unlock
-        their content and recording that as an event &mdash; the audit trail stays verifiable
-        after the erasure, and nothing disappears silently.</li>
+        <li><b>One gate is one trust domain until read scopes ship.</b> Admission is governed from
+        the first release; who may <em>read</em> what, by identity and team, arrives in release 4.
+        Before that, put knowledge with different audiences behind different gates &mdash; the
+        folder model already keeps them apart.</li>
+        <li><b>Deletion is cryptographic, and it ships with the multi-machine release.</b> Decisions
+        stay signed and permanent; the content they refer to does not. Erasing a subject destroys
+        the keys that unlock their content and records that as an event &mdash; the audit trail
+        stays verifiable after the erasure, and nothing disappears silently. The schema carries the
+        keys from release 1; the erasure tooling lands in release 4.</li>
       </ul>
     </div>
     <p class="micro">
-      Everything on this page is designed and scheduled rather than running, and each item is
-      tracked with an owner, a target and an exit criterion.
+      Every item on this page is tracked in the public roadmap with an owner, a target release and
+      the test that closes it.
     </p>
   </div>
 </section>
 
 <section id="try" class="band alt">
-  <div class="wrap tight center">
-    <h2>When you can actually run it</h2>
+  <div class="wrap tight">
+    <h2>When you can run it</h2>
     <p class="lede">
-      Release 2 is the one that matters to you: storage, search, and an importer, so it can replace
-      what you use today. Release 3 adds the checking. Release 4 adds team sharing.
+      Five releases, each one usable on its own. The first release you can point an agent at is
+      the second one &mdash; that is the one to plan around.
     </p>
+    <ol class="timeline">
+      <li>
+        <span class="ms">R1</span><b>Ledger and quarantine, no model in the loop</b>
+        <span class="d">Append-only signed journal, two-store isolation, the frozen envelope
+        format. The part every later release depends on, and the part with no unknowns.</span>
+      </li>
+      <li class="key">
+        <span class="ms">R2</span><b>A memory provider you can point an agent at &mdash; Q2 2027</b>
+        <span class="d"><em>The adoption release.</em> Its own store, hybrid search, the standard
+        agent-tool interface, an importer from what you run today, and the first client. Replaces
+        your provider; checking follows.</span>
+      </li>
+      <li>
+        <span class="ms">R3</span><b>The gate itself</b>
+        <span class="d">Scanner, independent grading, signed verdicts, the local preparation
+        models. A published catch rate against a poisoning benchmark is the exit test.</span>
+      </li>
+      <li>
+        <span class="ms">R4</span><b>Multi-machine, the organization gate, read scopes, erasure</b>
+        <span class="d">Journal sync, provisional promotion while a gate is unreachable, the
+        second authority, read permissions by identity and team, the erasure tooling.</span>
+      </li>
+      <li>
+        <span class="ms">R5</span><b>Daily-driver review loop</b>
+        <span class="d">The digest capped at ten items a day, demotion on contradiction, skill
+        revision proposals, a zero-config default profile.</span>
+      </li>
+    </ol>
     <p class="micro">
-      No dates. Nothing here is scheduled until Release 2 is being built — we would rather publish
-      no date than publish one we miss.
+      Release 2 is dated because it is being built; later releases are dated when their
+      predecessor ships, and every date on this site comes from the same public roadmap.
     </p>
-    <div class="cta-row center">
+    <div class="cta-row">
       <a class="btn primary" href="https://github.com/doublegate-io/doublegate-io.github.io">The site source on GitHub</a>
       <a class="btn" href="how-it-works.html">Walk the write path</a>
     </div>
@@ -289,8 +321,8 @@
 <footer>
   <div class="wrap foot">
     <div>
-      <b>doublegate</b> · design phase · every claim traces to cited research
-      <p class="dim">Open source. Solo use is free and stays that way.
+      <b>doublegate</b> · open source · first release Q2 2027 · every claim traces to cited research
+      <p class="dim">Solo use is free and stays that way.
       <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
       "you got this wrong". Ask about deployment or pricing at
       <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">eugene.korniichuk@gmail.com</a>.</p>
@@ -299,7 +331,7 @@
       <a href="how-it-works.html">How it works</a>
       <a href="for-organizations.html">For organizations</a>
       <a href="for-engineers.html">For engineers</a>
-      <a href="pricing.html">Pricing</a>
+      <a href="governance.html">Governance</a>
       <a href="evidence.html">Evidence</a>
       <a href="https://github.com/doublegate-io/doublegate-io.github.io">GitHub</a>
       <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
