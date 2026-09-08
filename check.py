@@ -404,6 +404,40 @@ if (ROOT / "sky-data.py").exists():
             if f'id="{el_id}"' not in markup:
                 fail(f"{page.name}: loads sky.js but has no #{el_id}")
 
+# 18b. THE MAP CAN BE DRAWN FROM A REAL FEED, AND A REAL FEED LEAKS NOTHING.
+#     tests/fixtures/org-feed.jsonl is an organization gate's published notes,
+#     captured from the real daemons (six claims countersigned, one refused for
+#     a credential, two relations). sky-data.py --feed must render it, the
+#     output must carry only labels — no claim text, no ids, no signer — and
+#     the shipped sky must still be the authored one. This is the site's half
+#     of the gate's own feed test; if the gate's field set ever grows a content
+#     field, this is where the page would have shown it.
+if (ROOT / "sky-data.py").exists() and (ROOT / "tests" / "fixtures" / "org-feed.jsonl").exists():
+    import subprocess, tempfile
+    fx = ROOT / "tests" / "fixtures" / "org-feed.jsonl"
+    with tempfile.TemporaryDirectory() as td:
+        out = Path(td) / "sky-data.feed.js"
+        r = subprocess.run([sys.executable, str(ROOT / "sky-data.py"), "--feed", str(fx), "--out", str(out)],
+                           capture_output=True, text=True)
+        if r.returncode != 0:
+            fail("sky-data.py --feed on the fixture: " + (r.stdout + r.stderr).strip().replace("\n", " | ")[:400])
+        else:
+            rendered = out.read_text()
+            feed_text = fx.read_text()
+            import json as _json
+            subjects = {_json.loads(l).get("subject", "") for l in feed_text.splitlines() if l.strip()}
+            for needle in ("hunter2", "AKIA", "refunds", "idempotency", "agent://", "uid:", "urn:doublegate", "sha256"):
+                if needle in rendered:
+                    fail(f"sky-data.py --feed: {needle!r} reached the rendered map — the map is labels only")
+            for sid in subjects:
+                if sid and sid in rendered:
+                    fail("sky-data.py --feed: an artifact id reached the rendered map")
+            if "spaces" not in rendered.splitlines()[1]:
+                fail("sky-data.py --feed: the header does not say it was drawn from a feed")
+    if "window.SKY_DATA" in (ROOT / "assets" / "sky-data.js").read_text() and \
+            "--feed" in (ROOT / "assets" / "sky-data.js").read_text().splitlines()[0]:
+        fail("assets/sky-data.js was rendered from a feed; the shipped sky is the authored one until a real org gate is public")
+
 # 19. A FIGURE MADE OF WORDS IS MARKUP, NOT AN IMAGE.
 #     scope-flow.svg and record-fields.svg were tables of prose and quoted
 #     regulation shipped as 1040px images. Three costs, none of which any gate
@@ -466,5 +500,5 @@ print(f"PASS — {len(pages)} pages: " + ", ".join(p.name for p in pages))
 print("  tag balance · anchors · cross-page links · assets · vocabulary")
 print("  metadata · calls to action · alt text · nav parity · svg motion paths")
 print("  README inline HTML integrity · one contact address, reachable everywhere")
-print("  no phase language · knowledge-map scripts, data freshness and claim copy")
+print("  no phase language · knowledge-map scripts, data freshness and claim copy · the map from a real feed, labels only")
 print("  text figures are markup, not images")

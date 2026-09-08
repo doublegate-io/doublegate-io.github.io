@@ -69,7 +69,7 @@ flowchart LR
 | `assets/wordmark.svg` | mark + name + tagline, for README embedding |
 | `assets/social-card.svg` | 1200×630 link-preview card (`og:image`) |
 | `sky-claims.txt` | the knowledge map's 800 claims: 20 subjects × 40, one line each, plain text so a reviewer reads them as copy |
-| `sky-data.py` | validates `sky-claims.txt` (counts, relations, vocabulary and phase gates, no duplicates) and generates `assets/sky-data.js` |
+| `sky-data.py` | validates `sky-claims.txt` (counts, relations, vocabulary and phase gates, no duplicates) and generates `assets/sky-data.js`; `--feed <notes.jsonl>` renders the same shape from an organization gate's published notes |
 | `assets/sky.js` | the knowledge map: canvas 2D, no dependencies — constellations, arrivals, five verdicts, turn / zoom / dive |
 | `assets/hero-field.svg` | five verdicts over sixty submissions, still figure — the front page's no-JavaScript fallback for the map |
 | `assets/artifact-flow.svg` | tall walkthrough diagram, how-it-works |
@@ -119,6 +119,7 @@ that was possible once recurs during the next rewrite.
 | 16 | One contact address, reachable from every page | the readiness review found no way to reach anyone; a product site with no contact path is a brochure |
 | 17 | No phase language, defensive framing or disclaimer headings in visible copy | an offering audit carried the design repo's engineering-tier honesty list onto three pages as copy ("no design yet — scheduled, not drawn") and every other gate stayed green |
 | 18 | Knowledge-map scripts exist and ship from `assets/`, the generated data is fresh, every claim passes the copy gates, and the page carries every element `sky.js` writes to | the map is the site's first JavaScript; its 800 claims are visible copy that lives in a `.js` file where gate 5 does not look, and a renamed element id fails silently in a browser |
+| 18b | `sky-data.py --feed` renders the map from a real organization gate's published notes (`tests/fixtures/org-feed.jsonl`), and the rendering carries labels only — no claim text, no artifact id, no signer; a note with a content field refuses the whole file; the shipped `sky-data.js` is still the authored one | the map will be drawn from a live gate one day; the day it is, the page must not be the place a quarantined excerpt first appears |
 
 ## The knowledge map (front page)
 
@@ -180,6 +181,24 @@ with the wrong count, a relation to a category that does not exist, a duplicate 
 claim that starts with a capital (they are fragments), or a claim that would fail the
 vocabulary or phase-language gates -- the claims are copy, and a claim in a tooltip is
 as visible as a heading.
+
+**Drawing it from real data.** An organization gate that publishes its notes (one
+CloudEvents note per claim it processes: which claim, what happened, what kind, which
+space — never the text) is a second input for the same map:
+
+```bash
+python3 sky-data.py --feed /path/to/feed.jsonl --out assets/sky-data.js
+```
+
+A constellation per space, a point per live claim (countersigned, promoted or ratified;
+a refusal or demotion removes it), an edge per relation between two spaces, and the five
+shapes from the gate's content types. What the tooltip shows for a point is the claim's
+authority class in words — the feed carries no prose, and the map does not invent any.
+The vocabulary and phase gates run over the labels anyway, so both inputs answer to one
+contract. `tests/fixtures/org-feed.jsonl` is a feed captured from the real daemons; gate
+18b renders it on every check and greps the result for the claims' own words, their ids
+and their writers. The shipped sky stays the authored one until a real gate's feed is
+public.
 
 ## Design notes
 
