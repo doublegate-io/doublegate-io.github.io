@@ -275,7 +275,10 @@ blockquote {
 }
 
 /* ---------- anti-claims ---------- */
-.anti { list-style: none; padding: 0; margin: 0 0 40px; max-width: 82ch; }
+/* .anti is the wrapping div; the list-style reset has to reach the <ul> or
+   the browser draws its disc beside our ✕ and indents the whole list 40px. */
+.anti, .anti ul { list-style: none; padding: 0; margin: 0; }
+.anti { margin: 0 0 40px; max-width: 82ch; }
 .anti li {
   padding: 15px 0 15px 26px;
   border-bottom: 1px solid var(--line-soft);
@@ -304,13 +307,16 @@ footer { padding: 40px 0; }
 
 /* ---------- responsive ---------- */
 @media (max-width: 720px) {
-  /* Hero: the desktop clamp floor (38px) wraps the headline to five lines on
-     a phone and pushes both CTAs below the fold. One step tighter keeps the
-     headline to three lines and the first CTA visible on first paint. */
-  h1 { font-size: clamp(30px, 8.8vw, 38px); }
+  /* Hero on a phone. The desktop clamp floor (38px) wraps the index headline
+     to five lines; one step tighter holds it to four. Paddings and margins
+     are trimmed so the hero reads as one screen: at 412×915 the first CTA
+     clears the fold, at 390×844 it sits just under it. Getting it above the
+     fold on every phone would mean cutting hero copy, not CSS. */
+  h1 { font-size: clamp(30px, 8.8vw, 38px); margin-bottom: 20px; }
   .lede { font-size: 16.5px; }
   .lede.strong { font-size: 17px; }
-  .hero { padding: 60px 24px 52px; }
+  .hero { padding: 48px 24px 52px; }
+  .hero .cta-row { margin-top: 24px; }
   .band { padding: 58px 0; }
   .diagram { padding: 16px 10px; }
 }

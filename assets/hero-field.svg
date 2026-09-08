@@ -171,5 +171,5 @@
 <circle class="mover" cx="717.2" cy="117.5" r="7.2" fill="none" stroke="#22d3ee" stroke-width="1.5"><animate attributeName="r" dur="3.6s" repeatCount="indefinite" values="7.2;16.2;7.2" keyTimes="0;0.5;1"/><animate attributeName="stroke-opacity" dur="3.6s" repeatCount="indefinite" values=".85;0;.85" keyTimes="0;0.5;1"/></circle>
 <path d="M 24 364 L 1056 364" stroke="url(#rule)" stroke-width="1" fill="none"/>
 <text class="foot" x="24" y="390">Every submission ends in exactly one verdict, signed. Nothing is edited in place, and nothing vanishes.</text>
-<text class="cav" x="24" y="410">Design phase: the split across the five is illustrative, not a measured rate. The mechanism is what is being shown.</text>
+<text class="cav" x="24" y="410">The split across the five is illustrative of the mechanism, not a measured rate; measured rates publish with release 3.</text>
 </svg>

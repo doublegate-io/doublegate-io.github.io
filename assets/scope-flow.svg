@@ -8,7 +8,7 @@ and the reviewer is never the author. Organization: a second gate reviews what a
 signed, on its own authority. Commons: the publishing organization signs, then the commons gate
 countersigns on its own authority before anyone outside can install it. The mechanism is identical
 at every scope — only the audience and the signing authority widen. Solo is free and stays free;
-the commons is free to read and free to contribute.</desc>
+the commons is free to read, and contributions carry a named identity.</desc>
 
 <defs>
   <style><![CDATA[
@@ -87,7 +87,7 @@ the commons is free to read and free to contribute.</desc>
   <rect x="24" y="338" width="4" height="86" fill="#60a5fa"/>
   <text class="nm"  x="52" y="368">Commons</text>
   <text class="who" x="52" y="390">anyone, outside your company</text>
-  <text class="free" x="52" y="412" fill="#93c5fd">FREE TO READ, FREE TO CONTRIBUTE</text>
+  <text class="free" x="52" y="412" fill="#93c5fd">READ FREE, CONTRIBUTE SIGNED</text>
   <line class="rule" x1="344" y1="354" x2="344" y2="408"/>
   <text class="sig" x="372" y="368">Your organization signs what it is willing to stand behind; the</text>
   <text class="sig" x="372" y="388">commons gate then reviews it again on its own authority. Every</text>

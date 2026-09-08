@@ -76,8 +76,8 @@ TITLES = {
     "commons.html": (
         "The Commons — a reviewed public library of agent knowledge",
         "Skills, memories and knowledge artifacts anyone can draw on, held and signed by a "
-        "reviewer that did not write them. Free to read, free to contribute, every verdict "
-        "published — including the rejections.",
+        "reviewer that did not write them. Free to read, contributions under a named identity, "
+        "every verdict published — including the rejections.",
     ),
     "pricing.html": (
         "Pricing — Solo, Team, Organization",
