@@ -162,6 +162,24 @@
         would fill the hole; a person acts on it.</p>
       </div>
     </div>
+    <div class="terminal">
+      <div class="term-bar"><i></i><i></i><i></i><span>one memory, end to end</span></div>
+      <pre><code><span class="c-dim">// your agent writes down a correction it was just taught</span>
+<span class="c-cyn">&gt; remember</span> "Payments sandbox rate-limits per API key, not per account.
+             Space retries 2 s apart, not 30."
+<span class="c-dim">&larr;</span> artifact <span class="c-grn">sha256:9f2c&hellip;</span> &middot; state: <b>held</b> &mdash; stored, not yet readable by anyone else
+  scan: clean &middot; near-duplicate found: an older team note &mdash; this one sharpens it
+
+<span class="c-dim">// minutes later, after a reviewer that did not write it signs off</span>
+<span class="c-cyn">&gt; recall</span> "sandbox rate limit"
+<span class="c-dim">&larr;</span> "&hellip;per API key, not per account. Space retries 2 s&hellip;"
+  signed: <span class="c-grn">reviewer-2</span> &middot; 09:16 &middot; source: the session it was taught in &middot; provisional: no
+
+<span class="c-dim">// the audit answer, for any artifact, at any time</span>
+<span class="c-cyn">&gt; why</span> <span class="c-grn">sha256:9f2c&hellip;</span>
+<span class="c-dim">&larr;</span> admitted 09:14 &rarr; scanned, no findings &rarr; graded 0.91 by reviewer-2, <b>not the author</b>
+  &rarr; signed 09:16 &rarr; readable to your group &middot; <span class="c-dim">every step signed; the chain verifies end to end</span></code></pre>
+    </div>
     <p class="micro">
       A fifth tool reports what is waiting in review &mdash; ids and states only, never the
       content itself, so even the queue view respects the boundary. On the organization side a
