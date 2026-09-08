@@ -60,7 +60,12 @@ em { color: var(--ink); font-style: italic; }
 .nav nav a.ghost:hover { border-color: var(--ink-faint); background: var(--panel); }
 
 /* ---------- hero ---------- */
-.hero { padding: 92px 0 76px; border-bottom: 1px solid var(--line-soft); }
+/* Every page's hero is one element carrying both .wrap and .hero. The
+   shorthand here used to be "92px 0 76px", which overrode .wrap's 24px side
+   padding with 0 — invisible on desktop, where the 1080px max-width leaves
+   margin anyway, but on a phone the headline sat flush against the glass
+   while every other section kept its gutter. Keep the sides explicit. */
+.hero { padding: 92px 24px 76px; border-bottom: 1px solid var(--line-soft); }
 .eyebrow {
   font: 12px/1 var(--mono);
   letter-spacing: .1em; text-transform: uppercase;
@@ -69,9 +74,10 @@ em { color: var(--ink); font-style: italic; }
 h1 {
   margin: 0 0 26px;
   /* cap chosen so the index headline's first line ("Your company is paying
-     to teach") fits 1080px-wrap desktop in one line — at 66px it wrapped
-     one word early and orphaned "teach" ahead of its own <br> */
-  font-size: clamp(38px, 6.4vw, 61px);
+     to teach") fits the 1032px content width (1080 wrap minus the 24px
+     gutters) in one line — at 61px it wrapped one word early and orphaned
+     "teach" ahead of its own <br>; 59px is the largest size that holds */
+  font-size: clamp(38px, 6.4vw, 59px);
   line-height: 1.04;
   letter-spacing: -.032em;
   font-weight: 680;
@@ -304,7 +310,7 @@ footer { padding: 40px 0; }
   h1 { font-size: clamp(30px, 8.8vw, 38px); }
   .lede { font-size: 16.5px; }
   .lede.strong { font-size: 17px; }
-  .hero { padding: 60px 0 52px; }
+  .hero { padding: 60px 24px 52px; }
   .band { padding: 58px 0; }
   .diagram { padding: 16px 10px; }
 }
