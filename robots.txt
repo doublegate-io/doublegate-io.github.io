@@ -2,3 +2,4 @@ User-agent: *
 Allow: /
 
 Sitemap: https://doublegate-io.github.io/sitemap.xml
+LLMs: https://doublegate-io.github.io/llms.txt

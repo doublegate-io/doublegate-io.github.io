@@ -1,0 +1,620 @@
+{
+  "service": "doublegate",
+  "version": "0.1.0.dev0",
+  "transport": "JSON-RPC 2.0 over a Unix socket, newline-delimited",
+  "identity": "derived from the connection (SO_PEERCRED); never a parameter (I2). `null` values are refused: omit the field.",
+  "errors": {
+    "-32600": "invalid request",
+    "-32601": "method not found",
+    "-32602": "invalid params / refused with the reason",
+    "-32000": "identity underivable (I6)",
+    "-32001": "request too large",
+    "-32006": "quarantine full; data.retry_after_ms"
+  },
+  "role": "any",
+  "verbs": [
+    {
+      "name": "dg.audit",
+      "role": "both",
+      "proof": "none",
+      "summary": "The decisions about one artifact with signatures verified.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.challenge",
+      "role": "both",
+      "proof": "none",
+      "summary": "A nonce for the operator key to sign (ADR-0028 d1). Worthless without the private key.",
+      "params": [],
+      "returns": "object: {nonce, ttl_ms}"
+    },
+    {
+      "name": "dg.defer",
+      "role": "both",
+      "proof": "none",
+      "summary": "Record that the operator looked and moved on (F40). Not a lifecycle transition.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, deferred}"
+    },
+    {
+      "name": "dg.demote",
+      "role": "both",
+      "proof": "operator_proof",
+      "summary": "Withdraw an admitted artifact from every consumer surface; the content is kept.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.describe",
+      "role": "both",
+      "proof": "none",
+      "summary": "This catalog, for the answering daemon's role — the socket describing itself.",
+      "params": [],
+      "returns": "object: {service, version, role, verbs[], documents{}}"
+    },
+    {
+      "name": "dg.engagement",
+      "role": "both",
+      "proof": "none",
+      "summary": "Did the operator actually review? Counts over a window.",
+      "params": [
+        {
+          "name": "days",
+          "type": "integer",
+          "required": false,
+          "description": "default 14"
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.grade",
+      "role": "both",
+      "proof": "none",
+      "summary": "Run the gate engine on one artifact: one model call per stance, one verdict per item.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.grade_pending",
+      "role": "both",
+      "proof": "none",
+      "summary": "Grade what waits at L1, within the day's budget (fail-closed when spent, I6).",
+      "params": [
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "default 50"
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.ingest",
+      "role": "both",
+      "proof": "none",
+      "summary": "Propose content. Lands in quarantine (L0); nothing is readable until promoted. Writer identity is the connection's, never a parameter (I2).",
+      "params": [
+        {
+          "name": "content",
+          "type": "string",
+          "required": true,
+          "description": "utf-8 text, or base64 with encoding='base64'"
+        },
+        {
+          "name": "content_type",
+          "type": "string",
+          "required": true,
+          "description": "memory | skill | prompt_template | summary | derived_fact | imported_document | …; an unregistered type enters at the strictest class (FR-18)"
+        },
+        {
+          "name": "source_uri",
+          "type": "string",
+          "required": true,
+          "description": "where it came from, e.g. agent://hermes/session-42"
+        },
+        {
+          "name": "trust_class",
+          "type": "string",
+          "required": false,
+          "description": "T-0…T-5, proposed; default T-1"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "the folder within the deployment; default main (ADR-0023)"
+        },
+        {
+          "name": "encoding",
+          "type": "string",
+          "required": false,
+          "description": "'base64' when content is not text"
+        },
+        {
+          "name": "derives_from",
+          "type": "array",
+          "required": false,
+          "description": "parent artifact ids (provenance edges, frozen in the envelope)"
+        }
+      ],
+      "returns": "object: {artifact_id, state}",
+      "errors": {
+        "-32001": "request too large",
+        "-32006": "quarantine at max_depth; data.retry_after_ms"
+      }
+    },
+    {
+      "name": "dg.override_tip",
+      "role": "both",
+      "proof": "operator_proof",
+      "summary": "Pin a chain's served head to this member (time travel). Reversible by a second override.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.pending",
+      "role": "both",
+      "proof": "none",
+      "summary": "What is waiting in quarantine, as metadata (state, class, kind) — never content.",
+      "params": [
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "default 100"
+        }
+      ],
+      "returns": "object: {pending[]}"
+    },
+    {
+      "name": "dg.ping",
+      "role": "both",
+      "proof": "none",
+      "summary": "Liveness and identity: deployment id, role, retrieval paths, degraded flags, quorum profile.",
+      "params": [],
+      "returns": "object"
+    },
+    {
+      "name": "dg.promote",
+      "role": "both",
+      "proof": "operator_proof",
+      "summary": "Admit an artifact whose quorum is met. On a solo client the promotion is provisional until an org gate countersigns (R3).",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "importance",
+          "type": "number",
+          "required": false,
+          "description": "0..1; default 0.5"
+        },
+        {
+          "name": "supersedes",
+          "type": "string",
+          "required": false,
+          "description": "parent id this artifact supersedes (single-head chains, ADR-0035)"
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, state, provisional?}"
+    },
+    {
+      "name": "dg.publish",
+      "role": "both",
+      "proof": "presence",
+      "summary": "The note publisher's cursors: status | poll | rewind <sink> [--to <event>] (ADR-0031).",
+      "params": [
+        {
+          "name": "action",
+          "type": "string",
+          "required": false,
+          "description": "status | poll | rewind; default status"
+        },
+        {
+          "name": "sink",
+          "type": "string",
+          "required": false,
+          "description": "for rewind"
+        },
+        {
+          "name": "to",
+          "type": "string",
+          "required": false,
+          "description": "event id to rewind to"
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.rebuild",
+      "role": "both",
+      "proof": "presence",
+      "summary": "Replay the journal into every projection; the result must equal the live state (I5).",
+      "params": [],
+      "returns": "object"
+    },
+    {
+      "name": "dg.recall",
+      "role": "both",
+      "proof": "none",
+      "summary": "Read the active store. Never reaches quarantine (I1). Provisional hits are marked; superseded are hidden unless asked for.",
+      "params": [
+        {
+          "name": "query",
+          "type": "string",
+          "required": true,
+          "description": "natural-language query"
+        },
+        {
+          "name": "spaces",
+          "type": "array",
+          "required": false,
+          "description": "restrict to these spaces; default all the caller may read"
+        },
+        {
+          "name": "k",
+          "type": "integer",
+          "required": false,
+          "description": "max hits; default 10"
+        },
+        {
+          "name": "mode",
+          "type": "string",
+          "required": false,
+          "description": "hybrid | lexical | vector; default hybrid"
+        },
+        {
+          "name": "include_provisional",
+          "type": "boolean",
+          "required": false,
+          "description": "default true"
+        },
+        {
+          "name": "include_superseded",
+          "type": "boolean",
+          "required": false,
+          "description": "default false (ADR-0035 d6)"
+        }
+      ],
+      "returns": "object: {hits[], paths}"
+    },
+    {
+      "name": "dg.reconcile",
+      "role": "both",
+      "proof": "presence",
+      "summary": "Re-derive the consumer surfaces from the journal (the integrator's rebuild).",
+      "params": [],
+      "returns": "object"
+    },
+    {
+      "name": "dg.reject",
+      "role": "both",
+      "proof": "operator_proof",
+      "summary": "Refuse an artifact in quarantine, with a category and optionally what it lost to (ADR-0037).",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "in_favour_of",
+          "type": "string",
+          "required": false,
+          "description": "artifact id"
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.relate",
+      "role": "both",
+      "proof": "operator_proof",
+      "summary": "Append a typed relation from artifact_id (child) to parent: supersedes | restates | corrects | contradicts | extends. Only supersedes hides.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "the child"
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "parent",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, relation, parent, event_id}"
+    },
+    {
+      "name": "dg.relations",
+      "role": "both",
+      "proof": "none",
+      "summary": "The typed relation edges touching one artifact (ADR-0035).",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, relations[]}"
+    },
+    {
+      "name": "dg.review",
+      "role": "both",
+      "proof": "none",
+      "summary": "The operator's queue: what needs a human, capped.",
+      "params": [
+        {
+          "name": "cap",
+          "type": "integer",
+          "required": false,
+          "description": "max items; default from [review]"
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.scan",
+      "role": "both",
+      "proof": "none",
+      "summary": "Run the deterministic scanner on one L0 artifact; a finding ≥ medium routes to L1b and no score clears it (INV-SEC-5). An explicit outcome is the manual override.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "outcome",
+          "type": "string",
+          "required": false,
+          "description": "clean | flagged — manual override"
+        },
+        {
+          "name": "findings",
+          "type": "array",
+          "required": false,
+          "description": "with a manual outcome"
+        }
+      ],
+      "returns": "object: {artifact_id, state, outcome, findings[]}"
+    },
+    {
+      "name": "dg.scan_pending",
+      "role": "both",
+      "proof": "none",
+      "summary": "Scan every L0 artifact whose delay elapsed. Counts, never content.",
+      "params": [
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "default 100"
+        },
+        {
+          "name": "now",
+          "type": "boolean",
+          "required": false,
+          "description": "ignore the scan delay"
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.sign",
+      "role": "both",
+      "proof": "operator_proof for the human's signature",
+      "summary": "Record a verdict. With operator_proof the human signs; without, the uid signs — which never satisfies a human requirement.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "decision",
+          "type": "string",
+          "required": true,
+          "description": "promote | reject | hold"
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": "{nonce, sig} over dg.challenge's nonce"
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.status",
+      "role": "both",
+      "proof": "none",
+      "summary": "Queue depths, journal tip, gate budget, role-specific gauges — or one artifact's lifecycle row.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": false,
+          "description": "one artifact instead of the deployment"
+        }
+      ],
+      "returns": "object"
+    },
+    {
+      "name": "dg.submit",
+      "role": "client",
+      "proof": "none",
+      "summary": "Queue an admitted artifact for the org gate (the outbox). Idempotent by artifact id.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, queued}"
+    },
+    {
+      "name": "dg.submit_drain",
+      "role": "client",
+      "proof": "none",
+      "summary": "Drain the outbox to the org gate now and pull outcomes (countersign / refuse) as peer events.",
+      "params": [],
+      "returns": "object: {accepted, retry, stopped, refused, pulled, resolved, halted_reason?}"
+    },
+    {
+      "name": "dg.tip",
+      "role": "both",
+      "proof": "none",
+      "summary": "The served head of an artifact's relation chain (ADR-0037).",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, root, tip, chain[]}"
+    },
+    {
+      "name": "dg.verify",
+      "role": "both",
+      "proof": "none",
+      "summary": "Walk the journal chain and verify every signature.",
+      "params": [],
+      "returns": "object: {events, tip}"
+    },
+    {
+      "name": "dg.why",
+      "role": "both",
+      "proof": "none",
+      "summary": "Every signed event about one artifact, in order — the provenance answer.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, events[]}"
+    }
+  ],
+  "documents": {
+    "mcp_tools": "docs/api/mcp-tools.json",
+    "note_schema": "docs/api/note.schema.json",
+    "org_openapi": "doublegate-org: docs/api/openapi.json and GET /openapi.json on the keyed surface",
+    "published": "https://doublegate-io.github.io/api/ (snapshot of all four, stamped with the commit) — https://doublegate-io.github.io/llms.txt first"
+  }
+}

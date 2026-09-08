@@ -1,0 +1,36 @@
+# doublegate
+
+> doublegate is a memory provider for AI agents with admission control on the write path. An agent's `remember` lands in a held store that nothing can read; a deterministic scan, an independent grader that did not write it and signed verdicts decide; only admitted content is returned by `recall`, every result with its provenance, and every decision is a signed, replayable record. It speaks the standard agent-tool protocol, runs as a sidecar on the machine that runs the agent, and is open source — first release Q2 2027.
+
+## The API, as data
+
+Rendered from the code that serves it and checked against it in the code repositories' continuous integration; published here as a snapshot stamped with the commit.
+
+- [api/mcp-tools.json](https://doublegate-io.github.io/api/mcp-tools.json): the tool schemas each tier serves over the agent-tool protocol (exactly what `tools/list` answers), and the `instructions` paragraph the handshake carries
+- [api/daemon-rpc.json](https://doublegate-io.github.io/api/daemon-rpc.json): every verb on a gate's local socket — parameters, which role serves it, the proof each needs; a running gate answers the same to `dg.describe`
+- [api/note.schema.json](https://doublegate-io.github.io/api/note.schema.json): JSON Schema of a published note's `data`: the closed field set a subscriber or a knowledge map may rely on — which claim, what happened, what kind; never the text
+- [api/openapi.json](https://doublegate-io.github.io/api/openapi.json): OpenAPI 3.1 for the organization gate's keyed HTTP surface — submissions in, signed outcomes out, the ratified collection for read keys; a running gate serves it at `GET /openapi.json` to any valid key
+- [api/index.json](https://doublegate-io.github.io/api/index.json): which commit of which repository each document was rendered from
+
+## If you are an agent wiring yourself in
+
+- Tools are namespaced `doublegate.*` — `doublegate.remember`, not `remember`. Launch the plugin tier (`doublegate-plugin mcp`, works with no gate running) or the client tier (`doublegate-client mcp`, this machine's gate) over stdio and call `tools/list`.
+- `remember` returns a handle, never a promise of admission: `local:` when no gate was reachable, `sha256:` once a gate stamped it. Nothing is readable through `recall` until a reviewer that did not write it promoted it.
+- Never send `writer_identity` or `deployment_id`; identity is derived from the connection and a request carrying it is refused.
+- There is no promote, sign, delete or trust-class tool on any tier. The thing being gated does not operate the gate; a person, or a quorum that excludes the writer, does that on the gate's own socket.
+- The organization gate is not where memory lives. Client gates submit to it (`PUT /submissions/{id}`), and the verdict never rides the request — poll `GET /outcomes?since=<position>` with the same key.
+
+## Pages
+
+- [Overview](https://doublegate-io.github.io/): Your engineers teach their agents every day and none of it is shared. doublegate reviews what an agent learns, signs it, and makes it an asset the whole organization inherits.
+- [How it works](https://doublegate-io.github.io/how-it-works.html): Follow a single memory from the moment an agent writes it, through holding, scanning, independent review and signing, to the point every other machine can read it.
+- [For organizations](https://doublegate-io.github.io/for-organizations.html): A study across 66 firms found individual AI tools produced individual time savings and no shift in how the organization works. This is the page about why, and what it costs you.
+- [For engineers](https://doublegate-io.github.io/for-engineers.html): doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, the four tools your agent gains, the API published as data for the agent doing the wiring, and the release roadmap.
+- [Governance](https://doublegate-io.github.io/governance.html): Let your existing systems propose what agents should know, with every belief audited, traceable, versioned and discoverable. Mapped to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.
+- [Commons](https://doublegate-io.github.io/commons.html): Skills, memories and knowledge artifacts anyone can draw on, held and signed by a reviewer that did not write them. Free to read, contributions under a named identity, every verdict published — including the rejections.
+- [Evidence](https://doublegate-io.github.io/evidence.html): The research behind the pitch: the 66-firm field experiment, Meta's in-house build, the provider survey, and the skill security data. Each one linked to its primary source.
+
+## Optional
+
+- [Site source](https://github.com/doublegate-io/doublegate-io.github.io): how these pages are built and the checks they pass
+- [Questions, objections and corrections](https://github.com/doublegate-io/doublegate-io.github.io/issues)

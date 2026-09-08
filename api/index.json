@@ -1,0 +1,32 @@
+{
+  "what": "doublegate's API as data — rendered from the code that serves it, checked against it in the code repositories' CI, published here as a snapshot",
+  "rendered_from": {
+    "doublegate": {
+      "repository": "https://github.com/doublegate-io/doublegate",
+      "commit": "003033210f3422d050d754167145d653bc938ec3"
+    },
+    "doublegate-org": {
+      "repository": "https://github.com/doublegate-io/doublegate-org",
+      "commit": "17f4b6bf3e590f4ba6fcd770817ff29e080ab366"
+    }
+  },
+  "documents": {
+    "mcp-tools.json": {
+      "from": "doublegate/docs/api/mcp-tools.json",
+      "about": "the tool schemas each tier serves over the agent-tool protocol — what tools/list answers — and the instructions paragraph the handshake carries"
+    },
+    "daemon-rpc.json": {
+      "from": "doublegate/docs/api/daemon-rpc.json",
+      "about": "every verb on the gate's local socket: parameters, role, the proof each needs; a running gate answers the same to dg.describe"
+    },
+    "note.schema.json": {
+      "from": "doublegate/docs/api/note.schema.json",
+      "about": "JSON Schema of a published note's data — the closed field set a subscriber or a knowledge map may rely on"
+    },
+    "openapi.json": {
+      "from": "doublegate-org/docs/api/openapi.json",
+      "about": "OpenAPI 3.1 for the organization gate's keyed HTTP surface; a running gate serves it at GET /openapi.json to any valid key"
+    }
+  },
+  "read_first": "https://doublegate-io.github.io/llms.txt"
+}

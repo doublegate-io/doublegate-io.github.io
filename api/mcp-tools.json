@@ -1,0 +1,369 @@
+{
+  "protocol": "MCP (stdio); the tier is fixed by the binary launched (ADR-0034)",
+  "tiers": {
+    "plugin": {
+      "binary": "doublegate-plugin",
+      "argv": [
+        "doublegate-plugin",
+        "mcp"
+      ],
+      "memory_provider": true,
+      "installable_on": "any harness host",
+      "instructions": "doublegate, in-harness tier: gated memory that works with no gate running. `doublegate.remember` files a claim and returns a handle — `local:` when no gate was reachable, `sha256:` once a gate stamped it — never a promise of admission; nothing you remember is readable to anyone until a reviewer that did not write it promotes it. `doublegate.recall` returns admitted beliefs plus this session's own unreviewed writes, marked `ratified: false`. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool: the thing being gated does not operate the gate. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
+      "tools": [
+        {
+          "name": "doublegate.remember",
+          "description": "Submit content for admission. Returns an artifact id and its state; content is NOT retrievable until ratified.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "the artifact body"
+              },
+              "content_type": {
+                "type": "string",
+                "description": "a class from the artifact taxonomy; an unregistered value is accepted and quarantined under the strictest policy (FR-18)"
+              },
+              "source_uri": {
+                "type": "string",
+                "description": "provider, environment or import origin"
+              },
+              "trust_class": {
+                "type": "string",
+                "description": "T-0..T-5 — a PROPOSAL; the scanner may reclassify (ADR-0021)"
+              },
+              "space": {
+                "type": "string",
+                "description": "target space; defaults to 'main' (ADR-0023)"
+              },
+              "derives_from": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "zero or more parent artifact ids; always a list (ADR-0016)"
+              }
+            },
+            "required": [
+              "content",
+              "content_type",
+              "source_uri"
+            ],
+            "additionalProperties": false
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              },
+              "state": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifact_id",
+              "state"
+            ]
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.recall",
+          "description": "Search ratified beliefs and recorded evidence. Returns provenance with every result.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "spaces": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "spaces to search; omitted means the caller's default space only — never all spaces (ADR-0023)"
+              },
+              "k": {
+                "type": "integer",
+                "default": 10,
+                "maximum": 100
+              },
+              "include_evidence": {
+                "type": "boolean",
+                "default": true
+              },
+              "include_provisional": {
+                "type": "boolean",
+                "default": true,
+                "description": "FR-12 content, ranked with a penalty; excluding it is allowed, hiding it silently is not"
+              },
+              "include_superseded": {
+                "type": "boolean",
+                "default": false,
+                "description": "ADR-0035 d5: chain members a later head replaced are hidden by default; true returns them, each marked provenance.superseded"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.status",
+          "description": "One artifact's position in the register and the reason for it.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              }
+            },
+            "required": [
+              "artifact_id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.pending",
+          "description": "What is waiting for review, as metadata only — ids, types, states, ages, finding counts. Never content.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100,
+                "maximum": 1000
+              }
+            },
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        }
+      ]
+    },
+    "client": {
+      "binary": "doublegate-client",
+      "argv": [
+        "doublegate-client",
+        "mcp"
+      ],
+      "memory_provider": true,
+      "installable_on": "any harness host",
+      "instructions": "doublegate, client-gate tier: the gate on this host. `doublegate.remember` returns an artifact id and a state; content is NOT retrievable until ratified — a reviewer that did not write it must sign. `doublegate.recall` searches the admitted store only, never quarantine; provisional hits are marked, superseded ones hidden unless `include_superseded`. `doublegate.why` is the signed audit trail of one artifact; `doublegate.tip` the served head of its supersession chain; `doublegate.pending` what waits, as metadata only. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
+      "tools": [
+        {
+          "name": "doublegate.remember",
+          "description": "Submit content for admission. Returns an artifact id and its state; content is NOT retrievable until ratified.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "content": {
+                "type": "string",
+                "description": "the artifact body"
+              },
+              "content_type": {
+                "type": "string",
+                "description": "a class from the artifact taxonomy; an unregistered value is accepted and quarantined under the strictest policy (FR-18)"
+              },
+              "source_uri": {
+                "type": "string",
+                "description": "provider, environment or import origin"
+              },
+              "trust_class": {
+                "type": "string",
+                "description": "T-0..T-5 — a PROPOSAL; the scanner may reclassify (ADR-0021)"
+              },
+              "space": {
+                "type": "string",
+                "description": "target space; defaults to 'main' (ADR-0023)"
+              },
+              "derives_from": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "zero or more parent artifact ids; always a list (ADR-0016)"
+              }
+            },
+            "required": [
+              "content",
+              "content_type",
+              "source_uri"
+            ],
+            "additionalProperties": false
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              },
+              "state": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifact_id",
+              "state"
+            ]
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.recall",
+          "description": "Search ratified beliefs and recorded evidence. Returns provenance with every result.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "query": {
+                "type": "string"
+              },
+              "spaces": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "description": "spaces to search; omitted means the caller's default space only — never all spaces (ADR-0023)"
+              },
+              "k": {
+                "type": "integer",
+                "default": 10,
+                "maximum": 100
+              },
+              "include_evidence": {
+                "type": "boolean",
+                "default": true
+              },
+              "include_provisional": {
+                "type": "boolean",
+                "default": true,
+                "description": "FR-12 content, ranked with a penalty; excluding it is allowed, hiding it silently is not"
+              },
+              "include_superseded": {
+                "type": "boolean",
+                "default": false,
+                "description": "ADR-0035 d5: chain members a later head replaced are hidden by default; true returns them, each marked provenance.superseded"
+              }
+            },
+            "required": [
+              "query"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.status",
+          "description": "One artifact's position in the register and the reason for it.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              }
+            },
+            "required": [
+              "artifact_id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.why",
+          "description": "The audit answer for one artifact: every ledger event that moved it, in order, with signatures.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              }
+            },
+            "required": [
+              "artifact_id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.tip",
+          "description": "The served head of an artifact's supersession chain, the whole chain root→head, and any operator pin in effect (ADR-0035, ADR-0037).",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              }
+            },
+            "required": [
+              "artifact_id"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.pending",
+          "description": "What is waiting for review, as metadata only — ids, types, states, ages, finding counts. Never content.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "limit": {
+                "type": "integer",
+                "default": 100,
+                "maximum": 1000
+              }
+            },
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        }
+      ]
+    }
+  }
+}

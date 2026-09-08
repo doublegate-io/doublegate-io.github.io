@@ -489,6 +489,46 @@ for page in pages:
             fail(f"{page.name}: {src} is back as an image — it is a table of words; "
                  f"keep it as markup so it reflows and the copy gates reach it")
 
+# 20. THE API IS PUBLISHED AS DATA, AND THE DATA IS THE CODE'S.
+#     api/*.json is a snapshot of what the code repositories render from the
+#     tables their daemons dispatch from (their CI refuses drift). Here the
+#     checks are the ones a public site can make without the private checkouts:
+#     the snapshot is well-formed and self-consistent (api-sync.py --check);
+#     llms.txt exists, is generated, and every link in it resolves — a program's
+#     front door with a dead link is worse than none; and the documents carry
+#     no private-repository URL, no key, no address — an API description names
+#     verbs and fields, never what a gate holds or who runs it. With the
+#     checkouts beside this one, api-sync.py --check also refuses a stale copy.
+import subprocess
+r = subprocess.run([sys.executable, str(ROOT / "api-sync.py"), "--check"], capture_output=True, text=True)
+if r.returncode != 0:
+    fail("api snapshot: " + (r.stdout + r.stderr).strip().replace("\n", " | ")[:400])
+llms = ROOT / "llms.txt"
+if not llms.exists():
+    fail("llms.txt missing — run python3 build.py")
+else:
+    text = llms.read_text()
+    for url in re.findall(r"\]\((https?://[^)\s]+)\)", text):
+        if url.startswith("https://doublegate-io.github.io/"):
+            local = url[len("https://doublegate-io.github.io/"):] or "index.html"
+            if not (ROOT / local).exists():
+                fail(f"llms.txt links to {url} and {local} is not in the site")
+        elif PRIVATE_REPO.search(url):
+            fail(f"llms.txt links into the private design repo -> {url}")
+    for needle in ("design phase", "no code yet", "not shipped"):
+        if needle in text:
+            fail(f"llms.txt: phase language -> {needle!r}")
+API_MUST_NOT_CARRY = re.compile(
+    r"github\.com/doublegate-io/(?:design|doublegate-design|marketing)"     # private repositories
+    r"|dgk_[A-Za-z0-9]{20,}"                                                  # a real key
+    r"|@gmail\.com|@[a-z0-9-]+\.(?:com|io|org)\b(?!/)"                       # an address
+    r"|/home/[a-z]+/|/Users/[A-Za-z]+/",                                      # a path from somebody's machine
+)
+for doc in sorted((ROOT / "api").glob("*.json")) if (ROOT / "api").exists() else []:
+    body = doc.read_text()
+    for m in API_MUST_NOT_CARRY.finditer(body):
+        fail(f"api/{doc.name}: must not carry {m.group(0)!r}")
+
 # ---------------------------------------------------------------- report
 if fails:
     print(f"FAIL — {len(fails)} problem(s):")
@@ -501,4 +541,4 @@ print("  tag balance · anchors · cross-page links · assets · vocabulary")
 print("  metadata · calls to action · alt text · nav parity · svg motion paths")
 print("  README inline HTML integrity · one contact address, reachable everywhere")
 print("  no phase language · knowledge-map scripts, data freshness and claim copy · the map from a real feed, labels only")
-print("  text figures are markup, not images")
+print("  text figures are markup, not images · the API as data: snapshot well-formed, llms.txt resolves, nothing private in it")

@@ -217,7 +217,57 @@
   </div>
 </section>
 
-<section id="broken" class="band">
+<section id="agents" class="band">
+  <div class="wrap tight">
+    <h2>For the agent doing the wiring</h2>
+    <p class="lede">
+      The whole surface is published as data, rendered from the code that serves it and checked
+      against that code before it ships. An agent asked to build tooling against a gate reads
+      four files and a short index; a running gate answers the same documents when asked.
+    </p>
+    <table class="cmp wide">
+      <thead>
+        <tr><th>Document</th><th>What it describes</th><th>Also served live by</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="api/mcp-tools.json">the tool schemas</a></td>
+          <td>the tools each tier offers over the agent-tool protocol, with their input schemas, and the
+          paragraph of rules the handshake hands the model first</td>
+          <td>the tool server's own listing</td>
+        </tr>
+        <tr>
+          <td><a href="api/daemon-rpc.json">the socket verbs</a></td>
+          <td>every verb on a gate's local socket &mdash; parameters, which role serves it, what proof
+          it needs</td>
+          <td>the gate, to a <span class="mono">describe</span> call</td>
+        </tr>
+        <tr>
+          <td><a href="api/note.schema.json">the note schema</a></td>
+          <td>the closed field set of a published note: which claim, what happened, what kind &mdash;
+          never the text</td>
+          <td>&mdash;</td>
+        </tr>
+        <tr>
+          <td><a href="api/openapi.json">the organization gate's HTTP surface</a></td>
+          <td>the organization gate's keyed HTTP surface: submissions in, signed outcomes out, the
+          ratified collection for read keys</td>
+          <td>the gate, at <span class="mono">/openapi.json</span>, to any valid key</td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="micro">
+      All four live under <span class="mono">/api/</span> on this domain, and
+      <a href="llms.txt">the index at <span class="mono">/llms.txt</span></a> is what a program reads
+      first: the product in one paragraph, the four documents, and the rules agents most often get
+      wrong from tool names alone &mdash; a handle is not admission, identity is never a parameter,
+      nothing in the surface promotes. A <a href="api/index.json">manifest beside them</a> names the
+      commit each document was rendered from.
+    </p>
+  </div>
+</section>
+
+<section id="broken" class="band alt">
   <div class="wrap tight">
     <h2>Two things to know before you wire it in</h2>
     <p class="lede">
@@ -244,7 +294,7 @@
   </div>
 </section>
 
-<section id="try" class="band alt">
+<section id="try" class="band">
   <div class="wrap tight">
     <h2>When you can run it</h2>
     <p class="lede">

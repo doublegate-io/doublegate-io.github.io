@@ -29,6 +29,12 @@ jobs:
       - name: gate checks
         run: python3 check.py
 
+      # api/ is a snapshot of the code repositories' rendered API documents; here,
+      # without those checkouts, the check is shape and self-consistency. The
+      # drift check runs where the checkouts sit beside this one (check.py, locally).
+      - name: the API snapshot is well-formed
+        run: python3 api-sync.py --check
+
       # Pure path/rect geometry — no browser needed, so it runs in this job rather
       # than behind the browser gate. None of the three browser SVG checks involve
       # a path/rect comparison, so this defect shipped once: separating two crowded

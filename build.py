@@ -73,7 +73,7 @@ TITLES = {
         "For engineers — what it is, what it costs, when it ships",
         "doublegate replaces your memory provider. Read path is unchanged, checking "
         "happens on the way in. Latency, token cost, the four tools your agent gains, "
-        "and the release roadmap.",
+        "the API published as data for the agent doing the wiring, and the release roadmap.",
     ),
     "governance.html": (
         "Governance — connectors, provenance, and what regulators ask for",
@@ -234,7 +234,57 @@ def render_sitemap() -> str:
 
 
 def render_robots() -> str:
-    return f"User-agent: *\nAllow: /\n\nSitemap: {SITE}sitemap.xml\n"
+    return f"User-agent: *\nAllow: /\n\nSitemap: {SITE}sitemap.xml\nLLMs: {SITE}llms.txt\n"
+
+
+# The front door for a program (llmstxt.org): what the thing is, in one paragraph,
+# then the machine-readable documents, then the pages. Generated here so it quotes
+# the same release date as every page and cannot name a page that does not exist.
+LLMS_INTRO = (
+    "> doublegate is a memory provider for AI agents with admission control on the write path. "
+    "An agent's `remember` lands in a held store that nothing can read; a deterministic scan, an "
+    "independent grader that did not write it and signed verdicts decide; only admitted content is "
+    "returned by `recall`, every result with its provenance, and every decision is a signed, "
+    "replayable record. It speaks the standard agent-tool protocol, runs as a sidecar on the "
+    "machine that runs the agent, and is open source — first release {first_release}."
+)
+
+LLMS_API = [
+    ("api/mcp-tools.json", "the tool schemas each tier serves over the agent-tool protocol (exactly what `tools/list` answers), and the `instructions` paragraph the handshake carries"),
+    ("api/daemon-rpc.json", "every verb on a gate's local socket — parameters, which role serves it, the proof each needs; a running gate answers the same to `dg.describe`"),
+    ("api/note.schema.json", "JSON Schema of a published note's `data`: the closed field set a subscriber or a knowledge map may rely on — which claim, what happened, what kind; never the text"),
+    ("api/openapi.json", "OpenAPI 3.1 for the organization gate's keyed HTTP surface — submissions in, signed outcomes out, the ratified collection for read keys; a running gate serves it at `GET /openapi.json` to any valid key"),
+    ("api/index.json", "which commit of which repository each document was rendered from"),
+]
+
+LLMS_RULES = [
+    "Tools are namespaced `doublegate.*` — `doublegate.remember`, not `remember`. Launch the plugin tier (`doublegate-plugin mcp`, works with no gate running) or the client tier (`doublegate-client mcp`, this machine's gate) over stdio and call `tools/list`.",
+    "`remember` returns a handle, never a promise of admission: `local:` when no gate was reachable, `sha256:` once a gate stamped it. Nothing is readable through `recall` until a reviewer that did not write it promoted it.",
+    "Never send `writer_identity` or `deployment_id`; identity is derived from the connection and a request carrying it is refused.",
+    "There is no promote, sign, delete or trust-class tool on any tier. The thing being gated does not operate the gate; a person, or a quorum that excludes the writer, does that on the gate's own socket.",
+    "The organization gate is not where memory lives. Client gates submit to it (`PUT /submissions/{id}`), and the verdict never rides the request — poll `GET /outcomes?since=<position>` with the same key.",
+]
+
+
+def render_llms() -> str:
+    pages = "\n".join(f"- [{label}]({SITE if p == 'index.html' else SITE + p}): {TITLES[p][1]}" for p, label in NAV)
+    api = "\n".join(f"- [{path}]({SITE}{path}): {about}" for path, about in LLMS_API)
+    rules = "\n".join(f"- {r}" for r in LLMS_RULES)
+    return (
+        "# doublegate\n\n"
+        + LLMS_INTRO.format(first_release=FIRST_RELEASE) + "\n\n"
+        "## The API, as data\n\n"
+        "Rendered from the code that serves it and checked against it in the code repositories' continuous "
+        "integration; published here as a snapshot stamped with the commit.\n\n"
+        + api + "\n\n"
+        "## If you are an agent wiring yourself in\n\n"
+        + rules + "\n\n"
+        "## Pages\n\n"
+        + pages + "\n\n"
+        "## Optional\n\n"
+        f"- [Site source]({GH}): how these pages are built and the checks they pass\n"
+        f"- [Questions, objections and corrections]({CONTACT})\n"
+    )
 
 
 # GitHub Pages serves /404.html for any unmatched path. It goes through the same
@@ -304,6 +354,7 @@ def main() -> int:
     targets = [(page, render(page)) for page, _ in NAV + UNLISTED]
     targets.append(("sitemap.xml", render_sitemap()))
     targets.append(("robots.txt", render_robots()))
+    targets.append(("llms.txt", render_llms()))
     targets.append(("404.html", render_404()))
 
     for name, want in targets:

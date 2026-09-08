@@ -1,0 +1,1384 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "doublegate organization gate",
+    "version": "0.1.0.dev0",
+    "description": "The one inbound HTTP surface of an organization gate (ADR-0033): bearer keys with scopes `submit | read | admin`, one port, plaintext behind the operator's TLS terminator. In `auth.mode: local` the same route table is served keyless on loopback only.\n\nWhat this surface is not: a way to promote. Admission is the quorum's, on the socket, by the operator; the wire carries submissions in and outcomes out (ADR-0030 §3: the answer never rides the PUT).",
+    "x-invariants": [
+      "INV-SEC-8: in key mode no data route answers without a valid bearer; 401 is identical for no key and a forged key",
+      "INV-SEC-9: keys never appear in logs; the raw key is returned once, at issue",
+      "I1: /memories never reaches quarantine or the inbox",
+      "I2: the writer of an introduced claim is the key's identity, never a field"
+    ]
+  },
+  "servers": [
+    {
+      "url": "http://{host}:{port}",
+      "variables": {
+        "host": {
+          "default": "127.0.0.1"
+        },
+        "port": {
+          "default": "7462"
+        }
+      }
+    }
+  ],
+  "tags": [
+    {
+      "name": "inbox",
+      "description": "submit and learn the verdict (ADR-0030, ADR-0041)"
+    },
+    {
+      "name": "read",
+      "description": "the collection"
+    },
+    {
+      "name": "keys",
+      "description": "issue / list / revoke (#72)"
+    },
+    {
+      "name": "operator"
+    },
+    {
+      "name": "workers",
+      "description": "the pull path of the worker pool"
+    },
+    {
+      "name": "console",
+      "description": "static pages"
+    },
+    {
+      "name": "meta"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "`Authorization: Bearer <key>`; scope is a property of the key"
+      }
+    },
+    "schemas": {
+      "Error": {
+        "type": "object",
+        "required": [
+          "error"
+        ],
+        "properties": {
+          "error": {
+            "type": "string"
+          }
+        }
+      },
+      "Submission": {
+        "type": "object",
+        "required": [
+          "envelope",
+          "local_promotion"
+        ],
+        "properties": {
+          "envelope": {
+            "type": "object",
+            "description": "the frozen v1 envelope (ADR-0022)"
+          },
+          "content": {
+            "type": "string",
+            "description": "utf-8, or base64 with encoding"
+          },
+          "encoding": {
+            "type": "string",
+            "enum": [
+              "base64"
+            ]
+          },
+          "local_promotion": {
+            "type": "object",
+            "description": "the client's signed promote event; the door verifies the signature against the key's deployment"
+          },
+          "trust_class": {
+            "type": "string"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "space": {
+            "type": "string"
+          }
+        }
+      },
+      "InboxState": {
+        "type": "object",
+        "properties": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "held",
+              "leased",
+              "countersigned",
+              "refused"
+            ]
+          },
+          "attempts": {
+            "type": "integer"
+          },
+          "deployment_id": {
+            "type": "string"
+          }
+        }
+      },
+      "Outcomes": {
+        "type": "object",
+        "required": [
+          "events",
+          "next",
+          "deployment_id"
+        ],
+        "properties": {
+          "events": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "description": "a signed journal line: `countersign` or `refuse`, payload content-free"
+            }
+          },
+          "next": {
+            "type": "integer",
+            "description": "the position to ask from next"
+          },
+          "deployment_id": {
+            "type": "string"
+          }
+        }
+      },
+      "Memory": {
+        "type": "object",
+        "properties": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "content": {
+            "type": "string"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "space": {
+            "type": "string"
+          },
+          "trust_class": {
+            "type": "string"
+          },
+          "provisional": {
+            "type": "boolean"
+          },
+          "score": {
+            "type": "number"
+          },
+          "provenance": {
+            "type": "object",
+            "description": "verbatim from the record: writer, source_uri, derives_from, signers"
+          }
+        }
+      },
+      "Introduction": {
+        "type": "object",
+        "required": [
+          "content_type"
+        ],
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "skill_ref": {
+            "type": "string",
+            "description": "a URL fetched under skillref's bounds, instead of content"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "trust_class": {
+            "type": "string"
+          },
+          "space": {
+            "type": "string"
+          },
+          "source_uri": {
+            "type": "string"
+          }
+        }
+      },
+      "KeyRecord": {
+        "type": "object",
+        "properties": {
+          "key_id": {
+            "type": "string"
+          },
+          "label": {
+            "type": "string"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "submit",
+                "read",
+                "admin"
+              ]
+            }
+          },
+          "spaces": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "deployment_id": {
+            "type": "string"
+          },
+          "role": {
+            "type": "string"
+          },
+          "issued_by": {
+            "type": "string"
+          },
+          "issued_at": {
+            "type": "integer"
+          },
+          "expires_at": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "revoked_at": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          }
+        }
+      },
+      "KeyRequest": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "scopes": {
+            "type": "string",
+            "description": "comma-separated: submit,read,admin"
+          },
+          "spaces": {
+            "type": "string",
+            "description": "comma-separated"
+          },
+          "deployment_id": {
+            "type": "string",
+            "description": "required with role=client: binds the key to the deployment that must sign"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "client",
+              "org",
+              ""
+            ]
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/submissions/{artifact_id}": {
+      "put": {
+        "operationId": "submit",
+        "tags": [
+          "inbox"
+        ],
+        "summary": "Submit an admitted claim to the organization's inbox (ADR-0030).",
+        "responses": {
+          "202": {
+            "description": "leased for review; `Location: /submissions/{id}`",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxState"
+                }
+              }
+            }
+          },
+          "200": {
+            "description": "already held, or already decided — the state says which",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxState"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "not JSON",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "over 8 MiB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "the key is fine; the body does not satisfy the door (unsigned, wrong deployment, no `local_promotion`). A drain does not stop on this",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "per-deployment rate exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "503": {
+            "description": "inbox at `max_depth`; `Retry-After` in seconds",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                }
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "The body is the client's signed `local_promotion` plus the envelope. The door (ADR-0034 §4): the key must be bound to the deployment that signed. The answer never rides this request — the verdict is a `countersign` or `refuse` event, pulled from `GET /outcomes`. Idempotent by artifact id.",
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "bare sha256 hex; the `sha256:` prefix is accepted and stripped"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Submission"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "submit"
+      },
+      "get": {
+        "operationId": "submissionState",
+        "tags": [
+          "inbox"
+        ],
+        "summary": "One submission's inbox state.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/InboxState"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no such route / object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/outcomes": {
+      "get": {
+        "operationId": "outcomes",
+        "tags": [
+          "inbox"
+        ],
+        "summary": "The org-signed countersign / refuse events addressed to the presenting key's deployment, in journal order after a position (ADR-0041).",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Outcomes"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "since / limit not integers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "the key is not bound to a deployment; nothing is addressed to it",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "this daemon does not serve outcomes",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Content-free: an outcome names the artifact and the verdict, never the body. `since` is a journal position, not a time; the answer's `next` is the position to ask from next. An admin key names the deployment with `deployment_id`.",
+        "parameters": [
+          {
+            "name": "since",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 0
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 500,
+              "maximum": 5000
+            }
+          },
+          {
+            "name": "deployment_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "admin keys only"
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "submit"
+      }
+    },
+    "/memories": {
+      "get": {
+        "operationId": "memories",
+        "tags": [
+          "read"
+        ],
+        "summary": "Read the organization's active store, filtered to the key's spaces, provenance verbatim (#71).",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Memory"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "A read key with no spaces sees nothing; an admin key sees every space. Never reaches the inbox or quarantine (I1).",
+        "parameters": [
+          {
+            "name": "q",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_superseded",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "0",
+                "1"
+              ],
+              "default": "0"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "read"
+      }
+    },
+    "/claims/graph": {
+      "get": {
+        "operationId": "claimsGraph",
+        "tags": [
+          "read"
+        ],
+        "summary": "The relation graph projection (ADR-0035) serialized; held artifacts cross as metadata only (INV-SEC-10).",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "no projection behind this surface",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/claims": {
+      "post": {
+        "operationId": "introduce",
+        "tags": [
+          "operator"
+        ],
+        "summary": "The operator's door: introduce a claim by ordinary ingest, identity from the key (I2 over HTTP; FR-59).",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "artifact_id": {
+                      "type": "string"
+                    },
+                    "state": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "no ingest behind this surface",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "`skill_ref` is fetched under skillref's four bounds. The claim lands in quarantine like any other; the door does not admit.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Introduction"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/keys": {
+      "get": {
+        "operationId": "listKeys",
+        "tags": [
+          "keys"
+        ],
+        "summary": "List API keys — records only; a hash or a raw key is never returned (#72).",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "keys": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/KeyRecord"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      },
+      "post": {
+        "operationId": "issueKey",
+        "tags": [
+          "keys"
+        ],
+        "summary": "Issue a key. The raw key is in this response and nowhere else, ever.",
+        "responses": {
+          "201": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "key",
+                    "key_id",
+                    "shown_once"
+                  ],
+                  "properties": {
+                    "key": {
+                      "type": "string"
+                    },
+                    "key_id": {
+                      "type": "string"
+                    },
+                    "shown_once": {
+                      "type": "boolean",
+                      "const": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "unknown scope, no scopes, client-bound key without deployment_id",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/KeyRequest"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/keys/{key_id}": {
+      "delete": {
+        "operationId": "revokeKey",
+        "tags": [
+          "keys"
+        ],
+        "summary": "Revoke a key; the next request with it is 401. A journal event.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "revoked": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no such route / object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "key_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "status",
+        "tags": [
+          "operator"
+        ],
+        "summary": "Inbox depth, leases, stuck count, gauges (FR-45).",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/work/leases": {
+      "post": {
+        "operationId": "lease",
+        "tags": [
+          "workers"
+        ],
+        "summary": "Lease inbox items for a worker (ADR-0030 §4).",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "leases": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "max": {
+                    "type": "integer",
+                    "default": 1
+                  },
+                  "ttl_s": {
+                    "type": "number",
+                    "default": 300
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/work/{artifact_id}/ack": {
+      "post": {
+        "operationId": "ack",
+        "tags": [
+          "workers"
+        ],
+        "summary": "Acknowledge a leased item with its outcome.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "artifact_id": {
+                      "type": "string"
+                    },
+                    "acked": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no such route / object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "lease token does not match / lease expired",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "lease_token",
+                  "outcome"
+                ],
+                "properties": {
+                  "lease_token": {
+                    "type": "string"
+                  },
+                  "outcome": {
+                    "type": "string",
+                    "enum": [
+                      "countersigned",
+                      "refused"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/openapi.json": {
+      "get": {
+        "operationId": "openapi",
+        "tags": [
+          "meta"
+        ],
+        "summary": "This document. Any valid key; keyless only in local mode.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "any"
+      }
+    },
+    "/": {
+      "get": {
+        "operationId": "pageRoot",
+        "tags": [
+          "console"
+        ],
+        "security": [],
+        "summary": "the console shell (#72) — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "responses": {
+          "200": {
+            "description": "text/html"
+          }
+        }
+      }
+    },
+    "/recall": {
+      "get": {
+        "operationId": "pageRecall",
+        "tags": [
+          "console"
+        ],
+        "security": [],
+        "summary": "recall page — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "responses": {
+          "200": {
+            "description": "text/html"
+          }
+        }
+      }
+    },
+    "/graph": {
+      "get": {
+        "operationId": "pageGraph",
+        "tags": [
+          "console"
+        ],
+        "security": [],
+        "summary": "graph page — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "responses": {
+          "200": {
+            "description": "text/html"
+          }
+        }
+      }
+    },
+    "/introduce": {
+      "get": {
+        "operationId": "pageIntroduce",
+        "tags": [
+          "console"
+        ],
+        "security": [],
+        "summary": "introduction page — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "responses": {
+          "200": {
+            "description": "text/html"
+          }
+        }
+      }
+    }
+  }
+}
