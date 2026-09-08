@@ -649,6 +649,7 @@ footer { padding: 40px 0; }
 }
 @media (prefers-reduced-motion: reduce) {
   .route:hover { transform: none; }
+  .sky-ledger-head .live { animation: none; opacity: .8; }
 }
 
 /* --- diagram legibility on narrow screens -----------------------------
@@ -746,4 +747,107 @@ footer { padding: 40px 0; }
 }
 @media (max-width: 620px) {
   .nav nav { font-size: 13.5px; gap: 13px; }
+}
+
+/* --- knowledge map (sky.html) ------------------------------------------
+   One canvas, one ledger. The canvas is the only element on the site that
+   moves on its own, and it is the whole point of the page, so nothing else
+   here animates. Colours for the five verdicts are the five accents already
+   in :root; sky.js reads them from there so the map cannot drift from the
+   still figure on the overview. */
+.skymap {
+  display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 16px;
+  margin-top: 8px;
+}
+.skymap-stage {
+  position: relative; height: 560px; border: 1px solid var(--line); border-radius: 14px;
+  background: radial-gradient(ellipse at 50% 40%, #0b0e15 0%, #05060a 70%);
+  overflow: hidden;
+}
+#sky { display: block; width: 100%; cursor: grab; touch-action: none; outline: none; }
+.sky-still { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; padding: 16px; background: #05060a; }
+#sky.dragging { cursor: grabbing; }
+#sky:focus-visible { box-shadow: inset 0 0 0 2px var(--cyn); }
+.sky-controls { position: absolute; top: 12px; right: 12px; display: flex; gap: 8px; }
+.sky-controls button {
+  font: 550 12.5px/1 var(--sans); color: var(--ink-dim);
+  background: rgba(8,9,12,.72); border: 1px solid var(--line); border-radius: 7px;
+  padding: 7px 11px; cursor: pointer; backdrop-filter: blur(6px);
+}
+.sky-controls button:hover, .sky-controls button[aria-pressed="true"] { color: var(--ink); border-color: var(--ink-faint); }
+.sky-controls button:focus-visible { outline: 2px solid var(--cyn); outline-offset: 1px; }
+.sky-controls button[aria-label] { width: 30px; padding: 7px 0; font-size: 15px; line-height: 1; text-align: center; }
+.sky-zoomlevel {
+  display: inline-flex; align-items: center; min-width: 34px; justify-content: center;
+  font: 550 12px/1 var(--mono); color: var(--ink-faint); font-variant-numeric: tabular-nums;
+}
+.sky-legend {
+  position: absolute; left: 12px; bottom: 10px; margin: 0; padding: 0; list-style: none;
+  display: flex; flex-wrap: wrap; gap: 4px 14px;
+  font-size: 12.5px; color: var(--ink-dim);
+}
+.sky-legend li { display: inline-flex; align-items: center; gap: 6px; }
+.sky-legend i { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+.sky-legend b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; min-width: 1.2em; }
+.v-new i, .v-new .chip { color: var(--cyn); background: var(--cyn); }
+.v-sharp i, .v-sharp .chip { color: var(--grn); background: var(--grn); }
+.v-merge i, .v-merge .chip { color: var(--vio); background: var(--vio); }
+.v-held i, .v-held .chip { color: var(--amb); background: var(--amb); }
+.v-refused i { background: transparent; border: 1.5px solid var(--red); width: 6px; height: 6px; }
+.v-refused .chip { color: var(--red); background: var(--red); }
+.sky-tip {
+  display: none; position: absolute; z-index: 2; max-width: 300px; pointer-events: none;
+  padding: 10px 12px 11px; border: 1px solid var(--line); border-radius: 10px;
+  background: rgba(12,14,19,.94); box-shadow: 0 12px 32px -12px rgba(0,0,0,.9);
+  font-size: 13.5px; line-height: 1.45; color: var(--ink);
+}
+.sky-tip .kind { display: block; font-size: 11.5px; color: var(--ink-faint); margin-bottom: 4px; }
+.sky-tip p { margin: 0 0 6px; }
+.sky-tip .how { display: block; font-size: 12px; color: var(--ink-dim); }
+
+.sky-ledger {
+  border: 1px solid var(--line); border-radius: 14px; background: var(--panel);
+  padding: 14px 16px; display: flex; flex-direction: column; min-height: 0;
+  max-height: 560px; overflow: hidden;
+}
+.sky-ledger-head { margin: 0 0 10px; font-size: 13px; color: var(--ink-dim); }
+.sky-ledger-head b { color: var(--ink); font-weight: 600; font-variant-numeric: tabular-nums; }
+/* The live dot is the only blinking thing on the site; it says the ledger is
+   being written to now, which is what the section is about. */
+.sky-ledger-head .live {
+  display: inline-block; width: 7px; height: 7px; border-radius: 50%; margin-right: 8px;
+  background: var(--grn); vertical-align: 1px; animation: live-pulse 2.4s ease-in-out infinite;
+}
+@keyframes live-pulse { 0%, 100% { opacity: .35; } 50% { opacity: 1; } }
+.sky-feed time { float: right; font: 11px/1.6 var(--mono); color: var(--ink-faint); margin-left: 8px; }
+.sky-feed { list-style: none; margin: 0; padding: 0; overflow: hidden; }
+.sky-feed .arr {
+  padding: 9px 0; border-top: 1px solid var(--line-soft);
+  font-size: 13px; line-height: 1.45; color: var(--ink-dim);
+}
+.sky-feed .arr:first-child { border-top: 0; color: var(--ink); }
+.sky-feed .arr:first-child { animation: arr-in .9s ease-out; }
+@keyframes arr-in { from { background: rgba(230,233,239,.07); } to { background: transparent; } }
+@media (prefers-reduced-motion: reduce) { .sky-feed .arr:first-child { animation: none; } }
+.sky-feed .chip {
+  display: inline-block; margin-right: 6px; padding: 1px 7px; border-radius: 999px;
+  font: 600 10.5px/1.6 var(--sans); letter-spacing: .02em;
+  background: transparent !important; border: 1px solid currentColor;
+}
+.sky-feed .cat { font-size: 11.5px; color: var(--ink-faint); }
+.sky-feed .txt { display: block; margin-top: 3px; }
+.sky-feed .v-refused .txt { color: var(--ink-faint); }
+
+@media (max-width: 960px) {
+  .skymap { grid-template-columns: 1fr; }
+  .skymap-stage { height: 440px; }
+  .sky-ledger { max-height: 300px; overflow-y: auto; }
+}
+@media (max-width: 600px) {
+  .skymap-stage { height: 420px; }
+}
+@media (max-width: 600px) {
+  .sky-controls { top: 8px; right: 8px; }
+  .sky-controls button { padding: 6px 9px; font-size: 12px; }
+  .sky-legend { font-size: 11.5px; gap: 3px 10px; left: 8px; bottom: 8px; }
 }

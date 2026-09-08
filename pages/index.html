@@ -20,6 +20,58 @@
   </div>
 </section>
 
+<section id="cost" class="band alt">
+  <div class="wrap">
+    <h2>Submit a memory or a skill, and one of five things happens to it</h2>
+    <p class="sub">
+      What your agents know, drawn as a sky. Each star is one claim a reviewer signed; they
+      gather into constellations by subject, and new claims keep arriving. Every arrival ends in
+      exactly one verdict &mdash; and the two that most products treat as edge cases, a refused merge
+      and a refused claim, are the two cases doublegate is built around.
+    </p>
+    <div class="skymap" id="skymap">
+      <div class="skymap-stage">
+        <canvas id="sky" tabindex="0" role="img"
+          aria-label="A three-dimensional sky of twenty constellations. Each star is a signed claim; lines inside a constellation join neighbouring claims and faint lines between constellations join related subjects. New claims arrive continually and become a new star, sharpen an existing one, merge two into one, are held beside a contradiction, or are refused and fall away. Drag to turn, scroll to zoom, double-click a constellation to dive in, arrow keys move it too."></canvas>
+        <div class="sky-controls">
+          <button type="button" id="sky-zoom-out" aria-label="Zoom out">&minus;</button>
+          <span class="sky-zoomlevel" id="sky-zoom" aria-live="off">1&times;</span>
+          <button type="button" id="sky-zoom-in" aria-label="Zoom in">+</button>
+          <button type="button" id="sky-fit">Whole sky</button>
+          <button type="button" id="sky-pause" aria-pressed="false">Pause</button>
+        </div>
+        <ul class="sky-legend">
+          <li class="v-new"><i></i>New <b id="sky-n-new">0</b></li>
+          <li class="v-sharp"><i></i>Sharpened <b id="sky-n-sharp">0</b></li>
+          <li class="v-merge"><i></i>Merged <b id="sky-n-merge">0</b></li>
+          <li class="v-held"><i></i>Held <b id="sky-n-held">0</b></li>
+          <li class="v-refused"><i></i>Refused <b id="sky-n-refused">0</b></li>
+        </ul>
+        <div class="sky-tip" id="sky-tip" role="tooltip"></div>
+        <noscript>
+          <img class="sky-still" src="assets/hero-field.svg"
+            alt="Five rows, one per verdict, showing what came back for sixty things agents wrote down. Twenty-three were new: nothing like them existed, so each was promoted as its own artifact, readable once signed. Fourteen were sharpened: they corrected a skill already held, so a revision superseded the parent and both are kept. Eleven were merged: several beliefs reconciled into one, parents superseded rather than edited or deleted. Eight were held: they contradicted something and the merge was refused, so both parents stay live and the disagreement stays open. Four were refused as injection, a secret, or simply wrong; they stay in the ledger with their reasons recorded but are never readable by anyone. The split across the five verdicts illustrates the mechanism and is not a measured rate.">
+        </noscript>
+      </div>
+      <div class="sky-ledger">
+        <p class="sky-ledger-head"><span class="live"></span><b id="sky-count">0</b> verdicts signed since you arrived.</p>
+        <ul class="sky-feed" id="sky-feed" aria-live="polite" aria-relevant="additions"></ul>
+        <noscript>
+          <p class="note">The sky is drawn in the browser and needs JavaScript; without it, the
+          still figure shows the same five verdicts over sixty submissions.</p>
+        </noscript>
+      </div>
+    </div>
+    <p class="micro">
+      Drag to turn it, scroll to zoom, double-click a constellation to dive in, hover a star to read
+      the claim. A ring around a star is a revision that superseded an earlier claim, kept faint behind
+      it; a dashed amber line is a contradiction kept rather than resolved; a hollow red mark is a
+      refusal, recorded with its reason and never readable.
+      <a href="how-it-works.html">See how a claim actually gets reviewed and signed &rarr;</a>
+    </p>
+  </div>
+</section>
+
 <section id="what" class="band">
   <div class="wrap">
     <h2>What you get</h2>
@@ -59,25 +111,7 @@
   </div>
 </section>
 
-<section id="cost" class="band alt">
-  <div class="wrap">
-    <h2>Submit a memory or a skill, and one of five things happens to it</h2>
-    <p class="sub">
-      Sixty things your agents wrote down, and what came back for each. Every submission ends in
-      exactly one verdict &mdash; and the two that most products treat as edge cases, a refused merge
-      and a refused claim, are the two cases doublegate is built around.
-    </p>
-    <div class="diagram wide">
-      <img src="assets/hero-field.svg" width="100%"
-        alt="Five rows, one per verdict, showing what came back for sixty things agents wrote down. Twenty-three were NEW: nothing like them existed, so each was promoted as its own artifact, readable once signed. Fourteen were SHARPENED: they corrected a skill already held, so a revision superseded the parent and both are kept, drawn as a bright dot with the retained parent faint behind it. Eleven were MERGED: several beliefs reconciled into one, with two retained parents faint behind each, superseded rather than edited or deleted. Eight were HELD: they contradicted something and the merge was refused, so both parents stay live and the disagreement stays open, drawn as two dots of equal weight. Four were REFUSED as injection, a secret, or simply wrong, drawn hollow because they stay in the ledger with their reasons recorded but are never readable by anyone. The counts sum to sixty. Every submission ends in exactly one verdict, signed, and nothing is edited in place. The split across the five verdicts illustrates the mechanism and is not a measured rate.">
-    </div>
-    <p class="micro">
-      <a href="how-it-works.html">See how a claim actually gets reviewed and signed &rarr;</a>
-    </p>
-  </div>
-</section>
-
-<section id="fit" class="band">
+<section id="fit" class="band alt">
   <div class="wrap">
     <h2>Built for organizations where knowledge has to cross teams</h2>
     <p class="sub">
@@ -114,7 +148,7 @@
   </div>
 </section>
 
-<section id="routes" class="band alt">
+<section id="routes" class="band">
   <div class="wrap">
     <h2>Where to go next</h2>
     <p class="sub">Four readers, four pages. Pick the one that matches why you are here.</p>
@@ -154,7 +188,7 @@
   </div>
 </section>
 
-<section id="commons" class="band">
+<section id="commons" class="band alt">
   <div class="wrap tight">
     <h2>And a commons, on the same terms</h2>
     <p class="lede">
@@ -176,7 +210,7 @@
   </div>
 </section>
 
-<section id="proof" class="band alt">
+<section id="proof" class="band">
   <div class="wrap tight">
     <h2>Three facts that make the case</h2>
     <div class="stats">

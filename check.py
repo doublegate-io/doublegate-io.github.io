@@ -370,6 +370,40 @@ for page in pages:
         if NEGATIVE_HEADING.match(text):
             fail(f"{page.name}: heading frames a disclaimer, not guidance -> {text!r}")
 
+# 18. THE KNOWLEDGE MAP'S CLAIMS ARE COPY, AND ITS DATA IS FRESH.
+#     The map on the front page is the first JavaScript on the site, and it reads
+#     eight hundred claims from a generated file. Three ways that goes wrong that
+#     nothing above would see: (a) a script the page loads does not exist, and the
+#     section renders as an empty box; (b) sky-claims.txt is edited and the
+#     generated file is not, so the site ships yesterday's claims; (c) a claim
+#     carries internal vocabulary or phase language — every gate here scans
+#     visible copy, and a claim in a tooltip is visible copy that lives in a .js
+#     file where check 5 does not look. sky-data.py --check owns (b) and (c);
+#     this runs it, and does (a) itself.
+for page in pages:
+    markup = page.read_text()
+    for src in re.findall(r'<script src="([^"]+)"', markup):
+        if not (ROOT / resolve(src)).exists():
+            fail(f"{page.name}: script {src} does not exist")
+        if not src.startswith(("assets/", "/assets/")):
+            fail(f"{page.name}: script {src} is loaded from outside assets/ — the site ships no third-party code")
+if (ROOT / "sky-data.py").exists():
+    import subprocess
+    r = subprocess.run([sys.executable, str(ROOT / "sky-data.py"), "--check"],
+                       capture_output=True, text=True)
+    if r.returncode != 0:
+        fail("sky-data.py --check: " + (r.stdout + r.stderr).strip().replace("\n", " | ")[:400])
+    # the page that loads the data must carry the map, and the map must carry the
+    # elements sky.js writes to — a renamed id fails silently in a browser
+    for page in pages:
+        markup = page.read_text()
+        if "sky-data.js" not in markup:
+            continue
+        for el_id in ("sky", "sky-feed", "sky-count", "sky-tip", "sky-pause",
+                      "sky-n-new", "sky-n-sharp", "sky-n-merge", "sky-n-held", "sky-n-refused"):
+            if f'id="{el_id}"' not in markup:
+                fail(f"{page.name}: loads sky.js but has no #{el_id}")
+
 # ---------------------------------------------------------------- report
 if fails:
     print(f"FAIL — {len(fails)} problem(s):")
@@ -381,3 +415,4 @@ print(f"PASS — {len(pages)} pages: " + ", ".join(p.name for p in pages))
 print("  tag balance · anchors · cross-page links · assets · vocabulary")
 print("  metadata · calls to action · alt text · nav parity · svg motion paths")
 print("  README inline HTML integrity · one contact address, reachable everywhere")
+print("  no phase language · knowledge-map scripts, data freshness and claim copy")

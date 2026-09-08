@@ -30,6 +30,14 @@ NAV = [
     ("evidence.html", "Evidence"),
 ]
 
+# Scripts a page loads, by page. The shell carries none: the site is static
+# and this is the one page that draws in the browser. Listed here rather than
+# in the fragment so the <script> tags land after the footer, where a slow
+# load cannot hold up the copy, and so check.py can verify each file exists.
+SCRIPTS = {
+    "index.html": ["assets/sky-data.js", "assets/sky.js"],
+}
+
 # Rendered and reachable by URL, but out of the nav, the footer and the sitemap,
 # and marked noindex. Pricing is unlisted until the tiers carry numbers: a
 # pricing page with no prices invites the one conversation the site cannot
@@ -169,7 +177,7 @@ SHELL = """<!doctype html>
     </div>
   </div>
 </footer>
-
+{scripts}
 </body>
 </html>
 """
@@ -185,6 +193,11 @@ def nav_html(current: str) -> str:
     return "".join(out)
 
 
+def scripts_html(page: str) -> str:
+    tags = "".join(f'<script src="{src}" defer></script>\n' for src in SCRIPTS.get(page, []))
+    return ("\n" + tags) if tags else ""
+
+
 def render(page: str) -> str:
     title, desc = TITLES[page]
     body = (PAGES / page).read_text().strip()
@@ -194,7 +207,7 @@ def render(page: str) -> str:
     markup = SHELL.format(
         title=title, desc=desc, nav=nav_html(page), body=body, gh=GH, org=ORG,
         contact=CONTACT, mailto=MAILTO, email=EMAIL, canonical=canonical,
-        first_release=FIRST_RELEASE,
+        first_release=FIRST_RELEASE, scripts=scripts_html(page),
     )
     if page in dict(UNLISTED):
         # Reachable, not advertised: no canonical to claim a place in the
@@ -265,6 +278,7 @@ def render_404() -> str:
         email=EMAIL,
         canonical=SITE,
         first_release=FIRST_RELEASE,
+        scripts="",
     )
     # An error page must not invite indexing, and must not claim to BE the home
     # page it points at: drop the canonical, keep og:url pointing at the root so

@@ -18,7 +18,8 @@
 ```bash
 python3 build.py           # regenerate *.html from pages/*.html
 python3 build.py --check   # fail if output is stale (CI does this)
-python3 check.py           # seventeen gate checks
+python3 check.py           # eighteen gate checks
+python3 sky-data.py        # regenerate assets/sky-data.js from sky-claims.txt (check.py runs --check)
 node    svg-geometry.js    # SVG text nodes must not collide      (needs a browser)
 node    svg-bounds.js      # ...nor run outside their viewBox     (needs a browser)
 node    svg-scale.js       # ...nor scale under 10px in the page  (needs a browser)
@@ -35,7 +36,7 @@ directly to a built page is lost on the next build.
 flowchart LR
   P["pages/*.html<br/><i>bodies only</i>"] --> B["build.py<br/><i>shared shell</i>"]
   B --> O["*.html<br/><i>generated</i>"]
-  O --> C["check.py<br/><i>17 checks</i>"]
+  O --> C["check.py<br/><i>18 checks</i>"]
   O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/>svg-routes.js<br/>svg-fit.js<br/>svg-clearance.js<br/><i>measured, not eyeballed</i>"]
   C --> D["GitHub Pages<br/><i>domain root</i>"]
 
@@ -67,7 +68,10 @@ flowchart LR
 | `assets/logo-dark.svg` | brand mark, forced dark — nav (site is always dark) |
 | `assets/wordmark.svg` | mark + name + tagline, for README embedding |
 | `assets/social-card.svg` | 1200×630 link-preview card (`og:image`) |
-| `assets/hero-field.svg` | five hundred agent dots in three states — siloed, pooled, gated — front page |
+| `sky-claims.txt` | the knowledge map's 800 claims: 20 subjects × 40, one line each, plain text so a reviewer reads them as copy |
+| `sky-data.py` | validates `sky-claims.txt` (counts, relations, vocabulary and phase gates, no duplicates) and generates `assets/sky-data.js` |
+| `assets/sky.js` | the knowledge map: canvas 2D, no dependencies — constellations, arrivals, five verdicts, turn / zoom / dive |
+| `assets/hero-field.svg` | five verdicts over sixty submissions, still figure — the front page's no-JavaScript fallback for the map |
 | `assets/artifact-flow.svg` | tall walkthrough diagram, how-it-works |
 | `assets/scope-flow.svg` | the four scopes and where each trust boundary sits, commons |
 | `assets/cost-flow.svg` | one correction with and without a gate, for-organizations |
@@ -82,7 +86,7 @@ Each has exactly one reader and one job.
 
 | Page | Reader | Job |
 |---|---|---|
-| `index` | anyone, 60 seconds | hook, diagram, four guarantees, route them onward |
+| `index` | anyone, 60 seconds | hook, the live knowledge map, four guarantees, route them onward |
 | `how-it-works` | curious evaluator | the five stages, and what happens when each fails |
 | `for-organizations` | budget holder | the measured business case |
 | `for-engineers` | whoever will run it | interface, costs, dependencies, what is unfinished |
@@ -116,6 +120,68 @@ that was possible once recurs during the next rewrite.
 | 15 | Every evidence claim has a resolvable source | the evidence page promised "sourced or marked unverified", then carried a claim whose source line said "with the citation above" and pointed at nothing |
 | 16 | One contact address, reachable from every page | the readiness review found no way to reach anyone; a product site with no contact path is a brochure |
 | 17 | No phase language, defensive framing or disclaimer headings in visible copy | an offering audit carried the design repo's engineering-tier honesty list onto three pages as copy ("no design yet — scheduled, not drawn") and every other gate stayed green |
+| 18 | Knowledge-map scripts exist and ship from `assets/`, the generated data is fresh, every claim passes the copy gates, and the page carries every element `sky.js` writes to | the map is the site's first JavaScript; its 800 claims are visible copy that lives in a `.js` file where gate 5 does not look, and a renamed element id fails silently in a browser |
+
+## The knowledge map (front page)
+
+The section under the hero is a canvas: twenty constellations, one per subject an
+organization's agents learn about, each star one claim a reviewer signed. Claims arrive
+continually and one of the five verdicts happens to each -- the same five, in the same
+five colours, as the still figure that used to sit there and now serves as its
+`<noscript>` fallback.
+
+**Why a sky and not a graph.** The site's argument is scale (five hundred agents) and
+inheritance (what one learns, all inherit). A force-directed graph of 800 nodes says
+"complexity". A sky says "a body of knowledge with shape": constellations are subjects,
+the faint long lines are subjects that bear on each other, and a new star landing in the
+right place is the whole product in one gesture. The reader does not need to decode it.
+
+**What is real and what is illustrative, stated on the page.** The 800 claims are
+written (`sky-claims.txt`, 20 x 40, each one a sentence a reviewer would recognise as a
+real thing agents learn); which arrives next, and when, is random. The verdict mix
+follows the still figure's illustrative split (23 / 14 / 11 / 8 / 4), and the page says
+it is not a measured rate. Arrivals are Poisson-ish -- exponential inter-arrival, mean
+2.1 s, one in eight a burst -- because a metronome reads as a demo and a queue reads as
+a system. When every claim has arrived once, superseded and refused claims come round
+again as "the same lesson learned by another agent", so the stream never stops.
+
+**Layout is seeded; arrivals are not.** Category centres come from a small 3D force
+layout (repulsion, springs on the relation edges, a squash on y so the sky is a disc,
+then a separation pass so no two constellations overlap), seeded so every visitor sees
+the same sky. Star positions inside a constellation are seeded on the claim id, with a
+minimum gap so a new star never lands on an old one. The only per-visit randomness is
+the arrival order and the verdicts.
+
+**Zoom is magnification, not travel.** The camera does not move through the stars --
+`Z` scales the projection, and pan is in screen pixels. So a constellation at 6x is the
+same shape as at 1x, only readable; point size grows as `Z^0.72` and line width a little,
+so the picture gets denser with detail rather than just bigger. Wheel zooms at the
+pointer; double-click or double-tap dives 3x into the constellation under the point and
+centres it; a second dive past 70% of the maximum returns to the whole sky; `+ - 0`
+and the buttons do the same from the keyboard. Double-tap is detected from pointer
+events, not the `dblclick` event, because a canvas with `touch-action: none` gets no
+`dblclick` on most mobile browsers -- found in headless testing, where the event never
+fired at all.
+
+**Labels are the hard part.** A constellation's name sits above its top star, nearest
+constellation first, and a name is dropped when it would overlap an already-placed name
+or sit over another constellation's stars (three tolerated on desktop, one on a phone,
+six when zoomed in past 2x -- at that point the stars are the reader's own subject). A
+dropped name is better than a name over the wrong stars; names come back as you zoom.
+
+**No dependencies, no build.** Canvas 2D, 800 points, a few hundred segments, one
+`requestAnimationFrame` loop that only redraws when something is animating or the
+view changed. Measured 60 fps on desktop and on a 390px viewport in headless Chrome.
+Colours are read from `style.css` custom properties at start, so the five verdicts cannot
+drift from the rest of the site. Reduced-motion: arrivals land without flight, the idle
+turn stops, the live dot does not pulse, tweens are instant.
+
+**Editing the claims.** Edit `sky-claims.txt`, run `python3 sky-data.py`, commit both.
+`check.py` gate 18 runs `sky-data.py --check` and fails on a stale data file, a category
+with the wrong count, a relation to a category that does not exist, a duplicate claim, a
+claim that starts with a capital (they are fragments), or a claim that would fail the
+vocabulary or phase-language gates -- the claims are copy, and a claim in a tooltip is
+as visible as a heading.
 
 ## Design notes
 
