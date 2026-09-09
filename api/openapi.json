@@ -181,7 +181,7 @@
           },
           "provenance": {
             "type": "object",
-            "description": "verbatim from the record: writer, source_uri, derives_from, signers"
+            "description": "verbatim from the record: writer, source_uri, derives_from, signers — plus writer_label (the key's issuing label, joined at read; null for non-key writers) and ingest_ts (FR-65)"
           }
         }
       },
@@ -646,6 +646,14 @@
             "schema": {
               "type": "string"
             }
+          },
+          {
+            "name": "type",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "content_type filter; the /skills shelf is type=skill"
           },
           {
             "name": "include_superseded",
@@ -1373,6 +1381,21 @@
         ],
         "security": [],
         "summary": "introduction page — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "responses": {
+          "200": {
+            "description": "text/html"
+          }
+        }
+      }
+    },
+    "/skills": {
+      "get": {
+        "operationId": "pageSkills",
+        "tags": [
+          "console"
+        ],
+        "security": [],
+        "summary": "the skill shelf and both skill flows (#92) — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
         "responses": {
           "200": {
             "description": "text/html"

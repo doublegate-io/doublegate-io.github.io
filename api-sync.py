@@ -7,7 +7,7 @@ are private, this site is the only place an agent can scan — so the rendered
 documents are published here, under `api/`, as a *snapshot* stamped with the
 commit each came from. Nothing under `api/` is written by hand.
 
-    python3 api-sync.py            # copy from ../doublegate and ../doublegate-org, stamp api/index.json
+    python3 api-sync.py            # copy from ../client-gate and ../organization-gate, stamp api/index.json
     python3 api-sync.py --check    # with the checkouts present: fail if the snapshot is behind them
                                    # without them (CI): fail only if the snapshot is malformed
 
@@ -27,19 +27,19 @@ API = ROOT / "api"
 
 # (site file, source repo, file inside that repo's docs/api/, one line for the manifest)
 DOCUMENTS = [
-    ("mcp-tools.json", "doublegate", "mcp-tools.json",
+    ("mcp-tools.json", "client-gate", "mcp-tools.json",
      "the tool schemas each tier serves over the agent-tool protocol — what tools/list answers — and the instructions paragraph the handshake carries"),
-    ("daemon-rpc.json", "doublegate", "daemon-rpc.json",
+    ("daemon-rpc.json", "client-gate", "daemon-rpc.json",
      "every verb on the gate's local socket: parameters, role, the proof each needs; a running gate answers the same to dg.describe"),
-    ("note.schema.json", "doublegate", "note.schema.json",
+    ("note.schema.json", "client-gate", "note.schema.json",
      "JSON Schema of a published note's data — the closed field set a subscriber or a knowledge map may rely on"),
-    ("openapi.json", "doublegate-org", "openapi.json",
+    ("openapi.json", "organization-gate", "openapi.json",
      "OpenAPI 3.1 for the organization gate's keyed HTTP surface; a running gate serves it at GET /openapi.json to any valid key"),
 ]
 
 SOURCES = {
-    "doublegate": Path(os.environ.get("DOUBLEGATE_SRC", ROOT.parent / "doublegate")),
-    "doublegate-org": Path(os.environ.get("DOUBLEGATE_ORG_SRC", ROOT.parent / "doublegate-org")),
+    "client-gate": Path(os.environ.get("DOUBLEGATE_SRC", ROOT.parent / "client-gate")),
+    "organization-gate": Path(os.environ.get("DOUBLEGATE_ORG_SRC", ROOT.parent / "organization-gate")),
 }
 
 

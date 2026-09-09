@@ -6,7 +6,7 @@
   "errors": {
     "-32600": "invalid request",
     "-32601": "method not found",
-    "-32602": "invalid params / refused with the reason",
+    "-32602": "invalid params / refused with the reason; a field the verb does not list here is refused by name (I7)",
     "-32000": "identity underivable (I6)",
     "-32001": "request too large",
     "-32006": "quarantine full; data.retry_after_ms"
@@ -27,6 +27,48 @@
         }
       ],
       "returns": "object"
+    },
+    {
+      "name": "dg.away",
+      "role": "both",
+      "proof": "operator_proof",
+      "summary": "The operator declares an absence (ADR-0045): the human-review TTLs stop until `back`, the time away subtracted on restart. Nothing is promoted meanwhile.",
+      "params": [
+        {
+          "name": "until",
+          "type": "integer",
+          "required": false,
+          "description": "ms epoch; the hold's own ceiling — past it the TTLs run again"
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object: {away, declared, since, days, until?, note?}"
+    },
+    {
+      "name": "dg.back",
+      "role": "both",
+      "proof": "operator_proof",
+      "summary": "The operator is back: the clocks restart with the time away subtracted (ADR-0045).",
+      "params": [
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object: {away, held_d, declared}"
     },
     {
       "name": "dg.challenge",
@@ -454,6 +496,21 @@
       "returns": "object"
     },
     {
+      "name": "dg.review_pending",
+      "role": "both",
+      "proof": "none",
+      "summary": "ADR-0048: the second opinion. Under review.mode model|auto, every L2 row whose first pass escalated gets one `gate-review` verdict, charged to the same budget; a no-op under `human`. Never touches L1b (INV-SEC-5).",
+      "params": [
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "default 50"
+        }
+      ],
+      "returns": "object: {reviewed, cost_tokens, paused, budget_remaining}"
+    },
+    {
       "name": "dg.scan",
       "role": "both",
       "proof": "none",
@@ -500,6 +557,21 @@
         }
       ],
       "returns": "object"
+    },
+    {
+      "name": "dg.settle_pending",
+      "role": "both",
+      "proof": "none",
+      "summary": "ADR-0048: under review.mode auto, promote every L2 row that meets k with no human required on its class — the deployment signs the promote, the integrator's boundary check applies unchanged. A no-op otherwise.",
+      "params": [
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "default 100"
+        }
+      ],
+      "returns": "object: {promoted, rejected, held}"
     },
     {
       "name": "dg.sign",
