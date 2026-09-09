@@ -1,5 +1,5 @@
 {
-  "protocol": "MCP (stdio); the tier is fixed by the binary launched (ADR-0034)",
+  "protocol": "MCP; the tier is fixed by the binary launched (ADR-0034) or the endpoint reached (ADR-0050: POST /mcp — the client daemon's loopback listener keyless, the org gate's keyed surface with admin scope)",
   "tiers": {
     "plugin": {
       "binary": "doublegate-plugin",

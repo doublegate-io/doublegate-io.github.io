@@ -1044,7 +1044,7 @@
         "tags": [
           "operator"
         ],
-        "summary": "Inbox depth, leases, stuck count, gauges (FR-45).",
+        "summary": "Inbox depth, leases, stuck count, gauges (FR-45); `revision` names the assembling commit, \"\" on a source checkout (ADR-0051).",
         "responses": {
           "200": {
             "description": "",
@@ -1083,6 +1083,101 @@
           }
         ],
         "x-scope": "admin"
+      }
+    },
+    "/mcp": {
+      "post": {
+        "operationId": "mcp",
+        "tags": [
+          "mcp"
+        ],
+        "summary": "The MCP endpoint (ADR-0050, FR-70): one JSON-RPC message per POST, one JSON object back; notifications answer 202 empty; Origin validated before the body is read; no session ids. The org tier's tools (ADR-0034 §3) are behind it; identity is the presenting key.",
+        "responses": {
+          "200": {
+            "description": "the JSON-RPC response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "202": {
+            "description": "notification/response accepted; no body"
+          },
+          "400": {
+            "description": "malformed JSON: -32700 in the body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "description": "one JSON-RPC 2.0 request, notification or response"
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      },
+      "get": {
+        "operationId": "mcpNoStream",
+        "tags": [
+          "mcp"
+        ],
+        "summary": "405, always: this server offers no SSE stream, and the spec names 405 as exactly that refusal. Keyless on purpose — a bare method refusal is not an authz oracle.",
+        "responses": {
+          "405": {
+            "description": "no SSE stream on offer (ADR-0050 §1)"
+          }
+        },
+        "security": [],
+        "x-scope": "none"
       }
     },
     "/work/leases": {

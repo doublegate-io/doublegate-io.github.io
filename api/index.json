@@ -3,11 +3,11 @@
   "rendered_from": {
     "client-gate": {
       "repository": "https://github.com/doublegate-io/client-gate",
-      "commit": "85c68a582a71434d0c304db1cfe4683be682de97"
+      "commit": "a8bdcee81add0b9e93ba818cdba98d7e2c8a7530"
     },
     "organization-gate": {
       "repository": "https://github.com/doublegate-io/organization-gate",
-      "commit": "08312db92ced74eee4f80913c2685844c7d3b5d9"
+      "commit": "8ab58df5b90a48b73b7ef1b110b63fcdfb981454"
     }
   },
   "documents": {
