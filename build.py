@@ -198,9 +198,43 @@ def scripts_html(page: str) -> str:
     return ("\n" + tags) if tags else ""
 
 
+# Each <section id="..."> is a chapter, and a reader who wants to send a
+# colleague one chapter should not have to read the markup to find its name.
+# The build stamps a link to the section's own id onto that section's heading:
+# invisible until the heading is hovered or the link is focused, so the page
+# reads unchanged, and copyable from the address bar once clicked.
+#
+# Done here rather than in the fragments for the reason the shell is: an anchor
+# hand-written into a fragment can disagree with the section it sits in, and
+# nothing would catch it. Generated from the id itself, it cannot.
+_SECTION = re.compile(r'(<section id="([^"]+)"[^>]*>)(.*?)(</section>)', re.S)
+_FIRST_H2 = re.compile(r"(<h2[^>]*>)(.*?)(</h2>)", re.S)
+
+
+def anchor_headings(body: str) -> str:
+    """Give every chapter heading a link to its own section.
+
+    One <h2> per section is the convention; only the first is stamped, and a
+    section without one (a hero, a bare diagram) is left alone — it is still
+    addressable by URL, it just has no heading to hang the affordance on.
+    """
+    def stamp(m: re.Match[str]) -> str:
+        open_tag, sid, inner, close_tag = m.groups()
+        link = (
+            f'<a class="h-anchor" href="#{sid}" aria-label="Link to this section">'
+            "<span aria-hidden=\"true\">#</span></a>"
+        )
+        inner = _FIRST_H2.sub(
+            lambda h: f"{h.group(1)}{h.group(2)}{link}{h.group(3)}", inner, count=1
+        )
+        return f"{open_tag}{inner}{close_tag}"
+
+    return _SECTION.sub(stamp, body)
+
+
 def render(page: str) -> str:
     title, desc = TITLES[page]
-    body = (PAGES / page).read_text().strip()
+    body = anchor_headings((PAGES / page).read_text().strip())
     # index.html is served at the domain root, so its canonical is the bare
     # domain — not "/index.html", which would be a second URL for one page.
     canonical = SITE if page == "index.html" else SITE + page

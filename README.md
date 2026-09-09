@@ -110,6 +110,7 @@ that was possible once recurs during the next rewrite.
 | 3 | Cross-page links resolve | eight pages cross-link heavily; a rename broke one silently |
 | 4 | Assets exist | a typo'd `src` renders as a broken image |
 | 5 | No internal vocabulary | a visitor meeting a component ID learns the page was not written for them |
+| 5b | Every chapter heading links to its own section | `build.py` stamps the link from the section's `id`; a hand-written one in a fragment can name the section above it, and the anchor check (2) passes because that id does exist |
 | 6 | Head metadata present | two pages shared a link preview and neither was findable |
 | 7 | Every page has a call to action | a dead-end page is a lost reader |
 | 8 | Images carry real alt text | the diagram carries the argument; `alt=""` drops it |

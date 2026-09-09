@@ -97,6 +97,20 @@ for page in pages:
         if hits:
             fail(f"{name}: {label} leak -> {sorted(hits)}")
 
+    # 5b. every chapter heading links to its own section. build.py stamps these
+    #     from the section id, so a mismatch means a heading was hand-anchored
+    #     in a fragment (which is how an anchor comes to point at the section
+    #     above it) or the output is stale.
+    for sid, inner in re.findall(r'<section id="([^"]+)"[^>]*>(.*?)</section>', markup, re.S):
+        h2 = re.search(r"<h2[^>]*>(.*?)</h2>", inner, re.S)
+        if not h2:
+            continue
+        anchor = re.search(r'<a class="h-anchor" href="#([^"]+)"', h2.group(1))
+        if not anchor:
+            fail(f"{name}: section #{sid} has a heading with no link to itself — run python3 build.py")
+        elif anchor.group(1) != sid:
+            fail(f"{name}: section #{sid} heading links to #{anchor.group(1)}")
+
     # 6. head metadata present. Without a distinct title + description of real
     #    length, two pages share a link preview and neither is findable.
     #    (Nav-label/heading agreement is check 9; this comment used to claim
@@ -537,7 +551,7 @@ if fails:
     sys.exit(1)
 
 print(f"PASS — {len(pages)} pages: " + ", ".join(p.name for p in pages))
-print("  tag balance · anchors · cross-page links · assets · vocabulary")
+print("  tag balance · anchors · chapter links · cross-page links · assets · vocabulary")
 print("  metadata · calls to action · alt text · nav parity · svg motion paths")
 print("  README inline HTML integrity · one contact address, reachable everywhere")
 print("  no phase language · knowledge-map scripts, data freshness and claim copy · the map from a real feed, labels only")

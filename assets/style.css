@@ -201,6 +201,30 @@ h2 {
 .sub { max-width: 72ch; color: var(--ink-dim); margin: 0 0 38px; font-size: 16.5px; }
 h3 { margin: 0 0 10px; font-size: 16.5px; font-weight: 620; letter-spacing: -.01em; }
 
+/* ---------- chapter links ----------
+   Every section is addressable, so every section heading offers its own URL.
+   The mark is hidden until the heading is hovered or the link is focused: the
+   page reads the same as it did without it, and a reader who wants to send one
+   chapter to a colleague has somewhere to click. Focus-visible is not optional
+   here — hover is the only other way to find it, and a keyboard has no hover. */
+.h-anchor {
+  opacity: 0; margin-left: .35em;
+  color: var(--ink-faint); font-weight: 500;
+  text-decoration: none;
+  transition: opacity .12s ease, color .12s ease;
+}
+h2:hover .h-anchor { opacity: 1; }
+.h-anchor:hover { color: var(--ink); text-decoration: none; }
+.h-anchor:focus-visible { opacity: 1; color: var(--ink); outline: 2px solid var(--ink-faint); outline-offset: 3px; border-radius: 3px; }
+/* The nav is sticky and 58px tall; without this a jumped-to section lands
+   underneath it. Applies to the section, not the heading, so the band's top
+   edge clears too. (Smooth scrolling and its reduced-motion opt-out are
+   already set at the top of this file.) */
+section[id] { scroll-margin-top: 74px; }
+/* Coarse pointers cannot hover: show the mark, dimmed, rather than hide it
+   from every touch reader. */
+@media (hover: none) { .h-anchor { opacity: .45; } }
+
 /* ---------- diagram ---------- */
 .diagram {
   border: 1px solid var(--line);
