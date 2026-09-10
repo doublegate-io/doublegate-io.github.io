@@ -20,7 +20,7 @@
       <div class="tier">
         <h3>Solo</h3>
         <p class="who">One developer, one machine</p>
-        <p class="runs">Runs entirely on your hardware. Nothing leaves it.</p>
+        <p class="runs">Self-hosted on your hardware, using local or hosted reviewing models you choose.</p>
         <ul>
           <li>Review before your agent can act on what it wrote</li>
           <li>Skills scanned before they reach your skill directory</li>
@@ -57,7 +57,7 @@
         <ul>
           <li><b>Everything in Team</b></li>
           <li>Independent second review before anything goes company-wide</li>
-          <li>Read permissions by identity and team <li>Read permissions by identity and team &mdash; still at the design stage, so until then every gate is one trust domain</li>mdash; release 4; until then one gate is one trust domain</li>
+          <li>Revocable organization-gate access, with read keys restricted to named folders</li>
           <li>Exportable audit trail for regulators and internal audit</li>
           <li>Deletion that is real, for erasure requests</li>
           <li>Your own reviewing models and rules, not ours</li>
@@ -115,8 +115,8 @@
       <div class="card">
         <h3>Commons — the boundary moves outward</h3>
         <p>Your gate signs, the commons gate countersigns on its own authority. Exactly the
-        Organization mechanism with the trust boundary one step further out — which is why the
-        commons costs nothing to run alongside a paid tier.</p>
+        Organization mechanism with the trust boundary one step further out. Reading is free;
+        operating the commons still requires review inference and moderation.</p>
       </div>
     </div>
     <p class="note big">
@@ -137,19 +137,18 @@
     </p>
     <div class="cards three">
       <div class="card">
-        <h3>Should memory be instant?</h3>
-        <p>If an agent must read what it wrote the moment it writes it, choose a memory tool
-        &mdash; mem0, Zep and Mnemosyne all serve that well, and we say so on purpose. The gate
-        trades a short delay for a review, and teams whose memory is disposable should not pay
-        that trade.</p>
-        <span class="card-tag">instant memory &rarr; this is not your tool</span>
+        <h3>Who needs the knowledge next?</h3>
+        <p>The writer can recall a contribution after its security scan clears, marked as
+        pending review. Sharing with others waits for admission. For personal memory without
+        shared review, compare mem0, Zep or Mnemosyne.</p>
+        <span class="card-tag">Private reuse after scanning; shared reuse after admission</span>
       </div>
       <div class="card">
-        <h3>Will somebody own the review?</h3>
-        <p>The value comes from a queue somebody actually reads &mdash; a daily digest, a
-        reviewer, fifteen minutes. A team that names an owner gets compounding, reviewed
-        knowledge; one that cannot will get a backlog. We would rather tell you now.</p>
-        <span class="card-tag">a named reviewer &rarr; the compounding starts here</span>
+        <h3>Who owns the review policy?</h3>
+        <p>Choose human-led, model-assisted or automatic promotion under your rules.
+        A named operator still handles scanner findings and cases requiring human judgment.
+        Routine approvals can proceed automatically when the configured checks pass.</p>
+        <span class="card-tag">Automation with accountable exception handling</span>
       </div>
       <div class="card">
         <h3>Does the knowledge need to outlive the person?</h3>
@@ -160,8 +159,8 @@
       </div>
     </div>
     <p class="note">
-      If your answers are instant, unowned and personal, we are genuinely the wrong purchase
-      &mdash; though the free tier costs the same as nothing and is yours anyway.
+      Solo serves personal use. Team and Organization add reviewed distribution,
+      shared policy and responsibility for the exceptions.
     </p>
   </div>
 </section>

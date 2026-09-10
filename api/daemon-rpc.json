@@ -71,6 +71,66 @@
       "returns": "object: {away, held_d, declared}"
     },
     {
+      "name": "dg.ban",
+      "role": "both",
+      "proof": "operator_proof",
+      "summary": "Refuse a writer's, or a source prefix's, next ingest at the door with -32009 (ADR-0052 d6). Operator only; touches nothing already admitted (I4); not replicated.",
+      "params": [
+        {
+          "name": "kind",
+          "type": "string",
+          "required": true,
+          "description": "writer | source"
+        },
+        {
+          "name": "subject",
+          "type": "string",
+          "required": true,
+          "description": "the identity, or a source_uri prefix"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": "required unless lift — it is what the refused writer is told"
+        },
+        {
+          "name": "until",
+          "type": "integer",
+          "required": false,
+          "description": "ms epoch; omitted = until lifted"
+        },
+        {
+          "name": "lift",
+          "type": "boolean",
+          "required": false,
+          "description": "true lifts a ban in effect"
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object: {kind, subject, active, event_id, until?}"
+    },
+    {
+      "name": "dg.bans",
+      "role": "both",
+      "proof": "none",
+      "summary": "The bans in effect and what they refused at the door (ADR-0052 d6). Read-only; `status` carries the same list.",
+      "params": [
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "refused-at-door records to return; default 100"
+        }
+      ],
+      "returns": "object: {bans[], refused[]}"
+    },
+    {
       "name": "dg.challenge",
       "role": "both",
       "proof": "none",
@@ -174,10 +234,49 @@
       "returns": "object"
     },
     {
+      "name": "dg.hide",
+      "role": "both",
+      "proof": "optional",
+      "summary": "Stop serving a promoted artifact to one audience, or to all — reversibly (ADR-0052 d4). The row stays ACTIVE and why-able; include_hidden returns it. A total hide by a non-operator is journaled `lowered`.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "a promoted artifact"
+        },
+        {
+          "name": "audience",
+          "type": "string",
+          "required": false,
+          "description": "default `all`"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": "required unless lift"
+        },
+        {
+          "name": "lift",
+          "type": "boolean",
+          "required": false,
+          "description": "true reverses an earlier hide for this audience — a second event, both kept"
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, audience, hidden, event_id, hidden_for[], lowered?}"
+    },
+    {
       "name": "dg.ingest",
       "role": "both",
       "proof": "none",
-      "summary": "Propose content. Lands in quarantine (L0); nothing is readable until promoted. Writer identity is the connection's, never a parameter (I2).",
+      "summary": "Propose content. Scanned before this answers (ADR-0053 d1) and lands in quarantine at L1 (or L1b on a finding); nothing is readable until promoted. Writer identity is the connection's, never a parameter (I2).",
       "params": [
         {
           "name": "content",
@@ -189,7 +288,7 @@
           "name": "content_type",
           "type": "string",
           "required": true,
-          "description": "memory | skill | prompt_template | summary | derived_fact | imported_document | …; an unregistered type enters at the strictest class (FR-18)"
+          "description": "derived_fact | imported_document | memory | prompt_template | skill | summary | event | fetch | generation | message | message_part | scratchpad_state | session | state_snapshot | tool_call | trace | usage_record | verdict; the second group is the recorded path (taxonomy §2.2) — written and replayable, never graded as a belief; an unregistered type enters at the strictest class (FR-18)"
         },
         {
           "name": "source_uri",
@@ -222,7 +321,7 @@
           "description": "parent artifact ids (provenance edges, frozen in the envelope)"
         }
       ],
-      "returns": "object: {artifact_id, state}",
+      "returns": "object: {artifact_id, state, findings_count, scan_event} — the scanner's rule pass ran before this answered (ADR-0053 d1); state is L1_SCANNED or L1B_FLAGGED, and a finding's text is never in the answer",
       "errors": {
         "-32001": "request too large",
         "-32006": "quarantine at max_depth; data.retry_after_ms"
@@ -339,6 +438,45 @@
       "returns": "object"
     },
     {
+      "name": "dg.rank",
+      "role": "both",
+      "proof": "optional",
+      "summary": "A weight for one audience (ADR-0052). recall(audience=…) multiplies the hit by it; 1.0 when none — less likely, never absent. Any non-writer identity, human or agent; the writer is refused (I2).",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "a promoted artifact"
+        },
+        {
+          "name": "audience",
+          "type": "string",
+          "required": true,
+          "description": "a string the caller chooses; nothing validates it against a taxonomy"
+        },
+        {
+          "name": "weight",
+          "type": "number",
+          "required": true,
+          "description": "in (0, 10.0]; 1.0 is neutral and zero is what `hide` is for. A console reads this as 1-100 logarithmically, 50 neutral (ADR-0058 §2)"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": ""
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, audience, weight, event_id, ranks{}}"
+    },
+    {
       "name": "dg.rebuild",
       "role": "both",
       "proof": "presence",
@@ -350,7 +488,7 @@
       "name": "dg.recall",
       "role": "both",
       "proof": "none",
-      "summary": "Read the active store. Never reaches quarantine (I1). Provisional hits are marked; superseded are hidden unless asked for.",
+      "summary": "Read the active store, plus the caller's own scanned claims still in quarantine marked unreviewed (ADR-0053 d2). Nobody else's quarantine, ever (I1). Provisional hits are marked; superseded are hidden unless asked for.",
       "params": [
         {
           "name": "query",
@@ -387,9 +525,27 @@
           "type": "boolean",
           "required": false,
           "description": "default false (ADR-0035 d6)"
+        },
+        {
+          "name": "audience",
+          "type": "string",
+          "required": false,
+          "description": "ADR-0052 d2: the reader's preference, an argument never an identity — each hit's fused score is multiplied by its rank for this audience (1.0 when none) and hides for it apply; omitted = today's answer, byte for byte"
+        },
+        {
+          "name": "include_hidden",
+          "type": "boolean",
+          "required": false,
+          "description": "ADR-0052 d4: rows hidden for this audience (or for all) are dropped before fusion; true returns them, each marked provenance.hidden"
+        },
+        {
+          "name": "include_own_pending",
+          "type": "boolean",
+          "required": false,
+          "description": "ADR-0053 d2 (FR-13): default true — the caller's OWN scanned, unflagged claims still in quarantine are appended after the ranked hits, each `ratified: false`, `provenance.unreviewed: true`, with its state; never anyone else's, never L0 or L1b"
         }
       ],
-      "returns": "object: {hits[], paths}"
+      "returns": "object: {hits[], paths, audience?}"
     },
     {
       "name": "dg.reconcile",

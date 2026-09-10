@@ -53,9 +53,9 @@ FIRST_RELEASE = "Q2 2027"
 TITLES = {
     "index.html": (
         "doublegate — your organization's AI knowledge, reviewed and shared",
-        "Your engineers teach their agents every day and none of it is shared. "
-        "doublegate reviews what an agent learns, signs it, and makes it an asset "
-        "the whole organization inherits.",
+        "Open-source memory and knowledge-sharing software for AI agents. "
+        "Review contributions, record signed decisions and share approved knowledge "
+        "across connected teams on your infrastructure.",
     ),
     "how-it-works.html": (
         "How doublegate works — one memory's journey",
@@ -65,9 +65,9 @@ TITLES = {
     ),
     "for-organizations.html": (
         "For organizations — stop paying for the same lesson twice",
-        "A study across 66 firms found individual AI tools produced individual time "
-        "savings and no shift in how the organization works. This is the page about "
-        "why, and what it costs you.",
+        "Retain corrections, conventions and skills across your teams. "
+        "Explore doublegate's deployment model, review controls and business case "
+        "for shared agent knowledge.",
     ),
     "for-engineers.html": (
         "For engineers — what it is, what it costs, when it ships",

@@ -22,9 +22,9 @@ Rendered from the code that serves it and checked against it in the code reposit
 
 ## Pages
 
-- [Overview](https://doublegate-io.github.io/): Your engineers teach their agents every day and none of it is shared. doublegate reviews what an agent learns, signs it, and makes it an asset the whole organization inherits.
+- [Overview](https://doublegate-io.github.io/): Open-source memory and knowledge-sharing software for AI agents. Review contributions, record signed decisions and share approved knowledge across connected teams on your infrastructure.
 - [How it works](https://doublegate-io.github.io/how-it-works.html): Follow a single memory from the moment an agent writes it, through holding, scanning, independent review and signing, to the point every other machine can read it.
-- [For organizations](https://doublegate-io.github.io/for-organizations.html): A study across 66 firms found individual AI tools produced individual time savings and no shift in how the organization works. This is the page about why, and what it costs you.
+- [For organizations](https://doublegate-io.github.io/for-organizations.html): Retain corrections, conventions and skills across your teams. Explore doublegate's deployment model, review controls and business case for shared agent knowledge.
 - [For engineers](https://doublegate-io.github.io/for-engineers.html): doublegate replaces your memory provider. Read path is unchanged, checking happens on the way in. Latency, token cost, the four tools your agent gains, the API published as data for the agent doing the wiring, and the release roadmap.
 - [Governance](https://doublegate-io.github.io/governance.html): Let your existing systems propose what agents should know, with every belief audited, traceable, versioned and discoverable. Mapped to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.
 - [Commons](https://doublegate-io.github.io/commons.html): Skills, memories and knowledge artifacts anyone can draw on, held and signed by a reviewer that did not write them. Free to read, contributions under a named identity, every verdict published — including the rejections.

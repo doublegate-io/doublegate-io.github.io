@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>doublegate — your organization's AI knowledge, reviewed and shared</title>
-<meta name="description" content="Your engineers teach their agents every day and none of it is shared. doublegate reviews what an agent learns, signs it, and makes it an asset the whole organization inherits.">
+<meta name="description" content="Open-source memory and knowledge-sharing software for AI agents. Review contributions, record signed decisions and share approved knowledge across connected teams on your infrastructure.">
 <meta property="og:title" content="doublegate — your organization's AI knowledge, reviewed and shared">
-<meta property="og:description" content="Your engineers teach their agents every day and none of it is shared. doublegate reviews what an agent learns, signs it, and makes it an asset the whole organization inherits.">
+<meta property="og:description" content="Open-source memory and knowledge-sharing software for AI agents. Review contributions, record signed decisions and share approved knowledge across connected teams on your infrastructure.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -26,40 +26,56 @@
   </div>
 </header>
 
+<div class="overview">
 <section id="top">
-  <div class="wrap hero">
+  <div class="wrap hero overview-hero">
+    <div class="overview-intro">
     <p class="eyebrow">Open source · first release Q2 2027</p>
-    <h1>Your company is paying to teach<br><span class="grad">five hundred private AI agents</span></h1>
+    <h1>Keep what your people teach their AI agents.</h1>
     <p class="lede">
-      Every correction your engineers make, every hard-won convention, every skill they install —
-      it lands in one person's agent, stays there, and leaves when they leave. A field experiment
-      across 66 firms found individual AI tools produced individual time savings and <b>no shift
-      in what the organization does</b>.
+      Turn corrections, conventions and skills into knowledge the company can keep and reuse.
     </p>
     <p class="lede strong">
-      doublegate reviews what your people teach their agents — and what your existing systems can
-      tell them — signs it, and turns it into a knowledge base the whole organization inherits.
-      What is worth sharing further can go to a public commons on the same terms.
+      doublegate is open-source memory and knowledge-sharing software for AI agents.
+      Reviewed contributions. Signed decisions. Knowledge shared across connected teams.
     </p>
     <div class="cta-row">
       <a class="btn primary" href="for-organizations.html">The business case</a>
       <a class="btn" href="how-it-works.html">See how it works</a>
     </div>
+    <p class="micro">Run it on your infrastructure, with your reviewing models and rules.
+      Solo use is free. <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">Discuss a team deployment</a>.</p>
+    </div>
+    <figure class="contribution-story" aria-labelledby="story-caption">
+      <figcaption id="story-caption">One correction. Useful to the next team.</figcaption>
+      <ol class="contribution-steps">
+        <li><span class="story-stage">A team teaches its agent</span>
+          <blockquote>“Retry a payment with the original idempotency key.”</blockquote>
+          <p>A company convention, captured with its source.</p></li>
+        <li><span class="story-stage">A separate reviewer approves</span>
+          <p>The decision records the reviewer, reason and signature.</p>
+          <span class="story-result">Approved for sharing</span></li>
+        <li><span class="story-stage">Another team receives it</span>
+          <p>Its gate reviews the contribution under its own rules before agents use it.</p>
+          <span class="story-result">Knowledge the next team can inherit</span></li>
+      </ol>
+      <p class="story-note">Illustrative contribution and review sequence.</p>
+    </figure>
   </div>
 </section>
 
 <section id="cost" class="band alt">
   <div class="wrap">
-    <h2>Submit a memory or a skill, and one of five things happens to it<a class="h-anchor" href="#cost" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>See shared knowledge take shape<a class="h-anchor" href="#cost" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="sub">
-      What your agents know, drawn as a sky. Each star is one claim a reviewer signed; they
-      gather into constellations by subject, and new claims keep arriving. Every arrival ends in
-      exactly one verdict &mdash; and the two that most products treat as edge cases, a refused merge
-      and a refused claim, are the two cases doublegate is built around.
+      A correction becomes shared knowledge. A revision replaces an older claim.
+      A disagreement stays visible for review. Explore those outcomes in the map below.
     </p>
+    <p class="demo-caption" id="sky-description">Interactive illustration with example claims and
+      simulated verdicts. The activity and proportions are illustrative, not live review results.</p>
     <div class="skymap" id="skymap">
       <div class="skymap-stage">
-        <canvas id="sky" tabindex="0" role="img"
+        <canvas id="sky" tabindex="0" role="img" aria-describedby="sky-description"
           aria-label="A three-dimensional sky of twenty constellations. Each star is a signed claim; lines inside a constellation join neighbouring claims and faint lines between constellations join related subjects. New claims arrive continually and become a new star, sharpen an existing one, merge two into one, are held beside a contradiction, or are refused and fall away. Drag to turn, scroll to zoom, double-click a constellation to dive in, arrow keys move it too."></canvas>
         <div class="sky-controls">
           <button type="button" id="sky-zoom-out" aria-label="Zoom out">&minus;</button>
@@ -82,8 +98,13 @@
         </noscript>
       </div>
       <div class="sky-ledger">
-        <p class="sky-ledger-head"><span class="live"></span><b id="sky-count">0</b> verdicts signed since you arrived.</p>
-        <ul class="sky-feed" id="sky-feed" aria-live="polite" aria-relevant="additions"></ul>
+        <div class="sky-selection" id="sky-selection" aria-live="off">
+          <p class="sky-selection-label">Inspect a contribution</p>
+          <p id="sky-selection-text">Select an example from the activity below, or a star in the map.</p>
+          <p id="sky-selection-outcome">Each outcome describes how the knowledge changes.</p>
+        </div>
+        <p class="sky-ledger-head"><b id="sky-count">0</b> example outcomes shown.</p>
+        <ul class="sky-feed" id="sky-feed" aria-label="Simulated contribution activity"></ul>
         <noscript>
           <p class="note">The sky is drawn in the browser and needs JavaScript; without it, the
           still figure shows the same five verdicts over sixty submissions.</p>
@@ -91,10 +112,8 @@
       </div>
     </div>
     <p class="micro">
-      Drag to turn it, scroll to zoom, double-click a constellation to dive in, hover a star to read
-      the claim. A ring around a star is a revision that superseded an earlier claim, kept faint behind
-      it; a dashed amber line is a contradiction kept rather than resolved; a hollow red mark is a
-      refusal, recorded with its reason and never readable.
+      Drag to turn, use + or − to zoom, and select Pause to inspect. Hover a star to read its example.
+      Rings mark revisions; amber links mark disagreements; red marks show refusals.
       <a href="how-it-works.html">See how a claim actually gets reviewed and signed &rarr;</a>
     </p>
   </div>
@@ -103,74 +122,65 @@
 <section id="what" class="band">
   <div class="wrap">
     <h2>What you get<a class="h-anchor" href="#what" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="sub">Four guarantees, and the mechanism behind each one.</p>
-    <div class="cards four">
+    <p class="sub">A shared knowledge base with a review decision behind every contribution.</p>
+    <div class="overview-benefits">
       <div class="card">
         <span class="card-ico held">◫</span>
-        <h3>Nothing unreviewed is readable</h3>
-        <p>Content under review lives in its own database with no read path from your agent. The
-        boundary is structural, so it holds even when a query forgets to ask.</p>
+        <h3>Review before release</h3>
+        <p>Contributions under review stay in a separate store. Only admitted content enters
+        the shared knowledge base your agents retrieve from.</p>
       </div>
       <div class="card">
         <span class="card-ico check">⊘</span>
-        <h3>The reviewer is never the author</h3>
-        <p>Review runs in its own process, without tools or network. An agent cannot sign off on
-        its own work — approval always comes from a second party.</p>
+        <h3>A separate reviewing authority</h3>
+        <p>Approval comes from a reviewer distinct from the author, under rules you set.
+        The signed decision records who approved the contribution and why.</p>
       </div>
       <div class="card">
         <span class="card-ico share">◈</span>
-        <h3>Approved once, useful everywhere</h3>
-        <p>You keep working while review happens. Your own agents use a memory immediately, your
-        group gets it once signed, and the organization can clear it for everyone. Agents can
-        even report what their folder is still missing.</p>
+        <h3>Knowledge that reaches other teams</h3>
+        <p>Connected teams receive approved contributions for review under their own rules.
+        New joiners inherit the knowledge admitted to their team's store.</p>
       </div>
       <div class="card">
         <span class="card-ico audit">⎔</span>
         <h3>An audit trail you can export</h3>
-        <p>Every approval and rejection is signed and permanent — who trusted what, when, and on
-        what basis. Hand the export to an auditor and they can verify the chain themselves.</p>
+        <p>Approvals and rejections carry signatures, reasons and timestamps.
+        Export the decision history so an auditor can verify the chain themselves.</p>
       </div>
     </div>
     <p class="micro">
-      <b>The trade, stated up front:</b> checking costs tokens, and a new claim is not readable by
-      others until it is signed. That gap is when the checking happens — an ungated store has no
-      gap, and no check. <a href="for-engineers.html">What that costs in practice &rarr;</a>
+      Review uses inference and adds a wait before publication. Retrieval uses the admitted store.
+      <a href="for-engineers.html">Review costs and deployment requirements &rarr;</a>
     </p>
   </div>
 </section>
 
 <section id="fit" class="band alt">
   <div class="wrap">
-    <h2>Built for organizations where knowledge has to cross teams<a class="h-anchor" href="#fit" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>Start with the knowledge your teams repeat<a class="h-anchor" href="#fit" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="sub">
-      Three signs you are the reader this was designed for. Any one of them is enough.
+      Start where repeated corrections and cross-team handovers already cost your people time.
     </p>
-    <div class="cards three">
-      <div class="card">
-        <span class="card-ico share">◈</span>
-        <h3>Many teams, many agents</h3>
-        <p>Hundreds of engineers, each with an agent that learns something every day. The
-        platform team's conventions, the payments team's workarounds, the on-call team's fixes —
-        all of it useful to the others, none of it reaching them.</p>
-      </div>
-      <div class="card">
-        <span class="card-ico check">⊘</span>
-        <h3>Knowledge that must be defensible</h3>
-        <p>Regulated, audited, or simply large enough that a wrong belief propagating to five
-        hundred agents is an incident. The question "why does it think that?" needs an answer
-        with a name and a timestamp on it.</p>
-      </div>
-      <div class="card">
-        <span class="card-ico audit">⎔</span>
-        <h3>Systems that already know things</h3>
-        <p>A core platform, a warehouse, a ticketing system holding what agents keep rediscovering.
-        Knowledge management that has outgrown the wiki and needs a path into the tools people
-        actually use.</p>
-      </div>
+    <div class="overview-fit">
+      <details>
+        <summary>Many teams, many agents</summary>
+        <p>Platform conventions, payments workarounds and on-call fixes belong in the agents
+        doing that work. Give teams a reviewed path to share them.</p>
+      </details>
+      <details>
+        <summary>Knowledge that must be defensible</summary>
+        <p>When an agent uses a company rule, trace that rule to its source and approval.
+        Give security and audit teams a decision record they can inspect.</p>
+      </details>
+      <details>
+        <summary>Systems that already know things</summary>
+        <p>Bring knowledge from your platforms, warehouses and ticketing systems through
+        the same review path as contributions from your agents.</p>
+      </details>
     </div>
     <p class="micro">
-      Knowledge management with a supply chain: what one team proves reaches every other team
-      reviewed, signed and attributed &mdash; cross-pollination without cross-contamination.
+      Begin with one team's conventions. Connect another team when its review rules are ready.
       <a href="for-organizations.html">The business case &rarr;</a>
     </p>
   </div>
@@ -179,37 +189,31 @@
 <section id="routes" class="band">
   <div class="wrap">
     <h2>Where to go next<a class="h-anchor" href="#routes" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="sub">Four readers, four pages. Pick the one that matches why you are here.</p>
+    <p class="sub">Evaluate the business case, plan the integration or inspect the evidence.</p>
     <div class="routes">
       <a class="route" href="for-organizations.html">
         <span class="route-tag">If you hold a budget</span>
         <h3>For organizations</h3>
-        <p>New hires start paired with an agent that already knows how your team works — and
-        knowledge stops leaving with people. What per-seat AI is not buying you across 66
-        measured firms, and how reviewed knowledge becomes the company's.</p>
+        <p>Knowledge retention, onboarding and cross-team reuse. What you deploy,
+        what you operate and how the offering grows with your organization.</p>
         <span class="route-go">Read the business case →</span>
       </a>
       <a class="route" href="for-engineers.html">
         <span class="route-tag">If you will run it</span>
         <h3>For engineers</h3>
-        <p>A memory store with a validating admission webhook on its write path. How it plugs in
-        as your provider, what the read path costs, what the checking costs, and which release
-        brings what.</p>
+        <p>Provider integration, published APIs, review costs and the release roadmap.</p>
         <span class="route-go">Read the technical page →</span>
       </a>
       <a class="route" href="governance.html">
         <span class="route-tag">If you answer to an auditor — or run security</span>
         <h3>Governance</h3>
-        <p>Quarantine, review and release for the knowledge your agents write. Every artifact
-        audited, traceable, versioned — mapped to what regulators actually ask for, quoted
-        rather than paraphrased.</p>
+        <p>Signed records and provenance, mapped to regulatory requirements with primary sources.</p>
         <span class="route-go">See the requirement mapping →</span>
       </a>
       <a class="route" href="evidence.html">
         <span class="route-tag">If you want the sources</span>
         <h3>The evidence</h3>
-        <p>Every number on this site with its primary source, including the ones that undercut
-        us, and the figures we publish only once measured.</p>
+        <p>Research findings, their limits and the measurements used to evaluate doublegate.</p>
         <span class="route-go">Check our sources →</span>
       </a>
     </div>
@@ -218,18 +222,14 @@
 
 <section id="commons" class="band alt">
   <div class="wrap tight">
-    <h2>And a commons, on the same terms<a class="h-anchor" href="#commons" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>Share beyond your organization<a class="h-anchor" href="#commons" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
-      The outermost scope is free and points outward: skills, memories and knowledge artifacts
-      anyone can draw on, where <b>nothing is readable until a reviewer that did not write it has
-      signed it</b> — and every verdict is published, including the refusals.
+      The public commons extends the same review process to knowledge organizations choose
+      to publish. Contributions retain attribution; published verdicts include refusals and reasons.
     </p>
     <p class="sub">
-      The registries that hold this content today left that role open on purpose. The canonical
-      registry for agent tooling commits itself to <b>"no built-in ranking, curation, or quality
-      judgments"</b> and expects curation to come from elsewhere. Hugging Face scans uploads and
-      states plainly that it is <b>"not 100% foolproof."</b> Meanwhile 36.8% of 3,984 surveyed
-      public agent skills carry a security flaw.
+      Free to read and optional to contribute. Your own gate reviews incoming knowledge
+      before admitting it to your store.
     </p>
     <div class="cta-row">
       <a class="btn primary" href="commons.html">How the commons works</a>
@@ -240,35 +240,49 @@
 
 <section id="proof" class="band">
   <div class="wrap tight">
-    <h2>Three facts that make the case<a class="h-anchor" href="#proof" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <div class="stats">
-      <div class="stat">
-        <b>3,984 public skills</b>
-        <p>surveyed on the largest sharing hub: <b>36.8% carried a security flaw, 13.4% a critical
-        one.</b> Agent knowledge is already a supply chain — installed today the way you would
-        <span class="mono">curl | bash</span> a stranger's script.</p>
+    <h2>The evidence behind the approach<a class="h-anchor" href="#proof" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <div class="overview-evidence">
+      <details>
+        <summary>3,984 public skills <span>Snyk's security survey</span></summary>
+        <p>In Snyk's survey, <b>36.8% carried a security flaw, 13.4% a critical one.</b>
+        A reason to review third-party skills before distribution.</p>
         <a class="src" href="https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/">Snyk, ToxicSkills</a>
-      </div>
-      <div class="stat">
-        <b>66 firms, 7,137 workers</b>
-        <p>in a six-month randomized field experiment. Workers with AI saved two hours of email a
-        week — and researchers found <b>no shift in the quantity or composition of their
-        tasks.</b> Individual gains stayed individual.</p>
+      </details>
+      <details>
+        <summary>66 firms, 7,137 workers <span>Individual AI access, measured</span></summary>
+        <p>In the second half of a six-month experiment, active users saved two hours on email
+        per week. Researchers detected <b>no shift in task quantity or composition</b>.
+        The study evaluated individual AI access, not shared agent memory.</p>
         <a class="src" href="https://www.aeaweb.org/articles?id=10.1257/aeri.20250275">Dillon, Jaffe, Immorlica &amp; Stanton, AER: Insights</a>
-      </div>
-      <div class="stat">
-        <b>Meta built it in-house</b>
-        <p>An organizational "second brain" with adversarial review, deterministic validation and
-        a full audit trail — because that level of validation rigor over a structured knowledge
-        base is <b>something they say they had not seen elsewhere.</b></p>
+      </details>
+      <details>
+        <summary>Meta's institutional memory <span>Expert corrections put to work</span></summary>
+        <p>Meta describes turning expert corrections into reviewed knowledge updates,
+        with adversarial review, regression tests and human sign-off.
+        An independently built example of the approach.</p>
         <a class="src" href="https://engineering.fb.com/2026/09/02/ml-applications/organizational-second-brain-ai-learns-from-experts/">Meta Engineering, Sep 2026</a>
-      </div>
+      </details>
     </div>
     <p class="micro">
       <a href="evidence.html">All findings, with sources →</a>
     </p>
   </div>
 </section>
+
+<section id="deployment" class="band overview-close">
+  <div class="wrap">
+    <div>
+      <h2>Make one team's knowledge useful to the next.<a class="h-anchor" href="#deployment" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+      <p>Start with a collection of conventions, a reviewing policy and the agents that need it.
+      Let's discuss your deployment, operating requirements and pricing.</p>
+    </div>
+    <div class="cta-row">
+      <a class="btn primary" href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">Discuss your deployment</a>
+      <a class="btn" href="for-engineers.html">Check the requirements</a>
+    </div>
+  </div>
+</section>
+</div>
 
 <footer>
   <div class="wrap foot">

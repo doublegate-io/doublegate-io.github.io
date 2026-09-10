@@ -95,3 +95,6 @@ jobs:
       # the whole suite still called the file clean.
       - name: svg label clearance from lines
         run: node svg-clearance.js
+
+      - name: homepage layout and interaction contracts
+        run: node overview-check.js

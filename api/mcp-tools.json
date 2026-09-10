@@ -61,6 +61,13 @@
               },
               "state": {
                 "type": "string"
+              },
+              "sub_level": {
+                "type": "string",
+                "description": "L1 = scanned clean and waiting on the gate; L1b = a scanner finding, a human clears it (ADR-0053 d1: the scan ran before this answered)"
+              },
+              "findings_count": {
+                "type": "integer"
               }
             },
             "required": [
@@ -108,6 +115,20 @@
                 "type": "boolean",
                 "default": false,
                 "description": "ADR-0035 d5: chain members a later head replaced are hidden by default; true returns them, each marked provenance.superseded"
+              },
+              "audience": {
+                "type": "string",
+                "description": "ADR-0052 d2: the reader's preference, an argument never an identity — each hit's fused score is multiplied by its rank for this audience (1.0 when none) and hides for it apply; omitted = today's answer, byte for byte"
+              },
+              "include_hidden": {
+                "type": "boolean",
+                "default": false,
+                "description": "ADR-0052 d4: rows hidden for this audience (or for all) are dropped before fusion; true returns them, each marked provenance.hidden"
+              },
+              "include_own_pending": {
+                "type": "boolean",
+                "default": true,
+                "description": "ADR-0053 d2 (FR-13): your own scanned, unflagged claims still awaiting review are appended after the ranked hits, each `ratified: false` and `provenance.unreviewed: true` — they may be rejected later and vanish; nobody else's pending claims are ever returned"
               }
             },
             "required": [
@@ -170,7 +191,7 @@
       ],
       "memory_provider": true,
       "installable_on": "any harness host",
-      "instructions": "doublegate, client-gate tier: the gate on this host. `doublegate.remember` returns an artifact id and a state; content is NOT retrievable until ratified — a reviewer that did not write it must sign. `doublegate.recall` searches the admitted store only, never quarantine; provisional hits are marked, superseded ones hidden unless `include_superseded`. `doublegate.why` is the signed audit trail of one artifact; `doublegate.tip` the served head of its supersession chain; `doublegate.pending` what waits, as metadata only. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
+      "instructions": "doublegate, client-gate tier: the gate on this host. `doublegate.remember` scans the content before it answers and returns an artifact id and a state (`L1_SCANNED`, or `L1B_FLAGGED` with a findings count and no finding text); content is NOT retrievable to others until ratified — a reviewer that did not write it must sign. `doublegate.recall` searches the admitted store plus YOUR OWN scanned claims still awaiting review, each marked `ratified: false` — treat those as tentative, they may be rejected and vanish; never anyone else's quarantine. Provisional hits are marked, superseded ones hidden unless `include_superseded`. `doublegate.why` is the signed audit trail of one artifact; `doublegate.tip` the served head of its supersession chain; `doublegate.pending` what waits, as metadata only. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
       "tools": [
         {
           "name": "doublegate.remember",
@@ -222,6 +243,13 @@
               },
               "state": {
                 "type": "string"
+              },
+              "sub_level": {
+                "type": "string",
+                "description": "L1 = scanned clean and waiting on the gate; L1b = a scanner finding, a human clears it (ADR-0053 d1: the scan ran before this answered)"
+              },
+              "findings_count": {
+                "type": "integer"
               }
             },
             "required": [
@@ -269,6 +297,20 @@
                 "type": "boolean",
                 "default": false,
                 "description": "ADR-0035 d5: chain members a later head replaced are hidden by default; true returns them, each marked provenance.superseded"
+              },
+              "audience": {
+                "type": "string",
+                "description": "ADR-0052 d2: the reader's preference, an argument never an identity — each hit's fused score is multiplied by its rank for this audience (1.0 when none) and hides for it apply; omitted = today's answer, byte for byte"
+              },
+              "include_hidden": {
+                "type": "boolean",
+                "default": false,
+                "description": "ADR-0052 d4: rows hidden for this audience (or for all) are dropped before fusion; true returns them, each marked provenance.hidden"
+              },
+              "include_own_pending": {
+                "type": "boolean",
+                "default": true,
+                "description": "ADR-0053 d2 (FR-13): your own scanned, unflagged claims still awaiting review are appended after the ranked hits, each `ratified: false` and `provenance.unreviewed: true` — they may be rejected later and vanish; nobody else's pending claims are ever returned"
               }
             },
             "required": [
@@ -360,6 +402,175 @@
           },
           "annotations": {
             "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.rank",
+          "description": "Weight a promoted claim for one audience (ADR-0052). recall(audience=…) multiplies the hit by it; 1.0 when none — less likely, never absent. Any non-writer identity may rank, human or agent; the claim's own writer is refused (I2). The audience is a string you choose.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              },
+              "audience": {
+                "type": "string",
+                "minLength": 1
+              },
+              "weight": {
+                "type": "number",
+                "exclusiveMinimum": 0,
+                "maximum": 10.0
+              },
+              "reason": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "artifact_id",
+              "audience",
+              "weight"
+            ],
+            "additionalProperties": false
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              },
+              "audience": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "number"
+              },
+              "event_id": {
+                "type": "string"
+              },
+              "ranks": {
+                "type": "object"
+              }
+            },
+            "required": [
+              "artifact_id",
+              "audience",
+              "weight",
+              "event_id"
+            ]
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.hide",
+          "description": "Stop serving a promoted claim to one audience, or to all — reversibly (ADR-0052 d4). The claim stays active and why-able; include_hidden returns it. lift=true reverses. A hide for `all` by a non-operator is journaled `lowered` and listed by doctor. Ending a claim is the operator's demote.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              },
+              "audience": {
+                "type": "string",
+                "minLength": 1,
+                "default": "all"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "lift": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "required": [
+              "artifact_id"
+            ],
+            "additionalProperties": false
+          },
+          "outputSchema": {
+            "type": "object",
+            "properties": {
+              "artifact_id": {
+                "type": "string",
+                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+              },
+              "audience": {
+                "type": "string"
+              },
+              "hidden": {
+                "type": "boolean"
+              },
+              "event_id": {
+                "type": "string"
+              },
+              "hidden_for": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            },
+            "required": [
+              "artifact_id",
+              "audience",
+              "hidden",
+              "event_id",
+              "hidden_for"
+            ]
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.ban",
+          "description": "Refuse a writer's, or a source prefix's, next remember at the door (ADR-0052 d6) — operator only; an agent calling this is refused. Touches nothing already admitted.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "writer",
+                  "source"
+                ]
+              },
+              "subject": {
+                "type": "string",
+                "minLength": 1
+              },
+              "reason": {
+                "type": "string"
+              },
+              "until": {
+                "type": "integer",
+                "description": "ms epoch; omitted = until lifted"
+              },
+              "lift": {
+                "type": "boolean",
+                "default": false
+              }
+            },
+            "required": [
+              "kind",
+              "subject"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
             "idempotentHint": true
           }
         }

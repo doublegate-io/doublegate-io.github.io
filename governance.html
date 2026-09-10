@@ -319,8 +319,9 @@
       Two specifics, because precision here is the product. BCBS 239 does not contain the word
       &ldquo;lineage&rdquo; &mdash; we checked the 2013 text and found zero occurrences, so we cite
       the requirement to the ECB&rsquo;s 2024 implementation guide, which is where it actually
-      lives. And read permissions by identity and team arrive in release 4 &mdash; until then one
-      gate is one trust domain, and knowledge with different audiences goes behind different gates.
+      lives. Organization-gate reads use revocable keys granted access to named folders;
+      administrative changes require separate authority. A folder selects a collection,
+      while an access grant determines who may read it.
     </p>
   </div>
 </section>

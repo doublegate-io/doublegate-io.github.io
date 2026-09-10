@@ -227,7 +227,11 @@
   }
 
   // ---- arrivals ----------------------------------------------------------------
-  var paused = false, nextAt = 0;
+  var paused = !!reduced, nextAt = 0;
+  if (pauseBtn) {
+    pauseBtn.textContent = paused ? 'Resume' : 'Pause';
+    pauseBtn.setAttribute('aria-pressed', paused ? 'true' : 'false');
+  }
 
   function chooseVerdict(ci) {
     var n = present[ci].size, total = 0, ok = [];
@@ -307,6 +311,16 @@
     updateCounts();
   }
 
+  function inspectContribution(text, outcome, announce) {
+    var selection = document.getElementById('sky-selection-text');
+    var detail = document.getElementById('sky-selection-outcome');
+    if (selection && detail) {
+      selection.parentNode.setAttribute('aria-live', announce ? 'polite' : 'off');
+      selection.textContent = text;
+      detail.textContent = outcome;
+    }
+  }
+
   function feed(a, isFounding) {
     var li = document.createElement('li');
     li.className = 'arr v-' + a.verdict;
@@ -323,7 +337,26 @@
     var d = new Date();
     when.dateTime = d.toISOString();
     when.textContent = [d.getHours(), d.getMinutes(), d.getSeconds()].map(function (n) { return (n < 10 ? '0' : '') + n; }).join(':');
-    li.appendChild(when); li.appendChild(chip); li.appendChild(cat); li.appendChild(txt);
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'sky-inspect';
+    button.setAttribute('aria-controls', 'sky-selection');
+    button.appendChild(when); button.appendChild(chip); button.appendChild(cat); button.appendChild(txt);
+    button.addEventListener('focus', function () {
+      // Freeze arrivals while keyboard users navigate; don't remove their focused row.
+      if (pauseBtn && pauseBtn.getAttribute('aria-pressed') !== 'true') pauseBtn.click();
+    });
+    button.addEventListener('click', function () {
+      var outcomes = {
+        new: 'A new contribution enters the shared knowledge in this example.',
+        sharp: 'A revision supersedes an earlier claim; its history is retained.',
+        merge: 'Related claims are reconciled, with their parents retained.',
+        held: 'A disagreement stays open for review.',
+        refused: 'Refused in this example: ' + (a.reason || 'review rejected the contribution.')
+      };
+      inspectContribution(a.text, CHIP[a.verdict] + ' — ' + outcomes[a.verdict], true);
+    });
+    li.appendChild(button);
     feedEl.insertBefore(li, feedEl.firstChild);
     while (feedEl.children.length > 14) feedEl.removeChild(feedEl.lastChild);
   }
@@ -612,6 +645,7 @@
       : st.via === 'held' ? 'Held: it contradicts a neighbour and the merge was refused, so both stay.'
       : st.via === 'new' ? 'Arrived as a new claim.' : 'In the sky at the start.';
     if (st.revs > 1) how += ' Sharpened ' + st.revs + ' times.';
+    inspectContribution(st.text, kind + ' · ' + cats[st.ci].name + '. ' + how);
     tip.innerHTML = '';
     var k = document.createElement('span'); k.className = 'kind'; k.textContent = kind + ' \u00b7 ' + cats[st.ci].name;
     var t = document.createElement('p'); t.textContent = st.text;
@@ -760,7 +794,7 @@
       if (Math.abs(vYaw) > 1e-4 || Math.abs(vPitch) > 1e-4) {
         yaw += vYaw; pitch = Math.max(0.12, Math.min(1.35, pitch + vPitch));
         vYaw *= 0.93; vPitch *= 0.93; dirty = true;
-      } else if (!reduced && !pinned && Z < 1.3 && !tween) {
+      } else if (!paused && !reduced && !pinned && Z < 1.3 && !tween) {
         yaw += 0.00004 * dt; dirty = true; // a slow idle turn about the vertical, only when not zoomed in
       }
     }
