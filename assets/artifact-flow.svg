@@ -2,13 +2,7 @@
      font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif"
      role="img" aria-labelledby="ttl desc">
   <title id="ttl">How a memory travels from an agent to an organization</title>
-  <desc id="desc">Read top to bottom. An agent in any harness writes a memory. It goes to a client
-  gate, which may run on the same machine or on a separate environment, and which runs the first
-  checks: scanning, grading by a reviewer that did not write it, and signing. The author can use the
-  memory straight away. Once signed, their group can read it. The client gate then submits it to an
-  organization gate, which reviews, scores, categorises and records it independently. Content the
-  organization approves for distribution flows back out to every client gate. Rejected content stays
-  held with its reasons.</desc>
+  <desc id="desc">Deployment view of the planned review path. The client scans a contribution, an AI assesses trust from 0–100, and a distinct authorized AI or human approves or rejects its exact revision and use. Scan-cleared writer access remains pending review. Shared publication requires current eligibility. An organization applies its own authority and exchanges signed outcomes over authenticated HTTP. Two review stages are distinct from two deployments.</desc>
 
   <defs>
     <style><![CDATA[
@@ -123,8 +117,8 @@
 
   <g>
     <rect x="532" y="246" width="212" height="86" rx="10" fill="url(#gChk)" stroke="#fbbf24" stroke-width="1.5"/>
-    <text class="sName" x="638" y="280" fill="#fef3c7" text-anchor="middle">GRADED</text>
-    <text class="tChk"  x="638" y="306" text-anchor="middle">by someone else</text>
+    <text class="sName" x="638" y="280" fill="#fef3c7" text-anchor="middle">TRUST 0–100</text>
+    <text class="tChk"  x="638" y="306" text-anchor="middle">AI assessment</text>
   </g>
   <path class="flow crawl" d="M 744 290 L 776 290"/>
   <path class="flow" d="M 769 283 L 776 290 L 769 297" stroke-linejoin="round"/>
@@ -132,8 +126,8 @@
   <g>
     <ellipse cx="882" cy="289" rx="58" ry="52" fill="#34d399" opacity=".16" filter="url(#soft)" class="glowG"/>
     <rect x="776" y="246" width="212" height="86" rx="10" fill="url(#gOk)" stroke="#34d399" stroke-width="1.5"/>
-    <text class="sName" x="882" y="278" fill="#d1fae5" text-anchor="middle">SIGNED</text>
-    <text class="tOk"   x="882" y="302" text-anchor="middle">never self-approved</text>
+    <text class="sName" x="882" y="278" fill="#d1fae5" text-anchor="middle">DECIDED</text>
+    <text class="tOk"   x="882" y="302" text-anchor="middle">approve or reject</text>
     <g class="stamp">
       <circle cx="882" cy="318" r="7.5" fill="none" stroke="#34d399" stroke-width="2"/>
       <path d="M 878.2 318 l 2.7 2.9 l 4.8 -5.5" fill="none" stroke="#34d399" stroke-width="2"
@@ -159,17 +153,17 @@
     <rect class="panelIn" x="30" y="442" width="440" height="106" rx="12"/>
     <rect x="46" y="462" width="180" height="68" rx="9" fill="url(#gAud)" stroke="#22d3ee" stroke-width="1.5" opacity=".85"/>
     <text class="sName" x="136" y="490" fill="#a5f3fc" text-anchor="middle">YOU</text>
-    <text class="tCyn"  x="136" y="512" text-anchor="middle">straight away</text>
+    <text class="tCyn"  x="136" y="512" text-anchor="middle">scan-cleared</text>
     <text class="cap"   x="242" y="486">your own agents use it</text>
-    <text class="cap"   x="242" y="504">the moment you write it —</text>
-    <text class="cap"   x="242" y="522">no waiting on anyone</text>
+    <text class="cap"   x="242" y="504">pending review —</text>
+    <text class="cap"   x="242" y="522">writer view only</text>
   </g>
 
   <g>
     <rect class="panelIn" x="490" y="442" width="440" height="106" rx="12"/>
     <rect x="506" y="462" width="180" height="68" rx="9" fill="url(#gAud)" stroke="#22d3ee" stroke-width="1.5"/>
     <text class="sName" x="596" y="490" fill="#a5f3fc" text-anchor="middle">YOUR GROUP</text>
-    <text class="tCyn"  x="596" y="512" text-anchor="middle">once signed</text>
+    <text class="tCyn"  x="596" y="512" text-anchor="middle">once published</text>
     <text class="cap"   x="702" y="486">teammates on this gate</text>
     <text class="cap"   x="702" y="504">read it after review —</text>
     <text class="cap"   x="702" y="522">signature attached</text>
@@ -193,8 +187,8 @@
 
   <g>
     <rect x="292" y="666" width="222" height="86" rx="10" fill="url(#gChk)" stroke="#fbbf24" stroke-width="1.5"/>
-    <text class="sName" x="403" y="700" fill="#fef3c7" text-anchor="middle">SCORED</text>
-    <text class="tChk"  x="403" y="726" text-anchor="middle">rated and filed</text>
+    <text class="sName" x="403" y="700" fill="#fef3c7" text-anchor="middle">DECIDED</text>
+    <text class="tChk"  x="403" y="726" text-anchor="middle">approve or reject</text>
   </g>
   <path class="flow crawl" d="M 514 710 L 540 710"/>
   <path class="flow" d="M 533 703 L 540 710 L 533 717" stroke-linejoin="round"/>
@@ -202,7 +196,7 @@
   <g>
     <rect x="540" y="666" width="222" height="86" rx="10" fill="url(#gOk)" stroke="#34d399" stroke-width="1.5"/>
     <text class="sName" x="651" y="700" fill="#d1fae5" text-anchor="middle">VALIDATED</text>
-    <text class="tOk"   x="651" y="726" text-anchor="middle">second signature</text>
+    <text class="tOk"   x="651" y="726" text-anchor="middle">scope and authority</text>
   </g>
   <path class="flow crawl" d="M 762 710 L 788 710"/>
   <path class="flow" d="M 781 703 L 788 710 L 781 717" stroke-linejoin="round"/>
@@ -224,7 +218,7 @@
     <rect x="60" y="787" width="16" height="16" rx="4" fill="none" stroke="#22d3ee" stroke-width="2"/>
     <path d="M 64 795 l 3.4 3.6 l 6 -7" fill="none" stroke="#22d3ee" stroke-width="2.2"
           stroke-linecap="round" stroke-linejoin="round"/>
-    <text class="capB" x="90" y="801">cleared for distribution — send this one back out to everyone</text>
+    <text class="capB" x="90" y="801">cleared for distribution within the approved scope</text>
   </g>
 
   <path class="join crawl" d="M 520 830 L 520 878"/>
@@ -241,7 +235,7 @@
     <rect class="chip" x="662" y="920" width="326" height="34" rx="8" stroke="#22d3ee" stroke-opacity=".45"/>
     <text class="tCyn" x="825" y="942" text-anchor="middle">a gate in another office</text>
   </g>
-  <text class="capG" x="30" y="982">Arriving pre-approved: their gate does not review what yours already proved.</text>
+  <text class="capG" x="30" y="982">Signed outcomes travel; receiving gates enforce their own authority and current access.</text>
 
   <!-- ═════ travelling artifacts ═════ -->
   <g class="mover">

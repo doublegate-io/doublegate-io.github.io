@@ -53,7 +53,7 @@ FIRST_RELEASE = "Q2 2027"
 TITLES = {
     "index.html": (
         "doublegate — your organization's AI knowledge, reviewed and shared",
-        "Open-source memory and knowledge-sharing software for AI agents. "
+        "Memory and knowledge-sharing software for AI agents. "
         "Review contributions, record signed decisions and share approved knowledge "
         "across connected teams on your infrastructure.",
     ),
@@ -71,25 +71,25 @@ TITLES = {
     ),
     "for-engineers.html": (
         "For engineers — what it is, what it costs, when it ships",
-        "doublegate replaces your memory provider. Read path is unchanged, checking "
+        "doublegate replaces your memory provider. Reads enforce current eligibility; checking "
         "happens on the way in. Latency, token cost, the four tools your agent gains, "
         "the API published as data for the agent doing the wiring, and the release roadmap.",
     ),
     "governance.html": (
         "Governance — connectors, provenance, and what regulators ask for",
-        "Let your existing systems propose what agents should know, with every belief "
-        "audited, traceable, versioned and discoverable. Mapped to the ECB RDARR Guide, "
+        "Planned connectors and shared review controls for agent knowledge: "
+        "scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, "
         "EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.",
     ),
     "commons.html": (
         "The Commons — a reviewed public library of agent knowledge",
-        "Skills, memories and knowledge artifacts anyone can draw on, held and signed by a "
-        "reviewer that did not write them. Free to read, contributions under a named identity, "
-        "every verdict published — including the rejections.",
+        "A public library planned for release 5: reviewed knowledge with explicit publishing rights. "
+        "Free to read, contributions under a named identity, "
+        "publishable decisions and reasons, including rejections and appeals.",
     ),
     "pricing.html": (
         "Pricing — Solo, Team, Organization",
-        "The same open-source engine at every tier. Solo is free. Team adds the "
+        "Solo use is free. The organization gate is private and proprietary. Team adds the "
         "shared gate. Organization adds a second independent authority.",
     ),
     "evidence.html": (
@@ -159,8 +159,8 @@ SHELL = """<!doctype html>
 <footer>
   <div class="wrap foot">
     <div>
-      <b>doublegate</b> · open source · first release {first_release} · every claim traces to cited research
-      <p class="dim">Solo use is free and stays that way.
+      <b>doublegate</b> · first release {first_release} · every claim traces to cited research
+      <p class="dim">Solo use is free and stays that way. The organization gate is private and proprietary.
       <a href="{contact}">Questions, objections and corrections go here</a> — including
       "you got this wrong". Ask about deployment or pricing at
       <a href="{mailto}">{email}</a>.</p>
@@ -275,12 +275,13 @@ def render_robots() -> str:
 # then the machine-readable documents, then the pages. Generated here so it quotes
 # the same release date as every page and cannot name a page that does not exist.
 LLMS_INTRO = (
-    "> doublegate is a memory provider for AI agents with admission control on the write path. "
-    "An agent's `remember` lands in a held store that nothing can read; a deterministic scan, an "
-    "independent grader that did not write it and signed verdicts decide; only admitted content is "
-    "returned by `recall`, every result with its provenance, and every decision is a signed, "
-    "replayable record. It speaks the standard agent-tool protocol, runs as a sidecar on the "
-    "machine that runs the agent, and is open source — first release {first_release}."
+    "> doublegate is memory and knowledge-sharing software for AI agents. "
+    "Contributions are held for review; signed decisions establish scoped publication. "
+    "The release-3 workflow uses an AI trust assessment from 0–100, then a distinct "
+    "authorized AI or human APPROVE or REJECT decision without a second score. "
+    "Approval means production-ready for the declared scope, version and use; current "
+    "access and applicability govern retrieval. Release 4 adds shared team attribution "
+    "and publication over authenticated HTTP. The organization gate remains private and proprietary. First release {first_release}."
 )
 
 LLMS_API = [

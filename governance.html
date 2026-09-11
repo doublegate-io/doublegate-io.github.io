@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Governance — connectors, provenance, and what regulators ask for</title>
-<meta name="description" content="Let your existing systems propose what agents should know, with every belief audited, traceable, versioned and discoverable. Mapped to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.">
+<meta name="description" content="Planned connectors and shared review controls for agent knowledge: scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.">
 <meta property="og:title" content="Governance — connectors, provenance, and what regulators ask for">
-<meta property="og:description" content="Let your existing systems propose what agents should know, with every belief audited, traceable, versioned and discoverable. Mapped to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.">
+<meta property="og:description" content="Planned connectors and shared review controls for agent knowledge: scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -32,8 +32,11 @@
     <h1>Your systems already know things.<br><span class="grad">Your agents don't.</span></h1>
     <p class="lede">
       The knowledge your agents need is sitting in a core banking platform, a warehouse, a CRM,
-      a ticketing system. doublegate lets those systems propose what an agent should know — and
-      puts every proposal through the same review as anything a person writes.
+      a ticketing system. The connector design lets those systems propose what an agent should
+      know, subject to the same review as a person's contribution. Signed decisions and keyed
+      organization reads exist in the current development surface; the selected two-stage workflow
+      and shared team controls are allocated to releases 3 and 4. Connector rollout follows its
+      own acceptance checks.
     </p>
   </div>
 </section>
@@ -42,8 +45,8 @@
   <div class="wrap">
     <h2>A system proposes, the gate decides<a class="h-anchor" href="#how" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="sub">
-      A connector reads a slice of a source system and proposes beliefs. It cannot write directly
-      into what your agents read — nothing can.
+      The connector contract scopes which source data can become a proposal. The gate reviews
+      that proposal before shared admission; source credentials confer no approval authority.
     </p>
     <div class="cards three">
       <div class="card">
@@ -56,9 +59,9 @@
       <div class="card">
         <span class="card-ico check">⊘</span>
         <h3>Reviewed like everything else</h3>
-        <p>A proposal from a system goes through the same holding, scanning, grading and signing
-        as a memory typed by an engineer. A connector is not a trusted writer — it is another
-        author whose work needs a second party.</p>
+        <p>In the selected review workflow, a non-author AI records a trust assessment from 0–100
+        with evidence and reasons. A distinct authorized non-author AI or human returns APPROVE
+        or REJECT, without a second score. A score alone never grants approval.</p>
       </div>
       <div class="card">
         <span class="card-ico audit">⎔</span>
@@ -80,7 +83,7 @@
 <section id="examples" class="band alt">
   <div class="wrap">
     <h2>What a connector actually produces<a class="h-anchor" href="#examples" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="sub">Three shapes, from the concrete to the organizational.</p>
+    <p class="sub">Three intended connector uses, from the concrete to the organizational.</p>
 
     <div class="evidence">
       <article class="ev">
@@ -115,8 +118,9 @@
   <div class="wrap">
     <h2>Four properties, every artifact<a class="h-anchor" href="#four" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="sub">
-      Memories, skills, connector output, review verdicts — the same four properties apply to all
-      of them, because they all go through the same gate.
+      The intended record connects contributor, evidence, review and scope. Connector lineage
+      and shared-team attribution extend the signed history; the illustration below describes
+      that target record rather than a new current API schema.
     </p>
     <dl class="record">
       <div class="record-head"><span>One signed record — what it holds, and what each field is for</span><span>The requirement it answers</span></div>
@@ -146,19 +150,19 @@
       </div>
       <div class="rec">
         <dt>who reviewed it</dt>
-        <dd>reviewer identity — never the author<br>the human who signed off, where one did</dd>
+        <dd>AI assessor and distinct authorized AI or human decider — neither the author<br>verified contributor and team at submission</dd>
         <span class="req">GDPR, Article 22(3)</span>
         <span class="reqd">the right <q>to obtain human intervention</q> and <q>to express his or her point of view</q></span>
       </div>
       <div class="rec">
         <dt>the verdict, and its reasons</dt>
-        <dd>approved · or refused, and why</dd>
+        <dd>trust assessment with evidence<br>APPROVE or REJECT, with separate reasons</dd>
         <span class="req">GDPR, Article 30(1)</span>
         <span class="reqd"><q>maintain a record of processing activities</q></span>
       </div>
       <div class="rec">
         <dt>when</dt>
-        <dd>decided at · valid from</dd>
+        <dd>decided at · valid from · expires at<br>declared version, scope and use</dd>
         <span class="req">BCBS 239, Principle 3</span>
         <span class="reqd"><q>a single authoritative source for risk data per each type of risk</q></span>
       </div>
@@ -197,7 +201,8 @@
         <span class="card-ico held">◫</span>
         <h3>Discoverable</h3>
         <p>Approved knowledge is searchable by the agents entitled to read it, with its
-        provenance attached. Content still under review is discoverable to reviewers only.</p>
+        provenance attached. Consumer retrieval and privileged review access remain separate;
+        a planned writer preview is not shared admission.</p>
       </div>
     </div>
   </div>
@@ -207,7 +212,8 @@
   <div class="wrap">
     <h2>What regulators already ask for<a class="h-anchor" href="#regulatory" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="sub">
-      Not our interpretation — the requirement in its own words, and the mechanism that answers it.
+      Quoted requirements alongside relevant evidence mechanisms. Applicability and control
+      effectiveness require an organizational assessment; the mappings are not compliance findings.
     </p>
 
     <table class="cmp wide">
@@ -247,7 +253,7 @@
           <td>the right "to obtain human intervention […] to express his or her point of view and
           to contest the decision"</td>
           <td class="dim">GDPR Article 22(3)</td>
-          <td class="yes">every belief resolves to who vouched for it and why</td>
+          <td class="yes">decision provenance supports investigation; a human-intervention and contest process is a separate organizational duty</td>
         </tr>
         <tr>
           <td>"strive towards a single authoritative source for risk data per each type of risk"</td>
@@ -259,8 +265,10 @@
 
     <p class="note">
       Even the checking can stay inside your walls: the gate&rsquo;s small preparation models run
-      on your CPU with no key and no quota, and they prepare evidence only &mdash; grading is a
-      signal the reviewers weigh, never a verdict. No model output quietly becomes a decision.
+      on your CPU and prepare evidence only. Stage-1 scoring is advisory; stage 2 is an explicit
+      authorized decision, which can be made by AI. Human review is optional by default under the
+      selected design. An explicit authorized human override stays binding until an authorized
+      human releases or replaces it; no model can silently lift it.
     </p>
     <p class="micro">
       Every quote above is verbatim from the named source and checked against it.
@@ -274,7 +282,9 @@
     <h2>Speaking formats your governance team already has tools for<a class="h-anchor" href="#standards" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
       An audit trail nobody can import is an audit trail nobody reads. The records are designed to
-      express in established vocabularies rather than a private format.
+      express in established vocabularies. These export mappings are design targets, not a claim
+      that a production connector or catalogue integration has shipped. The organization gate
+      remains private and proprietary; publishing interface documents does not open its implementation.
     </p>
     <div class="cards two">
       <div class="card">
@@ -288,7 +298,7 @@
         <h3>Lineage your catalogue understands</h3>
         <p>Connector runs are designed to emit <b>OpenLineage</b> events, the open lineage standard
         under the Linux Foundation, including its field-level lineage facet. Your data catalogue
-        can consume our trail with no bespoke parser.</p>
+        would use that standard interface, subject to connector and catalogue validation.</p>
         <a class="src" href="https://openlineage.io/">OpenLineage — Apache-2.0, LF AI &amp; Data</a>
       </div>
     </div>
@@ -309,11 +319,23 @@
       control framework &mdash; what we produce is the evidence that goes into one.
     </p>
     <p class="note">
-      Anyone selling you the verdict rather than the evidence is selling something they cannot
-      deliver. What we produce is what an auditor actually asks for: a signed record of who decided
-      what, on what basis, and when. No regulator has certified, approved or endorsed this tool
-      &mdash; nor could one, since compliance attaches to your organization and not to our
-      software.
+      Approval means production-ready for the declared scope, version and use under required
+      checks. It is neither factual certainty nor permission to execute production actions.
+      Publication and current read access remain separate decisions. The shared-team design
+      requires a verified contributor and one accountable team at submission; later membership
+      or ownership changes preserve that attribution and do not create access grants.
+    </p>
+    <p class="note">
+      Counterevidence can challenge approval and trigger re-evaluation; required holds block
+      affected use. Withdrawal, revocation and expiry end current eligibility while preserving
+      decision history. Changed content or evidence needs a new revision and review; changed
+      context cannot silently widen an old approval. Commons appeals add a planned staffed
+      human route for disputed refusals, not a universal human-review requirement.
+    </p>
+    <p class="note">
+      Internal approval does not authorize Commons publication. Public nomination requires
+      publishing rights, privacy review and receiving-authority checks. Public reuse follows
+      an artifact's terms and never grants access to private organizational claims or evidence.
     </p>
     <p class="micro">
       Two specifics, because precision here is the product. BCBS 239 does not contain the word
@@ -339,8 +361,8 @@
 <footer>
   <div class="wrap foot">
     <div>
-      <b>doublegate</b> · open source · first release Q2 2027 · every claim traces to cited research
-      <p class="dim">Solo use is free and stays that way.
+      <b>doublegate</b> · first release Q2 2027 · every claim traces to cited research
+      <p class="dim">Solo use is free and stays that way. The organization gate is private and proprietary.
       <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
       "you got this wrong". Ask about deployment or pricing at
       <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">eugene.korniichuk@gmail.com</a>.</p>

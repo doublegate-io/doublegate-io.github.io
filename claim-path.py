@@ -92,8 +92,8 @@ BLU = "#60a5fa"     # ratify
 STAGES = [
     ("ADMIT", "class, and edges\nto any parent", AMB),
     ("SCAN", "injection, keys,\nscripts", ROSE),
-    ("GRADE", "never by\nthe writer", CYN),
-    ("RATIFY", "writer votes\nare discarded", BLU),
+    ("ASSESS", "AI trust\n0–100", CYN),
+    ("DECIDE", "approve or\nreject", BLU),
     ("RECORD", "a signed event\nin the ledger", GRN),
 ]
 
@@ -237,8 +237,8 @@ def build(Wd):
     o.append(f'<rect x="{rx}" y="{ly}" width="{W - PAD - rx}" height="92" rx="7" '
              f'fill="#0d1017" stroke="{LINE}" stroke-width="1.5"/>')
     o.append(f'<text class="store" x="{rx + 14}" y="{ly + 26}" fill="{GRN}">active memory</text>')
-    o.append(f'<text class="storesub" x="{rx + 14}" y="{ly + 45}">the only store</text>')
-    o.append(f'<text class="storesub" x="{rx + 14}" y="{ly + 60}">a query can open</text>')
+    o.append(f'<text class="storesub" x="{rx + 14}" y="{ly + 45}">eligible claims</text>')
+    o.append(f'<text class="storesub" x="{rx + 14}" y="{ly + 60}">current access</text>')
     o.append(f'<text class="storesub" x="{rx + 14}" y="{ly + 80}">one writer, ever</text>')
 
     # ── the pipe: five stages, one row ─────────────────────────────────────
@@ -368,13 +368,13 @@ def outcomes(o, rx, ly, Wd):
 
     items = [
         (GRN, "plain", "PROMOTED",
-         "a new claim, readable once signed"),
+         "a new claim, published within scope"),
         (VIO, "many", "MERGE ACCEPTED",
          "parents superseded, both kept, never deleted"),
         (AMB, "pair", "MERGE REFUSED",
          "both parents stay live \u2014 the store stays contradictory, on purpose"),
         (ROSE, "hollow", "REFUSED",
-         "stays in the ledger with its reasons, readable by nobody"),
+         "held from shared retrieval; reasons recorded"),
     ]
     # Two rows of two: acceptances on the first, refusals on the second. Four on
     # one line overran the canvas by 224px, and the pairing is the better read
@@ -411,17 +411,17 @@ def main():
              ("no", "no read path"), ("no", "reaches this"),
              ("store", "memory limbo"), ("storesub", "held here while"),
              ("storesub", "it is judged"), ("store", "active memory"),
-             ("storesub", "the only store"), ("storesub", "a query can open"),
+             ("storesub", "eligible claims"), ("storesub", "current access"),
              ("storesub", "one writer, ever"),
              ("no", LOOP_RULE), ("lanesub", LOOP_NOTE),
              ("lane", "IT MATCHES"), ("lane", "SOMETHING")]
     for name, sub, _ in STAGES:
         pairs.append(("stage", name))
         pairs += [("sub", ln) for ln in sub.split("\n")]
-    OUTS = [("PROMOTED", "a new claim, readable once signed"),
+    OUTS = [("PROMOTED", "a new claim, published within scope"),
             ("MERGE ACCEPTED", "parents superseded, both kept, never deleted"),
             ("MERGE REFUSED", "both parents stay live \u2014 the store stays contradictory, on purpose"),
-            ("REFUSED", "stays in the ledger with its reasons, readable by nobody")]
+            ("REFUSED", "held from shared retrieval; reasons recorded")]
     for a, b in OUTS:
         pairs += [("out", a), ("outsub", b)]
     Wd = measure(pairs)
@@ -463,7 +463,7 @@ def main():
             problems.append(f'limbo text "{t}" is {Wd[t]:.0f}px > {STORE_W - 28}px')
     # the active box is whatever is left between the pipe and the margin
     active_w = W - PAD - (stage_x(len(STAGES) - 1) + STAGE_W + 34)
-    for t in ("active memory", "the only store", "a query can open", "one writer, ever"):
+    for t in ("active memory", "eligible claims", "current access", "one writer, ever"):
         if Wd[t] > active_w - 28:
             problems.append(f'active text "{t}" is {Wd[t]:.0f}px > {active_w - 28:.0f}px')
     if problems:
@@ -476,10 +476,10 @@ def main():
         "already held. On the left, memory limbo: the claim is held here while it is judged, "
         "and no consumer read path reaches this store. It passes through five stages in order "
         "\u2014 ADMIT, which records the envelope, trust class and any derives_from edges; SCAN, "
-        "for injection, keys and scripts; GRADE, by an identity that did not write it; RATIFY, "
-        "a k-of-n count in which no verdict from the writer is counted; and RECORD, a signed "
+        "for injection, keys and scripts; ASSESS, an AI trust score from 0–100; DECIDE, "
+        "a distinct authorized non-author AI or human approves or rejects; and RECORD, a signed "
         "event in the ledger. Only then does a single arrow cross into active memory, the "
-        "only store a query can open, and one component is its only writer. Below the pipe, one "
+        "only store current access, and one component is its only writer. Below the pipe, one "
         "dashed arrow shows what happens when the arriving claim matches one already held: "
         "consolidation proposes a new claim carrying edges to every parent, and that candidate "
         "takes a second full trip through the same gate, graded by an identity that did not "
@@ -487,7 +487,7 @@ def main():
         "claim readable once signed; MERGE ACCEPTED, with the parents superseded and kept, "
         "never deleted; MERGE REFUSED, where both parents stay live and the store stays "
         "contradictory on purpose; and REFUSED, which stays in the ledger with its reasons and "
-        "is readable by nobody. The figure shows mechanism only \u2014 what connects to what and "
+        "is excluded from shared retrieval. The figure shows mechanism only \u2014 what connects to what and "
         "who may not act \u2014 and claims no rates, volumes or timings.")
 
     svg = f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {height}" width="{W}" height="{height}"

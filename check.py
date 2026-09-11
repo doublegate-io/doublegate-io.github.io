@@ -469,17 +469,17 @@ if (ROOT / "sky-data.py").exists() and (ROOT / "tests" / "fixtures" / "org-feed.
 #     image, and the reason a returning SVG must not pass silently.
 FIGURE_COPY = {
     "commons.html": ("ladder", [
-        "Four scopes — one mechanism, a wider audience each time",
+        "Four scopes — separate authority at each boundary",
         "you, on your own machine",
         "a group sharing one gate",
         "many teams, one authority",
         "anyone, outside your company",
-        "Same write path at every scope — only the signing authority changes",
+        "Wider reuse requires review, current access and publishing permission",
     ]),
     "governance.html": ("record", [
         "One signed record — what it holds, and what each field is for",
         "The requirement it answers",
-        "reviewer identity — never the author",
+        "AI assessor and distinct authorized AI or human decider — neither the author",
         "over every field above — verifiable without asking us",
         "change any field and the signature stops verifying",
     ]),

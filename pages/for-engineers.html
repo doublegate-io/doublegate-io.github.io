@@ -1,10 +1,10 @@
 <section id="top">
   <div class="wrap hero narrow">
     <p class="eyebrow">For engineers</p>
-    <h1>It replaces your memory provider.<br><span class="grad">Your read path does not change.</span></h1>
+    <h1>It replaces your memory provider.<br><span class="grad">Review on write. Eligibility on read.</span></h1>
     <p class="lede">
       doublegate speaks the interface your agent already speaks for storing and searching what it
-      learns. Swapping to it changes one thing: what gets in. Everything below is what that costs,
+      learns. It controls what gets in and which approved knowledge a caller can use. Everything below is what that costs,
       how it plugs in, and when each release lands.
     </p>
   </div>
@@ -13,10 +13,10 @@
 <section id="shape" class="band">
   <div class="wrap">
     <h2>Where it sits</h2>
-    <p class="sub">Not a proxy in front of a provider. It <em>is</em> the provider.</p>
+    <p class="sub">A memory provider that owns admission, storage and eligible retrieval.</p>
     <table class="cmp wide">
       <thead>
-        <tr><th>Layer</th><th>Responsible for</th><th>Decides whether content is trustworthy?</th></tr>
+        <tr><th>Layer</th><th>Responsible for</th><th>Role in review</th></tr>
       </thead>
       <tbody>
         <tr>
@@ -25,20 +25,20 @@
           <td class="no">no</td>
         </tr>
         <tr>
-          <td>Today's memory tools <span class="dim">mem0 · Zep · Letta · Mnemosyne</span></td>
+          <td>Storage and search</td>
           <td>storing and ranking what it learns</td>
-          <td class="no">ranks it — never blocks it</td>
+          <td class="no">retrieval and ranking</td>
         </tr>
         <tr class="hl">
           <td>doublegate</td>
           <td>storing, searching, <b>and checking on the way in</b></td>
-          <td class="yes">yes</td>
+          <td class="yes">scoped admission decisions</td>
         </tr>
       </tbody>
     </table>
     <p class="micro">
-      Sitting in front of an existing provider was considered and rejected — you cannot enforce a
-      read boundary you do not own. That is a deliberate decision, not an oversight.
+      The provider owns both the review boundary and the retrieval boundary. The agent performs
+      the work; the gate maintains the knowledge it is authorized to use.
     </p>
   </div>
 </section>
@@ -83,10 +83,10 @@
       </tbody>
     </table>
     <p class="note">
-      Every artifact above is <b>audited, traceable, versioned and discoverable</b> — the same four
+      The target is for every artifact above to be <b>audited, traceable, versioned and discoverable</b> — the same four
       properties, because they share one write path and one journal. Nothing is edited in place:
       a correction is a new version linked to what it replaced, so an artifact you depend on cannot
-      quietly become something else.
+      quietly become something else. Skills and skill-revision proposals are allocated to release 5.
     </p>
   </div>
 </section>
@@ -94,14 +94,14 @@
 <section id="costs" class="band">
   <div class="wrap">
     <h2>What it costs</h2>
-    <p class="sub">Three real costs, each with its number.</p>
+    <p class="sub">Budget for retrieval, time to publication and reviewing inference.</p>
     <div class="cards three">
       <div class="card">
         <span class="card-ico check">⊘</span>
-        <h3>Read latency: unchanged</h3>
-        <p>The gate is not in the query path at all. Approved content sits in an ordinary store and
-        is searched normally — no reviewer call, no per-query check, no extra round trip.</p>
-        <p class="card-tag">reads never touch the gate</p>
+        <h3>Retrieval: eligibility before ranking</h3>
+        <p>Model review runs before publication. Reads enforce current access, scope, expiry and
+        authority before ranking eligible knowledge. Measure that cost on your workload.</p>
+        <p class="card-tag">review and read authorization are separate.</p>
       </div>
       <div class="card">
         <span class="card-ico held">◫</span>
@@ -114,9 +114,9 @@
       <div class="card warn">
         <span class="card-ico audit">⎔</span>
         <h3>Tokens: about 5% of an agent day</h3>
-        <p>Grading calls a model. On a real 393-memory corpus with two reviewers per claim, that
-        came to roughly five percent of the agent's own daily spend — reported per gate, never
-        hidden, and the local models take the cheap cases first.</p>
+        <p>A historical 393-memory experiment with two reviewers per claim used roughly five
+        percent of the agent's daily token spend. Re-measure the selected two-stage workflow
+        with your models, evidence sizes, retries and optional human review.</p>
         <p class="card-tag">measured on our corpus</p>
       </div>
     </div>
@@ -137,21 +137,23 @@
       protocol already built into Hermes, Claude Code, opencode and Codex &mdash; add it like any
       other tool server. The examples below cover everyday use; the
       <a href="api/mcp-tools.json">published tool catalog</a> specifies the surface
-      exposed by each deployment tier.
+      exposed by each deployment tier in the current development API. The release-3 design
+      below adds the selected two-stage review and planned writer preview; the catalog remains
+      the contract for current integration. Gap proposals are planned for release 4.
     </p>
     <div class="cards four">
       <div class="card">
         <h3>remember</h3>
         <p>Your agent submits a contribution and receives its identifier and state.
         The write waits for the security scan; grading follows in the background.
-        A clean contribution is available to its writer as pending review. Shared retrieval
-        waits for admission.</p>
+        The planned writer preview marks a scan-cleared contribution as pending review;
+        that preview does not grant shared admission.</p>
       </div>
       <div class="card">
         <h3>recall</h3>
         <p>Search admitted knowledge with its provenance: who signed it, on what basis and when.
-        The caller's own scan-cleared contributions can also appear, explicitly marked
-        as pending review.</p>
+        The proposed writer-preview path would expose the caller's own scan-cleared contributions
+        separately from admitted consumer results, explicitly marked as pending review.</p>
       </div>
       <div class="card">
         <h3>why</h3>
@@ -167,22 +169,22 @@
       </div>
     </div>
     <div class="terminal">
-      <div class="term-bar"><i></i><i></i><i></i><span>one memory, end to end</span></div>
+      <div class="term-bar"><i></i><i></i><i></i><span>illustrative release-3 review workflow</span></div>
       <pre><code><span class="c-dim">// your agent writes down a correction it was just taught</span>
 <span class="c-cyn">&gt; remember</span> "Payments sandbox rate-limits per API key, not per account.
              Space retries 2 s apart, not 30."
 <span class="c-dim">&larr;</span> artifact <span class="c-grn">sha256:9f2c&hellip;</span> &middot; state: <b>held</b> &mdash; stored, not yet readable by anyone else
   scan: clean &middot; near-duplicate found: an older team note &mdash; this one sharpens it
 
-<span class="c-dim">// minutes later, after a reviewer that did not write it signs off</span>
+<span class="c-dim">// illustrative sequence after the two reviews complete</span>
 <span class="c-cyn">&gt; recall</span> "sandbox rate limit"
 <span class="c-dim">&larr;</span> "&hellip;per API key, not per account. Space retries 2 s&hellip;"
   signed: <span class="c-grn">reviewer-2</span> &middot; 09:16 &middot; source: the session it was taught in &middot; provisional: no
 
 <span class="c-dim">// the audit answer, for any artifact, at any time</span>
 <span class="c-cyn">&gt; why</span> <span class="c-grn">sha256:9f2c&hellip;</span>
-<span class="c-dim">&larr;</span> admitted 09:14 &rarr; scanned, no findings &rarr; graded 0.91 by reviewer-2, <b>not the author</b>
-  &rarr; signed 09:16 &rarr; readable to your group &middot; <span class="c-dim">every step signed; the chain verifies end to end</span></code></pre>
+<span class="c-dim">&larr;</span> admitted 09:14 &rarr; scanned, no findings &rarr; trust 91/100 by reviewer-1, <b>not the author</b>
+  &rarr; APPROVE by reviewer-2 for this version and use &rarr; published to authorized readers &middot; <span class="c-dim">every step signed; the chain verifies end to end</span></code></pre>
     </div>
     <p class="micro">
       Queue inspection returns identifiers and states rather than quarantined content.
@@ -191,11 +193,10 @@
     </p>
     <div class="cards three">
       <div class="card">
-        <h3>Python, SQLite, one crypto library</h3>
-        <p>The core is standard library plus SQLite plus a signing library. No vector database to
-        operate, no message broker, no container orchestration. It runs as a sidecar on the
-        machine that already runs your agent, and grading goes through whatever inference you
-        already pay for &mdash; there is no doublegate service in the path.</p>
+        <h3>Local storage; organization authority</h3>
+        <p>The client uses Python and local SQLite storage. The organization design uses PostgreSQL
+        for authoritative decisions and Delta for rebuildable projections. Storage, reviewing
+        inference and operations have separate budgets; size them from measured workloads.</p>
         <span class="src">A deliberate dependency budget, recorded as a design decision</span>
       </div>
       <div class="card">
@@ -214,6 +215,23 @@
         <span class="src">Choose storage, inference and distribution boundaries explicitly</span>
       </div>
     </div>
+  </div>
+</section>
+
+<section id="operations" class="band">
+  <div class="wrap tight">
+    <h2>Deployment and operating controls</h2>
+    <p class="lede">Inter-deployment traffic uses authenticated HTTP only. Local tool and socket
+      adapters stay inside their deployment; they do not become synchronization channels.</p>
+    <p>The organization release separates contributor identity, team membership, ownership and
+      read grants. Credentials carry explicit scopes; rotation and revocation must preserve
+      historical signature verification. Source acquisition runs outside the reviewing gate,
+      with bounded network access and submission credentials rather than approval keys.</p>
+    <p>Plan private storage, reviewing inference, backups, restore drills and operational
+      monitoring together. Queue age, review failures, policy refusals and synchronization lag
+      show where work is waiting. Tenant isolation and recovery are deployment acceptance tests.</p>
+    <p class="micro">The release sequence below allocates these controls. Evaluate the installed
+      service against its published API and acceptance evidence before opening a shared pilot.</p>
   </div>
 </section>
 
@@ -294,6 +312,21 @@
   </div>
 </section>
 
+<section id="validation" class="band">
+  <div class="wrap tight">
+    <h2>Measure useful reuse and review quality</h2>
+    <p>Release 3 evaluates harmful admissions, useful contributions rejected, review latency
+      and cost per useful admission on a held-out corpus. Reviewer provenance records shared
+      models and evidence; joint failures measure how much a second review adds.</p>
+    <p>Release 4 adds a two-deployment trial: current-access checks, withdrawal propagation,
+      failure recovery and cross-team reuse. Compare the same tasks and review budget with
+      conventional storage and workflow. Record opportunities to reuse knowledge, actual reuse,
+      and the cost of maintaining it before estimating savings.</p>
+    <p class="micro">Benchmark targets are acceptance criteria. Measured results need a corpus,
+      denominator and uncertainty before they become deployment or business claims.</p>
+  </div>
+</section>
+
 <section id="try" class="band">
   <div class="wrap tight">
     <h2>When you can run it</h2>
@@ -304,8 +337,8 @@
     <ol class="timeline">
       <li>
         <span class="ms">R1</span><b>Ledger and quarantine, no model in the loop</b>
-        <span class="d">Append-only signed journal, two-store isolation, the frozen envelope
-        format. The part every later release depends on, and the part with no unknowns.</span>
+        <span class="d">Append-only signed journal, two-store isolation, the signed envelope
+        format. Integrity and replay checks establish the foundation for later releases.</span>
       </li>
       <li class="key">
         <span class="ms">R2</span><b>A memory provider you can point an agent at &mdash; Q2 2027</b>
@@ -315,13 +348,15 @@
       </li>
       <li>
         <span class="ms">R3</span><b>The gate itself</b>
-        <span class="d">Scanner, independent grading, signed verdicts, the local preparation
-        models. A published catch rate against a poisoning benchmark is the exit test.</span>
+        <span class="d">Scanner, an AI trust assessment from 0–100, then a distinct authorized AI or human
+        approving or rejecting the exact revision and use. Evidence and signed decisions travel
+        together. Calibration, false acceptances and false rejections are release tests.</span>
       </li>
       <li>
         <span class="ms">R4</span><b>Multi-machine, the organization gate, read scopes, erasure</b>
-        <span class="d">Journal sync, provisional promotion while a gate is unreachable, the
-        second authority, read permissions by identity and team, the erasure tooling.</span>
+        <span class="d">Authenticated HTTP synchronization, organization authority, required verified contributor
+        and team attribution, current read permissions, scoped publication and withdrawal,
+        and erasure tooling. Team moves retain original attribution; ownership transfers are recorded.</span>
       </li>
       <li>
         <span class="ms">R5</span><b>Daily-driver review loop</b>

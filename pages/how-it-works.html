@@ -4,8 +4,8 @@
     <h1>One memory's journey</h1>
     <p class="lede">
       An agent writes something down. Follow it from that moment to the point where a colleague in
-      another office can read it — and see exactly where it could have been stopped. To keep it
-      concrete, follow one real-shaped memory: <b>&ldquo;the payments sandbox rate-limits per API
+      another office can use the reviewed version. The journey below follows the planned
+      release-3 and release-4 workflow through an illustrative correction: <b>&ldquo;the payments sandbox rate-limits per API
       key, not per account — space retries 2&nbsp;s apart, not 30.&rdquo;</b>
     </p>
   </div>
@@ -15,7 +15,7 @@
   <div class="wrap">
     <div class="diagram wide">
       <img src="assets/artifact-flow.svg" width="100%"
-        alt="Five stages: an agent writes a memory; a client gate holds, scans, grades and signs it; visibility opens to the author immediately and to their group once signed; an organization gate reviews, scores, validates and records it; every other client gate picks it up pre-approved.">
+        alt="Deployment view: client and organization gates apply their own authority. Within review, an AI assesses trust from 0–100 and another authorized AI or human approves or rejects. Shared publication enforces the approved scope and current access.">
     </div>
   </div>
 </section>
@@ -23,82 +23,52 @@
 <section id="stages" class="band alt">
   <div class="wrap">
     <h2>The five stages</h2>
-    <p class="sub">What happens, and what would happen if it went wrong.</p>
-
+    <p class="sub">The release-3 review workflow, extended to shared team knowledge in release 4.</p>
     <ol class="stages">
-      <li class="stage">
-        <span class="stage-n">1</span>
-        <div>
-          <h3>An agent writes something down</h3>
-          <p>A memory, a fact it worked out, a convention you corrected it on, or a skill it just
-          installed. Any agent — Hermes, Claude Code, opencode, Codex, Copilot — because
-          doublegate sits where its memory provider normally sits. Our engineer's agent just
-          wrote down the rate-limit correction after twenty minutes of failed retries.</p>
-          <p class="stage-risk"><b>Without a gate:</b> that content is searchable the instant it
-          lands, and it shapes every future answer until somebody notices it was wrong. If the
-          agent misread the docs, the wrong retry rule is now a &ldquo;fact.&rdquo;</p>
-        </div>
-      </li>
-
-      <li class="stage">
-        <span class="stage-n">2</span>
-        <div>
-          <h3>The client gate holds it</h3>
-          <p>It goes into a separate database that your agent has no read path to. Not a flag on a
-          row — a different store. Then three things happen to it:</p>
-          <ul class="inline-list">
-            <li><b>Scanned</b> — prompt injection, credentials, executable payloads in skills</li>
-            <li><b>Graded</b> — by a reviewer running in its own process, with no tools and no
-            network, that did not write the content</li>
-            <li><b>Signed</b> — the verdict is recorded with a cryptographic signature</li>
-          </ul>
-          <p class="stage-risk"><b>If it fails:</b> it stays held, with its reasons attached. It is
-          not deleted and it is not silently dropped — it can be corrected and re-submitted.</p>
-        </div>
-      </li>
-
-      <li class="stage">
-        <span class="stage-n">3</span>
-        <div>
-          <h3>Visibility opens in two steps</h3>
-          <p>Once the security scan clears, <b>the writer can recall its own contribution</b>,
-          marked as pending review. <b>Other readers receive it after admission</b>, with
-          the signatures attached. The author can use the rate-limit correction while
-          the remaining review runs in the background.</p>
-          <p class="stage-risk"><b>Why this matters:</b> a gate that makes you wait is a gate people
-          route around. The delay only applies to other people reading your work, which is exactly
-          where the risk is.</p>
-        </div>
-      </li>
-
-      <li class="stage">
-        <span class="stage-n">4</span>
-        <div>
-          <h3>The organization gate reviews it again</h3>
-          <p>Anything heading company-wide is submitted upward in the background and reviewed
-          again on <b>its own authority</b> — a fresh judgement, not a rubber stamp of the first
-          one. It is scored, given a second signature, and the decision is recorded with who,
-          when and why.</p>
-          <p class="stage-risk"><b>This is the second gate</b>, and it is the one that makes
-          company-wide sharing defensible. One authority approving its own submissions is not
-          independent review.</p>
-        </div>
-      </li>
-
-      <li class="stage">
-        <span class="stage-n">5</span>
-        <div>
-          <h3>Every other gate picks it up</h3>
-          <p>Cleared content is distributed to every client gate in the organization — a
-          teammate's laptop, your build runner, a gate in another office. It arrives
-          <b>pre-approved</b>: their gate does not re-review what yours already proved, because
-          the signatures travel with it.</p>
-          <p class="stage-risk"><b>The compounding bit:</b> one correction, reviewed once, reaches
-          everyone. The colleague in another office never hits the twenty minutes of failed
-          retries — their agent already knows. Today that same wrong assumption gets fixed
-          separately in five hundred private agents, or not at all.</p>
-        </div>
-      </li>
+      <li class="stage"><span class="stage-n">1</span><div>
+        <h3>A contributor proposes a revision</h3>
+        <p>A correction carries its source evidence, intended use and version. Shared claims
+        identify the verified contributor and a required team, validated against membership
+        at submission. An agent retains its own workload identity.</p>
+        <p class="stage-risk"><b>Accountability:</b> later team moves preserve the original
+        attribution. Ownership transfer and access grants are separately authorized decisions.</p>
+      </div></li>
+      <li class="stage"><span class="stage-n">2</span><div>
+        <h3>The gate holds and scans it</h3>
+        <p>The proposed claim enters a separate review store. The scanner checks for credentials,
+        injection and executable content. Reviewers receive the evidence needed for their task;
+        ordinary shared retrieval uses the admitted collection.</p>
+        <p class="stage-risk"><b>Pending work:</b> a scan-cleared writer view is explicitly
+        pending review. It does not confer shared approval.</p>
+      </div></li>
+      <li class="stage"><span class="stage-n">3</span><div>
+        <h3>An AI assesses trust</h3>
+        <p>A non-author AI reviewer gives a <b>trust score from 0–100</b> using a versioned rubric.
+        Its rationale, evidence, counterevidence and reviewer provenance are bound to the exact
+        revision. The score informs review; it is neither an approval nor a probability of truth.</p>
+        <p class="stage-risk"><b>Evidence first:</b> missing support and known disagreements stay
+        visible to the next reviewer. A high score never automatically approves a claim.</p>
+      </div></li>
+      <li class="stage"><span class="stage-n">4</span><div>
+        <h3>Another AI or human decides</h3>
+        <p>A distinct verified, authorized non-author reviewer records <b>APPROVE or REJECT</b>,
+        with reasons and evidence. This stage has no numeric score. Approval means
+        <b>production-ready for the declared scope, version and use</b>, with required hard
+        checks satisfied. Execution permissions remain with the systems performing the work.</p>
+        <p class="stage-risk"><b>Human authority:</b> human review is optional under the selected
+        policy. An explicit authorized human override remains binding until an authorized human
+        releases or replaces it; ordinary human approval is a separate decision.</p>
+      </div></li>
+      <li class="stage"><span class="stage-n">5</span><div>
+        <h3>Publish for eligible use</h3>
+        <p>Publication makes the approved revision available within its permitted scope.
+        Connected deployments exchange contributions and signed outcomes over authenticated HTTP;
+        each receiving authority applies its own rules. These deployment boundaries are separate
+        from the two review stages.</p>
+        <p class="stage-risk"><b>Currentness:</b> every use checks current access, applicability,
+        expiry and authority. A challenge, withdrawal or superseding revision changes what is
+        eligible while preserving the decision history.</p>
+      </div></li>
     </ol>
   </div>
 </section>
@@ -107,14 +77,14 @@
   <div class="wrap">
     <h2>Where a claim goes, and what happens when it meets one already there</h2>
     <p class="sub">
-      The two stores are two separate databases, not two shelves of one &mdash; which is why
-      &ldquo;nothing unapproved is readable&rdquo; is a property you can check rather than a filter
-      somebody has to remember to apply. A claim that matches something already held does not
-      overwrite it: consolidation proposes a new claim and sends it back through the same gate.
+      Claims follow a development lifecycle: proposal, assessment, approval, publication and
+      ongoing maintenance. Changing the body or evidence creates a new revision and review.
+      A context change triggers policy re-evaluation; approval never silently expands to a new use.
+      Consolidation proposes a successor rather than editing an approved claim in place.
     </p>
     <div class="diagram wide">
       <img src="assets/claim-path.svg" width="100%"
-        alt="A claim arriving at the gate, and the loop that runs when it matches something already held. On the left, memory limbo: the claim is held here while it is judged, and no consumer read path reaches this store. It passes through five stages in order — ADMIT, which records the trust class and any edges to a parent; SCAN, for injection, keys and scripts; GRADE, by someone who did not write it; RATIFY, a k-of-n count with the writer's own votes discarded; and RECORD, a signed event in the ledger. Only then does a single arrow cross into active memory, the only store a query can open, and one component is its only writer. Below the pipe, one dashed return arrow shows what happens when the arriving claim matches one already held: consolidation proposes a new claim carrying edges to every parent, and that candidate takes a second trip through the same gate, graded by an identity that did not propose it. Nothing is edited in place. Four endings are possible: PROMOTED, a new claim readable once signed; MERGE ACCEPTED, with the parents superseded and kept, never deleted; MERGE REFUSED, where both parents stay live and the store stays contradictory on purpose; and REFUSED, which stays in the ledger with its reasons and is readable by nobody.">
+        alt="A claim is held, scanned, assessed, approved or rejected, and recorded. Publication opens eligible shared retrieval. Consolidation proposes a new revision for review; supersession and refusal preserve decision history.">
     </div>
   </div>
 </section>
@@ -122,13 +92,13 @@
 <section id="reads" class="band alt">
   <div class="wrap tight">
     <h2>What this costs your agent at read time</h2>
-    <p class="sub">Nothing. That is the point of checking on the way in.</p>
+    <p class="sub">Review before publication; current eligibility at retrieval.</p>
     <div class="cards two">
       <div class="card">
-        <h3>Reads are ordinary reads</h3>
-        <p>Once content is approved it sits in a normal store and is searched like any other
-        memory. There is no reviewer in the read path, no per-query approval check, no added
-        round trip. Your agent does not know a gate exists.</p>
+        <h3>Read eligible knowledge</h3>
+        <p>Retrieval ranks the claims the caller is currently entitled to use. Scope, validity
+        and authority checks also apply to direct lookups, exports and cached results. Model
+        review happens before publication; its cost is separate from these read-time checks.</p>
       </div>
       <div class="card">
         <h3>Records are never held up</h3>
@@ -139,7 +109,7 @@
     </div>
     <p class="note">
       In our own measurements an agent produced roughly ninety times more records than claims.
-      Gating everything would be unaffordable; gating only claims is cheap. Those numbers come
+      Reviewing claims separately from records concentrates the review budget. Those numbers come
       from our machines, so treat them as illustration rather than a population finding.
     </p>
   </div>
