@@ -21,6 +21,7 @@ python3 build.py --check   # fail if output is stale (CI does this)
 python3 check.py           # nineteen gate checks
 python3 sky-data.py        # regenerate assets/sky-data.js from sky-claims.txt (check.py runs --check)
 python3 api-sync.py        # refresh api/*.json from ../doublegate and ../doublegate-org (check.py runs --check)
+python3 ui-sync.py         # pin doublegate-ui's platform CSS and brand assets (check.py runs --check)
 node    svg-geometry.js    # SVG text nodes must not collide      (needs a browser)
 node    svg-bounds.js      # ...nor run outside their viewBox     (needs a browser)
 node    svg-scale.js       # ...nor scale under 10px in the page  (needs a browser)
@@ -64,8 +65,10 @@ flowchart LR
 | `svg-fit.js` | every label must fit inside the box that contains it, with 8px clear on each side |
 | `svg-clearance.js` | no stroked line may pass within 6px of any label's rendered box |
 | `check.py` 7b | a button label names its destination — it may not argue for the click, price it, or tell the reader they are wrong |
-| `assets/style.css` | one stylesheet for all eight pages |
-| `assets/logo.svg` | brand mark, themed — favicon (follows the tab strip) |
+| `assets/institutional.css` | pinned from `doublegate-ui`: tokens, mark, status, metadata, object and gate primitives |
+| `assets/style.css` | site-only editorial composition, diagrams and responsive page layout |
+| `ui-sync.py` | syncs the shared CSS and brand assets from a sibling `doublegate-ui`; the committed pin keeps standalone deployment dependency-free |
+| `assets/logo.svg` | brand mark, themed — owned by `doublegate-ui`, pinned here for the tab strip |
 | `assets/logo-dark.svg` | brand mark, forced dark — nav (site is always dark) |
 | `assets/wordmark.svg` | mark + name + tagline, for README embedding |
 | `assets/social-card.svg` | 1200×630 link-preview card (`og:image`) |

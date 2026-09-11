@@ -143,13 +143,14 @@ SHELL = """<!doctype html>
 <meta property="og:url" content="{canonical}">
 <link rel="canonical" href="{canonical}">
 <meta name="twitter:card" content="summary_large_image">
+<link rel="stylesheet" href="assets/institutional.css">
 <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
 <header class="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><img class="brand-mark" src="assets/logo-dark.svg" width="22" height="22" alt="" aria-hidden="true"> doublegate</a>
+    <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="DoubleGate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
     <nav>{nav}<a class="ghost" href="{org}">GitHub</a></nav>
   </div>
 </header>

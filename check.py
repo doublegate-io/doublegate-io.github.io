@@ -514,6 +514,9 @@ for page in pages:
 #     verbs and fields, never what a gate holds or who runs it. With the
 #     checkouts beside this one, api-sync.py --check also refuses a stale copy.
 import subprocess
+r = subprocess.run([sys.executable, str(ROOT / "ui-sync.py"), "--check"], capture_output=True, text=True)
+if r.returncode != 0:
+    fail("shared UI assets: " + (r.stdout + r.stderr).strip().replace("\n", " | ")[:400])
 r = subprocess.run([sys.executable, str(ROOT / "api-sync.py"), "--check"], capture_output=True, text=True)
 if r.returncode != 0:
     fail("api snapshot: " + (r.stdout + r.stderr).strip().replace("\n", " | ")[:400])

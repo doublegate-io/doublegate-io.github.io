@@ -61,6 +61,84 @@
       }
     },
     "schemas": {
+      "ReviewStatusItem": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "artifact_id",
+          "state",
+          "review_status",
+          "hold_reason",
+          "action_eligibility"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "L1_SCANNED",
+              "L2_SCORED",
+              "NEEDS_EVIDENCE",
+              "L1B_FLAGGED"
+            ]
+          },
+          "review_status": {
+            "type": "string",
+            "const": "awaiting_org_review"
+          },
+          "hold_reason": {
+            "type": "string",
+            "enum": [
+              "human_required",
+              "awaiting_signer",
+              "promote_refused",
+              "escalated",
+              "shared_backend",
+              "unstated"
+            ]
+          },
+          "action_eligibility": {
+            "type": "string",
+            "const": "unavailable"
+          }
+        }
+      },
+      "ReviewStatusPage": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "items",
+          "total",
+          "revision",
+          "next_cursor"
+        ],
+        "properties": {
+          "items": {
+            "type": "array",
+            "maxItems": 100,
+            "items": {
+              "$ref": "#/components/schemas/ReviewStatusItem"
+            }
+          },
+          "total": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "revision": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$"
+          },
+          "next_cursor": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "pattern": "^[0-9a-f]{64}:[1-9][0-9]{0,9}$"
+          }
+        }
+      },
       "Error": {
         "type": "object",
         "required": [
@@ -666,6 +744,14 @@
               ],
               "default": "0"
             }
+          },
+          {
+            "name": "audience",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "Apply ranks and hides for this audience. Without it, only all-audience hides affect serving."
           }
         ],
         "security": [
@@ -1421,6 +1507,656 @@
           }
         ],
         "x-scope": "any"
+      }
+    },
+    "/claims/rank": {
+      "post": {
+        "operationId": "claimsRank",
+        "tags": [
+          "operator"
+        ],
+        "summary": "Batch rank admitted claims for an audience, one signed event (ADR-0058).",
+        "responses": {
+          "200": {
+            "description": "accepted event and target set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Identity is derived from the key. All targets are checked before mutation. Rank uses a named audience; all is reserved for hide. Browser writes require same origin.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "artifact_ids",
+                  "audience",
+                  "reason",
+                  "weight"
+                ],
+                "properties": {
+                  "artifact_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "audience": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "weight": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "maximum": 10
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/claims/hide": {
+      "post": {
+        "operationId": "claimsHide",
+        "tags": [
+          "operator"
+        ],
+        "summary": "Batch hide admitted claims for an audience, one signed event (ADR-0058).",
+        "responses": {
+          "200": {
+            "description": "accepted event and target set",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Identity is derived from the key. All targets are checked before mutation. Rank uses a named audience; all is reserved for hide. Browser writes require same origin.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "artifact_ids",
+                  "audience",
+                  "reason",
+                  "lift"
+                ],
+                "properties": {
+                  "artifact_ids": {
+                    "type": "array",
+                    "minItems": 1,
+                    "items": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  },
+                  "audience": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "lift": {
+                    "type": "boolean"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/claims/ban": {
+      "post": {
+        "operationId": "claimsBan",
+        "tags": [
+          "operator"
+        ],
+        "summary": "Ban or unban future admission by writer or source prefix; existing claims are retained.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Admin scope is not operator authority. A single-use operator signature is additionally required, including in local mode.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "kind",
+                  "subject",
+                  "reason",
+                  "lift",
+                  "operator_proof"
+                ],
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "writer",
+                      "source"
+                    ]
+                  },
+                  "subject": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "lift": {
+                    "type": "boolean"
+                  },
+                  "until": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ],
+                    "description": "Expiry in epoch milliseconds"
+                  },
+                  "operator_proof": {
+                    "type": "object",
+                    "additionalProperties": false,
+                    "required": [
+                      "nonce",
+                      "sig"
+                    ],
+                    "properties": {
+                      "nonce": {
+                        "type": "string"
+                      },
+                      "sig": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/claims/challenge": {
+      "get": {
+        "operationId": "claimsChallenge",
+        "tags": [
+          "operator"
+        ],
+        "summary": "Obtain a fresh single-use nonce to sign outside the browser with the operator key.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "nonce"
+                  ],
+                  "properties": {
+                    "nonce": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/claims/bans": {
+      "get": {
+        "operationId": "claimsBans",
+        "tags": [
+          "operator"
+        ],
+        "summary": "List admission bans currently in effect.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "bans": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
+      }
+    },
+    "/claims/review-status": {
+      "get": {
+        "operationId": "claimsReviewStatus",
+        "tags": [
+          "read"
+        ],
+        "summary": "Content-free, paginated org review routing; not human assignment or action authority.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ReviewStatusPage"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "invalid query, limit, cursor or cursor position",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "routing view changed; discard pages and restart",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "no review-status provider behind this surface",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Cache-Control": {
+                "schema": {
+                  "type": "string",
+                  "const": "no-store"
+                }
+              }
+            }
+          }
+        },
+        "description": "Requires admin in key mode; local mode retains the loopback-only keyless contract. Authorization precedes query parsing. Only held_for_review submissions in a current eligible state count; org-local pending rows do not. Unknown hold reasons are unstated. Order is received_at then artifact_id. Total is the filtered routing-view count. Revision binds only this metadata view, not policy, content or authority. On 409 discard all accumulated pages and restart without a cursor. No bodies, sources, notes or evidence. Only single limit and cursor parameters are accepted; unknown or duplicate parameters fail.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 100,
+              "default": 100
+            }
+          },
+          {
+            "name": "cursor",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "pattern": "^[0-9a-f]{64}:[1-9][0-9]{0,9}$"
+            },
+            "description": "Use next_cursor from the previous page; not an authorization capability."
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-scope": "admin"
       }
     },
     "/": {

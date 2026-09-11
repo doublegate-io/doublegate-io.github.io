@@ -1,23 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 120" width="720" height="120" role="img" aria-label="doublegate — held, signed, then inherited">
-  <title>doublegate</title>
-  <desc>Two entries in a register: held, then admitted. Nothing is remembered until it passes both.</desc>
-  <style>
-    .wm { font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Inter, sans-serif; }
-    .name { font-size: 54px; font-weight: 650; letter-spacing: -1.2px; fill: #e6e9ef; }
-    .tag  { font-size: 20px; fill: #97a1b2; }
-    .rear  { stroke: #2563eb; }
-    .front { stroke: #e6e9ef; }
-    @media (prefers-color-scheme: light) {
-      .name { fill: #10131a; }
-      .tag  { fill: #55606f; }
-      .rear  { stroke: #0A1F44; }
-      .front { stroke: #2563eb; }
-    }
-  </style>
-  <g transform="translate(14 12) scale(2.0)">
-    <rect class="rear"  x="6"  y="3" width="13" height="20" rx="2" fill="none" stroke-width="2.5"/>
-    <rect class="front" x="12" y="9" width="13" height="20" rx="2" fill="none" stroke-width="2.5"/>
-  </g>
-  <text class="wm name" x="112" y="60">doublegate</text>
-  <text class="wm tag"  x="114" y="92">held, signed, then inherited</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="720" height="120" viewBox="0 0 720 120" role="img" aria-label="DoubleGate — governed organizational knowledge">
+  <rect width="720" height="120" fill="#0B0D10"/>
+  <g fill="#F2F1ED" font-family="Arial,Helvetica,sans-serif" font-size="48" font-weight="600" letter-spacing="3"><text x="24" y="68">DOUBLE</text><text x="340" y="68">GATE</text></g>
+  <path fill="#D6A84B" d="M277 25h8v56h-8zM300 25h8v56h-8z"/>
+  <text x="25" y="101" fill="#8B929C" font-family="monospace" font-size="12" letter-spacing="2">GOVERNED ORGANIZATIONAL KNOWLEDGE</text>
 </svg>

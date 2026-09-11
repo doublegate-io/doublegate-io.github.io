@@ -1,0 +1,10 @@
+{
+  "assets": {
+    "apple-touch-icon.png": "e580672c81bc2fae7bf5627999bf73f45a7fc2c4af122bfda662d8c53cf0b9c7",
+    "favicon-32.png": "6ad363fbde62be4393621cc5c4738133f5733fb89a50ada5ef19edf23714d86e",
+    "institutional.css": "f23c839aace9e12a5ffa3f4159c3170f09aba26b117ec138ac4e7ffb3bfae367",
+    "logo-dark.svg": "8f3a0bde3b1223d94521249eb1e33bc75069bb73ef3c08298c95bff12f96faa2",
+    "logo.svg": "d5a0e8d665124b50cdb2019c2f9342b21197fd7f9b83fe965d0e4464e5639f23"
+  },
+  "source": "doublegate-ui"
+}

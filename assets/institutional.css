@@ -1,0 +1,29 @@
+/* DoubleGate institutional primitives. Additive: safe beside existing console layouts. */
+:root {
+  --dg-ground:#0b0d10; --dg-paper:#f2f1ed; --dg-secondary:#8b929c;
+  --dg-amber:#d6a84b; --dg-rule:#343941; --dg-surface:#12151a;
+}
+.dg-mark {display:inline-flex;align-items:center;justify-content:center;width:1.25em;height:1.25em;color:currentColor}
+.dg-mark::before,.dg-mark::after {content:"";display:block;width:.18em;height:.88em;background:currentColor}
+.dg-mark::after {margin-left:.28em}
+.dg-wordmark {display:inline-flex;align-items:center;font:600 12px/1 var(--mono);letter-spacing:.11em;text-transform:uppercase}
+.dg-wordmark .dg-mark {color:var(--dg-amber);font-size:.9em;margin:0 .45em}
+.dg-kicker {margin:0 0 var(--space-3,12px);color:var(--dg-amber);font:600 10px/1.4 var(--mono,ui-monospace,monospace);letter-spacing:.12em;text-transform:uppercase}
+.dg-status {display:inline-block;padding:5px 7px;border:1px solid var(--dg-rule);color:var(--dg-secondary);font:650 9px/1 var(--mono,ui-monospace,monospace);letter-spacing:.08em;text-transform:uppercase;white-space:nowrap}
+.dg-status[data-state="implemented"] {color:#9bc7a7;border-color:#416249}
+.dg-status[data-state="experimental"] {color:#e1bd72;border-color:#705d31}
+.dg-status[data-state="specified"] {color:#abb8c8;border-color:#4c5968}
+.dg-metadata {display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin:0;border-top:1px solid var(--dg-rule);border-left:1px solid var(--dg-rule)}
+.dg-metadata>div {padding:var(--space-4,16px);border-right:1px solid var(--dg-rule);border-bottom:1px solid var(--dg-rule)}
+.dg-metadata dt {margin:0 0 var(--space-2,8px);color:var(--dg-secondary);font:600 10px/1.4 var(--mono,ui-monospace,monospace);letter-spacing:.1em;text-transform:uppercase}
+.dg-metadata dd {margin:0;font:500 12px/1.5 var(--mono,ui-monospace,monospace)}
+.dg-object {border:1px solid var(--dg-rule);background:var(--dg-ground)}
+.dg-object>header,.dg-object>footer {display:flex;align-items:center;justify-content:space-between;gap:var(--space-3,12px);padding:var(--space-3,12px) var(--space-4,16px);border-bottom:1px solid var(--dg-rule);font:600 10px/1.4 var(--mono,ui-monospace,monospace);letter-spacing:.1em;text-transform:uppercase}
+.dg-object>footer {border-top:1px solid var(--dg-rule);border-bottom:0;color:var(--dg-amber)}
+.dg-object-body {padding:var(--space-6,24px)}
+.dg-boundary {display:grid;grid-template-columns:36px 1fr;gap:var(--space-5,20px);align-items:center;padding:var(--space-5,20px) 0;border-top:1px solid var(--dg-rule);border-bottom:1px solid var(--dg-rule)}
+.dg-boundary-mark {display:flex;justify-content:center;gap:7px;height:72px}
+.dg-boundary-mark i {display:block;width:4px;background:var(--dg-amber)}
+.dg-boundary h2,.dg-boundary h3 {margin:0 0 var(--space-2,8px);font-weight:520}
+.dg-boundary p {margin:0;color:var(--dg-secondary)}
+@media(forced-colors:active){.dg-status,.dg-object,.dg-metadata,.dg-metadata>div,.dg-boundary{border-color:CanvasText}.dg-mark::before,.dg-mark::after,.dg-boundary-mark i{background:CanvasText}}

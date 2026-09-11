@@ -194,3 +194,17 @@ a dated one.
   consequence. Rule 1 is that correction, generalized.
 - Tone audit at time of writing: `index` clean; one `could`/`may` on five pages
   and four on `governance`, all against genuinely open questions.
+
+### 2026-09-11 — institutional infrastructure redesign
+- Reframed the homepage around organizational authority, the two-gate model and a
+  concrete governed decision object; the argument now becomes more technical as it proceeds.
+- Replaced the overlapping-frame identity with the two-boundary `┃┃` primitive across
+  the site mark, favicons, wordmark and social preview.
+- Preserved the interactive knowledge-state map below the architecture and made maturity
+  visible through implemented, experimental, specified and planned states.
+- Renamed the public evidence chapter to “Evidence behind the proposition”; the negative
+  findings chapter remains in source but is hidden from the rendered page by request.
+- Moved platform tokens, the mark, maturity states, metadata and governed-object primitives
+  behind the `doublegate-ui` contract; `ui-sync.py` pins those assets for static deployment.
+- Rebuilt the path and flow figures around Gate I admission and Gate II projection, replacing
+  the earlier multi-colour memory-provider pipeline language.

@@ -139,6 +139,57 @@
       "returns": "object: {nonce, ttl_ms}"
     },
     {
+      "name": "dg.crawler_policy",
+      "role": "both",
+      "proof": "operator_proof for issue",
+      "summary": "Issue or retrieve a source-scoped, expiring robots exception on the deployment journal. Never exposed as an MCP tool.",
+      "params": [
+        {
+          "name": "action",
+          "type": "string",
+          "required": false,
+          "description": "issue | get"
+        },
+        {
+          "name": "source",
+          "type": "string",
+          "required": false,
+          "description": "source name"
+        },
+        {
+          "name": "scope_hash",
+          "type": "string",
+          "required": false,
+          "description": "sha256 of canonical crawler source scope"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": "operator reason"
+        },
+        {
+          "name": "expires_at_ms",
+          "type": "integer",
+          "required": false,
+          "description": "expiry within 24 hours"
+        },
+        {
+          "name": "event_id",
+          "type": "string",
+          "required": false,
+          "description": "journal event id for get"
+        },
+        {
+          "name": "operator_proof",
+          "type": "object",
+          "required": false,
+          "description": ""
+        }
+      ],
+      "returns": "object: signed policy event"
+    },
+    {
       "name": "dg.defer",
       "role": "both",
       "proof": "none",
