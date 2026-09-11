@@ -52,10 +52,10 @@ FIRST_RELEASE = "Q2 2027"
 
 TITLES = {
     "index.html": (
-        "doublegate — your organization's AI knowledge, reviewed and shared",
-        "Memory and knowledge-sharing software for AI agents. "
+        "doublegate — governed organizational knowledge",
+        "Turn agent corrections into governed organizational knowledge. "
         "Review contributions, record signed decisions and share approved knowledge "
-        "across connected teams on your infrastructure.",
+        "across teams with explicit access and authority. Planned deployment options and release milestones.",
     ),
     "how-it-works.html": (
         "How doublegate works — one memory's journey",
@@ -64,7 +64,7 @@ TITLES = {
         "can read it.",
     ),
     "for-organizations.html": (
-        "For organizations — stop paying for the same lesson twice",
+        "For organizations — evaluate governed team knowledge",
         "Retain corrections, conventions and skills across your teams. "
         "Explore doublegate's deployment model, review controls and business case "
         "for shared agent knowledge.",
@@ -170,6 +170,7 @@ SHELL = """<!doctype html>
       <a href="for-organizations.html">For organizations</a>
       <a href="for-engineers.html">For engineers</a>
       <a href="governance.html">Governance</a>
+      <a href="commons.html">Commons</a>
       <a href="evidence.html">Evidence</a>
       <a href="{org}">GitHub</a>
       <a href="{contact}">Ask a question</a>

@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>For organizations — stop paying for the same lesson twice</title>
+<title>For organizations — evaluate governed team knowledge</title>
 <meta name="description" content="Retain corrections, conventions and skills across your teams. Explore doublegate's deployment model, review controls and business case for shared agent knowledge.">
-<meta property="og:title" content="For organizations — stop paying for the same lesson twice">
+<meta property="og:title" content="For organizations — evaluate governed team knowledge">
 <meta property="og:description" content="Retain corrections, conventions and skills across your teams. Explore doublegate's deployment model, review controls and business case for shared agent knowledge.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
@@ -29,22 +29,25 @@
 <section id="top">
   <div class="wrap hero narrow">
     <p class="eyebrow">For organizations</p>
-    <h1>You are buying the learning curve<br><span class="grad">once per employee</span></h1>
-    <p class="lede">
-      Your engineers teach their agents every day — a corrected assumption, a convention that only
-      exists in someone's head, a hard-won workaround. All of it lands in one person's private
-      store. Without a shared review and distribution path, the next person has to teach
-      the same lesson again.
-    </p>
+    <h1>Make reviewed knowledge<br><span class="grad">a team asset</span></h1>
+    <p class="lede">Give one team a governed path from agent corrections to reusable knowledge, instead of relying on private agent histories. Your organization defines the criteria, ownership and access; approved revisions retain their evidence and attribution.</p>
+    <p class="micro">Planned shared-team controls arrive in release 4. Review consumes inference and operating effort; evaluate the result against your existing workflow.</p>
   </div>
 </section>
 
 <section id="accountability" class="band alt">
   <div class="wrap tight">
-    <h2>Knowledge with an accountable owner<a class="h-anchor" href="#accountability" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>A claim can be approved, revised or withdrawn<a class="h-anchor" href="#accountability" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">The shared-team release pairs every claim with a verified contributor and
       a required team at submission. Teams follow the knowledge they maintain; contributors
       retain attribution as people and responsibilities move.</p>
+    <ol>
+      <li><b>Submit:</b> a payments engineer proposes “retry with the original idempotency key” for one service’s timeout-retry procedure, citing an incident review. This is an illustrative scoped convention.</li>
+      <li><b>Assess:</b> stage 1 AI assesses trust from 0–100 using authorized instructions and the revision’s evidence. This assessment is not an approval vote.</li>
+      <li><b>Decide:</b> stage 2 is a distinct authorized AI or human, separate from both author and stage-1 reviewer, issuing APPROVE or REJECT with reasons, not another score.</li>
+      <li><b>Revise or withdraw:</b> a later incident changes the rule. A new revision carries the new evidence and contributor attribution through review; approval can supersede the old revision. Withdrawal ends eligible use while preserving its decision and reason. Rejection leaves the proposal outside eligible knowledge.</li>
+    </ol>
+    <p class="micro">Two-stage review and withdrawal are planned for release 3; shared team attribution and publication for release 4. These are release plans, not a claim that the workflow is available today.</p>
     <p>Approval covers a declared version, scope and use. A correction starts a new review;
       withdrawal ends eligible use and retains the reason. Team and contributor views follow
       the reader's access grants, including the counts and relationships they show.</p>
@@ -55,39 +58,32 @@
 
 <section id="offering" class="band">
   <div class="wrap">
-    <h2>What you deploy and what you control<a class="h-anchor" href="#offering" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="sub">A knowledge store, your review rules and a distribution path between teams.</p>
-    <div class="cards three">
-      <div class="card">
-        <span class="card-ico audit">⎔</span>
-        <h3>Software on your infrastructure</h3>
-        <p>Software that runs on your infrastructure &mdash; your laptops, your runner,
-        your cloud. The organization gate is private and proprietary. You control storage,
-        export and backup under your access policy. Optional Commons publication requires
-        explicit nomination, publishing rights and privacy checks.</p>
-      </div>
-      <div class="card">
-        <span class="card-ico check">⊘</span>
-        <h3>A review your team controls</h3>
-        <p>Checking runs on the inference you already pay for, under rules you set. Reviewers are
-        never the author &mdash; enforced by the architecture, not by policy. Knowledge arriving
-        from outside your company retains its foreign-source classification through review.
-        When a company-wide rule changes, distribute it to connected teams;
-        each receiving authority applies its own policy and current applicability checks.</p>
-      </div>
-      <div class="card">
-        <span class="card-ico share">◈</span>
-        <h3>Scopes that match how you grow</h3>
-        <p>One engineer runs it free, forever. A team shares one gate's reviewed store. The company
-        adds a second authority when knowledge crosses departments. Wider sharing adds
-        explicit identity, storage and admission requirements; plan the transition for your deployment.</p>
-      </div>
+    <h2>Choose who operates the gate<a class="h-anchor" href="#offering" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <p class="sub">Proposed deployment options, not a live hosted service. The organization gate is private and proprietary.</p>
+    <div class="cards two">
+      <div class="card"><h3>Customer-controlled</h3><p>Your team runs infrastructure, backup and recovery, and upgrades. You own policy, identity and access, inference selection and its costs.</p></div>
+      <div class="card"><h3>Proposed managed offering</h3><p>The proposed provider role is infrastructure, recovery and service upgrades. Your organization retains policy, identity and access decisions, and inference and data-egress choices. Confirm operational boundaries and costs before adoption.</p></div>
     </div>
-    <p class="micro">
-      Deployment in one line: <b>free for solo use, per-contributor for teams, annual by size for
-      the organization scope</b> &mdash; each including the one below it, self-hosted or managed.
-      First release Q2 2027; <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">talk to us</a>
-      about where a gate fits before then.
+    <p class="micro">Review adds inference cost, latency and maintenance work. Assess sensitive-data handling, retention and erasure, including backups and downstream copies. Availability and service terms remain to be agreed; no certification or SLA is promised. <a href="governance.html">Governance and privacy requirements</a> · <a href="for-engineers.html">Costs and limitations</a>.</p>
+  </div>
+</section>
+
+<section id="honest" class="band alt">
+  <div class="wrap tight">
+    <h2>Start with one team and a repeatable evaluation<a class="h-anchor" href="#honest" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <p class="lede">
+      Choose repeatable engineering tasks and compare independently verified task success, total cost and maintenance effort with your existing workflow. Include failed and unfinished tasks, reviewer assistance and preparation work. Expand only after the evidence supports it, with explicit authority, access grants and receiving-team review rules.
+    </p>
+    <p>Budget for inference, integration, policy upkeep, access administration, upgrades and recovery. Define success and stopping criteria before starting; retaining your existing workflow is a valid result.</p>
+    <p class="note">
+      Operational evaluation begins with release 4: time to a first independently verified
+      role-relevant task and cost per correction, compared with similar participants and tasks
+      using the same tools and source access, with and without reviewed shared knowledge.
+      Correctness, assistance, failures and preparation effort accompany elapsed time.
+      Published results carry the method, sample, uncertainty and deployment conditions;
+      their timing depends on the evidence collected, rather than the release date.
+      <a href="evidence.html#refuse">Read the measurement plan</a>, including the separate
+      evaluations of review quality and lifecycle controls.
     </p>
   </div>
 </section>
@@ -159,6 +155,7 @@
        900px a 1040px figure scales to 0.78 and its smallest label renders at 9.0px,
        under the 10px floor the diagram CSS commits to. Measured, not guessed. -->
   <div class="wrap">
+    <p class="micro">Illustrative comparison, not a measured saving or automatic company-wide distribution. Reuse requires current scope, access and receiving-authority approval.</p>
     <div class="diagram wide">
       <img src="assets/cost-flow.svg" width="100%"
         alt="The same correction, twice over. Above, per-seat AI today: one engineer corrects their agent, the fix stays in that one agent, and four colleagues hit the same wrong assumption and each pay to correct it separately — five payments for one lesson, with no record of who decided any of it. Below, with a shared gate: the same correction is reviewed once by someone who did not write it, signed, and then every agent inherits it already vouched for, including a joiner who starts next month, with one signed record of who approved it and when. Same people, same correction; the difference is whether the company keeps what it paid for.">
@@ -166,49 +163,10 @@
   </div>
 </section>
 
-<section id="changes" class="band alt">
-  <div class="wrap">
-    <h2>What changes<a class="h-anchor" href="#changes" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="sub">Four uses for a knowledge base that grows across teams.</p>
-    <div class="cards four">
-      <div class="card">
-        <span class="card-ico share">◈</span>
-        <h3>New hires start paired, not blank</h3>
-        <p>A joiner's agent arrives already holding the reviewed conventions, patterns and
-        corrections your team accumulated — signed, sourced and current. They inherit the last two
-        years instead of rediscovering it.</p>
-      </div>
-      <div class="card">
-        <span class="card-ico held">◫</span>
-        <h3>Knowledge stops leaving with people</h3>
-        <p>What a senior engineer taught their agent over eighteen months is normally lost on
-        their last day. Once reviewed it belongs to the organization — still attributed, still
-        auditable, no longer dependent on them.</p>
-      </div>
-      <div class="card">
-        <span class="card-ico check">⊘</span>
-        <h3>One correction, everyone benefits</h3>
-        <p>Today the same wrong assumption gets corrected separately in five hundred private
-        agents. Complete its review and distribute it to connected teams for their own admission — the fix compounds instead of repeating.</p>
-      </div>
-      <div class="card">
-        <span class="card-ico audit">⎔</span>
-        <h3>An answer for "why does it believe that?"</h3>
-        <p>Every belief resolves to a signed record: who vouched for it, when, and on what
-        evidence. Exportable, so a regulator or an internal audit can verify the chain without
-        going through you.</p>
-      </div>
-    </div>
-    <p class="micro">
-      That signed record is not an abstraction &mdash; it is a concrete artifact, field by field.
-      <a href="governance.html#four">See exactly what an auditor receives &rarr;</a>
-    </p>
-  </div>
-</section>
-
 <section id="distribution" class="band">
   <div class="wrap tight">
     <h2>Getting the knowledge to the agents that need it<a class="h-anchor" href="#distribution" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <p class="micro">Planned shared distribution and access controls: release 4. Skill revision proposals: release 5.</p>
     <p class="lede">
       Review establishes what each team admits. Distribution carries that knowledge —
       and it works in both directions: out to every team, and in from the collections your
@@ -259,27 +217,11 @@
   </div>
 </section>
 
-<section id="honest" class="band alt">
-  <div class="wrap tight">
-    <h2>One person's lesson becomes the whole company's<a class="h-anchor" href="#honest" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="lede">
-      Reviewed knowledge that today reaches one engineer reaches the team and the organization, and
-      every approval carries a signature you can check back to whoever made it.
-    </p>
-    <p class="note">
-      Redistribution and provenance are properties of the architecture, verifiable from the first
-      write. The productivity numbers &mdash; onboarding time, cost per correction &mdash; come from
-      the first deployments; we publish measured figures, not projected ones, and the measurement
-      plan is on the evidence page.
-    </p>
-  </div>
-</section>
-
 <section id="next" class="band">
   <div class="wrap tight center">
     <h2>Next<a class="h-anchor" href="#next" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <div class="cta-row center">
-      <a class="btn primary" href="how-it-works.html">How a memory gets reviewed</a>
+      <a class="btn primary" href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">Discuss your deployment</a>
       <a class="btn" href="evidence.html">Check every source</a>
     </div>
   </div>
@@ -299,6 +241,7 @@
       <a href="for-organizations.html">For organizations</a>
       <a href="for-engineers.html">For engineers</a>
       <a href="governance.html">Governance</a>
+      <a href="commons.html">Commons</a>
       <a href="evidence.html">Evidence</a>
       <a href="https://github.com/doublegate-io">GitHub</a>
       <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>

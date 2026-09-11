@@ -22,7 +22,7 @@ Rendered from the code that serves it and checked against it in the code reposit
 
 ## Pages
 
-- [Overview](https://doublegate-io.github.io/): Memory and knowledge-sharing software for AI agents. Review contributions, record signed decisions and share approved knowledge across connected teams on your infrastructure.
+- [Overview](https://doublegate-io.github.io/): Turn agent corrections into governed organizational knowledge. Review contributions, record signed decisions and share approved knowledge across teams with explicit access and authority. Planned deployment options and release milestones.
 - [How it works](https://doublegate-io.github.io/how-it-works.html): Follow a single memory from the moment an agent writes it, through holding, scanning, independent review and signing, to the point every other machine can read it.
 - [For organizations](https://doublegate-io.github.io/for-organizations.html): Retain corrections, conventions and skills across your teams. Explore doublegate's deployment model, review controls and business case for shared agent knowledge.
 - [For engineers](https://doublegate-io.github.io/for-engineers.html): doublegate replaces your memory provider. Reads enforce current eligibility; checking happens on the way in. Latency, token cost, the four tools your agent gains, the API published as data for the agent doing the wiring, and the release roadmap.

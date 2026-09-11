@@ -176,28 +176,51 @@
 
 <section id="refuse" class="band">
   <div class="wrap tight">
-    <h2>Numbers we publish once we have measured them<a class="h-anchor" href="#refuse" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>Measuring operational impact<a class="h-anchor" href="#refuse" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
-      Four figures the category usually quotes from vendor blogs. Each has a measurement attached
-      and a release it lands with, and until then it is not on this site.
+      Deployment evaluation begins with release 4. It tests whether reviewed shared knowledge
+      improves task outcomes and what it costs to prepare, review and maintain.
+      Results are published with their method, sample, uncertainty and deployment conditions
+      once the evidence supports them; the release itself is not a publication deadline.
     </p>
     <div class="anti">
       <ul>
-        <li><b>Onboarding time.</b> Measured on the first organization deployments: time to a new
-        joiner's first productive agent session, with and without an inherited store. Published
-        with release 4, the multi-machine release.</li>
-        <li><b>Cost per correction.</b> What one reviewed correction costs against fixing the same
-        wrong assumption separately in every private agent. Measured on the same deployments,
-        published with release 4.</li>
-        <li><b>Gate accuracy.</b> A labelled false-positive and false-negative set, run against a
-        published poisoning benchmark, is the exit test for release 3. The catch rate and the
-        false-alarm rate ship together, because one without the other is marketing.</li>
-        <li><b>Erasure.</b> Decisions stay signed; the erased content becomes unreadable because its
-        keys are destroyed, and the erasure itself is a recorded event. The schema carries the keys
-        from release 1 and the tooling lands in release 4 &mdash; the compliance claim is made when
-        an erasure request has been satisfied end to end, not before.</li>
+        <li><b>Time to first independently verified role-relevant task.</b> Compare similar
+        participants completing comparable tasks, using the same tools and source access,
+        with and without reviewed shared knowledge. Define completion criteria before the trial
+        and have an independent evaluator verify the result. This measures a specific task
+        outcome, rather than the whole process of human onboarding.</li>
+        <li><b>Correctness and effort.</b> Report task correctness, assistance required, failed
+        attempts and unfinished tasks alongside elapsed time. Account for the effort to prepare
+        the shared knowledge, review it and keep it current.</li>
+        <li><b>Cost per correction.</b> Compare reviewing and distributing one correction with
+        correcting the same wrong assumption separately under comparable conditions. Include
+        preparation, review, distribution and maintenance effort, and verify that the correction
+        is used correctly before counting a saving.</li>
       </ul>
     </div>
+    <h3>Review quality at each stage</h3>
+    <p>Release 3 has a quality-evaluation gate using labelled, held-out representative and
+      adversarial cases, including a published poisoning benchmark. Stage 1 evaluates the
+      quality of the AI's 0–100 rubric assessment against the evidence and reference labels.
+      The score expresses rubric assessment, not a probability of correctness; a probability
+      interpretation requires separate calibration evidence.</p>
+    <p>Stage 2 evaluates the distinct authorized reviewer's APPROVE or REJECT decision.
+      Report false approvals over all cases labelled for rejection, and false rejections over
+      all cases labelled for approval, with counts, sample composition and uncertainty for each.
+      Record shared model and evidence dependencies and joint failures across the stages.
+      The release gate evaluates these results against declared acceptance criteria;
+      the assessment score does not automatically approve a contribution.</p>
+    <h3>Lifecycle control verification</h3>
+    <p>Erasure is a separate control evaluation, with tooling planned for release 4.
+      Define the supported boundary and verify what happens to content in active stores,
+      caches, exports, backups and downstream copies. Record the action and its evidence,
+      including residual copies, retention conditions and limits to verification.</p>
+    <p>Crypto-erasure applies only to encrypted copies whose keys remain under the deployment's
+      custody, including recoverable key copies. Signed decision history and a recorded erasure
+      action support inspection. Copies outside that control require their own handling;
+      destroying a key cannot establish their removal. Compliance depends on the applicable
+      obligations and the complete handling of the request, beyond a successful control test.</p>
     <p class="note">
       The rule we work to: if a claim reads like a snapshot of one machine, it is an anecdote and
       it gets labelled as one. Our own measurements — including the ratio of records to claims
@@ -237,6 +260,7 @@
       <a href="for-organizations.html">For organizations</a>
       <a href="for-engineers.html">For engineers</a>
       <a href="governance.html">Governance</a>
+      <a href="commons.html">Commons</a>
       <a href="evidence.html">Evidence</a>
       <a href="https://github.com/doublegate-io">GitHub</a>
       <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>

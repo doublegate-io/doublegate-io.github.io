@@ -3,35 +3,33 @@
   <div class="wrap hero overview-hero">
     <div class="overview-intro">
     <p class="eyebrow">First release Q2 2027</p>
-    <h1>Keep what your people teach their AI agents.</h1>
+    <h1>Turn agent corrections into governed organizational knowledge.</h1>
     <p class="lede">
-      Turn corrections, conventions and skills into knowledge the company can keep and reuse.
+      Teams define the criteria for reuse instead of repeating corrections in private agent histories.
     </p>
     <p class="lede strong">
-      doublegate is memory and knowledge-sharing software for AI agents.
-      Reviewed contributions. Signed decisions. Knowledge shared across connected teams.
+      Each approved revision carries evidence, attribution and a declared scope of use.
     </p>
     <div class="cta-row">
-      <a class="btn primary" href="for-organizations.html">The business case</a>
-      <a class="btn" href="how-it-works.html">See how it works</a>
+      <a class="btn primary" href="for-organizations.html">Organizational deployment</a>
+      <a class="btn" href="for-engineers.html">Individual use</a>
     </div>
-    <p class="micro">Run it on your infrastructure, with your reviewing models and rules.
-      Solo use is free. <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">Discuss a team deployment</a>.</p>
+    <p class="micro">Planned software for team-controlled knowledge. Review adds inference cost and publication time. <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">Discuss a team deployment</a>.</p>
     </div>
     <figure class="contribution-story" aria-labelledby="story-caption">
-      <figcaption id="story-caption">One correction. Useful to the next team.</figcaption>
+      <figcaption id="story-caption">One scoped claim, through review and change.</figcaption>
       <ol class="contribution-steps">
         <li><span class="story-stage">A team teaches its agent</span>
           <blockquote>“Retry a payment with the original idempotency key.”</blockquote>
-          <p>A company convention, captured with its source.</p></li>
+          <p>Payments team · retry policy v1 · source: an incident review. An illustrative claim, not general payment advice.</p></li>
         <li><span class="story-stage">Two reviews establish approval</span>
-          <p>An AI scores trust; another AI or human approves or rejects, with reasons and signatures.</p>
+          <p>Stage 1: AI assesses trust from 0–100 against authorized instructions. Stage 2: a distinct authorized AI or human approves or rejects; the score is evidence, not approval.</p>
           <span class="story-result">Approved for a declared use</span></li>
-        <li><span class="story-stage">Another team receives it</span>
-          <p>Its gate reviews the contribution under its own rules before agents use it.</p>
-          <span class="story-result">Knowledge the next team can inherit</span></li>
+        <li><span class="story-stage">Evidence changes the claim</span>
+          <p>A new incident prompts v2 with new evidence and contributor attribution. Review can supersede v1; withdrawal ends eligible use and retains the reason.</p>
+          <span class="story-result">Reuse requires current access and applicability</span></li>
       </ol>
-      <p class="story-note">Illustrative contribution and review sequence.</p>
+      <p class="story-note">Planned: release 3 two-stage review and withdrawal; release 4 team attribution and shared publication. Receiving teams apply their own rules.</p>
     </figure>
   </div>
 </section>
@@ -91,6 +89,48 @@
   </div>
 </section>
 
+<section id="responsibilities" class="band">
+  <div class="wrap">
+    <h2>Choose who operates the gate</h2>
+    <p class="sub">Proposed deployment options, not a live hosted service. The organization gate is private and proprietary.</p>
+    <div class="cards two">
+      <div class="card"><h3>Customer-controlled</h3><p>Your team runs infrastructure, backup and recovery, and upgrades. You own policy, identity and access, inference selection and its costs.</p></div>
+      <div class="card"><h3>Proposed managed offering</h3><p>The proposed provider role is infrastructure, recovery and service upgrades. Your organization retains policy, identity and access decisions, and inference and data-egress choices. Confirm operational boundaries and costs before adoption.</p></div>
+    </div>
+    <p class="micro">Review adds inference cost, latency and maintenance work. Assess sensitive-data handling, retention and erasure, including backups and downstream copies. Availability and service terms remain to be agreed; no certification or SLA is promised. <a href="for-organizations.html#offering">Deployment responsibilities</a> · <a href="for-engineers.html">Costs and limitations</a>.</p>
+  </div>
+</section>
+
+<section id="fit" class="band alt">
+  <div class="wrap">
+    <h2>Start with the knowledge your teams repeat</h2>
+    <p class="sub">
+      Evaluate one team’s repeatable engineering tasks against its existing workflow: independently verified task success, total cost and maintenance effort.
+    </p>
+    <div class="overview-fit">
+      <details>
+        <summary>Many teams, many agents</summary>
+        <p>Platform conventions, payments workarounds and on-call fixes belong in the agents
+        doing that work. Give teams a reviewed path to share them.</p>
+      </details>
+      <details>
+        <summary>Knowledge that must be defensible</summary>
+        <p>When an agent uses a company rule, trace that rule to its source and approval.
+        Give security and audit teams a decision record they can inspect.</p>
+      </details>
+      <details>
+        <summary>Systems that already know things</summary>
+        <p>Bring knowledge from your platforms, warehouses and ticketing systems through
+        the same review path as contributions from your agents.</p>
+      </details>
+    </div>
+    <p class="micro">
+      Expand only with explicit authority, access grants and receiving-team review rules.
+      <a href="for-organizations.html">The business case &rarr;</a>
+    </p>
+  </div>
+</section>
+
 <section id="what" class="band">
   <div class="wrap">
     <h2>What you get</h2>
@@ -129,36 +169,6 @@
   </div>
 </section>
 
-<section id="fit" class="band alt">
-  <div class="wrap">
-    <h2>Start with the knowledge your teams repeat</h2>
-    <p class="sub">
-      Start where repeated corrections and cross-team handovers already cost your people time.
-    </p>
-    <div class="overview-fit">
-      <details>
-        <summary>Many teams, many agents</summary>
-        <p>Platform conventions, payments workarounds and on-call fixes belong in the agents
-        doing that work. Give teams a reviewed path to share them.</p>
-      </details>
-      <details>
-        <summary>Knowledge that must be defensible</summary>
-        <p>When an agent uses a company rule, trace that rule to its source and approval.
-        Give security and audit teams a decision record they can inspect.</p>
-      </details>
-      <details>
-        <summary>Systems that already know things</summary>
-        <p>Bring knowledge from your platforms, warehouses and ticketing systems through
-        the same review path as contributions from your agents.</p>
-      </details>
-    </div>
-    <p class="micro">
-      Begin with one team's conventions. Connect another team when its review rules are ready.
-      <a href="for-organizations.html">The business case &rarr;</a>
-    </p>
-  </div>
-</section>
-
 <section id="routes" class="band">
   <div class="wrap">
     <h2>Where to go next</h2>
@@ -193,52 +203,11 @@
   </div>
 </section>
 
-<section id="commons" class="band alt">
+<section id="proof" class="band alt">
   <div class="wrap tight">
-    <h2>Share beyond your organization</h2>
-    <p class="lede">
-      The public commons extends the same review process to knowledge organizations choose
-      to publish. Contributions retain attribution; published verdicts include refusals and reasons.
-    </p>
-    <p class="sub">
-      Free to read and optional to contribute. Your own gate reviews incoming knowledge
-      before admitting it to your store.
-    </p>
-    <div class="cta-row">
-      <a class="btn primary" href="commons.html">How the commons works</a>
-      <a class="btn" href="governance.html">What an auditor receives</a>
-    </div>
-  </div>
-</section>
-
-<section id="proof" class="band">
-  <div class="wrap tight">
-    <h2>The evidence behind the approach</h2>
-    <div class="overview-evidence">
-      <details>
-        <summary>3,984 public skills <span>Snyk's security survey</span></summary>
-        <p>In Snyk's survey, <b>36.8% carried a security flaw, 13.4% a critical one.</b>
-        A reason to review third-party skills before distribution.</p>
-        <a class="src" href="https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/">Snyk, ToxicSkills</a>
-      </details>
-      <details>
-        <summary>66 firms, 7,137 workers <span>Individual AI access, measured</span></summary>
-        <p>In the second half of a six-month experiment, active users saved two hours on email
-        per week. Researchers detected <b>no shift in task quantity or composition</b>.
-        The study evaluated individual AI access, not shared agent memory.</p>
-        <a class="src" href="https://www.aeaweb.org/articles?id=10.1257/aeri.20250275">Dillon, Jaffe, Immorlica &amp; Stanton, AER: Insights</a>
-      </details>
-      <details>
-        <summary>Meta's institutional memory <span>Expert corrections put to work</span></summary>
-        <p>Meta describes turning expert corrections into reviewed knowledge updates,
-        with adversarial review, regression tests and human sign-off.
-        An independently built example of the approach.</p>
-        <a class="src" href="https://engineering.fb.com/2026/09/02/ml-applications/organizational-second-brain-ai-learns-from-experts/">Meta Engineering, Sep 2026</a>
-      </details>
-    </div>
-    <p class="micro">
-      <a href="evidence.html">All findings, with sources →</a>
-    </p>
+    <h2>Release plans and evidence</h2>
+    <p>First release Q2 2027. The lifecycle above describes planned mechanisms: release 3 adds two-stage review and withdrawal; release 4 adds shared team controls. Business impact remains to be measured in deployment.</p>
+    <p><a href="for-engineers.html#try">Release sequence and exit criteria</a> · <a href="evidence.html">Research findings, primary sources and limitations</a> · <a href="evidence.html#refuse">Operational measurement plan</a>.</p>
   </div>
 </section>
 

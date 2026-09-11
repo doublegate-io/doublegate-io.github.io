@@ -26,10 +26,14 @@ const puppeteer = require('puppeteer-core');
       assert(await page.$eval('.overview-fit details', details => details.open));
       await page.keyboard.press('Enter');
       assert(!(await page.$eval('.overview-fit details', details => details.open)));
-      for (const item of await page.$$('.overview-evidence summary')) {
-        await item.click();
+      assert(await page.$('#proof a[href="evidence.html"]'), 'research route missing');
+      const evidence = await browser.newPage();
+      await evidence.setViewport({ width, height: 844 });
+      await evidence.goto(pathToFileURL(path.join(__dirname, 'evidence.html')).href);
+      for (const source of ['snyk.io/blog/toxicskills', 'aeaweb.org/articles', 'engineering.fb.com/2026/09/02']) {
+        assert(await evidence.$$eval('a[href]', (links, source) => links.some(a => a.href.includes(source)), source), `missing research source ${source}`);
       }
-      assert(await page.$$eval('.overview-evidence details', items => items.every(item => item.open && item.querySelector('a[href^="https:"]'))));
+      await evidence.close();
       await page.locator('#skymap').scroll();
       await page.waitForSelector('.sky-inspect', { timeout: 20000 });
       const button = await page.$('.sky-inspect');
@@ -48,8 +52,9 @@ const puppeteer = require('puppeteer-core');
     assert.equal(await page.$eval('#sky-pause', button => button.getAttribute('aria-pressed')), 'true');
     await page.setJavaScriptEnabled(false);
     await page.reload();
-    await page.click('.overview-evidence summary');
-    assert(await page.$eval('.overview-evidence details', node => node.open), 'evidence needs JavaScript');
+    await page.click('.overview-fit summary');
+    assert(await page.$eval('.overview-fit details', node => node.open), 'disclosure needs JavaScript');
+    assert(await page.$('#proof a[href="evidence.html"]'), 'evidence route needs JavaScript');
     assert(await page.$eval('.sky-still', image => image.complete && image.naturalWidth > 0));
     assert.deepEqual(errors, []);
     console.log('PASS — homepage at four widths: overflow, opening actions, keyboard disclosure/selection, focus, citations, reduced motion and no-JS fallback.');
