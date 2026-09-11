@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>How doublegate works — one memory's journey</title>
-<meta name="description" content="Follow a single memory from the moment an agent writes it, through holding, scanning, independent review and signing, to the point every other machine can read it.">
-<meta property="og:title" content="How doublegate works — one memory's journey">
-<meta property="og:description" content="Follow a single memory from the moment an agent writes it, through holding, scanning, independent review and signing, to the point every other machine can read it.">
+<title>How doublegate works — a correction becomes shared knowledge</title>
+<meta name="description" content="Follow a proposed correction through evidence, assessment, an authorized decision and eligible shared use. An illustration of the planned review and publication lifecycle.">
+<meta property="og:title" content="How doublegate works — a correction becomes shared knowledge">
+<meta property="og:description" content="Follow a proposed correction through evidence, assessment, an authorized decision and eligible shared use. An illustration of the planned review and publication lifecycle.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -23,29 +23,27 @@
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="DoubleGate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
-    <nav><a href="how-it-works.html" class="here">How it works</a><a href="for-organizations.html">For organizations</a><a href="for-engineers.html">For engineers</a><a href="governance.html">Governance</a><a href="commons.html">Commons</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav>
+    <nav class="desktop-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="for-business.html">For business</a><a href="for-engineers.html">For engineers</a><a href="how-it-works.html" class="here" aria-current="page">How it works</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav>
+    <details class="mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation"><a href="index.html">Home</a><a href="for-business.html">For business</a><a href="for-engineers.html">For engineers</a><a href="how-it-works.html" class="here" aria-current="page">How it works</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav></details>
   </div>
 </header>
 
-<section id="top">
-  <div class="wrap hero narrow">
-    <p class="eyebrow">How it works</p>
-    <h1>One memory's journey</h1>
-    <p class="lede">
-      An agent writes something down. Follow it from that moment to the point where a colleague in
-      another office can use the reviewed version. The journey below follows the planned
-      release-3 and release-4 workflow through an illustrative correction: <b>&ldquo;the payments sandbox rate-limits per API
-      key, not per account — space retries 2&nbsp;s apart, not 30.&rdquo;</b>
-    </p>
+
+<main class="audience-page"><section id="top" class="page-hero">
+  <div class="wrap">
+    <p class="page-context">How it works</p>
+    <div class="page-hero-grid">
+      <div class="page-hero-title"><h1>A correction becomes shared knowledge.</h1></div>
+      <div class="page-hero-complement"><p class="hero-proposition">One revision. Evidence, a decision and a permitted use.</p><p>Follow an illustrative correction: the payments sandbox rate-limits per API key, not per account. Each stage below changes what others may do with that revision.</p><a href="#diagram">Follow the review lifecycle</a></div>
+    </div>
+    <p class="availability">The journey illustrates the planned release-3 review and release-4 sharing workflow.</p>
   </div>
 </section>
 
+
 <section id="diagram" class="band">
   <div class="wrap">
-    <div class="diagram wide">
-      <img src="assets/artifact-flow.svg" width="100%"
-        alt="Deployment view: client and organization gates apply their own authority. Within review, an AI assesses trust from 0–100 and another authorized AI or human approves or rejects. Shared publication enforces the approved scope and current access.">
-    </div>
+<figure class="architecture connected-route native-flow" aria-labelledby="review-flow-caption"><figcaption id="review-flow-caption">Review before shared publication. These are lifecycle stages, not deployment boundaries. Planned for releases 3 and 4.</figcaption><ol class="authority-route flow-route"><li class="flow-step"><small>Propose</small><h3>Hold and scan</h3><p>Keep the exact revision, evidence and intended use in review; scan before review access.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Stage 1</small><h3>AI assessment</h3><p>A non-author AI gives a trust assessment from 0–100 with reasons and counterevidence.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Stage 2</small><h3>Authorized decision</h3><p>Another authorized AI or human records APPROVE or REJECT, without a second score.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Publish</small><h3>Apply local authority</h3><p>Approval permits publication within scope. Receiving deployments apply their own rules.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Maintain</small><h3>Check eligible use</h3><p>Current access, expiry and applicability govern use. Withdrawal preserves the decision history.</p></li></ol></figure>
   </div>
 </section>
 
@@ -149,30 +147,30 @@
     <h2>Next<a class="h-anchor" href="#next" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <div class="cta-row center">
       <a class="btn primary" href="for-engineers.html">What it costs to run</a>
-      <a class="btn" href="for-organizations.html">The business case</a>
+      <a class="btn" href="for-business.html">The business case</a>
     </div>
   </div>
-</section>
+</section></main>
 
 <footer>
   <div class="wrap foot">
     <div>
-      <b>doublegate</b> · first release Q2 2027 · every claim traces to cited research
+      <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · research and evaluation sources
       <p class="dim">Solo use is free and stays that way. The organization gate is private and proprietary.
       <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
-      "you got this wrong". Ask about deployment or pricing at
-      <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">eugene.korniichuk@gmail.com</a>.</p>
+      "you got this wrong".</p>
     </div>
     <div class="foot-links">
       <a href="how-it-works.html">How it works</a>
-      <a href="for-organizations.html">For organizations</a>
+      <a href="for-business.html">For business</a>
       <a href="for-engineers.html">For engineers</a>
       <a href="governance.html">Governance</a>
-      <a href="commons.html">Commons</a>
+      <a href="commons-for-business.html">Commons for business</a>
+      <a href="commons-for-engineers.html">Commons for engineers</a>
       <a href="evidence.html">Evidence</a>
       <a href="https://github.com/doublegate-io">GitHub</a>
       <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
-      <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">Email</a>
+      <a href="mailto:eugene.korniichuk@gmail.com">Email</a>
     </div>
   </div>
 </footer>

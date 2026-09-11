@@ -1,133 +1,82 @@
 <main class="institutional">
-<section id="top" class="dg-hero">
+{hero}
+
+<section id="cost" class="band map-section">
   <div class="wrap">
-    <div class="hero-index"><span>DOUBLEGATE / ORGANIZATIONAL INFRASTRUCTURE</span><span>SPECIFICATION 01</span></div>
-    <div class="hero-grid">
-      <div>
-        <p class="eyebrow">Authority infrastructure for humans and machines</p>
-        <h1>Governed organizational knowledge</h1>
-      </div>
-      <div class="hero-statement">
-        <p class="hero-proposition">Give humans and AI the same governed understanding of your organization.</p>
-        <p>DoubleGate turns organizational records, decisions, policies, evidence and authority into durable governed knowledge that humans, applications and AI agents can consume without becoming the source of truth.</p>
-        <div class="cta-row">
-          <a class="btn primary" href="#model">Explore the architecture</a>
-          <a class="btn" href="for-engineers.html">Read the specification</a>
-        </div>
-      </div>
-    </div>
-    <div class="hero-principle" aria-label="DoubleGate's position in the organizational stack">
-      <span>Systems of record</span><i aria-hidden="true">→</i><strong>DOUBLE<span class="bars">┃┃</span>GATE</strong><i aria-hidden="true">→</i><span>Human · Agent · Application</span>
-    </div>
+    <div class="section-head"><div><p class="section-index">Illustrative knowledge review</p><h2>Shared knowledge changes under review.</h2></div><p>Select a contribution to inspect what changed and why.</p></div>
+    <p class="demo-caption" id="sky-description">Illustrative examples · simulated activity and verdicts, not live organizational data.</p>
+    <div class="skymap" id="skymap"><div class="skymap-stage"><canvas id="sky" tabindex="0" role="img" aria-describedby="sky-description" aria-label="Interactive map of example governed knowledge. New claims can be admitted, revise an existing claim, merge, be held beside a contradiction, or be refused. Drag to turn, scroll to zoom, and use the controls to pause or reset the view."></canvas><div class="sky-controls"><button type="button" id="sky-zoom-out" aria-label="Zoom out">&minus;</button><span class="sky-zoomlevel" id="sky-zoom" aria-live="off">1&times;</span><button type="button" id="sky-zoom-in" aria-label="Zoom in">+</button><button type="button" id="sky-fit">Whole field</button><button type="button" id="sky-pause" aria-pressed="false">Pause</button></div><ul class="sky-legend"><li class="v-new"><i></i>New <b id="sky-n-new">0</b></li><li class="v-sharp"><i></i>Sharpened <b id="sky-n-sharp">0</b></li><li class="v-merge"><i></i>Merged <b id="sky-n-merge">0</b></li><li class="v-held"><i></i>Held <b id="sky-n-held">0</b></li><li class="v-refused"><i></i>Refused <b id="sky-n-refused">0</b></li></ul><div class="sky-tip" id="sky-tip" role="tooltip"></div><noscript><style>#sky,.sky-controls,.sky-legend,.sky-ledger-head,.sky-feed{display:none}.skymap-stage{min-height:340px}</style><img class="sky-still" src="assets/hero-field.svg" alt="Still diagram of example claims grouped by new, sharpened, merged, held and refused review outcomes."></noscript></div><div class="sky-ledger"><div class="sky-selection" id="sky-selection" aria-live="off"><p class="sky-selection-label">Selected contribution</p><p id="sky-selection-text">every alert has an owner team, a runbook link and a severity; the linter rejects an alert missing any of them.</p><p id="sky-selection-outcome">New — APPROVE for payments sandbox alerts: the cited policy supports the required fields.</p><div id="sky-example-evidence">
+<dl class="example-evidence"><div><dt>Source</dt><dd><a href="#example-source">Alert policy · revision 3</a></dd></div><div><dt>Assessment</dt><dd>AI reviewer: 86/100. Advisory, not approval.</dd></div><div><dt>Decision</dt><dd>Second authorized AI: APPROVE. Exact revision and sandbox scope.</dd></div><div><dt>Eligible use</dt><dd>Payments sandbox alerts, subject to current access.</dd></div></dl>
+<details class="example-change"><summary>What if the source changes?</summary><p>Revision 4 adds a rollback test. The old decision does not cover that new requirement. The new proposal is held pending evidence; an authorized reviewer can reject it. Approval does not transfer automatically.</p></details>
+</div></div><p class="sky-ledger-head"><b id="sky-count">0</b> example outcomes shown.</p><ul class="sky-feed" id="sky-feed" aria-label="Simulated contribution activity"></ul></div></div>
   </div>
 </section>
 
 <section id="problem" class="band argument">
-  <div class="wrap split-heading">
-    <div><p class="section-index">01 / THE PROBLEM</p><h2>Organizations have records.<br>They lack a governed interpretation layer.</h2></div>
-    <div class="argument-copy">
-      <p>Policies live beside tickets, decisions beside meeting minutes, and operating knowledge inside private agent histories. Each system can preserve a record. None, by itself, establishes what the organization currently recognizes as knowledge.</p>
-      <p>AI makes this gap operational. A model can retrieve a document without knowing whether it is authoritative, current, applicable or permitted for the consumer asking.</p>
-      <dl class="problem-ledger">
-        <div><dt>Record</dt><dd>What was written</dd></div>
-        <div><dt>Authority</dt><dd>Who can establish it</dd></div>
-        <div><dt>Knowledge</dt><dd>What the organization accepts</dd></div>
-        <div><dt>Projection</dt><dd>What this consumer may receive</dd></div>
-      </dl>
+  <div class="wrap">
+    <div class="section-head"><div><p class="section-index">Useful beyond one session</p><h2>Keep the lesson.<br>Make the change reviewable.</h2></div><p>Designed for knowledge that another agent or teammate will reuse. Review adds effort; start where a repeated mistake or stale instruction makes that effort worth testing.</p></div>
+    <div class="benefit-grid">
+      <article><h3>Conventions with a reason</h3><p>Connect a repository rule to its source revision and the decision that accepted it. A new agent gets context to inspect, not just a copied instruction.</p></article>
+      <article><h3>Skills with a history</h3><p>Carry useful knowledge into skill-revision proposals. Review changes before use; skill approval remains separate from execution permission.</p></article>
+      <article><h3>Corrections you can follow</h3><p>Retain the reason when a claim is rejected, superseded or withdrawn. Intended shared use checks current scope and access, not only relevance.</p></article>
     </div>
+  </div>
+</section>
+
+<section id="example-source" class="band alt">
+  <div class="wrap split-heading">
+    <div><p class="section-index">The example, opened up</p><h2>One team's alert policy.<br>One bounded decision.</h2></div>
+    <div class="argument-copy"><p><b>Authored source fixture, not a company record:</b> alert policy revision 3 requires an owner team, runbook link and severity on payments sandbox alerts.</p><p>A non-author AI assesses the proposal. A distinct authorized reviewer approves that exact revision and use. The illustration's score is not a probability of truth.</p><p>Revision 4 introduces a rollback-test requirement. Missing test evidence keeps that proposal outside accepted knowledge; the old approval cannot authorize the new rule.</p><p><a href="for-business.html#accountability">Evaluate this workflow with a team</a> · <a href="for-engineers.html#sdk">Run a smaller offline SDK check</a>.</p></div>
   </div>
 </section>
 
 <section id="model" class="band model-section">
   <div class="wrap">
-    <div class="section-head"><div><p class="section-index">02 / THE DOUBLEGATE MODEL</p><h2>Evidence enters once.<br>Authority is evaluated twice.</h2></div><p>Two boundaries separate the question of institutional truth from the question of authorized consumption.</p></div>
-    <figure class="architecture" aria-labelledby="architecture-caption">
-      <figcaption id="architecture-caption">Organizational evidence passes through provenance and authority controls to become governed knowledge, then through permissions and projection controls before reaching people and machines.</figcaption>
-      <div class="source-row" aria-label="Sources"><span>POLICIES</span><span>DECISIONS</span><span>SYSTEMS</span><span>EVIDENCE</span></div>
-      <div class="flow-line" aria-hidden="true"><i></i></div>
-      <div class="records-node"><small>INPUT CLASS</small><strong>ORGANIZATIONAL RECORDS</strong><code>immutable references / source state</code></div>
-      <div class="gate-boundary gate-one">
-        <div class="gate-rail dg-boundary-mark" aria-hidden="true"><i></i><i></i></div>
-        <div><small>GATE I / ADMISSION</small><h3>Provenance + authority</h3><p>Can this record become organizational knowledge?</p></div>
-        <ol><li>Source identified</li><li>Evidence attached</li><li>Authority verified</li><li>Decision recorded</li></ol>
-      </div>
-      <div class="knowledge-core"><small>CONTROLLED STATE</small><strong>GOVERNED KNOWLEDGE</strong><code>versioned · attributable · supersedable</code></div>
-      <div class="gate-boundary gate-two">
-        <div class="gate-rail dg-boundary-mark" aria-hidden="true"><i></i><i></i></div>
-        <div><small>GATE II / DELIVERY</small><h3>Permissions + projection</h3><p>What representation may this consumer receive?</p></div>
-        <ol><li>Identity resolved</li><li>Policy applied</li><li>Context bounded</li><li>Projection logged</li></ol>
-      </div>
-      <div class="consumer-row" aria-label="Consumers"><span><b>01</b> HUMAN</span><span><b>02</b> AGENT</span><span><b>03</b> APPLICATION</span></div>
+    <div class="section-head"><div><p class="section-index">The DoubleGate model</p><h2>One route. Two authority boundaries.</h2></div><p>Records establish what was written. Admission establishes what is accepted; projection determines what a consumer may receive.</p></div>
+    <figure class="architecture connected-route" aria-labelledby="architecture-caption">
+      <figcaption id="architecture-caption">The organizational model: records pass through admission into governed knowledge, then through projection to humans, agents and applications.</figcaption>
+      <ol class="authority-route flow-route" id="gates">
+        <li><small>Sources</small><h3>Organizational records</h3><p>Policies, decisions, systems and evidence remain with their owners.</p></li>
+        <li class="flow-connector" aria-hidden="true"><span></span></li>
+        <li class="route-gate"><span class="gate-rail dg-boundary-mark" aria-hidden="true"><i></i><i></i></span><small>Admission boundary</small><h3>Accept knowledge</h3><p>Evaluate provenance, evidence and authority. Record the decision.</p></li>
+        <li class="flow-connector" aria-hidden="true"><span></span></li>
+        <li class="route-knowledge"><small>Governed object</small><h3>Accepted knowledge</h3><p>Versioned, attributable and connected to its evidence.</p></li>
+        <li class="flow-connector" aria-hidden="true"><span></span></li>
+        <li class="route-gate"><span class="gate-rail dg-boundary-mark" aria-hidden="true"><i></i><i></i></span><small>Consumption boundary</small><h3>Bound the view</h3><p>Apply identity, permissions and context to the request.</p></li>
+        <li class="flow-connector" aria-hidden="true"><span></span></li>
+        <li><small>Consumers</small><h3>Human, agent, application</h3><p>Receive the representation permitted for their work.</p></li>
+      </ol>
     </figure>
+    <p class="micro">Conceptual organizational model. Admission contains AI assessment followed by a distinct authorized approval or rejection. Client and organization gates are deployment scopes; permissioned projection describes the intended consumption model. See <a href="#implementation">the release roadmap</a> for delivery status and <a href="how-it-works.html">the lifecycle</a> for review details.</p>
   </div>
 </section>
 
-<section id="gates" class="band gate-thesis">
+<section id="object" class="band">
   <div class="wrap">
-    <p class="section-index">03 / WHY TWO GATES</p>
-    <div class="gate-pair">
-      <article><div class="gate-number">I</div><p class="label">ADMISSION BOUNDARY</p><h2>What is allowed to become organizational knowledge?</h2><p>Gate I evaluates provenance, evidence, authority and validation. It separates possession of a record from institutional acceptance of its meaning.</p><ul><li>Provenance</li><li>Evidence</li><li>Authority</li><li>Validation</li></ul></article>
-      <article><div class="gate-number">II</div><p class="label">PROJECTION BOUNDARY</p><h2>What representation may this consumer receive?</h2><p>Gate II evaluates identity, context, permissions and policy. It keeps retrieval, summarization and agent context from silently becoming new authority.</p><ul><li>Permissions</li><li>Context</li><li>Projection</li><li>Consumer identity</li></ul></article>
+    <div class="section-head"><div><p class="section-index">Where to start</p><h2>Choose a concrete reuse problem.</h2></div><p>These are evaluation scenarios, not customer deployments or measured outcomes.</p></div>
+    <div class="usecase-list">
+      <article><span>Engineering teams</span><h3>Stop repeating the same runbook correction</h3><p>Start with non-sensitive conventions, named source owners and repeatable tasks. Compare useful reuse and correction cost with your existing workflow.</p><a href="for-business.html#honest">Define a team evaluation</a></article>
+      <article id="consumption"><span>Agent builders</span><h3>Make a retrieved claim explainable</h3><p>Inspect provenance and intended scope alongside the answer. Plan for pending, refused and stale states rather than treating every stored item as accepted.</p><a href="for-engineers.html#agents">Inspect the interface contracts</a></article>
+      <article id="federation"><span>Skill maintainers</span><h3>Review changes before reusing instructions</h3><p>Keep the artifact and its evidence connected. Begin with SDK checks; reviewed skill-revision proposals belong to a later release.</p><a href="for-engineers.html#sdk">Explore the authoring SDK</a></article>
     </div>
-  </div>
-</section>
-
-<section id="object" class="band object-section">
-  <div class="wrap object-grid">
-    <div><p class="section-index">04 / GOVERNED KNOWLEDGE OBJECT</p><h2>The abstraction is a durable institutional object.</h2><p class="sub">A decision remains connected to the authority that made it, the evidence that supported it, the state that replaced it and the consumers allowed to use it.</p><p class="object-note"><span class="status implemented dg-status" data-state="implemented">IMPLEMENTED</span> Signed records and provenance are present in the current work. The complete organizational decision lifecycle remains staged.</p></div>
-    <article class="knowledge-object dg-object" aria-label="Example governed knowledge object">
-      <header><span>OBJECT / DECISION</span><span class="state">ACTIVE</span></header>
-      <dl class="object-meta dg-metadata"><div><dt>ID</dt><dd>DEC-00421</dd></div><div><dt>AUTHORITY</dt><dd>Data Governance Council</dd></div><div><dt>EFFECTIVE</dt><dd>2026-08-14</dd></div><div><dt>REVISION</dt><dd>0007</dd></div></dl>
-      <div class="object-body"><p class="label">DECISION</p><p>Customer PII may not be exposed<br>to external inference providers.</p></div>
-      <div class="object-relations"><div><p class="label">EVIDENCE</p><code>├─ POL-019<br>├─ RISK-114<br>└─ MINUTES-2026-08-12</code></div><div><p class="label">SUPERSEDES</p><code>└─ DEC-00387</code><p class="label consumers-label">CONSUMERS</p><code>├─ Human<br>├─ Risk Agent<br>├─ Coding Agent<br>└─ Data Platform</code></div></div>
-      <footer><span>PROVENANCE VERIFIED</span><span>PROJECTION POLICY ATTACHED</span></footer>
-    </article>
-  </div>
-</section>
-
-<section id="consumption" class="band consumption-section">
-  <div class="wrap">
-    <div class="section-head"><div><p class="section-index">05 / CONTROLLED CONSUMPTION</p><h2>One governed object.<br>Different valid projections.</h2></div><p>The source object does not change when the consumer changes. Gate II derives a bounded view for the request, then records what was disclosed.</p></div>
-    <div class="projection-grid">
-      <article><span>HUMAN / POLICY OWNER</span><h3>Decision, rationale and full evidence chain</h3><code>projection: institutional/full</code></article>
-      <article><span>AGENT / ENGINEERING</span><h3>Applicable rule and source identifiers</h3><code>projection: execution/scoped</code></article>
-      <article><span>APPLICATION / CONTROL</span><h3>Machine-readable constraint and status</h3><code>projection: policy/boolean</code></article>
-    </div>
-    <div class="ai-position"><p class="label">DURABLE LAYER</p><p>Models, agent frameworks and protocols will change. Authority, provenance, institutional memory, permissions, decisions and evidence remain organizational requirements.</p></div>
-  </div>
-</section>
-
-<section id="federation" class="band federation-section">
-  <div class="wrap split-heading">
-    <div><p class="section-index">06 / FEDERATION</p><h2>Existing systems remain systems of record.</h2></div>
-    <div class="argument-copy"><p>DoubleGate does not ask a ticketing system, policy repository or data platform to surrender ownership. It references their records, evaluates authority and publishes governed knowledge for authorized consumption.</p><div class="federation-flow"><span>POLICY REPOSITORY<small>source</small></span><span>INCIDENT SYSTEM<small>evidence</small></span><span>IDENTITY PROVIDER<small>authority</small></span><strong><i>┃┃</i> GOVERNED LAYER</strong></div><p class="micro">Connector scope, retention, erasure and receiving-team rules remain explicit deployment decisions. See <a href="governance.html">governance and regulatory requirements</a>.</p></div>
   </div>
 </section>
 
 <section id="audit" class="band audit-section">
-  <div class="wrap">
-    <div class="section-head"><div><p class="section-index">07 / AUDITABILITY</p><h2>Every transition leaves evidence.</h2></div><p>Approvals, rejections, revisions and projections are inspectable events—not hidden application state.</p></div>
-    <ol class="audit-log"><li><time>14:02:11.004</time><b>RECORD_REFERENCED</b><code>POL-019@sha256:7a4…</code></li><li><time>14:03:42.921</time><b>AUTHORITY_VERIFIED</b><code>Data Governance Council</code></li><li><time>14:06:08.117</time><b>DECISION_ACTIVATED</b><code>DEC-00421 rev.0007</code></li><li><time>14:08:19.603</time><b>PROJECTION_ISSUED</b><code>coding-agent / scoped</code></li></ol>
-    <p class="micro">The planned lifecycle retains the reason when a revision is superseded or withdrawn. Exported decision history lets a reviewer verify the chain independently.</p>
-  </div>
-</section>
-
-<section id="cost" class="band map-section">
-  <div class="wrap">
-    <div class="section-head"><div><p class="section-index">08 / KNOWLEDGE STATE</p><h2>Shared knowledge changes under review.</h2></div><p>This interactive illustration preserves the existing five outcomes: new, sharpened, merged, held and refused. Activity and proportions are illustrative, not live results.</p></div>
-    <p class="demo-caption" id="sky-description">Interactive illustration with example claims and simulated verdicts.</p>
-    <div class="skymap" id="skymap"><div class="skymap-stage"><canvas id="sky" tabindex="0" role="img" aria-describedby="sky-description" aria-label="Interactive map of example governed knowledge. New claims can be admitted, revise an existing claim, merge, be held beside a contradiction, or be refused. Drag to turn, scroll to zoom, and use the controls to pause or reset the view."></canvas><div class="sky-controls"><button type="button" id="sky-zoom-out" aria-label="Zoom out">&minus;</button><span class="sky-zoomlevel" id="sky-zoom" aria-live="off">1&times;</span><button type="button" id="sky-zoom-in" aria-label="Zoom in">+</button><button type="button" id="sky-fit">Whole field</button><button type="button" id="sky-pause" aria-pressed="false">Pause</button></div><ul class="sky-legend"><li class="v-new"><i></i>New <b id="sky-n-new">0</b></li><li class="v-sharp"><i></i>Sharpened <b id="sky-n-sharp">0</b></li><li class="v-merge"><i></i>Merged <b id="sky-n-merge">0</b></li><li class="v-held"><i></i>Held <b id="sky-n-held">0</b></li><li class="v-refused"><i></i>Refused <b id="sky-n-refused">0</b></li></ul><div class="sky-tip" id="sky-tip" role="tooltip"></div><noscript><img class="sky-still" src="assets/hero-field.svg" alt="Still diagram of example claims grouped by new, sharpened, merged, held and refused review outcomes."></noscript></div><div class="sky-ledger"><div class="sky-selection" id="sky-selection" aria-live="off"><p class="sky-selection-label">INSPECT / CONTRIBUTION</p><p id="sky-selection-text">Select an example from the activity below, or a point in the map.</p><p id="sky-selection-outcome">Each outcome describes how governed knowledge changes.</p></div><p class="sky-ledger-head"><b id="sky-count">0</b> example outcomes shown.</p><ul class="sky-feed" id="sky-feed" aria-label="Simulated contribution activity"></ul></div></div>
+  <div class="wrap split-heading">
+    <div><p class="section-index">Evidence, not a promise of truth</p><h2>Inspect what supports the claim.</h2></div>
+    <div class="argument-copy"><p>Published research supports the problem and review approach. The SDK offers executable offline checks; API artifacts describe development interfaces. Neither is evidence of a production deployment or business return.</p><div class="resource-list"><a href="evidence.html"><b>Research and evaluation plans</b><span>Primary sources and explicitly request-only research.</span></a><a href="for-engineers.html#sdk"><b>Published SDK quickstart</b><span>Offline literal verification and its limits.</span></a><a href="for-engineers.html#operations"><b>Deployment and integration</b><span>Components, operating responsibilities and acceptance work.</span></a></div></div>
   </div>
 </section>
 
 <section id="implementation" class="band implementation-section">
   <div class="wrap">
-    <div class="section-head"><div><p class="section-index">09 / IMPLEMENTATION STATUS</p><h2>A published sequence,<br>not a finished-platform fiction.</h2></div><p>First release is planned for Q2 2027. Current evidence and interfaces are published so the proposition can be evaluated before the complete system exists.</p></div>
-    <div class="status-table" role="table" aria-label="DoubleGate implementation status"><div role="row"><span class="status implemented dg-status" data-state="implemented" role="cell">IMPLEMENTED</span><b role="cell">Published API snapshots and working gate components</b><a href="for-engineers.html#api" role="cell">Inspect interfaces →</a></div><div role="row"><span class="status experimental dg-status" data-state="experimental" role="cell">EXPERIMENTAL</span><b role="cell">Evaluation, scoring and provider interoperability</b><a href="evidence.html" role="cell">Review evidence →</a></div><div role="row"><span class="status specified dg-status" data-state="specified" role="cell">SPECIFIED</span><b role="cell">Two-stage review, signed decisions and withdrawal</b><a href="how-it-works.html" role="cell">Follow the lifecycle →</a></div><div role="row"><span class="status planned dg-status" data-state="planned" role="cell">PLANNED</span><b role="cell">Organizational sharing and independent authority</b><a href="for-organizations.html" role="cell">Deployment model →</a></div></div>
+    <div class="section-head"><div><p class="section-index">Implementation status</p><h2>Release roadmap</h2></div><p>Release 2 introduces the memory-provider adoption path; release 3 adds review, release 4 shared organizational controls, and release 5 skills and Commons. <a href="for-engineers.html#try">See the release sequence</a>.</p></div>
+    <div class="status-table" role="table" aria-label="DoubleGate implementation status"><div role="row"><span class="status implemented dg-status" data-state="implemented" role="cell">IMPLEMENTED</span><b role="cell">Published API snapshots and working gate components</b><a href="for-engineers.html#agents" role="cell">Inspect interfaces →</a></div><div role="row"><span class="status experimental dg-status" data-state="experimental" role="cell">EXPERIMENTAL</span><b role="cell">Evaluation, scoring and provider interoperability</b><a href="evidence.html" role="cell">Review evidence →</a></div><div role="row"><span class="status specified dg-status" data-state="specified" role="cell">SPECIFIED</span><b role="cell">Two-stage review, signed decisions and withdrawal</b><a href="how-it-works.html" role="cell">Follow the lifecycle →</a></div><div role="row"><span class="status planned dg-status" data-state="planned" role="cell">PLANNED</span><b role="cell">Organizational sharing and independent authority</b><a href="for-business.html" role="cell">Deployment model →</a></div></div>
   </div>
 </section>
 
 <section id="routes" class="band final-section">
-  <div class="wrap final-grid"><div><p class="section-index">10 / CONTINUE THE REVIEW</p><h2>Evaluate the architecture,<br>then challenge the evidence.</h2></div><div class="spec-links"><a href="for-engineers.html"><span>TECHNICAL SPECIFICATION</span><b>Interfaces, costs and release sequence</b><i>→</i></a><a href="governance.html"><span>GOVERNANCE</span><b>Authority, provenance and requirements</b><i>→</i></a><a href="evidence.html"><span>EVIDENCE</span><b>Primary sources, findings and falsifiers</b><i>→</i></a><a href="https://github.com/doublegate-io"><span>SOURCE</span><b>Repositories and published artifacts</b><i>→</i></a></div></div>
+  <div class="wrap final-grid"><div><p class="section-index">Continue the review</p><h2>Find your path<br>into DoubleGate.</h2></div><div class="spec-links"><a href="for-business.html"><span>BUSINESS</span><b>Governed organizational knowledge</b><i>→</i></a><a href="for-engineers.html"><span>ENGINEERS</span><b>SDK, interfaces and deployment path</b><i>→</i></a><a href="governance.html"><span>GOVERNANCE</span><b>Authority, provenance and requirements</b><i>→</i></a><a href="evidence.html"><span>EVIDENCE</span><b>Research, findings and evaluation plans</b><i>→</i></a><a href="https://github.com/doublegate-io"><span>SOURCE</span><b>Repositories and published artifacts</b><i>→</i></a></div></div>
 </section>
 </main>

@@ -2,7 +2,7 @@
 
 <img src="https://doublegate-io.github.io/assets/wordmark.svg" width="520" alt="doublegate — held, signed, then inherited">
 
-**The public site.** Eight static pages plus a 404, no framework, no bundler, no `node_modules`.
+**The public site.** Static audience pages, a 404 and minimal legacy redirects, generated from the `build.py` route manifest. No runtime framework or bundler.
 
 [![live](https://img.shields.io/badge/live-doublegate--io.github.io-a78bfa?style=flat-square)](https://doublegate-io.github.io)
 [![build](https://img.shields.io/badge/build-python%203.11%20only-22d3ee?style=flat-square)](#build)
@@ -55,7 +55,9 @@ flowchart LR
 | Path | Purpose |
 |---|---|
 | `pages/*.html` | page bodies — `<section>` content only, no `<head>` or nav |
-| `build.py` | shared shell, site map, per-page titles and meta descriptions |
+| `build.py` | shared shell, canonical route manifest, audience navigation, hero content and metadata |
+| `templates/hero.html` | shared statement-left / complement-right opening for every primary page |
+| `audience-check.js` | browser checks at 320/390/768/1440px, audience navigation, legacy fragments and evidence counts |
 | `check.py` | gate checks; exits non-zero on any failure |
 | `robots.txt`, `sitemap.xml`, `404.html` | **generated** by `build.py` from `NAV`, so a new page cannot be missing from them |
 | `svg-geometry.js` | text nodes must not overlap each other, in every SVG asset |

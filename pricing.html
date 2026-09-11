@@ -23,11 +23,13 @@
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="DoubleGate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
-    <nav><a href="how-it-works.html">How it works</a><a href="for-organizations.html">For organizations</a><a href="for-engineers.html">For engineers</a><a href="governance.html">Governance</a><a href="commons.html">Commons</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav>
+    <nav class="desktop-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="for-business.html">For business</a><a href="for-engineers.html">For engineers</a><a href="how-it-works.html">How it works</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav>
+    <details class="mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation"><a href="index.html">Home</a><a href="for-business.html">For business</a><a href="for-engineers.html">For engineers</a><a href="how-it-works.html">How it works</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav></details>
   </div>
 </header>
 
-<section id="top">
+
+<main class="audience-page"><section id="top">
   <div class="wrap hero narrow">
     <p class="eyebrow">Deployment and pricing</p>
     <h1>Reviewed knowledge,<br><span class="grad">scoped to who it serves</span></h1>
@@ -68,10 +70,10 @@
         <p class="runs">One gate for the group — a shared runner, or each machine reporting to it.</p>
         <ul>
           <li><b>Everything in Solo</b></li>
-          <li>Approved knowledge shared across the team automatically</li>
+          <li>Approved knowledge shared within current scope and access grants</li>
           <li>Separate folders per project or client &mdash; a query in one never returns another&rsquo;s content &mdash; connected only where you wire them</li>
           <li>Reviewers who are never the author, enforced</li>
-          <li>New joiners inherit the team's reviewed knowledge on setup</li>
+          <li>New joiners receive reviewed knowledge within their assigned access</li>
           <li>A review queue someone actually owns, with a daily digest</li>
           <li class="up-item">Grows into Organization by adding a second gate &mdash; the
           double gate itself, one tier up</li>
@@ -88,7 +90,7 @@
           <li>Independent second review before anything goes company-wide</li>
           <li>Revocable organization-gate access, with read keys restricted to named folders</li>
           <li>Exportable audit trail for regulators and internal audit</li>
-          <li>Deletion that is real, for erasure requests</li>
+          <li>Planned erasure tooling, subject to deployment validation</li>
           <li>Your own reviewing models and rules, not ours</li>
           <li>Agents can report what their folder is missing — and propose the fix</li>
         </ul>
@@ -132,8 +134,7 @@
       </div>
       <div class="card">
         <h3>Team — one gate's authority</h3>
-        <p>A group agrees to trust one gate's verdicts. Everything it signs is readable by
-        everyone on it. One authority, one trust domain.</p>
+        <p>A group defines one gate’s review policy. Reading an approved revision still requires current access and an applicable scope.</p>
       </div>
       <div class="card">
         <h3>Organization — a second authority</h3>
@@ -196,35 +197,9 @@
 
 <section id="talk" class="band alt">
   <div class="wrap tight">
-    <h2>Talk to us before you commit to anything<a class="h-anchor" href="#talk" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="lede">
-      Pricing a gate depends on where your trust boundary sits &mdash; a fifteen-minute
-      conversation, not a form. You get a straight answer from the person building it, including
-      &ldquo;not right for you yet&rdquo; when that is the honest one.
-    </p>
-
-    <div class="contact">
-      <div class="contact-main">
-        <p class="contact-eyebrow">Deployment and pricing</p>
-        <p class="contact-addr">
-          <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">eugene.korniichuk@<wbr>gmail.com</a>
-        </p>
-        <p class="contact-who">
-          Eugene Korniichuk, building doublegate. Replies within a working day.
-        </p>
-      </div>
-      <div class="contact-side">
-        <p class="contact-eyebrow">Useful to include</p>
-        <ul>
-          <li>Roughly how many engineers, and which agent tools they use</li>
-          <li>Whether knowledge would stay in one team or cross the whole company</li>
-          <li>Anything you already run as a memory provider</li>
-        </ul>
-      </div>
-    </div>
-
+    <h2>Further reading<a class="h-anchor" href="#talk" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <div class="cta-row center">
-      <a class="btn" href="for-organizations.html">The business case</a>
+      <a class="btn" href="for-business.html">The business case</a>
       <a class="btn" href="for-engineers.html">What it costs to run</a>
     </div>
 
@@ -234,27 +209,27 @@
       &mdash; the reply is then visible to everyone else weighing the same question.
     </p>
   </div>
-</section>
+</section></main>
 
 <footer>
   <div class="wrap foot">
     <div>
-      <b>doublegate</b> · first release Q2 2027 · every claim traces to cited research
+      <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · research and evaluation sources
       <p class="dim">Solo use is free and stays that way. The organization gate is private and proprietary.
       <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
-      "you got this wrong". Ask about deployment or pricing at
-      <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">eugene.korniichuk@gmail.com</a>.</p>
+      "you got this wrong".</p>
     </div>
     <div class="foot-links">
       <a href="how-it-works.html">How it works</a>
-      <a href="for-organizations.html">For organizations</a>
+      <a href="for-business.html">For business</a>
       <a href="for-engineers.html">For engineers</a>
       <a href="governance.html">Governance</a>
-      <a href="commons.html">Commons</a>
+      <a href="commons-for-business.html">Commons for business</a>
+      <a href="commons-for-engineers.html">Commons for engineers</a>
       <a href="evidence.html">Evidence</a>
       <a href="https://github.com/doublegate-io">GitHub</a>
       <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
-      <a href="mailto:eugene.korniichuk@gmail.com?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing">Email</a>
+      <a href="mailto:eugene.korniichuk@gmail.com">Email</a>
     </div>
   </div>
 </footer>

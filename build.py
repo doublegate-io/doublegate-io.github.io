@@ -21,14 +21,36 @@ PAGES = ROOT / "pages"
 # ---------------------------------------------------------------- site map
 # order matters: this drives the nav
 NAV = [
-    ("index.html", "Overview"),
-    ("how-it-works.html", "How it works"),
-    ("for-organizations.html", "For organizations"),
+    ("index.html", "Home"),
+    ("for-business.html", "For business"),
     ("for-engineers.html", "For engineers"),
-    ("governance.html", "Governance"),
-    ("commons.html", "Commons"),
+    ("how-it-works.html", "How it works"),
     ("evidence.html", "Evidence"),
 ]
+CHILDREN = [
+    ("governance.html", "Business governance"),
+    ("commons-for-business.html", "Commons for business"),
+    ("commons-for-engineers.html", "Commons for engineers"),
+]
+LISTED = NAV + CHILDREN
+REDIRECTS = {"for-organizations.html": "for-business.html", "commons.html": "commons-for-business.html"}
+AUDIENCES = {
+    "business": [("for-business.html", "Overview"), ("governance.html", "Governance"), ("commons-for-business.html", "Commons")],
+    "engineers": [("for-engineers.html", "Overview"), ("for-engineers.html#sdk", "SDK"), ("commons-for-engineers.html", "Commons"), ("https://doublegate-io.github.io/doublegate-sdk/", "Technical docs")],
+}
+
+
+def audience_for(page: str) -> str | None:
+    return next((name for name, links in AUDIENCES.items() if page in dict(links)), None)
+
+
+def subnav_html(page: str) -> str:
+    audience = audience_for(page)
+    if not audience:
+        return ""
+    links = "".join(f'<a href="{href}"' + (' aria-current="page"' if href == page else '') + f'>{label}</a>' for href, label in AUDIENCES[audience])
+    return f'<div class="audience-nav"><div class="wrap"><span>For {audience}</span><nav aria-label="For {audience}">{links}</nav></div></div>'
+
 
 # Scripts a page loads, by page. The shell carries none: the site is static
 # and this is the one page that draws in the browser. Listed here rather than
@@ -46,46 +68,48 @@ UNLISTED = [
     ("pricing.html", "Pricing"),
 ]
 
-# What the first release is called, and when. One constant so every page
+# Adoption release (release 2) timing. One constant so every page
 # quotes the same date; change it here, rebuild, and nothing drifts.
 FIRST_RELEASE = "Q2 2027"
 
 TITLES = {
     "index.html": (
         "doublegate — governed organizational knowledge",
-        "Turn agent corrections into governed organizational knowledge. "
-        "Review contributions, record signed decisions and share approved knowledge "
-        "across teams with explicit access and authority. Planned deployment options and release milestones.",
+        "Governed organizational knowledge for humans, agents and applications. "
+        "Explore admission, authority and permitted projection through an illustrative "
+        "knowledge review, published interfaces and the release roadmap.",
     ),
     "how-it-works.html": (
-        "How doublegate works — one memory's journey",
-        "Follow a single memory from the moment an agent writes it, through holding, "
-        "scanning, independent review and signing, to the point every other machine "
-        "can read it.",
+        "How doublegate works — a correction becomes shared knowledge",
+        "Follow a proposed correction through evidence, assessment, an authorized decision "
+        "and eligible shared use. An illustration of the planned review and publication lifecycle.",
     ),
-    "for-organizations.html": (
-        "For organizations — evaluate governed team knowledge",
+    "for-business.html": (
+        "For business — evaluate governed team knowledge",
         "Retain corrections, conventions and skills across your teams. "
         "Explore doublegate's deployment model, review controls and business case "
         "for shared agent knowledge.",
     ),
     "for-engineers.html": (
-        "For engineers — what it is, what it costs, when it ships",
-        "doublegate replaces your memory provider. Reads enforce current eligibility; checking "
-        "happens on the way in. Latency, token cost, the four tools your agent gains, "
-        "the API published as data for the agent doing the wiring, and the release roadmap.",
+        "For engineers — build with reviewed knowledge",
+        "Start with offline SDK checks, inspect development interface snapshots and plan "
+        "the memory-provider integration. Operating costs, acceptance tests and the release sequence.",
     ),
     "governance.html": (
-        "Governance — connectors, provenance, and what regulators ask for",
+        "Business governance — decisions, provenance and source authority",
         "Planned connectors and shared review controls for agent knowledge: "
         "scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, "
         "EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.",
     ),
-    "commons.html": (
-        "The Commons — a reviewed public library of agent knowledge",
-        "A public library planned for release 5: reviewed knowledge with explicit publishing rights. "
-        "Free to read, contributions under a named identity, "
-        "publishable decisions and reasons, including rejections and appeals.",
+    "commons-for-business.html": (
+        "Commons for business — publishing rights and reviewed reuse",
+        "Decide what your organization can contribute to the planned Commons, what reuse costs, "
+        "and which licensing, privacy and accountability decisions remain yours.",
+    ),
+    "commons-for-engineers.html": (
+        "Commons for engineers — artifacts, attribution and integration",
+        "Prepare versioned artifacts and review evidence with the offline SDK. Inspect current "
+        "formats and interface snapshots separately from the planned release-5 Commons service.",
     ),
     "pricing.html": (
         "Pricing — Solo, Team, Organization",
@@ -115,15 +139,10 @@ DOCS = f"{GH}/blob/main/docs"
 # its identity on "every claim traces to cited research" should take its
 # corrections where everyone can see both the correction and the reply.
 #
-# EMAIL is for the conversation that cannot happen in an issue tracker: what a
-# deployment would cost, whether the boundary fits an org, when a tier lands.
-# Nobody files a public issue to ask about their own company.
+# Private email is available only through the footer Email link.
 CONTACT = f"{GH}/issues"
 EMAIL = "eugene.korniichuk@gmail.com"
-# A subject line, so a cold mail arrives already sorted. "Deployment" rather
-# than "sales": the conversation on offer is where a gate fits an organization
-# and what it would cost there, ahead of the first release.
-MAILTO = f"mailto:{EMAIL}?subject=doublegate%20%E2%80%94%20deployment%20and%20pricing"
+MAILTO = f"mailto:{EMAIL}"
 SITE = "https://doublegate-io.github.io/"
 
 SHELL = """<!doctype html>
@@ -151,27 +170,29 @@ SHELL = """<!doctype html>
 <header class="nav">
   <div class="nav-inner">
     <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="DoubleGate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
-    <nav>{nav}<a class="ghost" href="{org}">GitHub</a></nav>
+    <nav class="desktop-nav" aria-label="Main navigation">{nav}<a class="ghost" href="{org}">GitHub</a></nav>
+    <details class="mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation">{nav}<a class="ghost" href="{org}">GitHub</a></nav></details>
   </div>
 </header>
 
+{subnav}
 {body}
 
 <footer>
   <div class="wrap foot">
     <div>
-      <b>doublegate</b> · first release {first_release} · every claim traces to cited research
+      <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · research and evaluation sources
       <p class="dim">Solo use is free and stays that way. The organization gate is private and proprietary.
       <a href="{contact}">Questions, objections and corrections go here</a> — including
-      "you got this wrong". Ask about deployment or pricing at
-      <a href="{mailto}">{email}</a>.</p>
+      "you got this wrong".</p>
     </div>
     <div class="foot-links">
       <a href="how-it-works.html">How it works</a>
-      <a href="for-organizations.html">For organizations</a>
+      <a href="for-business.html">For business</a>
       <a href="for-engineers.html">For engineers</a>
       <a href="governance.html">Governance</a>
-      <a href="commons.html">Commons</a>
+      <a href="commons-for-business.html">Commons for business</a>
+      <a href="commons-for-engineers.html">Commons for engineers</a>
       <a href="evidence.html">Evidence</a>
       <a href="{org}">GitHub</a>
       <a href="{contact}">Ask a question</a>
@@ -188,9 +209,8 @@ SHELL = """<!doctype html>
 def nav_html(current: str) -> str:
     out = []
     for href, label in NAV:
-        if href == "index.html":
-            continue  # the brand mark is the home link
-        cls = ' class="here"' if href == current else ""
+        parent = {"business": "for-business.html", "engineers": "for-engineers.html"}.get(audience_for(current), current)
+        cls = ' class="here" aria-current="page"' if href == parent else ""
         out.append(f'<a href="{href}"{cls}>{label}</a>')
     return "".join(out)
 
@@ -234,14 +254,105 @@ def anchor_headings(body: str) -> str:
     return _SECTION.sub(stamp, body)
 
 
+
+# Editorial hero content is rendered through one static template.
+HEROES = {'for-business.html': ('For business',
+                       'Make team knowledge reusable.',
+                       '<p class="hero-proposition">Keep the correction, its evidence and who '
+                       'stands behind it.</p><p>Give one team a governed path from agent '
+                       'corrections to reusable knowledge. Your organization defines the criteria, '
+                       'ownership and access.</p><div class="cta-row"><a class="btn" '
+                       'href="#honest">Plan a team evaluation</a></div>',
+                       '<p class="availability">Shared-team controls are planned for release 4. '
+                       'Review consumes inference and operating effort; compare results with your '
+                       'existing workflow.</p>'),
+ 'for-engineers.html': ('For engineers',
+                        'Build with reviewed knowledge.',
+                        '<p class="hero-proposition">Start offline. Inspect the result before '
+                        'wiring a consumer.</p><p>The Python SDK checks declarative artifacts. '
+                        'Provider interfaces describe the next integration boundary; installing '
+                        'the SDK does not start a gate.</p><div class="cta-row"><a class="btn '
+                        'primary" href="#sdk">Run the SDK example</a><a class="btn" '
+                        'href="#agents">Inspect the API artifacts</a></div>',
+                        '{availability}'),
+ 'governance.html': ('For business / Governance',
+                     'Know who approved what. And why.',
+                     '<p class="hero-proposition">Governance begins with a scoped decision and a '
+                     'record you can inspect.</p><p>Connect proposed knowledge to its source, '
+                     'reviewer and permitted use. Source-system credentials confer no approval '
+                     'authority.</p><a href="#how">Follow a system contribution</a>',
+                     '<p class="availability">Signed decisions and keyed reads exist in the '
+                     'development surface. Two-stage review and shared-team controls are planned '
+                     'for releases 3 and 4; connectors have separate acceptance checks.</p>'),
+ 'how-it-works.html': ('How it works',
+                       'A correction becomes shared knowledge.',
+                       '<p class="hero-proposition">One revision. Evidence, a decision and a '
+                       'permitted use.</p><p>Follow an illustrative correction: the payments '
+                       'sandbox rate-limits per API key, not per account. Each stage below changes '
+                       'what others may do with that revision.</p><a href="#diagram">Follow the '
+                       'review lifecycle</a>',
+                       '<p class="availability">The journey illustrates the planned release-3 '
+                       'review and release-4 sharing workflow.</p>'),
+ 'evidence.html': ('Evidence',
+                   'Every claim, with its source.',
+                   '<p class="hero-proposition">Read the finding. Check what it actually '
+                   'supports.</p><p>Published research supports the problem and approach. '
+                   'DoubleGate’s planned evaluations must establish its own outcomes; the internal '
+                   'provider survey is available on request.</p><a href="#findings">Read the '
+                   'primary sources</a>',
+                   ''),
+ 'commons-for-business.html': ('For business / Commons',
+                               'Share what you have the rights to share.',
+                               '<p class="hero-proposition">A reviewed supply of knowledge, with '
+                               'explicit costs and publishing choices.</p><p>Choose what leaves '
+                               'your organization. Assess the rights, evidence and maintenance '
+                               'work before contributing or reusing an artifact.</p><a '
+                               'href="#why-contribute">Evaluate contribution</a>',
+                               '<p class="availability">The public Commons is planned for release '
+                               '5. Reading is free; reuse follows each artifact’s published '
+                               'terms.</p>'),
+ 'commons-for-engineers.html': ('For engineers / Commons',
+                                'Carry the evidence with the artifact.',
+                                '<p class="hero-proposition">Version the content. Preserve '
+                                'attribution. Check eligible use.</p><p>Prepare artifacts with the '
+                                'offline SDK and inspect the published schemas. SDK findings '
+                                'inform review; they grant no publication or execution '
+                                'authority.</p><a href="#formats">Inspect the current formats</a>',
+                                '<p class="availability">SDK development artifacts are available '
+                                'now. Commons publication and public operation remain release-5 '
+                                'work.</p>'),
+ 'index.html': ('DoubleGate / Agent memory',
+                'Memory and knowledge for AI agents.',
+                '\n'
+                '        <p class="hero-proposition">Reuse what agents learn.<br>Keep the evidence '
+                'and the review.</p>\n'
+                '        <p>DoubleGate is building a memory provider for reviewed claims, team '
+                'conventions and reusable skills — instead of letting each session start from '
+                'private, unversioned corrections.</p>\n'
+                '        <div class="cta-row"><a class="btn primary" href="#cost">See a reviewed '
+                'example</a><a class="btn" href="for-engineers.html#sdk">Build with the '
+                'SDK</a></div>',
+                '{availability}')}
+
+def hero_html(page: str) -> str:
+    label, headline, complement, status = HEROES[page]
+    return (ROOT / "templates/hero.html").read_text().format(label=label, headline=headline, complement=complement, status=status)
+
+def render_redirect(target: str) -> str:
+    return f'''<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex"><link rel="canonical" href="{SITE}{target}"><title>Page moved — doublegate</title><script>location.replace("{target}" + location.search + location.hash);</script></head><body><p>This page has moved to <a href="{target}">{dict(LISTED)[target]}</a>.</p></body></html>
+'''
+
 def render(page: str) -> str:
     title, desc = TITLES[page]
-    body = anchor_headings((PAGES / page).read_text().strip())
+    body = anchor_headings((PAGES / page).read_text().strip().replace("{hero}", hero_html(page) if page in HEROES else "").replace("{first_release}", FIRST_RELEASE).replace("{availability}", f'<p class="availability"><b>Available now:</b> offline SDK and development API artifacts. <b>Planned:</b> provider adoption in {FIRST_RELEASE}; review and organizational sharing follow in later releases.</p>'))
+    if not body.startswith("<main"):
+        body = f'<main class="audience-page">{body}</main>'
     # index.html is served at the domain root, so its canonical is the bare
     # domain — not "/index.html", which would be a second URL for one page.
     canonical = SITE if page == "index.html" else SITE + page
     markup = SHELL.format(
-        title=title, desc=desc, nav=nav_html(page), body=body, gh=GH, org=ORG,
+        title=title, desc=desc, nav=nav_html(page), subnav=subnav_html(page), body=body, gh=GH, org=ORG,
         contact=CONTACT, mailto=MAILTO, email=EMAIL, canonical=canonical,
         first_release=FIRST_RELEASE, scripts=scripts_html(page),
     )
@@ -260,7 +371,7 @@ def render_sitemap() -> str:
     """Generated from NAV so a new page cannot be missing from the sitemap."""
     urls = "\n".join(
         f"  <url><loc>{SITE if p == 'index.html' else SITE + p}</loc></url>"
-        for p, _ in NAV
+        for p, _ in LISTED
     )
     return (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
@@ -283,7 +394,7 @@ LLMS_INTRO = (
     "authorized AI or human APPROVE or REJECT decision without a second score. "
     "Approval means production-ready for the declared scope, version and use; current "
     "access and applicability govern retrieval. Release 4 adds shared team attribution "
-    "and publication over authenticated HTTP. The organization gate remains private and proprietary. First release {first_release}."
+    "and publication over authenticated HTTP. The organization gate remains private and proprietary. Adoption release · {first_release}."
 )
 
 LLMS_API = [
@@ -304,7 +415,7 @@ LLMS_RULES = [
 
 
 def render_llms() -> str:
-    pages = "\n".join(f"- [{label}]({SITE if p == 'index.html' else SITE + p}): {TITLES[p][1]}" for p, label in NAV)
+    pages = "\n".join(f"- [{label}]({SITE if p == 'index.html' else SITE + p}): {TITLES[p][1]}" for p, label in LISTED)
     api = "\n".join(f"- [{path}]({SITE}{path}): {about}" for path, about in LLMS_API)
     rules = "\n".join(f"- {r}" for r in LLMS_RULES)
     return (
@@ -356,7 +467,7 @@ def render_404() -> str:
             "That page is not here. The link is wrong or it pointed at something that "
             "moved — start from the overview, or tell us which link was broken."
         ),
-        nav=nav_html("404.html"),
+        nav=nav_html("404.html"), subnav="",
         body=NOT_FOUND_BODY.format(contact=CONTACT),
         gh=GH,
         org=ORG,
@@ -376,7 +487,7 @@ def render_404() -> str:
     )
     markup = markup.replace('href="assets/', 'href="/assets/')
     markup = markup.replace('src="assets/', 'src="/assets/')
-    for page, _ in NAV + UNLISTED:
+    for page, _ in LISTED + UNLISTED:
         markup = markup.replace(f'href="{page}"', f'href="/{page}"')
     return markup
 
@@ -388,7 +499,8 @@ def main() -> int:
     # (path, content) for everything generated, pages and crawler files alike,
     # so --check covers all of it and a drifted sitemap fails CI like a
     # drifted page does.
-    targets = [(page, render(page)) for page, _ in NAV + UNLISTED]
+    targets = [(page, render(page)) for page, _ in LISTED + UNLISTED]
+    targets.extend((old, render_redirect(target)) for old, target in REDIRECTS.items())
     targets.append(("sitemap.xml", render_sitemap()))
     targets.append(("robots.txt", render_robots()))
     targets.append(("llms.txt", render_llms()))

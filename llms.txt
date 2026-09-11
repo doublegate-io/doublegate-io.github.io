@@ -1,6 +1,6 @@
 # doublegate
 
-> doublegate is memory and knowledge-sharing software for AI agents. Contributions are held for review; signed decisions establish scoped publication. The release-3 workflow uses an AI trust assessment from 0–100, then a distinct authorized AI or human APPROVE or REJECT decision without a second score. Approval means production-ready for the declared scope, version and use; current access and applicability govern retrieval. Release 4 adds shared team attribution and publication over authenticated HTTP. The organization gate remains private and proprietary. First release Q2 2027.
+> doublegate is memory and knowledge-sharing software for AI agents. Contributions are held for review; signed decisions establish scoped publication. The release-3 workflow uses an AI trust assessment from 0–100, then a distinct authorized AI or human APPROVE or REJECT decision without a second score. Approval means production-ready for the declared scope, version and use; current access and applicability govern retrieval. Release 4 adds shared team attribution and publication over authenticated HTTP. The organization gate remains private and proprietary. Adoption release · Q2 2027.
 
 ## The API, as data
 
@@ -22,13 +22,14 @@ Rendered from the code that serves it and checked against it in the code reposit
 
 ## Pages
 
-- [Overview](https://doublegate-io.github.io/): Turn agent corrections into governed organizational knowledge. Review contributions, record signed decisions and share approved knowledge across teams with explicit access and authority. Planned deployment options and release milestones.
-- [How it works](https://doublegate-io.github.io/how-it-works.html): Follow a single memory from the moment an agent writes it, through holding, scanning, independent review and signing, to the point every other machine can read it.
-- [For organizations](https://doublegate-io.github.io/for-organizations.html): Retain corrections, conventions and skills across your teams. Explore doublegate's deployment model, review controls and business case for shared agent knowledge.
-- [For engineers](https://doublegate-io.github.io/for-engineers.html): doublegate replaces your memory provider. Reads enforce current eligibility; checking happens on the way in. Latency, token cost, the four tools your agent gains, the API published as data for the agent doing the wiring, and the release roadmap.
-- [Governance](https://doublegate-io.github.io/governance.html): Planned connectors and shared review controls for agent knowledge: scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.
-- [Commons](https://doublegate-io.github.io/commons.html): A public library planned for release 5: reviewed knowledge with explicit publishing rights. Free to read, contributions under a named identity, publishable decisions and reasons, including rejections and appeals.
+- [Home](https://doublegate-io.github.io/): Governed organizational knowledge for humans, agents and applications. Explore admission, authority and permitted projection through an illustrative knowledge review, published interfaces and the release roadmap.
+- [For business](https://doublegate-io.github.io/for-business.html): Retain corrections, conventions and skills across your teams. Explore doublegate's deployment model, review controls and business case for shared agent knowledge.
+- [For engineers](https://doublegate-io.github.io/for-engineers.html): Start with offline SDK checks, inspect development interface snapshots and plan the memory-provider integration. Operating costs, acceptance tests and the release sequence.
+- [How it works](https://doublegate-io.github.io/how-it-works.html): Follow a proposed correction through evidence, assessment, an authorized decision and eligible shared use. An illustration of the planned review and publication lifecycle.
 - [Evidence](https://doublegate-io.github.io/evidence.html): The research behind the pitch: the 66-firm field experiment, Meta's in-house build, the provider survey, and the skill security data. Each one linked to its primary source.
+- [Business governance](https://doublegate-io.github.io/governance.html): Planned connectors and shared review controls for agent knowledge: scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.
+- [Commons for business](https://doublegate-io.github.io/commons-for-business.html): Decide what your organization can contribute to the planned Commons, what reuse costs, and which licensing, privacy and accountability decisions remain yours.
+- [Commons for engineers](https://doublegate-io.github.io/commons-for-engineers.html): Prepare versioned artifacts and review evidence with the offline SDK. Inspect current formats and interface snapshots separately from the planned release-5 Commons service.
 
 ## Optional
 

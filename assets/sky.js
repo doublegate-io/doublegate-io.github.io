@@ -222,6 +222,24 @@
       });
     });
     while (feedEl.firstChild) feedEl.removeChild(feedEl.firstChild);
+    // Seed a real point from the authored illustration, not synthetic tenant traffic.
+    var exampleText = "every alert has an owner team, a runbook link and a severity; the linter rejects an alert missing any of them";
+    var example = stars.find(function (s) { return s.text === exampleText; });
+    if (!example) {
+      cats.forEach(function (c, ci) {
+        var j = c.claims.findIndex(function (claim) { return claim[1] === exampleText; });
+        if (j < 0) return;
+        example = makeStar(ci, j, c.claims[j][0], c.claims[j][1], seededPos(ci, j), null, now - 60000);
+        pool = pool.filter(function (item) { return item[0] !== ci || item[1] !== j; });
+      });
+    }
+    example = example || stars[0];
+    example.verdict = 'new';
+    pinned = example;
+    counts.new = 1; arrivals = 1;
+    feed(example, false);
+    inspectContribution(example.text, 'New — a contribution enters shared knowledge in this illustration.', false);
+    feedEl.querySelector('button').setAttribute('aria-pressed', 'true');
     updateCounts();
     dirty = true;
   }
@@ -317,7 +335,10 @@
     if (selection && detail) {
       selection.parentNode.setAttribute('aria-live', announce ? 'polite' : 'off');
       selection.textContent = text;
-      detail.textContent = outcome;
+      var evidence = document.getElementById('sky-example-evidence');
+      var isExample = text === "every alert has an owner team, a runbook link and a severity; the linter rejects an alert missing any of them";
+      if (evidence) evidence.hidden = !isExample;
+      detail.textContent = isExample ? 'New — APPROVE for payments sandbox alerts: the cited policy supports the required fields.' : outcome;
     }
   }
 
@@ -355,6 +376,9 @@
         refused: 'Refused in this example: ' + (a.reason || 'review rejected the contribution.')
       };
       inspectContribution(a.text, CHIP[a.verdict] + ' — ' + outcomes[a.verdict], true);
+      feedEl.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b === button)); });
+      pinned = stars.find(function (s) { return s.ci === a.ci && s.text === a.text; }) || null;
+      hideTip(); dirty = true;
     });
     li.appendChild(button);
     feedEl.insertBefore(li, feedEl.firstChild);
@@ -590,7 +614,7 @@
       var name = cats[L.i].name;
       var w = ctx.measureText(name).width + 10;
       var box = [L.x - w / 2, L.y - fs - 3, L.x + w / 2, L.y + 2];
-      if (box[2] < 0 || box[0] > W || box[3] < 0 || box[1] > H) return;
+      if (box[0] < 12 || box[2] > W - 12 || box[1] < 58 || box[3] > H - 50) return;
       for (j = 0; j < boxes.length; j++) {
         var b = boxes[j];
         if (box[0] < b[2] && box[2] > b[0] && box[1] < b[3] && box[3] > b[1]) return;
@@ -606,7 +630,7 @@
       }
       if (covered >= tol) return;
       boxes.push(box);
-      var fa = 0.3 + 0.7 * (L.z + 1) / 2;
+      var fa = 0.75 + 0.25 * (L.z + 1) / 2;
       if (founded[L.i]) fa *= Math.min(1, (now - founded[L.i]) / 1400);
       var hl2 = hover && hover.ci === L.i;
       ctx.fillStyle = 'rgba(5,6,10,' + (0.6 * fa) + ')';

@@ -45,7 +45,15 @@ def visible(markup: str) -> str:
 # scratch files (.tmp_*) are probes, not pages — scanning them produced 14
 # bogus failures once, and worse, they got committed. Ignore them here and in
 # .gitignore so neither can happen again.
-pages = sorted(p for p in ROOT.glob("*.html") if not p.name.startswith(".tmp"))
+from build import LISTED, UNLISTED, REDIRECTS, HEROES, AUDIENCES, audience_for, render_redirect
+
+pages = sorted(p for p in ROOT.glob("*.html") if not p.name.startswith(".tmp") and p.name not in REDIRECTS)
+expected_pages = {name for name, _ in LISTED + UNLISTED} | {"404.html"}
+if {p.name for p in pages} != expected_pages:
+    fail("built page set differs from the generator manifest")
+for old, target in REDIRECTS.items():
+    if not (ROOT / old).exists() or (ROOT / old).read_text() != render_redirect(target):
+        fail(f"{old}: stale redirect or lost query/fragment preservation")
 if not pages:
     fail("no built pages — run python3 site/build.py")
 
@@ -191,7 +199,7 @@ unlisted = set(re.findall(r'^\s*\("([^"]+\.html)",\s*"[^"]*"\),\s*$',
 navs = {}
 for page in pages:
     markup = page.read_text()
-    block = re.search(r"<nav>(.*?)</nav>", markup, re.S)
+    block = re.search(r'<nav\b[^>]*>(.*?)</nav>', markup, re.S)
     if not block:
         fail(f"{page.name}: no nav")
         continue
@@ -295,18 +303,44 @@ if ev.exists():
         if not any(w in claim for w in ("our survey", "our own", "unverified", "on request")):
             fail(f"evidence.html: claim without a resolvable source -> {label!r}")
 
-# 16. THERE IS EXACTLY ONE CONTACT ADDRESS, AND EVERY PAGE HAS A WAY TO REACH IT.
-#     The readiness review found no contact path anywhere on the site: no mailto,
-#     no form, no signup. A product site with no way to reach anyone is a
-#     brochure. Two failure modes are checked here.
-#
-#     (a) Drift. build.py owns EMAIL/MAILTO and injects them into the footer, but
-#         pricing.html hardcodes the same address in its own CTA, because page
-#         bodies are read raw and are not .format()ed — a placeholder there would
-#         ship as literal "{mailto}". A second literal address is how a typo'd or
-#         stale address survives a rename, so the two must agree byte for byte.
-#     (b) Absence. If a page loses its footer, it loses its only contact path
-#         silently. Assert every page carries the address.
+# 16. EVERY PAGE HAS ONE FOOTER-ONLY EMAIL LINK, WITHOUT A VISIBLE ADDRESS.
+from html.parser import HTMLParser
+
+
+class ContactParser(HTMLParser):
+    def __init__(self):
+        super().__init__()
+        self.in_footer = False
+        self.current = None
+        self.mailtos = []
+        self.text = []
+        self.hidden_depth = 0
+
+    def handle_starttag(self, tag, attrs):
+        attrs = dict(attrs)
+        if tag == "footer":
+            self.in_footer = True
+        if tag in ("script", "style"):
+            self.hidden_depth += 1
+        if tag == "a" and (attrs.get("href") or "").lower().startswith("mailto:"):
+            self.current = [attrs["href"], self.in_footer, ""]
+            self.mailtos.append(self.current)
+
+    def handle_endtag(self, tag):
+        if tag == "footer":
+            self.in_footer = False
+        if tag == "a":
+            self.current = None
+        if tag in ("script", "style"):
+            self.hidden_depth -= 1
+
+    def handle_data(self, data):
+        if not self.hidden_depth:
+            self.text.append(data)
+        if self.current is not None:
+            self.current[2] += data
+
+
 build_src = (ROOT / "build.py").read_text()
 declared = re.search(r'^EMAIL = "([^"]+)"', build_src, re.M)
 if not declared:
@@ -314,28 +348,19 @@ if not declared:
 else:
     addr = declared.group(1)
     if "@" not in addr or "." not in addr.split("@")[-1]:
-        fail(f"build.py: EMAIL is not an address -> {addr!r}")
+        fail("build.py: EMAIL is not an address")
     for page in pages:
-        markup = page.read_text()
-        # <wbr> is a legal break opportunity inside a rendered address (the pricing
-        # CTA uses one after the @ so a 320px screen folds it as
-        # "eugene.korniichuk@ / gmail.com" instead of "…gmail.co / m"). It splits
-        # the literal in the SOURCE, so strip it before matching — otherwise this
-        # check silently stops protecting any page whose only copy is the split
-        # one, which is exactly how a typo would slip through unnoticed.
-        flat = markup.replace("<wbr>", "").replace("&shy;", "")
-        if addr not in flat:
-            fail(f"{page.name}: no contact address — the page is a dead end")
-        # any mailto: on any page must point at the one declared address
-        for got in re.findall(r'href="mailto:([^"?]+)', flat):
-            if got != addr:
-                fail(f"{page.name}: mailto {got!r} disagrees with build.py EMAIL {addr!r}")
-        # a visible address must not be broken anywhere except immediately after
-        # the @ — a fold inside the TLD renders as a typo.
-        for vis in re.findall(r'>([^<>]*@[^<>]*)<wbr>([^<>]*)<', markup):
-            if not vis[0].rstrip().endswith("@"):
-                fail(f"{page.name}: <wbr> splits an address somewhere other than "
-                     f"after the @ -> {vis[0]!r}|{vis[1]!r}")
+        doc = ContactParser()
+        doc.feed(page.read_text())
+        if doc.mailtos != [[f"mailto:{addr}", True, "Email"]]:
+            fail(f"{page.name}: expected exactly one plain mailto link, labelled Email, in footer only")
+        text = "".join(doc.text)
+        if re.search(r"[\w.+-]+@[\w.-]+\.[A-Za-z]{2,}", text):
+            fail(f"{page.name}: email address is displayed in page text")
+        for solicitation in ("Ask about deployment or pricing", "Discuss your deployment",
+                             "Discuss an evaluation", "Talk to us before you commit"):
+            if solicitation.lower() in text.lower():
+                fail(f"{page.name}: deployment/pricing solicitation remains")
 
 # 17. THE SITE SELLS THE PRODUCT; IT NEVER ANNOUNCES ITS ABSENCE.
 #     On 2026-09-07 an "offering audit" carried the design repo's engineering-tier
@@ -468,7 +493,7 @@ if (ROOT / "sky-data.py").exists() and (ROOT / "tests" / "fixtures" / "org-feed.
 #     language) all reach them — which is the second reason markup beats an
 #     image, and the reason a returning SVG must not pass silently.
 FIGURE_COPY = {
-    "commons.html": ("ladder", [
+    "commons-for-business.html": ("ladder", [
         "Four scopes — separate authority at each boundary",
         "you, on your own machine",
         "a group sharing one gate",
@@ -545,6 +570,43 @@ for doc in sorted((ROOT / "api").glob("*.json")) if (ROOT / "api").exists() else
     body = doc.read_text()
     for m in API_MUST_NOT_CARRY.finditer(body):
         fail(f"api/{doc.name}: must not carry {m.group(0)!r}")
+
+# 21. Audience IA, shared openings and destination fragments are contracts.
+from urllib.parse import urlsplit, unquote
+import xml.etree.ElementTree as ET
+for name, _ in LISTED:
+    markup = (ROOT / name).read_text()
+    if len(re.findall(r"<h1\b", markup)) != 1 or 'class="page-hero"' not in markup:
+        fail(f"{name}: expected one H1 in the shared hero")
+    if 'class="page-hero-complement"' not in markup:
+        fail(f"{name}: missing hero complement")
+    if "For organizations" in markup or re.search(r'href="(?:for-organizations|commons)\.html', markup):
+        fail(f"{name}: obsolete audience route")
+    audience = audience_for(name)
+    subnav = re.search(r'<nav aria-label="For [^"]+">(.*?)</nav>', markup, re.S)
+    if audience:
+        expected = [href for href, _ in AUDIENCES[audience]]
+        if not subnav or re.findall(r'href="([^"]+)"', subnav.group(1)) != expected:
+            fail(f"{name}: wrong audience subnavigation")
+        elif subnav.group(1).count('aria-current="page"') != 1:
+            fail(f"{name}: missing current subpage")
+    elif subnav:
+        fail(f"{name}: unexpected audience subnavigation")
+for page in pages:
+    for href in re.findall(r'href="([^"]+)"', page.read_text()):
+        parts = urlsplit(href)
+        if parts.scheme or parts.netloc:
+            continue
+        name = parts.path.lstrip('/') or page.name
+        if parts.fragment and name.endswith('.html'):
+            target = ROOT / name
+            if not target.exists() or unquote(parts.fragment) not in re.findall(r'id="([^"]+)"', target.read_text()):
+                fail(f"{page.name}: missing destination fragment {href}")
+sitemap = ET.parse(ROOT / 'sitemap.xml')
+from build import SITE
+urls = {e.text for e in sitemap.iter() if e.tag.endswith('}loc')}
+if urls != {SITE if p == 'index.html' else SITE+p for p, _ in LISTED}:
+    fail('sitemap differs from canonical listed routes')
 
 # ---------------------------------------------------------------- report
 if fails:

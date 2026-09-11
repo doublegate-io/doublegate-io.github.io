@@ -1,22 +1,8 @@
-<section id="top">
-  <div class="wrap hero narrow">
-    <p class="eyebrow">How it works</p>
-    <h1>One memory's journey</h1>
-    <p class="lede">
-      An agent writes something down. Follow it from that moment to the point where a colleague in
-      another office can use the reviewed version. The journey below follows the planned
-      release-3 and release-4 workflow through an illustrative correction: <b>&ldquo;the payments sandbox rate-limits per API
-      key, not per account — space retries 2&nbsp;s apart, not 30.&rdquo;</b>
-    </p>
-  </div>
-</section>
+{hero}
 
 <section id="diagram" class="band">
   <div class="wrap">
-    <div class="diagram wide">
-      <img src="assets/artifact-flow.svg" width="100%"
-        alt="Deployment view: client and organization gates apply their own authority. Within review, an AI assesses trust from 0–100 and another authorized AI or human approves or rejects. Shared publication enforces the approved scope and current access.">
-    </div>
+<figure class="architecture connected-route native-flow" aria-labelledby="review-flow-caption"><figcaption id="review-flow-caption">Review before shared publication. These are lifecycle stages, not deployment boundaries. Planned for releases 3 and 4.</figcaption><ol class="authority-route flow-route"><li class="flow-step"><small>Propose</small><h3>Hold and scan</h3><p>Keep the exact revision, evidence and intended use in review; scan before review access.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Stage 1</small><h3>AI assessment</h3><p>A non-author AI gives a trust assessment from 0–100 with reasons and counterevidence.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Stage 2</small><h3>Authorized decision</h3><p>Another authorized AI or human records APPROVE or REJECT, without a second score.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Publish</small><h3>Apply local authority</h3><p>Approval permits publication within scope. Receiving deployments apply their own rules.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Maintain</small><h3>Check eligible use</h3><p>Current access, expiry and applicability govern use. Withdrawal preserves the decision history.</p></li></ol></figure>
   </div>
 </section>
 
@@ -120,7 +106,7 @@
     <h2>Next</h2>
     <div class="cta-row center">
       <a class="btn primary" href="for-engineers.html">What it costs to run</a>
-      <a class="btn" href="for-organizations.html">The business case</a>
+      <a class="btn" href="for-business.html">The business case</a>
     </div>
   </div>
 </section>
