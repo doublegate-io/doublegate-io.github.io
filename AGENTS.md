@@ -8,7 +8,7 @@ Scope boundaries — this file does not repeat what these already say:
   tier boundary, terminology. **Read it first; it governs here too.** In
   particular §3b (regulatory claims), §3c (safety claims) and §5 (lead with the
   buyer's problem) are the ones this file builds on.
-- [README.md](README.md) — build commands, structure, the eleven `check.py`
+- [README.md](README.md) — build commands, structure, the `check.py`
   gates, diagram colour and layout mechanics.
 
 `*.html` is **generated**. Edit `pages/*.html`, run `python3 build.py`,
@@ -65,7 +65,10 @@ fact, both ways:
 The second refuses more credit than the first and reads as confidence. Lead with
 what *is* true, and let the limit follow as a consequence.
 
-`check.py` has no opinion on tone — grep for these before every commit.
+`check.py` gate 17 holds this one: it reads every section's heading and its
+opening paragraph, and fails on a disclaimer in either position. The patterns it
+carries are the sentences below, so a new way of framing a refusal goes into the
+gate in the same commit that finds it.
 
 ### 2. Businessy, not defensive; concrete, not adjectival
 
@@ -117,7 +120,7 @@ rail, never through the labels; no downscaling below 900px.
 
 ### 7. Run the gate; do not hand-roll checks
 
-`python3 check.py` is eleven checks, each from a real failure. Hand-rolled
+`python3 check.py` is twenty-five checks, each from a real failure. Hand-rolled
 greps have missed the anchor case, the nav-parity case and the README inline-HTML
 case. Run the gate, and add a check to it when you find a new class of failure —
 do not keep the check in your head.
@@ -128,28 +131,20 @@ do not keep the check in your head.
 
 ```bash
 python3 build.py            # regenerate; pages/ is the source, *.html is output
-python3 check.py            # eleven gates, exits non-zero on failure
+python3 check.py            # twenty-five gates, exits non-zero on failure
 node    svg-geometry.js     # text-overlap check; skips without a browser
 ```
 
-```python
-# TONE AUDIT (rules 1-3). check.py has no opinion on register; this does.
-import pathlib, re
-PATTERNS = {
-    "defensive": r"not just another|we are not claiming|nothing is built yet"
-                 r"|we don't claim|isn't a silver|to be clear|let's be clear",
-    "ai-tell":   r"delve|leverage|robust|seamless|cutting-edge|game.chang"
-                 r"|revolution|unlock|empower|harness",
-    "hedge":     r"\bmay\b|\bmight\b|\bcould\b|\bperhaps\b|aims to|seeks to",
-}
-for f in sorted(pathlib.Path("pages").glob("*.html")):
-    visible = re.sub(r"<[^>]+>", " ", f.read_text())
-    for kind, pat in PATTERNS.items():
-        hits = re.findall(pat, visible, re.I)
-        if hits:
-            print(f"{f.name:26s} {kind:10s} {len(hits):2d}  {sorted(set(h.lower() for h in hits))[:5]}")
-# defensive + ai-tell: fix all. hedge: read each one and decide.
-```
+Tone is the gate's business now, so there is nothing to run by hand. Gate 22
+fails the build on an AI tell (`delve`, `leverage`, `robust`, …); gate 17 fails it
+on defensive framing, a disclaimer in heading position, and a qualifier that opens
+a section. Both name the sentence and the page.
+
+Hedges are deliberately *not* in either — rule 3 audits them, it does not ban
+them, and a count is not the finding. Read the `may`, `might` and `could`
+sentences on a page you are about to ship and decide whether each names a real
+uncertainty or is the sentence losing its nerve; `/dg-tone <file> --client` runs
+that pass with the house vocabulary bar attached.
 
 ---
 
@@ -208,3 +203,100 @@ a dated one.
   behind the `doublegate-ui` contract; `ui-sync.py` pins those assets for static deployment.
 - Rebuilt the path and flow figures around Gate I admission and Gate II projection, replacing
   the earlier multi-colour memory-provider pipeline language.
+
+### 2026-09-16 — one grid, band rhythm, and the message pass
+- **One grid.** `.wrap` is `max-width:1240px; padding:0 24px` on every page; the
+  `.institutional`/`.overview` overrides are gone. `.wrap.tight` stopped being a narrower
+  centred box and is now full-width with a 68ch measure on its own prose children, so a
+  heading reaches the page's left edge while the paragraph under it stays readable. The
+  homepage h1 and the interior h1s share one `clamp(42px,5.1vw,70px)` scale, so the front
+  page stopped shouting at 1.6× the rest. Measured: `.tmp/edge.js` reports a single heading
+  `x` of **124px** across every band of all eight pages at 1440px — before this it was 124
+  on the homepage, 204 on the other pages' wide bands and 294 on `.wrap.tight`.
+- **One system.** The breakpoint ladder went from 24 distinct breakpoints to four rungs (1100 /
+  960 / 780 / 600). Superseded generations were folded and deleted — `.institutional h1` was
+  defined twice (112px then 70px), `.institutional .band` twice (110px then 56px), `.btn`
+  three times — and ~30 components that no page referenced (`.knowledge-object`,
+  `.projection-grid`, `.gate-pair`, `.audit-log`, `.notfor`, `.contact*`) went with them.
+  `style.css` lost ~500 lines. The `.sky-*` and `.v-*` sets are excluded: `sky.js` injects
+  them and a grep sees them as dead.
+- **Band rhythm and brand grammar.** The two runs of adjacent `alt` bands —
+  `for-business #honest → #measured` and `commons-for-business #appeals → #limits` — were
+  fixed, and the `┃┃` boundary mark stopped being a 4px detail inside one figure and became
+  the section grammar: it rules the bands that are genuinely boundaries (the two gates, the
+  audience splits, the footer) and anchors the hero at low opacity. On the homepage
+  `#problem`'s three cards became a ruled two-column ledger, and a full-bleed statement band
+  between `#example-source` and `#model` now carries the one sentence the page argues.
+- **Message.** The hero keeps its category frame (`Governed memory for AI agents.`) and the
+  buyer's problem moved to the first band after it, where it has room for a number. Headings
+  that named a category now name a subject: `governance#honest` "We sell the evidence, not the
+  verdict" → **"The evidence is the deliverable"**; `commons-for-business#limits` "Treat it as
+  reviewed intake, not as trusted input" → **"Budget a review for anything you reuse"**;
+  `for-business#why-not` "Sharing knowledge needs a review boundary" → **"A shared store
+  distributes a mistake as readily as a fix"**; `evidence#refuse` "Measuring operational
+  impact" → **"Time to a first verified task, and cost per correction"**.
+- **One deviation from the plan, deliberate.** `commons-for-business#how` was planned as "Two
+  decisions, two authorities" and shipped as **"Approval stops at the boundary that granted
+  it"**. The ladder head immediately below it reads "Four scopes — separate authority at each
+  boundary": the planned heading's "two" would have contradicted the next line on the same
+  screen.
+- **Say each thing once.** The two-stage review was stated in full on five pages — it is now
+  full only on `how-it-works#stages`, with one sentence and a link everywhere else, and every
+  number (0–100, APPROVE/REJECT, no second score) survives. "The organization gate is private
+  and proprietary" was on six surfaces — it is now the footer and `for-business#offering`.
+  `governance#regulatory` no longer reads as a row of yeses: the "no product makes you
+  compliant" sentence moved above the table as its lede and the mechanism column was renamed
+  to say what the product produces (the evidence, the audit trail) rather than what it
+  satisfies.
+- **Gates.** Gate 17 grew three patterns the old ones could not see: a heading stating the
+  product by what it is not (`is not`, `, not a`), a qualifier marker in a section's *opening*
+  paragraph, and a per-page budget of three qualifier markers. Gate 22 is new: no two adjacent
+  bands may paint the same background, and an AI tell fails the build. Gate 23 is new and
+  advisory — a sentence shared by two pages prints a notice with both locations, filtering out
+  the shell (identical by construction) and quotations (which are *supposed* to repeat) so the
+  signal is our own prose moved by copy-paste. All three were proved against the real defects
+  before landing: re-introducing each historical failure makes the gate name it.
+- **Rule 7 applied to this file.** The Python tone-audit snippet that lived under "Before you
+  commit" is deleted — the AI tells are gate 22 now. Hedges stay out of the gate on purpose
+  (rule 3 audits them, it does not ban them), and the 2026-09-16 read found **zero** that hedge
+  a thing we know: `commons-for-business`'s "may well help your recruiting" names real
+  uncertainty, `evidence`'s are the month in "ECB Guide … 3 May 2024" and a study's own
+  "who could see it", and `governance`'s are the `may` of authorisation on the one page whose
+  subject *is* permission. The count is not the finding — a raw grep flags a date.
+- **`README.md`'s gate table** gained the four rows it was missing (19, and the new 21–23),
+  and its numbering now matches `check.py`'s: rows 9–13 became 8a, 8b, 9, 10, 11, because
+  `check.py` has no gates 12 and 13.
+- **`evidence#refuse` hidden by request**, like `#against` above it: the measurement plan — the
+  three metrics, the review-quality evaluation and the lifecycle-control verification — stays in
+  source and stops rendering. Confirmed on the built page: the section has zero box, its text is
+  absent from `document.body.innerText`, and the page now renders `#findings` and `#all` only.
+  The illustration caveat that lived inside its closing note ("our own measurements are
+  illustrations, not population findings") goes with it; the same disclosure survives on
+  `how-it-works` for the token numbers and as the homepage map's caption, so the site still makes
+  it, just not on the evidence page. Three references to the hidden section were removed rather
+  than left pointing at nothing: `for-business`'s "Read the measurement plan, including the
+  separate evaluations of review quality and lifecycle controls" (the clause named only hidden
+  content), `for-engineers`'s "Review the measurement plan" (a paragraph that existed only to
+  carry the link), and `for-business`'s source label "Review the evidence and evaluation plan" →
+  **"Review the evidence"**. The evidence page's own `#all` lede lost its trailing "Illustrations
+  and planned evaluations carry their status in the text", which referred to the same hidden note.
+- **Gate 21 grew the check that would have caught that.** A fragment into a section that carries
+  `hidden` resolves — the `id` is right there in the source — so the existing check passed and the
+  click did nothing: the browser scrolls nowhere and the page looks like it ignored the reader.
+  The gate now fails on a link into a hidden section, skipping anchors that live *inside* one
+  (build.py stamps a chapter `#`-link into every heading, so `#against` and `#refuse` each appear
+  as their own href and are not rendered either). Proved by re-adding the `for-engineers` link:
+  `evidence.html#refuse points into a hidden section — the link resolves and renders nothing`.
+- **Verified on the live preview.** `.tmp/hidden.js` at `evidence.html#refuse` reports the section
+  with `hasBox: false`, `inLayout: false` and `scrolledTo: 0`; `.tmp/audience2.txt` re-runs
+  `audience-check.js` against the post-hide build — PASS, 32 route-viewport checks, 12 redirect
+  bookmarks, 6 visible evidence articles and 6 primary links, no console errors; `build.py --check`
+  in sync (15 files); `check.py` back to its one pre-existing problem, so the hide added none.
+- **Verified.** `build.py --check` in sync (15 files); `audience-check.js` PASS at
+  1440/768/390/320 across 8 pages, 32 route-viewport checks, 12 redirect bookmarks, 6 visible
+  evidence articles and 6 primary links, no console errors; `.tmp/edge.js` one left edge;
+  `svg-routes.js` and the five browser SVG checks PASS (149 labels fit their boxes, the
+  tightest 34px clear of a line); `overview-check.js` PASS with `scrollWidth == width` at every
+  width; `ui-sync.py --check` and `sky-data.py --check` clean. `check.py` reports **one**
+  problem, and it predates this work: `api-sync.py --check` says five `api/*.json` snapshots
+  are behind the private checkouts beside this repo. Nothing is committed.

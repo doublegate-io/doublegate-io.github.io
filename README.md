@@ -18,7 +18,7 @@
 ```bash
 python3 build.py           # regenerate *.html from pages/*.html
 python3 build.py --check   # fail if output is stale (CI does this)
-python3 check.py           # nineteen gate checks
+python3 check.py           # twenty-five gate checks
 python3 sky-data.py        # regenerate assets/sky-data.js from sky-claims.txt (check.py runs --check)
 python3 api-sync.py        # refresh api/*.json from ../doublegate and ../doublegate-org (check.py runs --check)
 python3 ui-sync.py         # pin doublegate-ui's platform CSS and brand assets (check.py runs --check)
@@ -38,7 +38,7 @@ directly to a built page is lost on the next build.
 flowchart LR
   P["pages/*.html<br/><i>bodies only</i>"] --> B["build.py<br/><i>shared shell</i>"]
   B --> O["*.html<br/><i>generated</i>"]
-  O --> C["check.py<br/><i>19 checks</i>"]
+  O --> C["check.py<br/><i>25 checks</i>"]
   O --> G["svg-geometry.js<br/>svg-bounds.js<br/>svg-scale.js<br/>svg-routes.js<br/>svg-fit.js<br/>svg-clearance.js<br/><i>measured, not eyeballed</i>"]
   C --> D["GitHub Pages<br/><i>domain root</i>"]
 
@@ -119,18 +119,22 @@ that was possible once recurs during the next rewrite.
 | 6 | Head metadata present | two pages shared a link preview and neither was findable |
 | 7 | Every page has a call to action | a dead-end page is a lost reader |
 | 8 | Images carry real alt text | the diagram carries the argument; `alt=""` drops it |
-| 9 | `og:image`/`og:url` absolute | crawlers do not resolve relative Open Graph URLs — the preview silently had no image while the page rendered fine |
-| 10 | No links into the private design repo | the design package is private; a deep link 404s and a reader cannot tell that from evidence not existing |
-| 11 | Nav parity + label/heading agreement | four of six nav labels once disagreed with the heading they scrolled to |
-| 12 | SVG motion paths resolve | an `mpath` pointing at a missing id animates to nowhere |
-| 13 | README inline HTML well-formed | a string replacement dropped an `<img>` open tag; invisible in review |
+| 8a | `og:image`/`og:url` absolute | crawlers do not resolve relative Open Graph URLs — the preview silently had no image while the page rendered fine |
+| 8b | No links into the private design repo | the design package is private; a deep link 404s and a reader cannot tell that from evidence not existing |
+| 9 | Nav parity + label/heading agreement | four of six nav labels once disagreed with the heading they scrolled to |
+| 10 | SVG motion paths resolve | an `mpath` pointing at a missing id animates to nowhere |
+| 11 | README inline HTML well-formed | a string replacement dropped an `<img>` open tag; invisible in review |
 | 14 | No orphaned sentence fragments | stripping private-repo links left two captions as fragments — "…you do not own." then "a deliberate decision, not an oversight" — and they shipped |
 | 15 | Every evidence claim has a resolvable source | the evidence page promised "sourced or marked unverified", then carried a claim whose source line said "with the citation above" and pointed at nothing |
 | 16 | One contact address, reachable from every page | the readiness review found no way to reach anyone; a product site with no contact path is a brochure |
-| 17 | No phase language, defensive framing or disclaimer headings in visible copy | an offering audit carried the design repo's engineering-tier honesty list onto three pages as copy ("no design yet — scheduled, not drawn") and every other gate stayed green |
+| 17 | No phase language, and no defensive framing wherever it lands on the reader: a negative heading, a heading that states the product by what it is not (`is not`, `, not a`), a qualifier that opens a section, or more than three qualifier markers on one page | an offering audit carried the design repo's engineering-tier honesty list onto three pages as copy ("no design yet — scheduled, not drawn") and every other gate stayed green; later, six qualifiers opened sections on the index and none of them was a heading the old patterns could see |
 | 18 | Knowledge-map scripts exist and ship from `assets/`, the generated data is fresh, every claim passes the copy gates, and the page carries every element `sky.js` writes to | the map is the site's first JavaScript; its 800 claims are visible copy that lives in a `.js` file where gate 5 does not look, and a renamed element id fails silently in a browser |
 | 18b | `sky-data.py --feed` renders the map from a real organization gate's published notes (`tests/fixtures/org-feed.jsonl`), and the rendering carries labels only — no claim text, no artifact id, no signer; a note with a content field refuses the whole file; the shipped `sky-data.js` is still the authored one | the map will be drawn from a live gate one day; the day it is, the page must not be the place a quarantined excerpt first appears |
+| 19 | A figure made of words is markup, not an image — and the pages still carry the figure's own sentences, so gates 5, 14 and 17 reach them | `scope-flow.svg` and `record-fields.svg` were tables of prose and quoted regulation shipped as 1040px images: nothing selectable, nothing findable, one alt attribute for a screen reader, and at 390px an 11.5px label rendered at 3.8px because a 1040px image cannot reflow |
 | 20 | The API is published as data and the data is the code's: `api/*.json` is a snapshot of what the code repositories render from the tables their daemons dispatch from (`api-sync.py --check`, stale with the checkouts beside, malformed without); `llms.txt` is generated and every link in it resolves; no document carries a private-repository URL, a key, an address or a path from somebody's machine | the code repositories are private and the site is the one place a program can scan; a front door with a dead link, or a snapshot that quietly lags the code, is worse than none |
+| 21 | The audience IA is a contract: one `h1` in the shared hero, a hero complement present, no route to the retired audience pages, the right audience subnavigation with exactly one current subpage, every destination fragment resolving, no link pointing into a `hidden` section, and the sitemap matching the canonical listed routes | the audience split renamed and reordered pages, and a fragment link into a section that had moved renders top-of-page for the visitor with no error anywhere; later, hiding `evidence#refuse` left two clickable links into it — the fragment still resolved, so the check passed, while the click did nothing |
+| 22 | No two adjacent bands paint the same background, and no AI tell reaches visible copy | `for-business #honest → #measured` and `commons-for-business #appeals → #limits` shipped as two `alt` bands side by side, so the rhythm stopped reading as two bands; nothing in the gate had ever looked at a section's class |
+| 23 | Cross-page duplicate sentences are listed with both locations — advisory, never a failure | the two-stage review was stated in full on five pages and "private and proprietary" on six surfaces; every other gate reads one page at a time. Quotations and the shared shell are filtered out, because a source quoted on two pages is *supposed* to repeat |
 
 ## The knowledge map (front page)
 

@@ -2,7 +2,7 @@
 """Gate checks for the static site. Every check here exists because the error
 happened once already.
 
-Run:  python3 site/check.py
+Run:  python3 check.py
 Exit non-zero on any failure, so it can be wired into CI as-is.
 """
 from __future__ import annotations
@@ -29,10 +29,18 @@ LEAKS = {
 }
 
 fails: list[str] = []
+# Advisory findings: printed, never fatal. A check that can only fail gets
+# deleted the first time it is inconvenient; a check that can warn survives to
+# catch the thing it was written for. Gate 23 is the only user so far.
+warns: list[str] = []
 
 
 def fail(msg: str) -> None:
     fails.append(msg)
+
+
+def warn(msg: str) -> None:
+    warns.append(msg)
 
 
 def visible(markup: str) -> str:
@@ -393,6 +401,76 @@ DEFENSIVE_FRAMING = re.compile(
 NEGATIVE_HEADING = re.compile(
     r"(?i)^what (?:we|this|it) (?:are|is|will|do|does|can)(?:n'?t| not) ",
 )
+#     A second class of heading the first pattern cannot see: the heading that
+#     states the product by what it is not ("We sell the evidence, not the
+#     verdict", "Internal approval is not public permission", "Treat it as
+#     reviewed intake, not as trusted input"). Found 2026-09-16 — three of the
+#     four offenders sat in heading position, which is the position rule 1
+#     cares about, and nothing here saw any of them.
+#     Deliberately not matching a bare "never" (how-it-works: "Records are never
+#     held up" is a guarantee about the mechanism) or ", not just"
+#     (for-engineers: "Plan the deployment, not just the import" is a scope
+#     instruction). Both are the positive statement, worded the long way.
+CONTRAST_HEADING = re.compile(
+    r"\b(?:is|are|was|were|does|do|will|would)\s+not\b"
+    r"|,\s*not\s+(?:a|an|the|as)\b",
+    re.I,
+)
+#     Headings the pattern catches that are not disclaimers, each with the
+#     reason written down — the same bar as the gate-17 phrases above.
+CONTRAST_HEADING_OK = {
+    "Individual AI access changed time use, not the mix of tasks":
+        "the negation is the cited study's measured finding, not our hedge",
+    "Where it fits, and where it does not":
+        "names the section's scope; the answer is the section's own content",
+    "That page is not here":
+        "404.html describing the visitor's situation, not the product's",
+}
+#     The same rule one level down: a section opens with its claim, never with a
+#     refusal of it. Catches the trailing "…, not a <claim category>" and the
+#     metadiscursive labels ("One honest limit:", "these are release plans") —
+#     the shape the 2026-09-16 message revision removed from six section
+#     openers, every one of which had been shipping.
+#     The category list is the point: "free reading does not grant unrestricted
+#     redistribution" and "Installing the SDK does not start a gate" are limits
+#     attached to the claim they qualify, and they stay.
+DISCLAIMER_OPENER = re.compile(
+    r"(?:^|[,;:])\s*(?:and\s+)?(?:not|no|never)\s+(?:a|an|the)?\s*(?:"
+    r"claim|guarantee|promise|endorsement|recommendation|certification|sla"
+    r"|compliance finding|approval vote|measured (?:saving|outcome|result)"
+    r"|customer deployment|company record|live (?:hosted )?service"
+    r"|hosted (?:endpoint|service)|released \w+|universal truth|trusted input"
+    r"|production connector|catalogue integration|evidence of\b"
+    r"|substitute for\b)\b"
+    r"|to be clear|let'?s be clear|we are not claiming|not just another"
+    r"|nothing is built|these are release plans|one honest limit"
+    r"|it is worth noting|it should be noted|we don'?t claim",
+    re.I,
+)
+DISCLAIMER_OPENER_OK: dict[str, str] = {}
+#     The whole page is allowed a few of these; a page carrying more has lost its
+#     nerve rather than named a limit. Measured 2026-09-16: after the revision no
+#     page carries more than two, so three is a floor with headroom.
+DISCLAIMER_BUDGET = 3
+
+
+def opener_paragraph(inner: str) -> str:
+    """The paragraph a reader meets first after a section's heading.
+
+    The first <p> after </h2> and before any nested block — once a div, list,
+    table or figure opens, the section has started with something other than a
+    paragraph and there is no opener to test. Conservative on purpose: a missed
+    opener is a style miss, a false one blocks a build.
+    """
+    _, sep, tail = inner.partition("</h2>")
+    if not sep:
+        return ""
+    cut = re.search(r"(?is)<(?:div|ol|ul|table|figure|dl)\b", tail)
+    window = tail[: cut.start()] if cut else tail
+    p = re.search(r"(?is)<p\b[^>]*>(.*?)</p>", window)
+    return re.sub(r"\s+", " ", visible(p.group(1))).strip() if p else ""
+
+
 for page in pages:
     markup = page.read_text()
     # drop quotations: the words inside <q> and <blockquote> belong to the source
@@ -405,9 +483,24 @@ for page in pages:
         fail(f"{page.name}: defensive framing in visible copy -> "
              f"…{body[max(0, m.start() - 45): m.end() + 30]}…")
     for h in re.findall(r"(?s)<h[1-3][^>]*>(.*?)</h[1-3]>", markup):
+        # build.py stamps a "#" self-link into every chapter heading; it is not
+        # part of the sentence, and leaving it in made the allowlist below miss.
+        h = re.sub(r'(?s)<a class="h-anchor".*?</a>', " ", h)
         text = re.sub(r"\s+", " ", visible(h)).strip()
         if NEGATIVE_HEADING.match(text):
             fail(f"{page.name}: heading frames a disclaimer, not guidance -> {text!r}")
+        elif text not in CONTRAST_HEADING_OK and CONTRAST_HEADING.search(text):
+            fail(f"{page.name}: heading states the product by what it is not -> {text!r}")
+    markers = DISCLAIMER_OPENER.findall(body)
+    if len(markers) > DISCLAIMER_BUDGET:
+        fail(f"{page.name}: {len(markers)} qualifier markers in visible copy "
+             f"(budget {DISCLAIMER_BUDGET}) -> {sorted({m.lower() for m in markers})}")
+    for sid, inner in re.findall(r'<section id="([^"]+)"[^>]*>(.*?)</section>', markup, re.S):
+        opener = opener_paragraph(inner)
+        hit = DISCLAIMER_OPENER.search(opener)
+        if hit and opener not in DISCLAIMER_OPENER_OK:
+            fail(f"{page.name}: section #{sid} opens by refusing a claim -> "
+                 f"{opener[:110]!r} [{hit.group(0)!r}]")
 
 # 18. THE KNOWLEDGE MAP'S CLAIMS ARE COPY, AND ITS DATA IS FRESH.
 #     The map on the front page is the first JavaScript on the site, and it reads
@@ -592,8 +685,28 @@ for name, _ in LISTED:
             fail(f"{name}: missing current subpage")
     elif subnav:
         fail(f"{name}: unexpected audience subnavigation")
+
+
+def hidden_spans(markup: str) -> list[tuple[int, int]]:
+    """Source ranges occupied by sections that are not rendered. Sections are not
+    nested in these fragments, so the first close tag ends each one."""
+    spans = []
+    for m in re.finditer(r"<section\b[^>]*\bhidden\b[^>]*>", markup):
+        close = markup.find("</section>", m.end())
+        spans.append((m.start(), close if close != -1 else len(markup)))
+    return spans
+
+
 for page in pages:
-    for href in re.findall(r'href="([^"]+)"', page.read_text()):
+    markup = page.read_text()
+    unrendered = hidden_spans(markup)
+    for m in re.finditer(r'href="([^"]+)"', markup):
+        href, at = m.group(1), m.start()
+        # A link inside a hidden section is not rendered either: the chapter anchor
+        # build.py stamps into every heading (#against, #refuse) lives in there and
+        # goes with it. Only a link a visitor can actually click is a real dead end.
+        if any(start <= at < end for start, end in unrendered):
+            continue
         parts = urlsplit(href)
         if parts.scheme or parts.netloc:
             continue
@@ -602,13 +715,133 @@ for page in pages:
             target = ROOT / name
             if not target.exists() or unquote(parts.fragment) not in re.findall(r'id="([^"]+)"', target.read_text()):
                 fail(f"{page.name}: missing destination fragment {href}")
+                continue
+            # A fragment that resolves to a `hidden` section passes the check above
+            # and still shows the visitor nothing: the browser scrolls nowhere and
+            # the page looks like it ignored the click. #refuse and #against are
+            # hidden by request; anything linking into them has to be re-pointed or
+            # dropped, not left as a link to a section that is not rendered.
+            tag = re.search(rf'<section\b[^>]*id="{re.escape(unquote(parts.fragment))}"[^>]*>',
+                            target.read_text())
+            if tag and "hidden" in tag.group(0):
+                fail(f"{page.name}: {href} points into a hidden section — the link "
+                     f"resolves and renders nothing")
 sitemap = ET.parse(ROOT / 'sitemap.xml')
 from build import SITE
 urls = {e.text for e in sitemap.iter() if e.tag.endswith('}loc')}
 if urls != {SITE if p == 'index.html' else SITE+p for p, _ in LISTED}:
     fail('sitemap differs from canonical listed routes')
 
+# 22. THE BAND RHYTHM ALTERNATES, AND THE COPY CARRIES NO AI TELLS.
+#     Two bands with the same surface beside each other stop reading as two
+#     bands: for-business #honest/#measured and commons-for-business
+#     #appeals/#limits shipped that way past every gate above, because nothing
+#     here had looked at a section's class. Found 2026-09-16.
+#     The AI tells are the other half. AGENTS.md rule 2 has listed them in a
+#     Python snippet to run by hand since this file was written — a check kept
+#     in prose, which is what rule 7 says not to do. The hedge list is
+#     deliberately NOT here: rule 3 audits hedges, it does not ban them.
+AI_TELL = re.compile(
+    r"delve|leverage|robust|seamless|cutting-edge|game.chang"
+    r"|revolution|unlock|empower|harness|in today'?s landscape",
+    re.I,
+)
+#     The classes that paint a band surface. Everything else — .band, .statement,
+#     a section with no class — shows the page background, which is the point of
+#     counting them: a reader sees alt/base/alt, not alt/nothing/alt.
+ALT_SURFACE = {"alt", "map-section", "model-section"}  # --bg-alt
+
+
+def band_surface(tag: str) -> str | None:
+    """The background a section paints, or None if it is not rendered."""
+    if "hidden" in tag:
+        return None
+    classes = set(re.search(r'class="([^"]*)"', tag).group(1).split()) if 'class="' in tag else set()
+    if "final-section" in classes:
+        return "ink"
+    return "alt" if classes & ALT_SURFACE else "base"
+
+
+for page in pages:
+    markup = page.read_text()
+    body = re.sub(r"\s+", " ", visible(markup))
+    for m in AI_TELL.finditer(body):
+        fail(f"{page.name}: AI tell in visible copy -> "
+             f"…{body[max(0, m.start() - 45): m.end() + 30]}…")
+    surfaces = []
+    for tag in re.findall(r"<section\b([^>]*)>", markup):
+        surface = band_surface(tag)
+        if surface is None:
+            continue
+        sid = re.search(r'id="([^"]+)"', tag)
+        surfaces.append((sid.group(1) if sid else "?", surface))
+    for (a, sa), (b, sb) in zip(surfaces, surfaces[1:]):
+        if sa == sb == "alt":
+            fail(f"{page.name}: #{a} and #{b} are both alt bands — "
+                 f"the rhythm stops alternating")
+
+# 23. A SENTENCE ON TWO PAGES WAS MOVED, NOT WRITTEN TWICE.
+#     The 3.5 rule — say each thing once — is the one correction from the
+#     2026-09-16 copy pass that nothing could check: the two-stage review was
+#     stated in full on five pages and "private and proprietary" on six
+#     surfaces, and every gate above reads one page at a time. Found by hand.
+#
+#     Advisory, not a failure, because two kinds of repeat are legitimate and a
+#     gate that failed on them would be deleted within a week: the shell (nav
+#     and footer are the same string on every page by construction) and a
+#     quotation (source text is *supposed* to repeat word for word wherever it
+#     is cited). Both are filtered out before comparison. What is left is our
+#     own prose; 12 words is the threshold, because below it shared phrasing is
+#     the house register rather than a moved sentence.
+DUPLICATE_SHINGLE = 12
+DUPLICATE_OK = {
+    "a non author ai scores trust from 0 100 on the revision":
+        "the score is a number, and every page that states it must state it the same",
+    "tasks using the same tools and source access with and without reviewed":
+        "one metric: defined on evidence#refuse, named where the release "
+        "sequence is promised. A definition that differs between them is the bug",
+}
+
+
+def prose_sentences(markup: str) -> list[tuple[str, list[str]]]:
+    """A page's own sentences, as (as-written, normalized words)."""
+    body = re.sub(r"(?is)<(?:nav|footer)\b[^>]*>.*?</(?:nav|footer)>", " ", markup)
+    out = []
+    for s in re.split(r"(?<=[.!?])\s+", re.sub(r"\s+", " ", visible(body))):
+        if '"' in s or "“" in s or "”" in s:
+            continue
+        words = " ".join(re.sub(r"[^a-z0-9 ]", " ", s.lower()).split()).split()
+        if len(words) >= DUPLICATE_SHINGLE:
+            out.append((s.strip(), words))
+    return out
+
+
+shared: dict[str, set[tuple[str, str, str]]] = {}
+for page in pages:
+    for written, words in prose_sentences(page.read_text()):
+        norm = " ".join(words)
+        for i in range(len(words) - DUPLICATE_SHINGLE + 1):
+            shared.setdefault(" ".join(words[i:i + DUPLICATE_SHINGLE]), set()).add(
+                (page.name, written, norm))
+reported: set[tuple[str, ...]] = set()
+for shingle, hits in sorted(shared.items()):
+    if len({name for name, _, _ in hits}) < 2:
+        continue
+    group = tuple(sorted({norm for _, _, norm in hits}))
+    if group in reported:
+        continue
+    reported.add(group)
+    # An entry clears a group only if the phrase is on *both* sides: these are
+    # sentences two pages are entitled to share, not a licence for one of them.
+    if any(all(phrase in norm for norm in group) for phrase in DUPLICATE_OK):
+        continue
+    shown = sorted({(name, written) for name, written, _ in hits})
+    warn("one sentence on two pages -> "
+         + " | ".join(f"{name}: {written[:80]}…" for name, written in shown))
+
 # ---------------------------------------------------------------- report
+for w in warns:
+    print(f"NOTICE · {w}")
 if fails:
     print(f"FAIL — {len(fails)} problem(s):")
     for f in fails:
@@ -621,3 +854,6 @@ print("  metadata · calls to action · alt text · nav parity · svg motion pat
 print("  README inline HTML integrity · one contact address, reachable everywhere")
 print("  no phase language · knowledge-map scripts, data freshness and claim copy · the map from a real feed, labels only")
 print("  text figures are markup, not images · the API as data: snapshot well-formed, llms.txt resolves, nothing private in it")
+print("  the audience IA and its destination fragments resolve")
+print("  the band rhythm alternates · no AI tells in visible copy · a qualifier attaches to its claim, never opens a section")
+print("  a sentence is written once: cross-page repeats are listed above, not failed")

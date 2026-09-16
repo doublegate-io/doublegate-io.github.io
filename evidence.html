@@ -34,6 +34,7 @@
     <p class="page-context">Evidence</p>
     <div class="page-hero-grid">
       <div class="page-hero-title"><h1>Every claim, with its source.</h1></div>
+      <span class="gate-rail dg-boundary-mark hero-rail" aria-hidden="true"><i></i><i></i></span>
       <div class="page-hero-complement"><p class="hero-proposition">Read the finding. Check what it actually supports.</p><p>Published research supports the problem and approach. DoubleGate’s planned evaluations must establish its own outcomes; the internal provider survey is available on request.</p><a href="#findings">Read the primary sources</a></div>
     </div>
     
@@ -177,9 +178,12 @@
   </div>
 </section>
 
-<section id="refuse" class="band">
+<!-- Hidden by request, like #against above: kept in source so the gates still read
+     it, not rendered. A link pointing into a hidden section is a dead end for the
+     visitor, which check.py gate 21 refuses. -->
+<section id="refuse" class="band" hidden>
   <div class="wrap tight">
-    <h2>Measuring operational impact<a class="h-anchor" href="#refuse" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>Time to a first verified task, and cost per correction<a class="h-anchor" href="#refuse" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
       Deployment evaluation begins with release 4. It tests whether reviewed shared knowledge
       improves task outcomes and what it costs to prepare, review and maintain.
@@ -237,9 +241,8 @@
   <div class="wrap tight center">
     <h2>The full research set<a class="h-anchor" href="#all" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
-      Published research above links to primary sources. Our internal provider survey is
-      available on request, including its method and per-provider notes. Illustrations and
-      planned evaluations are identified separately from published findings.
+      Every study above links to its primary source. Our internal provider survey is available on
+      request, with its method and per-provider notes.
     </p>
     <div class="cta-row center">
       <a class="btn primary" href="for-business.html">The business case</a>
@@ -249,24 +252,27 @@
 </section></main>
 
 <footer>
-  <div class="wrap foot">
-    <div>
-      <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · research and evaluation sources
-      <p class="dim">Solo use is free and stays that way. The organization gate is private and proprietary.
-      <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
-      "you got this wrong".</p>
-    </div>
-    <div class="foot-links">
-      <a href="how-it-works.html">How it works</a>
-      <a href="for-business.html">For business</a>
-      <a href="for-engineers.html">For engineers</a>
-      <a href="governance.html">Governance</a>
-      <a href="commons-for-business.html">Commons for business</a>
-      <a href="commons-for-engineers.html">Commons for engineers</a>
-      <a href="evidence.html">Evidence</a>
-      <a href="https://github.com/doublegate-io">GitHub</a>
-      <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
-      <a href="mailto:eugene.korniichuk@gmail.com">Email</a>
+  <div class="wrap">
+    <span class="gate-rail dg-boundary-mark foot-rail" aria-hidden="true"><i></i><i></i></span>
+    <div class="foot">
+      <div>
+        <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · <a href="evidence.html">Research and evaluation sources</a>
+        <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>. The organization gate is private and proprietary.
+        <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
+        "you got this wrong".</p>
+      </div>
+      <div class="foot-links">
+        <a href="how-it-works.html">How it works</a>
+        <a href="for-business.html">For business</a>
+        <a href="for-engineers.html">For engineers</a>
+        <a href="governance.html">Governance</a>
+        <a href="commons-for-business.html">Commons for business</a>
+        <a href="commons-for-engineers.html">Commons for engineers</a>
+        <a href="evidence.html">Evidence</a>
+        <a href="https://github.com/doublegate-io">GitHub</a>
+        <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
+        <a href="mailto:eugene.korniichuk@gmail.com">Email</a>
+      </div>
     </div>
   </div>
 </footer>

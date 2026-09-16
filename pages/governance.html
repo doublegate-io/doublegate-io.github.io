@@ -18,9 +18,9 @@
       <div class="card">
         <span class="card-ico check">⊘</span>
         <h3>Reviewed like everything else</h3>
-        <p>In the selected review workflow, a non-author AI records a trust assessment from 0–100
-        with evidence and reasons. A distinct authorized non-author AI or human returns APPROVE
-        or REJECT, without a second score. A score alone never grants approval.</p>
+        <p>A non-author AI scores trust from 0&ndash;100 on the revision&rsquo;s evidence; a distinct
+        authorized AI or human returns APPROVE or REJECT.
+        <a href="how-it-works.html#stages">The two stages in full</a>.</p>
       </div>
       <div class="card">
         <span class="card-ico audit">⎔</span>
@@ -170,14 +170,16 @@
 <section id="regulatory" class="band alt">
   <div class="wrap">
     <h2>What regulators already ask for</h2>
-    <p class="sub">
-      Quoted requirements alongside relevant evidence mechanisms. Applicability and control
-      effectiveness require an organizational assessment; the mappings are not compliance findings.
+    <p class="lede">
+      No product makes you compliant. Compliance is an assessment of your organization
+      against a control framework &mdash; what we produce is the evidence that goes into one.
+      Each requirement below is quoted from its source, beside what this product gives an
+      auditor to see.
     </p>
 
     <table class="cmp wide">
       <thead>
-        <tr><th>The requirement, quoted</th><th>Source</th><th>The mechanism</th></tr>
+        <tr><th>The requirement, quoted</th><th>Source</th><th>What an auditor can see</th></tr>
       </thead>
       <tbody>
         <tr>
@@ -241,9 +243,7 @@
     <h2>Speaking formats your governance team already has tools for</h2>
     <p class="lede">
       An audit trail nobody can import is an audit trail nobody reads. The records are designed to
-      express in established vocabularies. These export mappings are design targets, not a claim
-      that a production connector or catalogue integration has shipped. The organization gate
-      remains private and proprietary; publishing interface documents does not open its implementation.
+      express in established vocabularies, and the two mappings below are design targets toward them.
     </p>
     <div class="cards two">
       <div class="card">
@@ -262,7 +262,7 @@
       </div>
     </div>
     <p class="note">
-      One honest limit: a field-level mapping is clean for a direct transformation and genuinely
+      A field-level mapping is clean for a direct transformation and genuinely
       hard for a generative one. When a model reads two hundred rows and proposes one claim, we can
       record the slice and the fields in scope — we will not pretend to a per-column derivation we
       cannot compute.
@@ -272,10 +272,10 @@
 
 <section id="honest" class="band alt">
   <div class="wrap tight">
-    <h2>We sell the evidence, not the verdict</h2>
+    <h2>The evidence is the deliverable</h2>
     <p class="lede">
-      No product makes you compliant. Compliance is an assessment of your organization against a
-      control framework &mdash; what we produce is the evidence that goes into one.
+      What a reviewer signs is a record: the artifact and its version, the scope it was approved
+      for, the identity behind the decision, and the evidence it rests on.
     </p>
     <p class="note">
       Approval means production-ready for the declared scope, version and use under required

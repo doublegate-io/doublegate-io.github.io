@@ -179,24 +179,27 @@ SHELL = """<!doctype html>
 {body}
 
 <footer>
-  <div class="wrap foot">
-    <div>
-      <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · research and evaluation sources
-      <p class="dim">Solo use is free and stays that way. The organization gate is private and proprietary.
-      <a href="{contact}">Questions, objections and corrections go here</a> — including
-      "you got this wrong".</p>
-    </div>
-    <div class="foot-links">
-      <a href="how-it-works.html">How it works</a>
-      <a href="for-business.html">For business</a>
-      <a href="for-engineers.html">For engineers</a>
-      <a href="governance.html">Governance</a>
-      <a href="commons-for-business.html">Commons for business</a>
-      <a href="commons-for-engineers.html">Commons for engineers</a>
-      <a href="evidence.html">Evidence</a>
-      <a href="{org}">GitHub</a>
-      <a href="{contact}">Ask a question</a>
-      <a href="{mailto}">Email</a>
+  <div class="wrap">
+    <span class="gate-rail dg-boundary-mark foot-rail" aria-hidden="true"><i></i><i></i></span>
+    <div class="foot">
+      <div>
+        <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · <a href="evidence.html">Research and evaluation sources</a>
+        <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>. The organization gate is private and proprietary.
+        <a href="{contact}">Questions, objections and corrections go here</a> — including
+        "you got this wrong".</p>
+      </div>
+      <div class="foot-links">
+        <a href="how-it-works.html">How it works</a>
+        <a href="for-business.html">For business</a>
+        <a href="for-engineers.html">For engineers</a>
+        <a href="governance.html">Governance</a>
+        <a href="commons-for-business.html">Commons for business</a>
+        <a href="commons-for-engineers.html">Commons for engineers</a>
+        <a href="evidence.html">Evidence</a>
+        <a href="{org}">GitHub</a>
+        <a href="{contact}">Ask a question</a>
+        <a href="{mailto}">Email</a>
+      </div>
     </div>
   </div>
 </footer>
@@ -322,17 +325,18 @@ HEROES = {'for-business.html': ('For business',
                                 'now. Commons publication and public operation remain release-5 '
                                 'work.</p>'),
  'index.html': ('DoubleGate / Agent memory',
-                'Memory and knowledge for AI agents.',
+                'Governed memory for AI agents.',
                 '\n'
-                '        <p class="hero-proposition">Reuse what agents learn.<br>Keep the evidence '
-                'and the review.</p>\n'
-                '        <p>DoubleGate is building a memory provider for reviewed claims, team '
-                'conventions and reusable skills — instead of letting each session start from '
-                'private, unversioned corrections.</p>\n'
+                '        <p class="hero-proposition">Claims, conventions and skills that carry their '
+                'evidence and the decision that accepted them.</p>\n'
+                '        <p>DoubleGate is building the memory provider for knowledge your teams '
+                'already settled &mdash; so the next agent starts from it instead of relearning '
+                'it.</p>\n'
                 '        <div class="cta-row"><a class="btn primary" href="#cost">See a reviewed '
                 'example</a><a class="btn" href="for-engineers.html#sdk">Build with the '
                 'SDK</a></div>',
-                '{availability}')}
+                '<p class="availability"><b>Available now:</b> the offline SDK and the published '
+                'API snapshots.</p>')}
 
 def hero_html(page: str) -> str:
     label, headline, complement, status = HEROES[page]

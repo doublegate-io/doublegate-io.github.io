@@ -34,6 +34,7 @@
     <p class="page-context">For business / Governance</p>
     <div class="page-hero-grid">
       <div class="page-hero-title"><h1>Know who approved what. And why.</h1></div>
+      <span class="gate-rail dg-boundary-mark hero-rail" aria-hidden="true"><i></i><i></i></span>
       <div class="page-hero-complement"><p class="hero-proposition">Governance begins with a scoped decision and a record you can inspect.</p><p>Connect proposed knowledge to its source, reviewer and permitted use. Source-system credentials confer no approval authority.</p><a href="#how">Follow a system contribution</a></div>
     </div>
     <p class="availability">Signed decisions and keyed reads exist in the development surface. Two-stage review and shared-team controls are planned for releases 3 and 4; connectors have separate acceptance checks.</p>
@@ -59,9 +60,9 @@
       <div class="card">
         <span class="card-ico check">⊘</span>
         <h3>Reviewed like everything else</h3>
-        <p>In the selected review workflow, a non-author AI records a trust assessment from 0–100
-        with evidence and reasons. A distinct authorized non-author AI or human returns APPROVE
-        or REJECT, without a second score. A score alone never grants approval.</p>
+        <p>A non-author AI scores trust from 0&ndash;100 on the revision&rsquo;s evidence; a distinct
+        authorized AI or human returns APPROVE or REJECT.
+        <a href="how-it-works.html#stages">The two stages in full</a>.</p>
       </div>
       <div class="card">
         <span class="card-ico audit">⎔</span>
@@ -211,14 +212,16 @@
 <section id="regulatory" class="band alt">
   <div class="wrap">
     <h2>What regulators already ask for<a class="h-anchor" href="#regulatory" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="sub">
-      Quoted requirements alongside relevant evidence mechanisms. Applicability and control
-      effectiveness require an organizational assessment; the mappings are not compliance findings.
+    <p class="lede">
+      No product makes you compliant. Compliance is an assessment of your organization
+      against a control framework &mdash; what we produce is the evidence that goes into one.
+      Each requirement below is quoted from its source, beside what this product gives an
+      auditor to see.
     </p>
 
     <table class="cmp wide">
       <thead>
-        <tr><th>The requirement, quoted</th><th>Source</th><th>The mechanism</th></tr>
+        <tr><th>The requirement, quoted</th><th>Source</th><th>What an auditor can see</th></tr>
       </thead>
       <tbody>
         <tr>
@@ -282,9 +285,7 @@
     <h2>Speaking formats your governance team already has tools for<a class="h-anchor" href="#standards" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
       An audit trail nobody can import is an audit trail nobody reads. The records are designed to
-      express in established vocabularies. These export mappings are design targets, not a claim
-      that a production connector or catalogue integration has shipped. The organization gate
-      remains private and proprietary; publishing interface documents does not open its implementation.
+      express in established vocabularies, and the two mappings below are design targets toward them.
     </p>
     <div class="cards two">
       <div class="card">
@@ -303,7 +304,7 @@
       </div>
     </div>
     <p class="note">
-      One honest limit: a field-level mapping is clean for a direct transformation and genuinely
+      A field-level mapping is clean for a direct transformation and genuinely
       hard for a generative one. When a model reads two hundred rows and proposes one claim, we can
       record the slice and the fields in scope — we will not pretend to a per-column derivation we
       cannot compute.
@@ -313,10 +314,10 @@
 
 <section id="honest" class="band alt">
   <div class="wrap tight">
-    <h2>We sell the evidence, not the verdict<a class="h-anchor" href="#honest" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>The evidence is the deliverable<a class="h-anchor" href="#honest" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
-      No product makes you compliant. Compliance is an assessment of your organization against a
-      control framework &mdash; what we produce is the evidence that goes into one.
+      What a reviewer signs is a record: the artifact and its version, the scope it was approved
+      for, the identity behind the decision, and the evidence it rests on.
     </p>
     <p class="note">
       Approval means production-ready for the declared scope, version and use under required
@@ -359,24 +360,27 @@
 </section></main>
 
 <footer>
-  <div class="wrap foot">
-    <div>
-      <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · research and evaluation sources
-      <p class="dim">Solo use is free and stays that way. The organization gate is private and proprietary.
-      <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
-      "you got this wrong".</p>
-    </div>
-    <div class="foot-links">
-      <a href="how-it-works.html">How it works</a>
-      <a href="for-business.html">For business</a>
-      <a href="for-engineers.html">For engineers</a>
-      <a href="governance.html">Governance</a>
-      <a href="commons-for-business.html">Commons for business</a>
-      <a href="commons-for-engineers.html">Commons for engineers</a>
-      <a href="evidence.html">Evidence</a>
-      <a href="https://github.com/doublegate-io">GitHub</a>
-      <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
-      <a href="mailto:eugene.korniichuk@gmail.com">Email</a>
+  <div class="wrap">
+    <span class="gate-rail dg-boundary-mark foot-rail" aria-hidden="true"><i></i><i></i></span>
+    <div class="foot">
+      <div>
+        <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · <a href="evidence.html">Research and evaluation sources</a>
+        <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>. The organization gate is private and proprietary.
+        <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
+        "you got this wrong".</p>
+      </div>
+      <div class="foot-links">
+        <a href="how-it-works.html">How it works</a>
+        <a href="for-business.html">For business</a>
+        <a href="for-engineers.html">For engineers</a>
+        <a href="governance.html">Governance</a>
+        <a href="commons-for-business.html">Commons for business</a>
+        <a href="commons-for-engineers.html">Commons for engineers</a>
+        <a href="evidence.html">Evidence</a>
+        <a href="https://github.com/doublegate-io">GitHub</a>
+        <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
+        <a href="mailto:eugene.korniichuk@gmail.com">Email</a>
+      </div>
     </div>
   </div>
 </footer>
