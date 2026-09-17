@@ -3,20 +3,20 @@
 
 <section id="sdk" class="band">
   <div class="wrap">
-    <div class="section-head"><div><p class="section-index">Python SDK · development snapshot</p><h2>A check you can run.<br>A result you can inspect.</h2></div><p>The standalone <b>doublegate-sdk</b> validates declarative manifests and runs bounded literal checks offline. Its output is evidence for a review, not permission to install, publish or execute an artifact.</p></div>
+    <div class="section-head"><div><p class="section-index">Python SDK · runs offline today</p><h2>A check you can run.<br>A result you can inspect.</h2></div><p>The standalone <b>doublegate-sdk</b> validates declarative manifests and runs bounded literal checks offline. Its output is evidence a reviewer can act on; permission to install, publish or execute stays with the systems that do those things.</p></div>
     <div class="sdk-grid">
       <div>
         <h3>Start from source</h3>
-        <p>Python 3.11+. The file loader supports Linux/WSL and requires POSIX operations; native Windows loading is unsupported. The core has no runtime dependencies or service installation.</p>
+        <p>Python 3.11+. The file loader runs on Linux and WSL and uses POSIX operations. The core has no runtime dependencies and installs no service.</p>
 <p>Clone the <a href="https://github.com/doublegate-io/doublegate-sdk">public SDK repository</a>, create a Python environment and follow the <a href="https://doublegate-io.github.io/doublegate-sdk/dev/quickstart/">versioned quickstart</a> for installation and execution commands.</p>
-        <p class="micro">Development snapshot 0.1.0.dev0. Source and build artifacts are distributed through GitHub; there is no PyPI package or stable release. Use the source checkout, not a package index.</p>
+        <p class="micro">Version 0.1.0.dev0, distributed from the GitHub repository. Install from the source checkout; the package index follows with the adoption release.</p>
         <p><a href="https://doublegate-io.github.io/doublegate-sdk/dev/quickstart/">Versioned Python quickstart</a> · <a href="https://github.com/doublegate-io/doublegate-sdk">SDK source</a></p>
       </div>
       <div>
         <h3>Verify a runbook field</h3>
         <p>Run from the SDK repository root. The bundled runbook manifest requires the literal text <code>Owner:</code>. Compare content with and without that field using the versioned example.</p>
 <p>The <a href="https://doublegate-io.github.io/doublegate-sdk/dev/quickstart/">published runbook quickstart</a> walks through package loading and evaluation. Use its current API and output format for the checked-out version.</p>
-        <p class="micro">A clean result means the literal check passed, not that the owner is real or the runbook correct. This manifest requires human review; the SDK does not satisfy it. That fixture policy does not make humans mandatory in DoubleGate's general review design.</p>
+        <p class="micro">A clean result means the literal check passed. Whether the owner is real and the runbook correct is what the human review on this manifest is for; that fixture policy is its own, and DoubleGate's general review design sets human participation by policy.</p>
       </div>
     </div>
   </div>

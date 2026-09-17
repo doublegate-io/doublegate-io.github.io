@@ -266,8 +266,9 @@ HEROES = {'for-business.html': ('For business',
                        'corrections to reusable knowledge. Your organization defines the criteria, '
                        'ownership and access.</p><div class="cta-row"><a class="btn" '
                        'href="#honest">Plan a team evaluation</a></div>',
-                       '<p class="availability">Shared-team controls are planned for release 4. '
-                       'Review consumes inference and operating effort; compare results with your '
+                       '<p class="availability"><b>Available now:</b> the offline SDK and the '
+                       'published API artifacts. <b>Release 4:</b> shared-team controls. Review '
+                       'consumes inference and operating effort; compare results with your '
                        'existing workflow.</p>'),
  'for-engineers.html': ('For engineers',
                         'Build with reviewed knowledge.',
@@ -284,9 +285,9 @@ HEROES = {'for-business.html': ('For business',
                      'record you can inspect.</p><p>Connect proposed knowledge to its source, '
                      'reviewer and permitted use. Source-system credentials confer no approval '
                      'authority.</p><a href="#how">Follow a system contribution</a>',
-                     '<p class="availability">Signed decisions and keyed reads exist in the '
-                     'development surface. Two-stage review and shared-team controls are planned '
-                     'for releases 3 and 4; connectors have separate acceptance checks.</p>'),
+                     '<p class="availability"><b>Available now:</b> signed decisions and keyed '
+                     'reads. <b>Releases 3 and 4:</b> two-stage review and shared-team controls; '
+                     'connectors carry their own acceptance checks.</p>'),
  'how-it-works.html': ('How it works',
                        'A correction becomes shared knowledge.',
                        '<p class="hero-proposition">One revision. Evidence, a decision and a '
@@ -294,13 +295,13 @@ HEROES = {'for-business.html': ('For business',
                        'sandbox rate-limits per API key, not per account. Each stage below changes '
                        'what others may do with that revision.</p><a href="#diagram">Follow the '
                        'review lifecycle</a>',
-                       '<p class="availability">The journey illustrates the planned release-3 '
-                       'review and release-4 sharing workflow.</p>'),
+                       '<p class="availability">The journey shows the release-3 review and '
+                       'release-4 sharing workflow end to end.</p>'),
  'evidence.html': ('Evidence',
                    'Every claim, with its source.',
                    '<p class="hero-proposition">Read the finding. Check what it actually '
                    'supports.</p><p>Published research supports the problem and approach. '
-                   'DoubleGate’s planned evaluations must establish its own outcomes; the internal '
+                   'DoubleGate’s own evaluations establish its outcomes, and the internal '
                    'provider survey is available on request.</p><a href="#findings">Read the '
                    'primary sources</a>',
                    ''),
@@ -311,8 +312,8 @@ HEROES = {'for-business.html': ('For business',
                                'your organization. Assess the rights, evidence and maintenance '
                                'work before contributing or reusing an artifact.</p><a '
                                'href="#why-contribute">Evaluate contribution</a>',
-                               '<p class="availability">The public Commons is planned for release '
-                               '5. Reading is free; reuse follows each artifact’s published '
+                               '<p class="availability"><b>Release 5:</b> the public Commons. '
+                               'Reading is free; reuse follows each artifact’s published '
                                'terms.</p>'),
  'commons-for-engineers.html': ('For engineers / Commons',
                                 'Carry the evidence with the artifact.',
@@ -321,15 +322,14 @@ HEROES = {'for-business.html': ('For business',
                                 'offline SDK and inspect the published schemas. SDK findings '
                                 'inform review; they grant no publication or execution '
                                 'authority.</p><a href="#formats">Inspect the current formats</a>',
-                                '<p class="availability">SDK development artifacts are available '
-                                'now. Commons publication and public operation remain release-5 '
-                                'work.</p>'),
+                                '<p class="availability"><b>Available now:</b> the SDK artifacts. '
+                                '<b>Release 5:</b> Commons publication and public operation.</p>'),
  'index.html': ('DoubleGate / Agent memory',
                 'Governed memory for AI agents.',
                 '\n'
                 '        <p class="hero-proposition">Claims, conventions and skills that carry their '
                 'evidence and the decision that accepted them.</p>\n'
-                '        <p>DoubleGate is building the memory provider for knowledge your teams '
+                '        <p>DoubleGate is the memory provider for knowledge your teams '
                 'already settled &mdash; so the next agent starts from it instead of relearning '
                 'it.</p>\n'
                 '        <div class="cta-row"><a class="btn primary" href="#cost">See a reviewed '
@@ -349,7 +349,7 @@ def render_redirect(target: str) -> str:
 
 def render(page: str) -> str:
     title, desc = TITLES[page]
-    body = anchor_headings((PAGES / page).read_text().strip().replace("{hero}", hero_html(page) if page in HEROES else "").replace("{first_release}", FIRST_RELEASE).replace("{availability}", f'<p class="availability"><b>Available now:</b> offline SDK and development API artifacts. <b>Planned:</b> provider adoption in {FIRST_RELEASE}; review and organizational sharing follow in later releases.</p>'))
+    body = anchor_headings((PAGES / page).read_text().strip().replace("{hero}", hero_html(page) if page in HEROES else "").replace("{first_release}", FIRST_RELEASE).replace("{availability}", f'<p class="availability"><b>Available now:</b> the offline SDK and the published API artifacts. <b>Next:</b> provider adoption in {FIRST_RELEASE}, then review and organizational sharing.</p>'))
     if not body.startswith("<main"):
         body = f'<main class="audience-page">{body}</main>'
     # index.html is served at the domain root, so its canonical is the bare

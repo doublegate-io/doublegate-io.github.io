@@ -3,25 +3,19 @@
   "info": {
     "title": "doublegate organization gate",
     "version": "0.1.0.dev0",
-    "description": "The one inbound HTTP surface of an organization gate (ADR-0033): bearer keys with scopes `submit | read | admin`, one port, plaintext behind the operator's TLS terminator. In `auth.mode: local` the same route table is served keyless on loopback only.\n\nWhat this surface is not: a way to promote. Admission is the quorum's, on the socket, by the operator; the wire carries submissions in and outcomes out (ADR-0030 §3: the answer never rides the PUT).",
+    "description": "The one inbound HTTP surface of an organization gate (ADR-0033) as ADR-0082 leaves it: one port, plaintext behind the operator's TLS terminator, and one question at every door — what ROLE is calling. A person signs in through OpenID Connect at the deployment group's issuer and presents that token; a program presents an opaque `dgk_` API key. Either way the credential resolves to one of four ranked roles, `reader` < `agent` < `reviewer` < `admin` (AUTH-4), and each route below names the one it needs in `x-role`. In `[surface] mode = local` the same route table is served keyless on loopback only, as the daemon owner (`uid:<n>`), and an off-loopback bind is refused at startup.\n\nWhat this surface is not: a way to promote. Admission is the quorum's, on the socket, by a reviewer; the wire carries submissions in and outcomes out (ADR-0030 §3: the answer never rides the PUT).",
     "x-invariants": [
-      "INV-SEC-8: in key mode no data route answers without a valid bearer; 401 is identical for no key and a forged key",
+      "INV-SEC-8: in key mode no data route answers without a valid credential; 401 is identical for no key and a forged key",
       "INV-SEC-9: keys never appear in logs; the raw key is returned once, at issue",
       "I1: /memories never reaches quarantine or the inbox",
-      "I2: the writer of an introduced claim is the key's identity, never a field"
+      "I2: the writer of an introduced claim is the credential's identity, never a field",
+      "AUTH-4: an agent reaches nothing above its row, on any transport — the gate is not callable by the thing being gated"
     ]
   },
   "servers": [
     {
-      "url": "http://{host}:{port}",
-      "variables": {
-        "host": {
-          "default": "127.0.0.1"
-        },
-        "port": {
-          "default": "7462"
-        }
-      }
+      "url": "/",
+      "description": "this gate, on the origin that served this document"
     }
   ],
   "tags": [
@@ -57,10 +51,157 @@
       "bearer": {
         "type": "http",
         "scheme": "bearer",
-        "description": "`Authorization: Bearer <key>`; scope is a property of the key"
+        "description": "`Authorization: Bearer <credential>` — a `dgk_` API key, or a person's JWT from the deployment group's issuer. The ROLE is a property of the credential, never of the request (AUTH-1, AUTH-3)"
       }
     },
     "schemas": {
+      "McpCatalog": {
+        "type": "object",
+        "required": [
+          "tier",
+          "version",
+          "transports",
+          "tools",
+          "tool_count",
+          "not_exposed"
+        ],
+        "properties": {
+          "tier": {
+            "type": "string",
+            "const": "org"
+          },
+          "version": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "protocol": {
+            "type": "object",
+            "required": [
+              "methods",
+              "protocolVersions"
+            ],
+            "properties": {
+              "methods": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "protocolVersions": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "notes": {
+                "type": "string"
+              }
+            }
+          },
+          "transports": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "transport",
+                "available",
+                "identity",
+                "auth"
+              ],
+              "properties": {
+                "transport": {
+                  "type": "string",
+                  "enum": [
+                    "stdio",
+                    "http"
+                  ]
+                },
+                "entry": {
+                  "type": "string"
+                },
+                "available": {
+                  "type": "boolean"
+                },
+                "identity": {
+                  "type": "string"
+                },
+                "auth": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "tools": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "verb",
+                "required",
+                "properties",
+                "annotations"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "verb": {
+                  "type": "string"
+                },
+                "required": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "properties": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "annotations": {
+                  "type": "object"
+                },
+                "summary": {
+                  "type": "string"
+                },
+                "notes": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "tool_count": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "not_exposed": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "name",
+                "why"
+              ],
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "why": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
       "ReviewStatusItem": {
         "type": "object",
         "additionalProperties": false,
@@ -150,16 +291,263 @@
           }
         }
       },
-      "Submission": {
+      "Envelope": {
         "type": "object",
+        "additionalProperties": false,
+        "description": "The frozen v1 envelope (ADR-0022). Optional fields use canonical omission — an absent `derives_from` and an empty one must hash identically, so `[]` is never emitted.",
+        "required": [
+          "envelope_version",
+          "content_hash",
+          "content_type",
+          "trust_class",
+          "source_uri",
+          "writer_identity",
+          "deployment_id",
+          "ingest_ts",
+          "size_bytes"
+        ],
+        "properties": {
+          "envelope_version": {
+            "type": "integer"
+          },
+          "content_hash": {
+            "type": "string",
+            "pattern": "^[0-9a-f]{64}$",
+            "description": "bare sha256 hex of the content bytes"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "trust_class": {
+            "type": "string"
+          },
+          "source_uri": {
+            "type": "string"
+          },
+          "writer_identity": {
+            "type": "string"
+          },
+          "deployment_id": {
+            "type": "string"
+          },
+          "ingest_ts": {
+            "type": "integer"
+          },
+          "size_bytes": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "derives_from": {
+            "type": "array",
+            "minItems": 1,
+            "items": {
+              "type": "string"
+            },
+            "description": "emitted only when non-empty"
+          },
+          "content_key_id": {
+            "type": "string",
+            "description": "emitted only when set"
+          }
+        }
+      },
+      "SubmissionEvent": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "The whole-document commitment (`doublegate_sdk.submission.SubmissionEvent`). Its canonical bytes, hashed, are the submission's identity — **not** the envelope digest, which is the local production reference the attribution statements bind to. The two are never conflated.",
+        "required": [
+          "contract",
+          "envelope",
+          "content_digest",
+          "evidence_manifest_digest",
+          "tenant_id",
+          "team_id",
+          "principal",
+          "membership",
+          "submitted_at",
+          "review_refs"
+        ],
+        "properties": {
+          "contract": {
+            "type": "string",
+            "const": "doublegate.submission/1"
+          },
+          "envelope": {
+            "$ref": "#/components/schemas/Envelope"
+          },
+          "content_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "description": "must equal `sha256:` + the envelope's `content_hash`"
+          },
+          "evidence_manifest_digest": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "description": "must equal the digest of `production_evidence_manifest`"
+          },
+          "tenant_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "team_id": {
+            "type": "string",
+            "minLength": 1
+          },
+          "principal": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "kind",
+              "id",
+              "sponsor"
+            ],
+            "properties": {
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "person",
+                  "workload"
+                ]
+              },
+              "id": {
+                "type": "string",
+                "minLength": 1
+              },
+              "sponsor": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "null for a person principal"
+              }
+            }
+          },
+          "membership": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "issuer",
+              "revision",
+              "assertion_digest"
+            ],
+            "properties": {
+              "issuer": {
+                "type": "string",
+                "pattern": "^https?://[^/\\s]+"
+              },
+              "revision": {
+                "type": "integer",
+                "minimum": 0,
+                "maximum": 9007199254740991
+              },
+              "assertion_digest": {
+                "type": "string",
+                "pattern": "^[0-9a-f]{64}$"
+              }
+            }
+          },
+          "submitted_at": {
+            "type": "string",
+            "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}\\.\\d{3}Z$",
+            "description": "UTC, millisecond precision"
+          },
+          "review_refs": {
+            "type": "array",
+            "description": "digest references to retained local records; the gate resolves them to exact bytes, it does not trust them",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "stage",
+                "record_digest"
+              ],
+              "properties": {
+                "stage": {
+                  "type": "string",
+                  "minLength": 1
+                },
+                "record_digest": {
+                  "type": "string",
+                  "pattern": "^[0-9a-f]{64}$"
+                }
+              }
+            }
+          }
+        }
+      },
+      "SignedSubmission": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "The event transport profile the SDK writes and `_put_authenticated_submission` parses (`doublegate_sdk.submission._parse_submission`). A closed field set: any unlisted member is refused. Identity is UNTRUSTED at parse time — the receiver re-parses the exact bytes and owns every authority check.",
+        "required": [
+          "document",
+          "artifact_id",
+          "signature",
+          "content",
+          "space",
+          "local_verdicts",
+          "local_promotion",
+          "production_evidence_manifest"
+        ],
+        "properties": {
+          "document": {
+            "$ref": "#/components/schemas/SubmissionEvent"
+          },
+          "artifact_id": {
+            "type": "string",
+            "pattern": "^sha256:[0-9a-f]{64}$",
+            "description": "the signed submission's own identity — `document`'s canonical hash, prefixed. It must equal the path's artifact id (which is accepted bare or prefixed). Never the envelope digest."
+          },
+          "signature": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]+$",
+            "description": "unpadded base64url Ed25519 over the domain-separated canonical event; 64 raw bytes"
+          },
+          "content": {
+            "type": "string",
+            "description": "utf-8 text, or canonical RFC 4648 base64 when `encoding` is given"
+          },
+          "encoding": {
+            "type": "string",
+            "const": "base64",
+            "description": "the only explicit encoding; omit for utf-8"
+          },
+          "space": {
+            "type": "string",
+            "minLength": 1,
+            "description": "a valid Unicode identifier; compared against the signed retained scope"
+          },
+          "local_verdicts": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            },
+            "description": "the client gate's own verdict records — evidence on the row, never authority here"
+          },
+          "local_promotion": {
+            "type": "object",
+            "description": "the client's signed promote record, resolved against retained bytes"
+          },
+          "production_evidence_manifest": {
+            "type": "object",
+            "description": "its digest must match the event's `evidence_manifest_digest`"
+          },
+          "on_behalf_of": {
+            "type": "object",
+            "description": "the upstream principal a hop names (ADR-0082 d7, AUTH-5). Recorded on the journal line under that name and confers nothing: the role that decides this request is the presenting credential's."
+          }
+        }
+      },
+      "LegacySubmission": {
+        "type": "object",
+        "description": "The original inbox body, served when no signed-submission backend is installed behind this surface. The door verifies `local_promotion`'s signature against the key's deployment.",
         "required": [
           "envelope",
           "local_promotion"
         ],
         "properties": {
           "envelope": {
-            "type": "object",
-            "description": "the frozen v1 envelope (ADR-0022)"
+            "$ref": "#/components/schemas/Envelope"
           },
           "content": {
             "type": "string",
@@ -186,6 +574,504 @@
           }
         }
       },
+      "Submission": {
+        "description": "Two bodies are documented because two are served, and which one applies is a property of the deployment, not of the request. A gate with an authenticated submission backend installed accepts only `SignedSubmission`; a gate without one accepts only `LegacySubmission`. `GET /openapi.json` on the gate you are talking to does not currently distinguish them — read the gate's configuration, not this document, to know which mode is bound.",
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/SignedSubmission"
+          },
+          {
+            "$ref": "#/components/schemas/LegacySubmission"
+          }
+        ]
+      },
+      "Status": {
+        "type": "object",
+        "description": "What `GET /status` answers: the inbox gauges (FR-45) plus, where an automatic review pipeline is configured, `org_review`.",
+        "required": [
+          "depth",
+          "max_depth",
+          "stuck",
+          "revision",
+          "queued",
+          "leased",
+          "done",
+          "held"
+        ],
+        "properties": {
+          "depth": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "rows the inbox is holding right now"
+          },
+          "max_depth": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "the configured bound; `PUT /submissions` answers 503 at it"
+          },
+          "stuck": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "leases past their ttl"
+          },
+          "revision": {
+            "type": "string",
+            "description": "the assembling commit (ADR-0051); `\"\"` on a source checkout"
+          },
+          "queued": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "leased": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "done": {
+            "type": "object",
+            "description": "count by outcome for finished rows; the key `\"\"` is an unrecorded outcome",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "held": {
+            "type": "object",
+            "description": "count by hold reason for `held_for_review` rows; `unstated` where none was recorded",
+            "additionalProperties": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "org_review": {
+            "$ref": "#/components/schemas/OrgReviewStatus"
+          }
+        }
+      },
+      "OrgReviewStatus": {
+        "type": "object",
+        "description": "Operator-visible automatic review *state*: never authority, never a credential. Only `enabled` and `blocked` are guaranteed — a store error is reported as the degraded form (`enabled`, `blocked: true`, `last_failure`) with a fixed reason, because a DSN can ride an exception message.",
+        "required": [
+          "enabled",
+          "blocked"
+        ],
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          },
+          "mode": {
+            "type": "string",
+            "enum": [
+              "automatic",
+              "operator"
+            ]
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "blocked": {
+            "type": "boolean",
+            "description": "a blocked pipeline row, or a startup configuration refusal"
+          },
+          "queued": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "running": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "counts": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "queued",
+              "blocked",
+              "published",
+              "rejected",
+              "pending_review",
+              "assessed",
+              "approved"
+            ],
+            "properties": {
+              "queued": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "blocked": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "published": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "rejected": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "pending_review": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "assessed": {
+                "type": "integer",
+                "minimum": 0
+              },
+              "approved": {
+                "type": "integer",
+                "minimum": 0
+              }
+            },
+            "description": "`queued` is pending_review + assessed + approved: everything the worker still owes a step"
+          },
+          "worker": {
+            "type": "object",
+            "description": "the effective worker configuration, with nothing secret in it",
+            "properties": {
+              "enabled": {
+                "type": "boolean"
+              },
+              "publish": {
+                "type": "boolean"
+              },
+              "principal_prefix": {
+                "type": "string"
+              },
+              "poll_seconds": {
+                "type": "number"
+              },
+              "max_attempts": {
+                "type": "integer"
+              },
+              "lease_seconds": {
+                "type": "number"
+              },
+              "max_claims": {
+                "type": "integer"
+              },
+              "model": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "description": "the review backend's name, null when unbound"
+              },
+              "last_pass_at": {
+                "type": [
+                  "number",
+                  "null"
+                ]
+              }
+            }
+          },
+          "last_failure": {
+            "type": [
+              "object",
+              "null"
+            ],
+            "description": "the last recorded failure; `reason` is truncated and fixed-form, never an exception message",
+            "properties": {
+              "stage": {
+                "type": "string"
+              },
+              "classification": {
+                "type": "string"
+              },
+              "reason": {
+                "type": "string"
+              },
+              "claim_id": {
+                "type": [
+                  "string",
+                  "null"
+                ]
+              },
+              "at": {
+                "type": "number"
+              }
+            }
+          }
+        }
+      },
+      "ClaimsGraphNode": {
+        "type": "object",
+        "description": "One artifact in the projection. INV-SEC-10 lives in this shape: `label` (the body's head, 80 chars) is present only for `ACTIVE`/`SUPERSEDED` rows, and `source_uri` is null for every other state — a held artifact crosses as its existence and provenance attribution, never its content.",
+        "required": [
+          "artifact_id",
+          "state",
+          "content_type",
+          "trust_class",
+          "space",
+          "ts",
+          "provisional",
+          "writer_identity",
+          "writer_label",
+          "source_uri",
+          "ranks",
+          "hidden_for",
+          "banned"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string",
+            "description": "the limbo projection's state, e.g. ACTIVE, SUPERSEDED, HELD, REJECTED"
+          },
+          "content_type": {
+            "type": "string"
+          },
+          "trust_class": {
+            "type": "string"
+          },
+          "space": {
+            "type": "string"
+          },
+          "ts": {
+            "type": "integer",
+            "description": "ingest_ts"
+          },
+          "provisional": {
+            "type": "boolean"
+          },
+          "writer_identity": {
+            "type": "string"
+          },
+          "writer_label": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "the issuing key's label, joined at read; null for non-key writers"
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 80,
+            "description": "the body's head — serialized ONLY for ACTIVE/SUPERSEDED, absent otherwise (INV-SEC-10)"
+          },
+          "source_uri": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "null unless the row is ACTIVE/SUPERSEDED"
+          },
+          "ranks": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "audience",
+                "weight",
+                "event_id",
+                "identity",
+                "ts",
+                "reason"
+              ],
+              "properties": {
+                "audience": {
+                  "type": "string"
+                },
+                "weight": {
+                  "type": "number"
+                },
+                "event_id": {
+                  "type": "string"
+                },
+                "identity": {
+                  "type": "string"
+                },
+                "ts": {
+                  "type": "integer"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "hidden_for": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "audience",
+                "hidden",
+                "lowered",
+                "event_id",
+                "identity",
+                "ts",
+                "reason"
+              ],
+              "properties": {
+                "audience": {
+                  "type": "string"
+                },
+                "hidden": {
+                  "type": "boolean"
+                },
+                "lowered": {
+                  "type": "boolean"
+                },
+                "event_id": {
+                  "type": "string"
+                },
+                "identity": {
+                  "type": "string"
+                },
+                "ts": {
+                  "type": "integer"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "banned": {
+            "type": "array",
+            "description": "the admission bans matching this row's writer or source prefix. Matched internally, so a source ban is reported even where `source_uri` itself is withheld. Retention, not removal.",
+            "items": {
+              "$ref": "#/components/schemas/AdmissionBan"
+            }
+          }
+        }
+      },
+      "AdmissionBan": {
+        "type": "object",
+        "required": [
+          "kind",
+          "subject"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "writer",
+              "source"
+            ]
+          },
+          "subject": {
+            "type": "string"
+          },
+          "reason": {
+            "type": "string"
+          },
+          "until": {
+            "type": [
+              "integer",
+              "null"
+            ],
+            "description": "expiry in epoch milliseconds"
+          },
+          "event_id": {
+            "type": "string"
+          },
+          "identity": {
+            "type": "string"
+          },
+          "ts": {
+            "type": "integer"
+          }
+        }
+      },
+      "ClaimsGraph": {
+        "type": "object",
+        "additionalProperties": false,
+        "description": "The ADR-0035 relation projection serialized (FR-58): a pure function of the stores — nodes off limbo's projection, edges and pins off the graph's. Nothing is computed for the browser that `rebuild` would not reproduce.",
+        "required": [
+          "nodes",
+          "edges",
+          "pins",
+          "bans"
+        ],
+        "properties": {
+          "nodes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ClaimsGraphNode"
+            }
+          },
+          "edges": {
+            "type": "array",
+            "description": "only recorded relations; ordered by ts then event_id",
+            "items": {
+              "type": "object",
+              "required": [
+                "from",
+                "kind",
+                "to",
+                "event_id",
+                "identity",
+                "ts"
+              ],
+              "properties": {
+                "from": {
+                  "type": "string"
+                },
+                "to": {
+                  "type": "string"
+                },
+                "kind": {
+                  "type": "string",
+                  "description": "supersedes | derives_from | contradicts"
+                },
+                "event_id": {
+                  "type": "string"
+                },
+                "identity": {
+                  "type": "string"
+                },
+                "ts": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "pins": {
+            "type": "array",
+            "description": "tip overrides: an operator's pinned head for a supersession root",
+            "items": {
+              "type": "object",
+              "required": [
+                "root",
+                "pinned",
+                "identity",
+                "ts",
+                "reason"
+              ],
+              "properties": {
+                "root": {
+                  "type": "string"
+                },
+                "pinned": {
+                  "type": "string"
+                },
+                "identity": {
+                  "type": "string"
+                },
+                "ts": {
+                  "type": "integer"
+                },
+                "reason": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "bans": {
+            "type": "array",
+            "description": "every admission ban in effect, whether or not a node matches it",
+            "items": {
+              "$ref": "#/components/schemas/AdmissionBan"
+            }
+          }
+        }
+      },
       "InboxState": {
         "type": "object",
         "properties": {
@@ -205,6 +1091,385 @@
             "type": "integer"
           },
           "deployment_id": {
+            "type": "string"
+          }
+        }
+      },
+      "RpcRequest": {
+        "type": "object",
+        "required": [
+          "jsonrpc",
+          "method"
+        ],
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "const": "2.0"
+          },
+          "id": {},
+          "method": {
+            "type": "string",
+            "pattern": "^dg\\."
+          },
+          "params": {
+            "type": "object",
+            "description": "the verb's declared parameters (I7: an undeclared field is refused)"
+          }
+        }
+      },
+      "RpcResponse": {
+        "type": "object",
+        "required": [
+          "jsonrpc",
+          "id"
+        ],
+        "properties": {
+          "jsonrpc": {
+            "type": "string",
+            "const": "2.0"
+          },
+          "id": {},
+          "result": {},
+          "error": {
+            "type": "object",
+            "required": [
+              "code",
+              "message"
+            ],
+            "properties": {
+              "code": {
+                "type": "integer"
+              },
+              "message": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "Approval": {
+        "type": "object",
+        "description": "`dg.approval`: who approved, or why the row waits — a read model folded from the journal, never a state",
+        "required": [
+          "artifact_id",
+          "state",
+          "status",
+          "reason",
+          "k_required",
+          "k_have",
+          "signers",
+          "approved_by",
+          "decisions",
+          "revision"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "state": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "rejected",
+              "refused",
+              "vetoed",
+              "withdrawn",
+              "countersigned",
+              "human_approved",
+              "ai_approved",
+              "escalated",
+              "pending",
+              "not_applicable"
+            ]
+          },
+          "reason": {
+            "type": "string"
+          },
+          "k_required": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "k_have": {
+            "type": "integer"
+          },
+          "signers": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "event_id",
+                "event",
+                "identity",
+                "class",
+                "decision",
+                "ts",
+                "counting"
+              ],
+              "properties": {
+                "class": {
+                  "type": "string",
+                  "enum": [
+                    "human",
+                    "model",
+                    "org",
+                    "deployment",
+                    "agent"
+                  ]
+                },
+                "model_label": {
+                  "type": "string"
+                },
+                "counting": {
+                  "type": "boolean"
+                }
+              }
+            }
+          },
+          "approved_by": {
+            "type": "object",
+            "properties": {
+              "model": {
+                "type": "boolean"
+              },
+              "human": {
+                "type": "boolean"
+              },
+              "org": {
+                "type": "boolean"
+              }
+            }
+          },
+          "model_labels": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "provisional": {
+            "type": "boolean"
+          },
+          "human_veto_available": {
+            "type": "boolean"
+          },
+          "human_sign_available": {
+            "type": "boolean"
+          },
+          "decisions": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "veto": {
+            "type": [
+              "object",
+              "null"
+            ]
+          },
+          "open_objections": {
+            "type": "integer"
+          },
+          "revision": {
+            "type": "string"
+          }
+        }
+      },
+      "Comment": {
+        "type": "object",
+        "required": [
+          "event_id",
+          "artifact_id",
+          "root_id",
+          "reply_to",
+          "identity",
+          "author_class",
+          "kind",
+          "body",
+          "ts",
+          "retracted"
+        ],
+        "properties": {
+          "event_id": {
+            "type": "string"
+          },
+          "artifact_id": {
+            "type": "string"
+          },
+          "root_id": {
+            "type": "string"
+          },
+          "reply_to": {
+            "type": "string"
+          },
+          "identity": {
+            "type": "string"
+          },
+          "author_class": {
+            "type": "string",
+            "enum": [
+              "human",
+              "model",
+              "agent"
+            ]
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "note",
+              "question",
+              "objection",
+              "resolution"
+            ]
+          },
+          "body": {
+            "type": "string"
+          },
+          "findings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "ts": {
+            "type": "integer"
+          },
+          "retracted": {
+            "type": "boolean"
+          },
+          "retracted_by": {
+            "type": "string"
+          },
+          "retracted_ts": {
+            "type": [
+              "integer",
+              "null"
+            ]
+          },
+          "by_writer": {
+            "type": "boolean"
+          },
+          "own": {
+            "type": "boolean",
+            "description": "authored by the presenting key (dg.node only)"
+          }
+        }
+      },
+      "CommentThread": {
+        "type": "object",
+        "required": [
+          "artifact_id",
+          "comments",
+          "counts"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "comments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Comment"
+            }
+          },
+          "counts": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "open_objections": {
+                "type": "integer"
+              },
+              "last_ts": {
+                "type": [
+                  "integer",
+                  "null"
+                ]
+              }
+            }
+          }
+        }
+      },
+      "ClaimNode": {
+        "type": "object",
+        "description": "`dg.node`: one claim for a review surface. `preview` is the MASKED rendering, bounded (INV-SEC-7), null when the content is erased or the blob is gone.",
+        "required": [
+          "artifact_id",
+          "status",
+          "approval",
+          "comments",
+          "relations",
+          "tip",
+          "members",
+          "preview",
+          "preview_chars",
+          "self_authored",
+          "revision"
+        ],
+        "properties": {
+          "artifact_id": {
+            "type": "string"
+          },
+          "status": {
+            "type": "object",
+            "description": "the annotated status row: state, quorum, blocking, decisions, self_authored"
+          },
+          "approval": {
+            "$ref": "#/components/schemas/Approval"
+          },
+          "comments": {
+            "$ref": "#/components/schemas/CommentThread"
+          },
+          "relations": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "tip": {
+            "type": "object"
+          },
+          "members": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "artifact_id": {
+                  "type": "string"
+                },
+                "state": {
+                  "type": "string"
+                },
+                "content_type": {
+                  "type": "string"
+                }
+              }
+            },
+            "description": "`derives_from` children — a bundle's members"
+          },
+          "preview": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "preview_chars": {
+            "type": "integer"
+          },
+          "self_authored": {
+            "type": "boolean"
+          },
+          "refusal": {
+            "type": [
+              "string",
+              "null"
+            ]
+          },
+          "revision": {
             "type": "string"
           }
         }
@@ -292,38 +1557,38 @@
       },
       "KeyRecord": {
         "type": "object",
+        "additionalProperties": false,
+        "description": "One key as `GET /keys` and `dg.keys` render it. A role and nothing else grants: the `scopes` and `spaces` lists ADR-0033 gave a key are deleted (ADR-0082 d4/d5). Revoked and expired rows still render — the record is history, not a credential — and the hash never leaves (INV-SEC-9).",
+        "required": [
+          "key_id",
+          "label",
+          "role",
+          "issued_by",
+          "issued_at",
+          "expires_at",
+          "revoked_at"
+        ],
         "properties": {
           "key_id": {
-            "type": "string"
+            "type": "string",
+            "pattern": "^[0-9a-f]{12}$",
+            "description": "the first 12 hex characters of the key's sha256"
           },
           "label": {
             "type": "string"
           },
-          "scopes": {
-            "type": "array",
-            "items": {
-              "type": "string",
-              "enum": [
-                "submit",
-                "read",
-                "admin"
-              ]
-            }
-          },
-          "spaces": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            }
-          },
-          "deployment_id": {
-            "type": "string"
-          },
           "role": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "reader",
+              "agent",
+              "reviewer",
+              "admin"
+            ]
           },
           "issued_by": {
-            "type": "string"
+            "type": "string",
+            "description": "the principal who minted it"
           },
           "issued_at": {
             "type": "integer"
@@ -339,34 +1604,35 @@
               "integer",
               "null"
             ]
+          },
+          "bind": {
+            "type": "string",
+            "description": "FR-51's client-gate deployment binding, present only on a key issued with one. A binding, never an authority: it says whose `local_promotion` this key may carry, never what the key may do"
           }
         }
       },
       "KeyRequest": {
         "type": "object",
+        "description": "What `POST /keys` takes. A key's role never exceeds its creator's (ADR-0082 d4), and the deployment binding is not self-service over the wire — an operator sets it where the key is minted.",
         "properties": {
           "label": {
             "type": "string"
           },
-          "scopes": {
-            "type": "string",
-            "description": "comma-separated: submit,read,admin"
-          },
-          "spaces": {
-            "type": "string",
-            "description": "comma-separated"
-          },
-          "deployment_id": {
-            "type": "string",
-            "description": "required with role=client: binds the key to the deployment that must sign"
-          },
           "role": {
             "type": "string",
             "enum": [
-              "client",
-              "org",
-              ""
-            ]
+              "reader",
+              "agent",
+              "reviewer",
+              "admin"
+            ],
+            "default": "agent"
+          },
+          "expires_in_days": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 730,
+            "description": "omit for a key that never expires; out of range is a 400, never a coerced value"
           }
         }
       }
@@ -422,7 +1688,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -442,7 +1708,7 @@
             }
           },
           "422": {
-            "description": "the key is fine; the body does not satisfy the door (unsigned, wrong deployment, no `local_promotion`). A drain does not stop on this",
+            "description": "the key is fine; the BODY does not pass. A drain does not stop on this. The body carries a stable `code` from one of two disjoint namespaces. `SUBMISSION_*` — the P1-A submission contract (§4) — says the body is not a well-formed submission: `SUBMISSION_FIELD_MISSING`, `SUBMISSION_UNKNOWN_FIELD`, `SUBMISSION_ENCODING_INVALID`, `SUBMISSION_ARTIFACT_ID_MISMATCH`, checked in that fixed order so a body breaking two rules always names the earlier one. `ADMISSION_*` — the door (FR-51 / ADR-0034 §4) — says the body is well formed but this caller is not admitted (unsigned promotion, wrong deployment, no `local_promotion`, ungranted space): `ADMISSION_ROLE_TOO_LOW`, `ADMISSION_ROLE_NOT_CLIENT`, `ADMISSION_PROMOTION_MISSING`, `ADMISSION_PROMOTION_MALFORMED`, `ADMISSION_PROMOTION_NOT_PROMOTE`, `ADMISSION_PROMOTION_SIGNATURE_INVALID`, `ADMISSION_DEPLOYMENT_UNBOUND`, `ADMISSION_ARTIFACT_UNBOUND`, `ADMISSION_SUBMISSION_MALFORMED`, `ADMISSION_SPACE_INVALID`, `ADMISSION_SPACE_MISMATCH`, `ADMISSION_REFUSED`. DEFINED BUT NOT YET REACHABLE: `SUBMISSION_CONTRACT_UNSUPPORTED`, `SUBMISSION_SIGNATURE_INVALID`, `SUBMISSION_MEMBERSHIP_UNVERIFIED`, `SUBMISSION_MEMBERSHIP_STALE` are part of the contract's fixed verification order and will be emitted at the position they hold in it, but the submission wire format does not yet carry the members they are checked against. Their absence from a response means the check has not run — never that it ran and passed.",
             "content": {
               "application/json": {
                 "schema": {
@@ -453,6 +1719,26 @@
           },
           "429": {
             "description": "per-deployment rate exceeded",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "secure receipt backend only: this attempt key was already recorded with *different* bytes — the idempotency key is bound, not the body",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "secure receipt backend only: an internal receipt failure; the message is deliberately fixed, never the exception",
             "content": {
               "application/json": {
                 "schema": {
@@ -479,7 +1765,7 @@
             }
           }
         },
-        "description": "The body is the client's signed `local_promotion` plus the envelope. The door (ADR-0034 §4): the key must be bound to the deployment that signed. The answer never rides this request — the verdict is a `countersign` or `refuse` event, pulled from `GET /outcomes`. Idempotent by artifact id.",
+        "description": "Two bodies, one route, chosen by what is installed behind this surface (see `Submission`): a gate with an authenticated submission backend takes the SDK's closed-field signed event profile (`document`, `signature`, `artifact_id`, `content`, `space`, `local_verdicts`, `local_promotion`, `production_evidence_manifest`); a gate without one takes the legacy envelope + `local_promotion` body. The path's artifact id is the *submission event*'s identity — the canonical event hash, bare hex or `sha256:`-prefixed — never the envelope digest, which is the local production reference the attribution statements bind to. The door (ADR-0034 §4): the key must be bound to the deployment that signed. The answer never rides this request — the verdict is a `countersign` or `refuse` event, pulled from `GET /outcomes`. Idempotent by artifact id.",
         "parameters": [
           {
             "name": "artifact_id",
@@ -506,7 +1792,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "submit"
+        "x-role": "agent"
       },
       "get": {
         "operationId": "submissionState",
@@ -536,7 +1822,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -571,7 +1857,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reviewer"
       }
     },
     "/outcomes": {
@@ -666,7 +1952,73 @@
             "bearer": []
           }
         ],
-        "x-scope": "submit"
+        "x-role": "agent"
+      }
+    },
+    "/memories/{resource}": {
+      "get": {
+        "operationId": "memory",
+        "tags": [
+          "read"
+        ],
+        "summary": "The protected read: one pinned REPEATABLE READ snapshot, the fixed S0-S9 order (P1-B).",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "results": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Memory"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not_available — one answer for every content-dependent withhold",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "frontier_unavailable — declared because its cause is content-independent",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "The 404 is byte-identical across unauthorized, withdrawn and never-existed: a withhold whose observable form depends on the hidden reason leaks the hidden reason. Only the content-independent causes — an unobtainable pin, a quarantined journal, a gap past its deadline — are declared truthfully as 409.",
+        "parameters": [
+          {
+            "name": "resource",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "reader"
       }
     },
     "/memories": {
@@ -675,7 +2027,7 @@
         "tags": [
           "read"
         ],
-        "summary": "Read the organization's active store, filtered to the key's spaces, provenance verbatim (#71).",
+        "summary": "Read the organization's promoted store, provenance verbatim (#71).",
         "responses": {
           "200": {
             "description": "",
@@ -704,19 +2056,9 @@
                 }
               }
             }
-          },
-          "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
           }
         },
-        "description": "A read key with no spaces sees nothing; an admin key sees every space. Never reaches the inbox or quarantine (I1).",
+        "description": "Every `reader` and above is answered the same promoted rows: ADR-0082 d5 deleted a key's space list, so nothing scopes a credential to one collection, and that loss of least disclosure is tracked as FR-79. Never reaches the inbox or quarantine (I1).",
         "parameters": [
           {
             "name": "q",
@@ -759,7 +2101,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "read"
+        "x-role": "reader"
       }
     },
     "/claims/graph": {
@@ -768,30 +2110,20 @@
         "tags": [
           "read"
         ],
-        "summary": "The relation graph projection (ADR-0035) serialized; held artifacts cross as metadata only (INV-SEC-10).",
+        "summary": "The relation graph projection (ADR-0035) serialized; held artifacts cross as metadata only (INV-SEC-10). A `reviewer` and above sees every row; a `reader` or an `agent` sees the promoted rows.",
         "responses": {
           "200": {
             "description": "",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/ClaimsGraph"
                 }
               }
             }
           },
           "401": {
             "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -811,12 +2143,13 @@
             }
           }
         },
+        "description": "A pure function of the stores: nothing is computed for the browser that `rebuild` would not reproduce. INV-SEC-10 lives in the node shape — `label` (the body's head) and `source_uri` are serialized only for `ACTIVE`/`SUPERSEDED` rows, so a held artifact crosses as id, state, type, class, space, age and its provenance *attribution*, never its content. `writer_label` is the issuing key's label joined at read; `banned` is admission policy matched internally, so a source ban is reported even where the source itself is withheld. AUTH-4: a held row's *existence* is curation material, so a `reader` or an `agent` is answered with the promoted rows, the edges and pins among them, and an empty `bans` — quarantine and policy belong to `reviewer` and above.",
         "security": [
           {
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reader"
       }
     },
     "/claims": {
@@ -866,7 +2199,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -912,7 +2245,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "agent"
       }
     },
     "/keys": {
@@ -952,7 +2285,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -967,7 +2300,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "admin"
       },
       "post": {
         "operationId": "issueKey",
@@ -1004,7 +2337,7 @@
             }
           },
           "400": {
-            "description": "unknown scope, no scopes, client-bound key without deployment_id",
+            "description": "unknown role, a role above the issuing principal's (a key's role never exceeds its creator's, ADR-0082 d4), or an `expires_in_days` outside 1..730",
             "content": {
               "application/json": {
                 "schema": {
@@ -1024,7 +2357,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -1049,7 +2382,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reviewer"
       }
     },
     "/keys/{key_id}": {
@@ -1086,7 +2419,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -1121,7 +2454,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reviewer"
       }
     },
     "/status": {
@@ -1137,7 +2470,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/Status"
                 }
               }
             }
@@ -1151,9 +2484,100 @@
                 }
               }
             }
+          }
+        },
+        "description": "`org_review` is present only where an automatic review pipeline is configured behind this surface. It is operator-visible *state*, never authority and never a credential: a store error is reported as `blocked` with a fixed reason rather than an exception, because a DSN can ride an exception message.",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "reader"
+      }
+    },
+    "/operations/telemetry": {
+      "get": {
+        "operationId": "telemetryQuery",
+        "tags": [
+          "operator"
+        ],
+        "summary": "The operator's bounded, read-only telemetry query (C-OBS). Admin only; `501` unless the operator configured a backend.",
+        "responses": {
+          "200": {
+            "description": "quarantined evidence; secret-shaped fields are dropped before the rows leave this process",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "signal",
+                    "service",
+                    "rows",
+                    "untrusted"
+                  ],
+                  "properties": {
+                    "signal": {
+                      "type": "string"
+                    },
+                    "service": {
+                      "type": "string"
+                    },
+                    "start_ms": {
+                      "type": "integer"
+                    },
+                    "end_ms": {
+                      "type": "integer"
+                    },
+                    "rows": {
+                      "type": "array",
+                      "items": {
+                        "type": "object"
+                      }
+                    },
+                    "truncated": {
+                      "type": "boolean"
+                    },
+                    "untrusted": {
+                      "type": "boolean",
+                      "const": true
+                    }
+                  }
+                }
+              }
+            }
           },
-          "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+          "400": {
+            "description": "out of bounds or malformed, to an authorized admin only: unknown signal, window over the ceiling, limit over the ceiling, non-integer window",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "not_available — the uniform withhold, and the ONLY answer an unauthorized caller gets: no key, a forged key, an expired or revoked key, and a live key without admin are byte-identical to each other and to a path that does not exist",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "no telemetry backend is configured behind this surface; reachable only after a genuine admin key has authenticated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "502": {
+            "description": "the backend did not answer; the message is fixed and names no host, port, path or product",
             "content": {
               "application/json": {
                 "schema": {
@@ -1163,12 +2587,111 @@
             }
           }
         },
+        "description": "OPERATOR material, not tenant material: no org-space → telemetry-service mapping exists, so the readable set is the operator's configured allowlist and nothing else. There is no caller-supplied filter, expression or query parameter — the only caller-chosen string is `service`, admitted solely by exact membership in that allowlist, and the wire filter is assembled server-side from it. Read-only: nothing is written to the backend. **Unauthorized is a non-disclosure.** Every caller that is not an admin — no key, a forged key, an expired or revoked key, or a live credential below `admin` — receives the surface's uniform `404 not_available`, byte-identical to the answer for a path that does not exist. There is no `401` and no `403` on this route: a status that varied with the credential would tell an unauthorized caller that a guarded operator route lives at this path. This listing describes the shape of the service and is not an authorization rule — being documented here does not license a route to name itself while refusing. The backend (its URL, its token, its allowlist) is operator configuration carried on the daemon, never a request field; while it is unset this route answers `501`, which is the disabled-diagnostic state and is reachable only AFTER a genuine admin key has authenticated. Rows come back under an explicit `untrusted` flag: a log body is attacker-supplied text quoted as evidence, never instruction to a reader. Bounds are ceilings and are refused, not clamped — a silently shortened window makes a partial answer read as a complete one.",
+        "parameters": [
+          {
+            "name": "signal",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "traces",
+                "logs",
+                "metrics"
+              ],
+              "default": "logs"
+            }
+          },
+          {
+            "name": "service",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "must be an exact member of the operator's configured allowlist"
+          },
+          {
+            "name": "start_ms",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "epoch ms"
+          },
+          {
+            "name": "end_ms",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "epoch ms; the window has a 6h ceiling"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 50,
+              "maximum": 200
+            }
+          },
+          {
+            "name": "metric_name",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            },
+            "description": "required when `signal=metrics`"
+          },
+          {
+            "name": "reduce_to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "sum"
+            },
+            "description": "metrics only"
+          },
+          {
+            "name": "time_aggregation",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "sum"
+            },
+            "description": "metrics only; `rate`/`increase` can read as an empty answer"
+          },
+          {
+            "name": "space_aggregation",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "sum"
+            },
+            "description": "metrics only"
+          },
+          {
+            "name": "request_type",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "scalar",
+                "raw"
+              ],
+              "default": "scalar"
+            }
+          }
+        ],
         "security": [
           {
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "admin"
       }
     },
     "/mcp": {
@@ -1177,7 +2700,7 @@
         "tags": [
           "mcp"
         ],
-        "summary": "The MCP endpoint (ADR-0050, FR-70): one JSON-RPC message per POST, one JSON object back; notifications answer 202 empty; Origin validated before the body is read; no session ids. The org tier's tools (ADR-0034 §3) are behind it; identity is the presenting key.",
+        "summary": "The MCP endpoint (ADR-0050, FR-70): one JSON-RPC message per POST, one JSON object back; notifications answer 202 empty; Origin validated before the body is read; no session ids. The org tier's tools (ADR-0034 §3) are behind it; the endpoint floors at `reader` and each tool's own verb is then held to the role its catalog entry names (AUTH-4).",
         "responses": {
           "200": {
             "description": "the JSON-RPC response",
@@ -1204,16 +2727,6 @@
           },
           "401": {
             "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -1249,7 +2762,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reader"
       },
       "get": {
         "operationId": "mcpNoStream",
@@ -1263,7 +2776,7 @@
           }
         },
         "security": [],
-        "x-scope": "none"
+        "x-role": "none"
       }
     },
     "/work/leases": {
@@ -1313,7 +2826,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -1348,7 +2861,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reviewer"
       }
     },
     "/work/{artifact_id}/ack": {
@@ -1398,7 +2911,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -1469,7 +2982,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reviewer"
       }
     },
     "/openapi.json": {
@@ -1478,7 +2991,7 @@
         "tags": [
           "meta"
         ],
-        "summary": "This document. Any valid key; keyless only in local mode.",
+        "summary": "This document. Any valid credential; keyless only in local mode.",
         "responses": {
           "200": {
             "description": "",
@@ -1506,7 +3019,55 @@
             "bearer": []
           }
         ],
-        "x-scope": "any"
+        "x-role": "any"
+      }
+    },
+    "/mcp-catalog.json": {
+      "get": {
+        "operationId": "mcpCatalog",
+        "tags": [
+          "meta"
+        ],
+        "summary": "The org tier's MCP tool catalogue (the same document as `docs/api/mcp.json`), so an agent can learn the tool surface from a running gate. Any valid credential; keyless only in local mode.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/McpCatalog"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "this surface does not describe its tools",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Rendered from the same tables `docs/api/mcp.json` is rendered from, so a running gate and the repo cannot disagree. Authorized exactly like `/openapi.json`: the `any` role word, satisfied by every live credential and by nothing else.",
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "any"
       }
     },
     "/claims/rank": {
@@ -1548,7 +3109,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -1624,7 +3185,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reviewer"
       }
     },
     "/claims/hide": {
@@ -1666,7 +3227,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -1740,7 +3301,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reviewer"
       }
     },
     "/claims/ban": {
@@ -1782,7 +3343,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -1812,7 +3373,7 @@
             }
           }
         },
-        "description": "Admin scope is not operator authority. A single-use operator signature is additionally required, including in local mode.",
+        "description": "A `reviewer` act (AUTH-4), and nothing else is required: the operator-key proof this route once demanded is deleted with the ceremony behind it (ADR-0082). Authority is the role the credential carries, read off the door and never off the body.",
         "requestBody": {
           "required": true,
           "content": {
@@ -1824,8 +3385,7 @@
                   "kind",
                   "subject",
                   "reason",
-                  "lift",
-                  "operator_proof"
+                  "lift"
                 ],
                 "properties": {
                   "kind": {
@@ -1852,22 +3412,6 @@
                       "null"
                     ],
                     "description": "Expiry in epoch milliseconds"
-                  },
-                  "operator_proof": {
-                    "type": "object",
-                    "additionalProperties": false,
-                    "required": [
-                      "nonce",
-                      "sig"
-                    ],
-                    "properties": {
-                      "nonce": {
-                        "type": "string"
-                      },
-                      "sig": {
-                        "type": "string"
-                      }
-                    }
                   }
                 }
               }
@@ -1879,72 +3423,7 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
-      }
-    },
-    "/claims/challenge": {
-      "get": {
-        "operationId": "claimsChallenge",
-        "tags": [
-          "operator"
-        ],
-        "summary": "Obtain a fresh single-use nonce to sign outside the browser with the operator key.",
-        "responses": {
-          "200": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "required": [
-                    "nonce"
-                  ],
-                  "properties": {
-                    "nonce": {
-                      "type": "string"
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "501": {
-            "description": "",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          }
-        ],
-        "x-scope": "admin"
+        "x-role": "reviewer"
       }
     },
     "/claims/bans": {
@@ -1983,8 +3462,65 @@
               }
             }
           },
-          "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "reader"
+      }
+    },
+    "/rpc": {
+      "post": {
+        "operationId": "rpc",
+        "tags": [
+          "operator"
+        ],
+        "summary": "One `dg.*` JSON-RPC request per POST — the console's one transport, the same `Daemon.handle` the socket reaches.",
+        "responses": {
+          "200": {
+            "description": "the JSON-RPC response, result or error — including a verb refused for the caller's role, which is `-32602` inside a 200, never an HTTP status",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RpcResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "parse error (-32700)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RpcResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
             "content": {
               "application/json": {
                 "schema": {
@@ -2004,12 +3540,717 @@
             }
           }
         },
+        "description": "Identity is the presenting credential (`uid:<n>` of the daemon owner in local mode), never a field. The route carries every verb, so its own floor is the lowest role any verb needs — `reader` — and each verb is then held to the role its catalog entry names, refused by name as `-32602` (AUTH-4). `dg.describe` answers the org catalog, so a console probes capabilities with one call. A JSON-RPC error rides a 200, as on the client gate; only transport failures use HTTP statuses. Browser writes require same origin, or an origin the operator listed in `[console].origins`.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RpcRequest"
+              }
+            }
+          }
+        },
         "security": [
           {
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reader"
+      }
+    },
+    "/claims/{artifact_id}": {
+      "get": {
+        "operationId": "claimNode",
+        "tags": [
+          "read"
+        ],
+        "summary": "One claim in full (`dg.node`): status, approval trail, comments, relations, tip, members, a bounded masked preview.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ClaimNode"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no such route / object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "Disclosure is row disclosure, by role (AUTH-4): a `reviewer` and above sees any row; a `reader` or an `agent` sees promoted rows and is answered 404 for anything else — the existence of quarantine content is not theirs to learn.",
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "64 hex, optionally `sha256:`-prefixed"
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "reader"
+      }
+    },
+    "/claims/{artifact_id}/comments": {
+      "get": {
+        "operationId": "claimComments",
+        "tags": [
+          "read"
+        ],
+        "summary": "The comment thread on one claim (`dg.comments`), oldest first, with counts. Same disclosure rule as the claim itself.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CommentThread"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no such route / object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "64 hex, optionally `sha256:`-prefixed"
+          }
+        ],
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "reader"
+      },
+      "post": {
+        "operationId": "claimComment",
+        "tags": [
+          "operator"
+        ],
+        "summary": "Record a remark on a claim (`dg.comment`) — an annotation, never a decision; an open human `objection` holds auto-countersign.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "artifact_id",
+                    "event_id",
+                    "comment",
+                    "counts"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "the daemon refused the call: unknown field, bad state, not yours to do",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no such route / object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "a protocol refusal: the transition is not allowed from this state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "An `agent` act, the role `dg.comment` needs (AUTH-4). Identity is derived from the credential; the author class (human | model | agent) from the identity, never a field (I2). An open `objection` holds the worker's countersign until a `resolution` replies or it is retracted. Comments never leave this gate (I1).",
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "64 hex, optionally `sha256:`-prefixed"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "body"
+                ],
+                "properties": {
+                  "body": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "note",
+                      "question",
+                      "objection",
+                      "resolution"
+                    ],
+                    "default": "note"
+                  },
+                  "reply_to": {
+                    "type": "string",
+                    "description": "a live comment on the same claim; required for a resolution"
+                  },
+                  "findings": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "description": "finding kinds on the row this remark is about"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "agent"
+      }
+    },
+    "/claims/{artifact_id}/comment-retract": {
+      "post": {
+        "operationId": "claimCommentRetract",
+        "tags": [
+          "operator"
+        ],
+        "summary": "Withdraw a comment (`dg.comment_retract`): its author, or a reviewer. The comment stays as a tombstone.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "artifact_id",
+                    "event_id",
+                    "retract_event_id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "the daemon refused the call: unknown field, bad state, not yours to do",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no such route / object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "a protocol refusal: the transition is not allowed from this state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "64 hex, optionally `sha256:`-prefixed"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "event_id"
+                ],
+                "properties": {
+                  "event_id": {
+                    "type": "string"
+                  },
+                  "reason": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "agent"
+      }
+    },
+    "/claims/{artifact_id}/approve": {
+      "post": {
+        "operationId": "claimApprove",
+        "tags": [
+          "operator"
+        ],
+        "summary": "A reviewer's approval (`dg.sign {decision: promote, promote: true}`): one signature and the promotion it was for. On a held submission the promotion IS the countersign.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "artifact_id",
+                    "state",
+                    "event_id",
+                    "promote"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "the daemon refused the call: unknown field, bad state, not yours to do",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no such route / object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "a protocol refusal: the transition is not allowed from this state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "The role is the authority (AUTH-4): `dg.sign` is a `reviewer` verb, and an `agent` reaching this door is refused by name. The signature stands on its own — a promotion the boundary refuses (a human still required for the class, an unclean scan) is reported in `promote.refused`, not rolled back.",
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "64 hex, optionally `sha256:`-prefixed"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "properties": {
+                  "note": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "reviewer"
+      }
+    },
+    "/claims/{artifact_id}/reject": {
+      "post": {
+        "operationId": "claimReject",
+        "tags": [
+          "operator"
+        ],
+        "summary": "A reviewer's rejection (`dg.reject`), with a reason and optionally what it lost to. On a held submission the rejection IS the refusal.",
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "required": [
+                    "artifact_id",
+                    "state",
+                    "event_id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "the daemon refused the call: unknown field, bad state, not yours to do",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "no key, a forged key, an expired or revoked key — indistinguishable on purpose (INV-SEC-8, no oracle)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "no such route / object",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "a protocol refusal: the transition is not allowed from this state",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "501": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "description": "The role is the authority (AUTH-4): `dg.reject` is a `reviewer` verb, as `approve` is.",
+        "parameters": [
+          {
+            "name": "artifact_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "64 hex, optionally `sha256:`-prefixed"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "reason"
+                ],
+                "properties": {
+                  "reason": {
+                    "type": "string",
+                    "minLength": 1
+                  },
+                  "in_favour_of": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ],
+        "x-role": "reviewer"
       }
     },
     "/claims/review-status": {
@@ -2075,7 +4316,7 @@
             }
           },
           "403": {
-            "description": "a live key without the scope: it already proved it is real, so the reason is given",
+            "description": "a live credential whose role is below the one this route needs (AUTH-4): it already proved it is real, so the reason is given",
             "content": {
               "application/json": {
                 "schema": {
@@ -2129,7 +4370,7 @@
             }
           }
         },
-        "description": "Requires admin in key mode; local mode retains the loopback-only keyless contract. Authorization precedes query parsing. Only held_for_review submissions in a current eligible state count; org-local pending rows do not. Unknown hold reasons are unstated. Order is received_at then artifact_id. Total is the filtered routing-view count. Revision binds only this metadata view, not policy, content or authority. On 409 discard all accumulated pages and restart without a cursor. No bodies, sources, notes or evidence. Only single limit and cursor parameters are accepted; unknown or duplicate parameters fail.",
+        "description": "Requires the `reviewer` role in key mode (AUTH-4: it is the routing read for the people who review); local mode retains the loopback-only keyless contract. Authorization precedes query parsing. Only held_for_review submissions in a current eligible state count; org-local pending rows do not. Unknown hold reasons are unstated. Order is received_at then artifact_id. Total is the filtered routing-view count. Revision binds only this metadata view, not policy, content or authority. On 409 discard all accumulated pages and restart without a cursor. No bodies, sources, notes or evidence. Only single limit and cursor parameters are accepted; unknown or duplicate parameters fail.",
         "parameters": [
           {
             "name": "limit",
@@ -2156,17 +4397,17 @@
             "bearer": []
           }
         ],
-        "x-scope": "admin"
+        "x-role": "reviewer"
       }
     },
-    "/": {
+    "/app": {
       "get": {
-        "operationId": "pageRoot",
+        "operationId": "pageApp",
         "tags": [
           "console"
         ],
         "security": [],
-        "summary": "the console shell (#72) — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "summary": "the constellation app (ADR-0073): one page over `POST /rpc` — the graph, approval trails, comments and operator decisions, and the interactive API documentation as its `#/api` view (Swagger UI over this gate's own `GET /openapi.json`; ADR-0044). Keyless and data-free; served under a strict same-origin Content-Security-Policy; its bundle is under `/app/assets/*` on this port — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
         "responses": {
           "200": {
             "description": "text/html"
@@ -2174,62 +4415,98 @@
         }
       }
     },
-    "/recall": {
+    "/": {
       "get": {
-        "operationId": "pageRecall",
+        "operationId": "redirectRoot",
         "tags": [
           "console"
         ],
         "security": [],
-        "summary": "recall page — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "summary": "retired console page — a keyless 302 to `/app`, the app view that replaced it; no body",
+        "description": "Redirects to `/app`. The page this route served is gone; the data routes it drove are unchanged.",
         "responses": {
-          "200": {
-            "description": "text/html"
+          "302": {
+            "description": "Location: /app"
           }
         }
       }
     },
     "/graph": {
       "get": {
-        "operationId": "pageGraph",
+        "operationId": "redirectGraph",
         "tags": [
           "console"
         ],
         "security": [],
-        "summary": "graph page — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "summary": "retired console page — a keyless 302 to `/app#/constellation`, the app view that replaced it; no body",
+        "description": "Redirects to `/app#/constellation`. The page this route served is gone; the data routes it drove are unchanged.",
         "responses": {
-          "200": {
-            "description": "text/html"
+          "302": {
+            "description": "Location: /app#/constellation"
+          }
+        }
+      }
+    },
+    "/recall": {
+      "get": {
+        "operationId": "redirectRecall",
+        "tags": [
+          "console"
+        ],
+        "security": [],
+        "summary": "retired console page — a keyless 302 to `/app#/recall`, the app view that replaced it; no body",
+        "description": "Redirects to `/app#/recall`. The page this route served is gone; the data routes it drove are unchanged.",
+        "responses": {
+          "302": {
+            "description": "Location: /app#/recall"
           }
         }
       }
     },
     "/introduce": {
       "get": {
-        "operationId": "pageIntroduce",
+        "operationId": "redirectIntroduce",
         "tags": [
           "console"
         ],
         "security": [],
-        "summary": "introduction page — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "summary": "retired console page — a keyless 302 to `/app#/introduce`, the app view that replaced it; no body",
+        "description": "Redirects to `/app#/introduce`. The page this route served is gone; the data routes it drove are unchanged.",
         "responses": {
-          "200": {
-            "description": "text/html"
+          "302": {
+            "description": "Location: /app#/introduce"
           }
         }
       }
     },
     "/skills": {
       "get": {
-        "operationId": "pageSkills",
+        "operationId": "redirectSkills",
         "tags": [
           "console"
         ],
         "security": [],
-        "summary": "the skill shelf and both skill flows (#92) — static HTML, no data, no key (INV-SEC-8's enumerated exception; ADR-0039)",
+        "summary": "retired console page — a keyless 302 to `/app#/recall?q=type%3Askill`, the app view that replaced it; no body",
+        "description": "Redirects to `/app#/recall?q=type%3Askill`. The page this route served is gone; the data routes it drove are unchanged.",
         "responses": {
-          "200": {
-            "description": "text/html"
+          "302": {
+            "description": "Location: /app#/recall?q=type%3Askill"
+          }
+        }
+      }
+    },
+    "/docs": {
+      "get": {
+        "operationId": "redirectDocs",
+        "tags": [
+          "console"
+        ],
+        "security": [],
+        "summary": "retired console page — a keyless 302 to `/app#/api`, the app view that replaced it; no body",
+        "description": "Redirects to `/app#/api`. The page this route served is gone; the data routes it drove are unchanged.",
+        "responses": {
+          "302": {
+            "description": "Location: /app#/api"
           }
         }
       }

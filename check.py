@@ -392,7 +392,29 @@ PHASE_LANGUAGE = re.compile(
     r"|\bnothing (?:is |here is )?(?:built|shipped|scheduled)\b"
     r"|\bdesigned(?:,)? (?:rather than|but not|not) (?:shipped|built|running)\b"
     r"|\bdoes not exist yet\b|\bnot (?:yet )?scheduled\b|\bscheduled, not drawn\b"
-    r"|\bplanned, not\b|\bnot a product yet\b|\bunbuilt\b",
+    r"|\bplanned, not\b|\bnot a product yet\b|\bunbuilt\b"
+    r"|\bno (?:\w+ )?package or stable release\b|\bno stable release\b"
+    r"|\bdevelopment snapshot\b|\bneither is evidence of\b",
+    re.I)
+#     A class no gate could see: the page recommending an alternative.
+#     Found 2026-09-17 by reading the rendered prose of every page rather than
+#     grepping for known shapes. pricing#notfor closed a card with "For personal
+#     memory without shared review, compare mem0, Zep or Mnemosyne" and
+#     for-business#honest closed its evaluation advice with "retaining your
+#     existing workflow is a valid result" — a referral and a do-nothing
+#     recommendation, in visible copy, on the two pages a buyer reads last.
+#     Every gate above was green: naming a competitor is not phase language, not
+#     defensive framing, and not a heading.
+#     Scoping the product is right and stays ("Solo serves personal use"); naming
+#     where else to spend the budget is not the site's job. Quotations are already
+#     stripped before this runs, so evidence.html's cited comparisons are safe.
+COMPETITOR_REFERRAL = re.compile(
+    r"\b(?:compare|consider|use|try|pick|choose|switch to)\s+(?:\w+\s+){0,3}?"
+    r"(?:mem0|zep|mnemosyne|graphiti|letta|langmem)\b"
+    r"|\b(?:mem0|zep|mnemosyne)\b[^.]{0,60}?\b(?:instead|better (?:choice|purchase|fit))\b"
+    r"|\bis a valid result\b"
+    r"|\buse (?:an? )?(?:ungated|incumbent|competitor)\b"
+    r"|\bthis is the wrong tool\b|\byou do not need this\b",
     re.I)
 DEFENSIVE_FRAMING = re.compile(
     r"not just another|we (?:are|'re) not claiming|we (?:do not|don't) claim"
@@ -421,8 +443,6 @@ CONTRAST_HEADING = re.compile(
 CONTRAST_HEADING_OK = {
     "Individual AI access changed time use, not the mix of tasks":
         "the negation is the cited study's measured finding, not our hedge",
-    "Where it fits, and where it does not":
-        "names the section's scope; the answer is the section's own content",
     "That page is not here":
         "404.html describing the visitor's situation, not the product's",
 }
@@ -481,6 +501,9 @@ for page in pages:
              f"…{body[max(0, m.start() - 45): m.end() + 30]}…")
     for m in DEFENSIVE_FRAMING.finditer(body):
         fail(f"{page.name}: defensive framing in visible copy -> "
+             f"…{body[max(0, m.start() - 45): m.end() + 30]}…")
+    for m in COMPETITOR_REFERRAL.finditer(body):
+        fail(f"{page.name}: copy sends the reader somewhere else -> "
              f"…{body[max(0, m.start() - 45): m.end() + 30]}…")
     for h in re.findall(r"(?s)<h[1-3][^>]*>(.*?)</h[1-3]>", markup):
         # build.py stamps a "#" self-link into every chapter heading; it is not

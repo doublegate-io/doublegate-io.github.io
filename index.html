@@ -38,7 +38,7 @@
       <span class="gate-rail dg-boundary-mark hero-rail" aria-hidden="true"><i></i><i></i></span>
       <div class="page-hero-complement">
         <p class="hero-proposition">Claims, conventions and skills that carry their evidence and the decision that accepted them.</p>
-        <p>DoubleGate is building the memory provider for knowledge your teams already settled &mdash; so the next agent starts from it instead of relearning it.</p>
+        <p>DoubleGate is the memory provider for knowledge your teams already settled &mdash; so the next agent starts from it instead of relearning it.</p>
         <div class="cta-row"><a class="btn primary" href="#cost">See a reviewed example</a><a class="btn" href="for-engineers.html#sdk">Build with the SDK</a></div></div>
     </div>
     <p class="availability"><b>Available now:</b> the offline SDK and the published API snapshots.</p>
@@ -49,7 +49,7 @@
 <section id="cost" class="band map-section">
   <div class="wrap">
     <div class="section-head"><div><p class="section-index">Illustrative knowledge review</p><h2>Shared knowledge changes under review.<a class="h-anchor" href="#cost" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2></div><p>Select a contribution to inspect what changed and why.</p></div>
-    <p class="demo-caption" id="sky-description">Illustrative examples · simulated activity and verdicts, not live organizational data.</p>
+    <p class="demo-caption" id="sky-description">A worked example — one team's alert policy, and the verdict each revision earns.</p>
     <div class="skymap" id="skymap"><div class="skymap-stage"><canvas id="sky" tabindex="0" role="img" aria-describedby="sky-description" aria-label="Interactive map of example governed knowledge. New claims can be admitted, revise an existing claim, merge, be held beside a contradiction, or be refused. Drag to turn, scroll to zoom, and use the controls to pause or reset the view."></canvas><div class="sky-controls"><button type="button" id="sky-zoom-out" aria-label="Zoom out">&minus;</button><span class="sky-zoomlevel" id="sky-zoom" aria-live="off">1&times;</span><button type="button" id="sky-zoom-in" aria-label="Zoom in">+</button><button type="button" id="sky-fit">Whole field</button><button type="button" id="sky-pause" aria-pressed="false">Pause</button></div><ul class="sky-legend"><li class="v-new"><i></i>New <b id="sky-n-new">0</b></li><li class="v-sharp"><i></i>Sharpened <b id="sky-n-sharp">0</b></li><li class="v-merge"><i></i>Merged <b id="sky-n-merge">0</b></li><li class="v-held"><i></i>Held <b id="sky-n-held">0</b></li><li class="v-refused"><i></i>Refused <b id="sky-n-refused">0</b></li></ul><div class="sky-tip" id="sky-tip" role="tooltip"></div><noscript><style>#sky,.sky-controls,.sky-legend,.sky-ledger-head,.sky-feed{display:none}.skymap-stage{min-height:340px}</style><img class="sky-still" src="assets/hero-field.svg" alt="Still diagram of example claims grouped by new, sharpened, merged, held and refused review outcomes."></noscript></div><div class="sky-ledger"><div class="sky-selection" id="sky-selection" aria-live="off"><p class="sky-selection-label">Selected contribution</p><p id="sky-selection-text">every alert has an owner team, a runbook link and a severity; the linter rejects an alert missing any of them.</p><p id="sky-selection-outcome">New — APPROVE for payments sandbox alerts: the cited policy supports the required fields.</p><div id="sky-example-evidence">
 <dl class="example-evidence"><div><dt>Source</dt><dd><a href="#example-source">Alert policy · revision 3</a></dd></div><div><dt>Assessment</dt><dd>AI reviewer: 86/100. Advisory, not approval.</dd></div><div><dt>Decision</dt><dd>Second authorized AI: APPROVE. Exact revision and sandbox scope.</dd></div><div><dt>Eligible use</dt><dd>Payments sandbox alerts, subject to current access.</dd></div></dl>
 <details class="example-change"><summary>What if the source changes?</summary><p>Revision 4 adds a rollback test. The old decision does not cover that new requirement. The new proposal is held pending evidence; an authorized reviewer can reject it. Approval does not transfer automatically.</p></details>
@@ -59,7 +59,7 @@
 
 <section id="problem" class="band">
   <div class="wrap">
-    <div class="section-head"><div><p class="section-index">Useful beyond one session</p><h2>Keep the lesson.<br>Make the change reviewable.<a class="h-anchor" href="#problem" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2></div><p>Your teams already teach their agents: conventions, incident fixes, skills and the reasons behind them. Little of that outlives the session, the repository or the person who worked it out, so the next agent relearns it at your expense. Review adds work; start where a repeated mistake makes that work worth testing.</p></div>
+    <div class="section-head"><div><p class="section-index">Useful beyond one session</p><h2>Keep the lesson.<br>Make the change reviewable.<a class="h-anchor" href="#problem" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2></div><p>Your teams already teach their agents: conventions, incident fixes, skills and the reasons behind them. Little of that outlives the session, the repository or the person who worked it out, so the next agent relearns it at your expense. Start where a repeated mistake already costs more than reviewing it would.</p></div>
     <dl class="problem-ledger">
       <div><dt>A convention with its incident review attached</dt><dd>Connect a repository rule to its source revision and to the decision that accepted it. A new agent gets context to inspect, not just a copied instruction.</dd></div>
       <div><dt>A skill revision that cites what changed</dt><dd>Useful knowledge becomes a skill-revision proposal. Review changes before use; skill approval stays separate from execution permission.</dd></div>
@@ -71,7 +71,7 @@
 <section id="example-source" class="band alt">
   <div class="wrap split-heading">
     <div><p class="section-index">The example, opened up</p><h2>One team's alert policy.<br>One bounded decision.<a class="h-anchor" href="#example-source" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2></div>
-    <div class="argument-copy"><p>We wrote this example ourselves: alert policy revision 3 requires an owner team, runbook link and severity on payments sandbox alerts. It is the document the map above is reading.</p><p>A non-author AI assesses the proposal, and a distinct authorized reviewer approves that exact revision and use. The assessment advises; it is not an approval vote, and the score is not a probability of truth.</p><p>Revision 4 introduces a rollback-test requirement. Missing test evidence keeps that proposal outside accepted knowledge; the old approval cannot authorize the new rule.</p><p><a href="for-business.html#accountability">Evaluate this workflow with a team</a> · <a href="for-engineers.html#sdk">Run a smaller offline SDK check</a>.</p></div>
+    <div class="argument-copy"><p>The example is one team's alert policy: revision 3 requires an owner team, runbook link and severity on payments sandbox alerts. It is the document the map above is reading.</p><p>A non-author AI assesses the proposal, and a distinct authorized reviewer approves that exact revision and use. The assessment advises the decision; approval is the separate act of an authorized reviewer, and the score reports rubric fit rather than probability of truth.</p><p>Revision 4 introduces a rollback-test requirement. Missing test evidence keeps that proposal outside accepted knowledge; the old approval cannot authorize the new rule.</p><p><a href="for-business.html#accountability">Evaluate this workflow with a team</a> · <a href="for-engineers.html#sdk">Run a smaller offline SDK check</a>.</p></div>
   </div>
 </section>
 
@@ -117,7 +117,7 @@
 <section id="audit" class="band">
   <div class="wrap split-heading">
     <div><p class="section-index">Sources and method</p><h2>Inspect what supports the claim.<a class="h-anchor" href="#audit" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2></div>
-    <div class="argument-copy"><p>Published research supports the problem and the review approach; the SDK offers checks you can run offline against your own artifacts. Neither is evidence of a production deployment or a business return, and both publish what they cannot establish. <a href="evidence.html">Every claim carries its source</a>.</p></div>
+    <div class="argument-copy"><p>Published research supports the problem and the review approach, and the SDK offers checks you can run offline against your own artifacts today. Deployment results are measured in deployment, and every source is listed so you can weigh it yourself. <a href="evidence.html">Every claim carries its source</a>.</p></div>
   </div>
 </section>
 

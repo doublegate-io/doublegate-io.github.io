@@ -9,7 +9,7 @@
       ],
       "memory_provider": true,
       "installable_on": "any harness host",
-      "instructions": "doublegate, in-harness tier: gated memory that works with no gate running. `doublegate.remember` files a claim and returns a handle — `local:` when no gate was reachable, `sha256:` once a gate stamped it — never a promise of admission; nothing you remember is readable to anyone until a reviewer that did not write it promotes it. `doublegate.recall` returns admitted beliefs plus this session's own unreviewed writes, marked `ratified: false`. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool: the thing being gated does not operate the gate. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
+      "instructions": "doublegate, in-harness tier: gated memory that works with no gate running. `doublegate.remember` files a claim and returns a handle — `local:` when no gate was reachable, `sha256:` once a gate stamped it — never a promise of admission; nothing you remember is readable to anyone until a reviewer that did not write it promotes it. `doublegate.recall` returns admitted beliefs plus this session's own unreviewed writes, marked `ratified: false`. Call `remember` when something durable is settled — a correction the user made, a convention this repo agreed, a decision with its reason; a claim with no reason gives a reviewer nothing to weigh. Call `recall` before answering from your own recollection of the store, and read an empty result as the gate working rather than the store being empty. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool: the thing being gated does not operate the gate. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
       "tools": [
         {
           "name": "doublegate.remember",
@@ -164,7 +164,7 @@
         },
         {
           "name": "doublegate.pending",
-          "description": "What is waiting for review, as metadata only — ids, types, states, ages, finding counts. Never content.",
+          "description": "What is waiting for review, as metadata only — ids, types, states, ages, finding counts. Never content. `findings` counts finding groups — one per (scan event, kind), which is the projection's primary key. A scan that reported the same kind at 38 offsets contributes 1; a re-scan that finds it again contributes another, so this is not a distinct-kind count either. `dg.ingest`'s `findings_count` is the scanner's hit total and is legitimately larger. Nothing here is truncated or top-N.",
           "inputSchema": {
             "type": "object",
             "properties": {
@@ -191,7 +191,7 @@
       ],
       "memory_provider": true,
       "installable_on": "any harness host",
-      "instructions": "doublegate, client-gate tier: the gate on this host. `doublegate.remember` scans the content before it answers and returns an artifact id and a state (`L1_SCANNED`, or `L1B_FLAGGED` with a findings count and no finding text); content is NOT retrievable to others until ratified — a reviewer that did not write it must sign. `doublegate.recall` searches the admitted store plus YOUR OWN scanned claims still awaiting review, each marked `ratified: false` — treat those as tentative, they may be rejected and vanish; never anyone else's quarantine. Provisional hits are marked, superseded ones hidden unless `include_superseded`. `doublegate.why` is the signed audit trail of one artifact; `doublegate.tip` the served head of its supersession chain; `doublegate.pending` what waits, as metadata only. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
+      "instructions": "doublegate, client-gate tier: the gate on this host. `doublegate.remember` scans the content before it answers and returns an artifact id and a state (`L1_SCANNED`, or `L1B_FLAGGED` with a findings count and no finding text); content is NOT retrievable to others until ratified — a reviewer that did not write it must sign. `doublegate.recall` searches the admitted store plus YOUR OWN scanned claims still awaiting review, each marked `ratified: false` — treat those as tentative, they may be rejected and vanish; never anyone else's quarantine. Provisional hits are marked, superseded ones hidden unless `include_superseded`. Call `remember` when something durable is settled — a correction the user made, a convention this repo agreed, a decision with its reason. Call `recall` before answering a question the store may already answer; an empty result usually means nothing has cleared review yet, so check `pending` and `why` before concluding the store is empty. `doublegate.why` is the signed audit trail of one artifact; `doublegate.tip` the served head of its supersession chain; `doublegate.pending` what waits, as metadata only. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
       "tools": [
         {
           "name": "doublegate.remember",
@@ -388,7 +388,7 @@
         },
         {
           "name": "doublegate.pending",
-          "description": "What is waiting for review, as metadata only — ids, types, states, ages, finding counts. Never content.",
+          "description": "What is waiting for review, as metadata only — ids, types, states, ages, finding counts. Never content. `findings` counts finding groups — one per (scan event, kind), which is the projection's primary key. A scan that reported the same kind at 38 offsets contributes 1; a re-scan that finds it again contributes another, so this is not a distinct-kind count either. `dg.ingest`'s `findings_count` is the scanner's hit total and is legitimately larger. Nothing here is truncated or top-N.",
           "inputSchema": {
             "type": "object",
             "properties": {

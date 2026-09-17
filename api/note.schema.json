@@ -81,7 +81,8 @@
     },
     "findings_count": {
       "type": "integer",
-      "minimum": 0
+      "minimum": 0,
+      "description": "the scanner's hit total for the scan — every location it reported. Not the same as the number of entries in dg.status's `findings`, which is one per (scan event, kind) finding group; hit total >= group count within one scan, and neither truncates the other"
     },
     "k": {
       "type": [

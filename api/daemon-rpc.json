@@ -1,22 +1,39 @@
 {
   "service": "doublegate",
-  "version": "0.1.0.dev0",
+  "version": "0.1.1.dev0",
   "transport": "JSON-RPC 2.0 over a Unix socket, newline-delimited",
-  "identity": "derived from the connection (SO_PEERCRED); never a parameter (I2). `null` values are refused: omit the field.",
+  "identity": "derived from the connection (SO_PEERCRED on the socket, the bearer on HTTP — ADR-0082); never a parameter (I2). `null` values are refused: omit the field.",
+  "roles": "reader < agent < reviewer < admin (AUTH-4); each verb's `role` is the least it needs, and a call above the caller's role is refused -32602 naming both.",
   "errors": {
     "-32600": "invalid request",
     "-32601": "method not found",
-    "-32602": "invalid params / refused with the reason; a field the verb does not list here is refused by name (I7)",
+    "-32602": "invalid params / refused with the reason; a field the verb does not list here is refused by name (I7); a verb above the caller's role names the role needed (AUTH-4)",
     "-32000": "identity underivable (I6)",
     "-32001": "request too large",
-    "-32006": "quarantine full; data.retry_after_ms"
+    "-32006": "quarantine full; data.retry_after_ms",
+    "-32014": "the semantic reviewer refused: a workflow blocker (ADR-0048 d4), never an approval and never a demand for a human — the row stays where it was"
   },
   "role": "any",
   "verbs": [
     {
+      "name": "dg.approval",
+      "service": "both",
+      "role": "reader",
+      "summary": "Who approved one artifact, or why it waits — a read model folded from its journal, never a state. `status` is one of rejected | refused | vetoed | withdrawn | countersigned | human_approved | ai_approved | escalated | pending | not_applicable; `signers[]` lists every decision with the signer's class (human | model | org | deployment | agent), the model label off the verdict, and whether it counts toward k.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, state, status, reason, k_required, k_have, signers[], approved_by{model,human,org}, model_labels[], provisional, human_veto_available, human_sign_available, decisions[], veto?, open_objections, revision}"
+    },
+    {
       "name": "dg.audit",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "The decisions about one artifact with signatures verified.",
       "params": [
         {
@@ -30,8 +47,8 @@
     },
     {
       "name": "dg.away",
-      "role": "both",
-      "proof": "operator_proof",
+      "service": "both",
+      "role": "admin",
       "summary": "The operator declares an absence (ADR-0045): the human-review TTLs stop until `back`, the time away subtracted on restart. Nothing is promoted meanwhile.",
       "params": [
         {
@@ -45,35 +62,22 @@
           "type": "string",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object: {away, declared, since, days, until?, note?}"
     },
     {
       "name": "dg.back",
-      "role": "both",
-      "proof": "operator_proof",
+      "service": "both",
+      "role": "admin",
       "summary": "The operator is back: the clocks restart with the time away subtracted (ADR-0045).",
-      "params": [
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
-        }
-      ],
+      "params": [],
       "returns": "object: {away, held_d, declared}"
     },
     {
       "name": "dg.ban",
-      "role": "both",
-      "proof": "operator_proof",
+      "service": "both",
+      "role": "admin",
       "summary": "Refuse a writer's, or a source prefix's, next ingest at the door with -32009 (ADR-0052 d6). Operator only; touches nothing already admitted (I4); not replicated.",
       "params": [
         {
@@ -105,20 +109,14 @@
           "type": "boolean",
           "required": false,
           "description": "true lifts a ban in effect"
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object: {kind, subject, active, event_id, until?}"
     },
     {
       "name": "dg.bans",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "The bans in effect and what they refused at the door (ADR-0052 d6). Read-only; `status` carries the same list.",
       "params": [
         {
@@ -131,17 +129,102 @@
       "returns": "object: {bans[], refused[]}"
     },
     {
-      "name": "dg.challenge",
-      "role": "both",
-      "proof": "none",
-      "summary": "A nonce for the operator key to sign (ADR-0028 d1). Worthless without the private key.",
-      "params": [],
-      "returns": "object: {nonce, ttl_ms}"
+      "name": "dg.comment",
+      "service": "both",
+      "role": "agent",
+      "summary": "Record a remark on an artifact — an annotation, never a decision. Changes nothing about the row's standing and counts toward nothing; an open `objection` by the operator holds auto-promotion until a `resolution` replies to it or it is retracted. The author class (human/model/agent) is derived from the signing identity, never a parameter (I2). Comments are never published (I1) and never leave this gate.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "the row to comment on; any state"
+        },
+        {
+          "name": "body",
+          "type": "string",
+          "required": true,
+          "description": "the remark, plain text"
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "required": false,
+          "description": "note | question | objection | resolution; default note"
+        },
+        {
+          "name": "reply_to",
+          "type": "string",
+          "required": false,
+          "description": "a live comment on the same artifact; required for a resolution"
+        },
+        {
+          "name": "findings",
+          "type": "array",
+          "required": false,
+          "description": "finding kinds on the row this remark is about"
+        }
+      ],
+      "returns": "object: {artifact_id, event_id, comment, counts}",
+      "errors": {
+        "-32602": "unknown artifact, bad kind, empty body, reply_to not a live comment here"
+      }
+    },
+    {
+      "name": "dg.comment_retract",
+      "service": "both",
+      "role": "agent",
+      "summary": "Withdraw a comment: its author, or the operator. The comment stays as a tombstone; an open objection retracted this way releases the hold it held.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "the row"
+        },
+        {
+          "name": "event_id",
+          "type": "string",
+          "required": true,
+          "description": "the comment's event id"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": "why, for the audit trail"
+        }
+      ],
+      "returns": "object: {artifact_id, event_id, retract_event_id}",
+      "errors": {
+        "-32602": "unknown comment, already retracted, or not yours to retract"
+      }
+    },
+    {
+      "name": "dg.comments",
+      "service": "both",
+      "role": "reader",
+      "summary": "The comment thread on one artifact, oldest first, with counts (total, open human objections).",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "the row"
+        },
+        {
+          "name": "include_retracted",
+          "type": "boolean",
+          "required": false,
+          "description": "default false — tombstones are kept in the projection"
+        }
+      ],
+      "returns": "object: {artifact_id, comments[], counts{total, open_objections, last_ts}}"
     },
     {
       "name": "dg.crawler_policy",
-      "role": "both",
-      "proof": "operator_proof for issue",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Issue or retrieve a source-scoped, expiring robots exception on the deployment journal. Never exposed as an MCP tool.",
       "params": [
         {
@@ -179,20 +262,14 @@
           "type": "string",
           "required": false,
           "description": "journal event id for get"
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object: signed policy event"
     },
     {
       "name": "dg.defer",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "agent",
       "summary": "Record that the operator looked and moved on (F40). Not a lifecycle transition.",
       "params": [
         {
@@ -206,8 +283,8 @@
     },
     {
       "name": "dg.demote",
-      "role": "both",
-      "proof": "operator_proof",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Withdraw an admitted artifact from every consumer surface; the content is kept.",
       "params": [
         {
@@ -221,28 +298,22 @@
           "type": "string",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object"
     },
     {
       "name": "dg.describe",
-      "role": "both",
-      "proof": "none",
-      "summary": "This catalog, for the answering daemon's role — the socket describing itself.",
+      "service": "both",
+      "role": "reader",
+      "summary": "This catalog, for the answering daemon's role — the socket describing itself — plus `you`: who the gate took the caller for and the role every verb is held to (ADR-0082).",
       "params": [],
-      "returns": "object: {service, version, role, verbs[], documents{}}"
+      "returns": "object: {service, version, role, verbs[], documents{}, you{identity, role, kind}}"
     },
     {
       "name": "dg.engagement",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "Did the operator actually review? Counts over a window.",
       "params": [
         {
@@ -256,8 +327,8 @@
     },
     {
       "name": "dg.grade",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Run the gate engine on one artifact: one model call per stance, one verdict per item.",
       "params": [
         {
@@ -271,8 +342,8 @@
     },
     {
       "name": "dg.grade_pending",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Grade what waits at L1, within the day's budget (fail-closed when spent, I6).",
       "params": [
         {
@@ -285,9 +356,42 @@
       "returns": "object"
     },
     {
+      "name": "dg.graph",
+      "service": "both",
+      "role": "reader",
+      "summary": "The constellation: every artifact as a node, every relation edge, every pin, every ban — the ADR-0035 projection serialized at once, bounded. `label` and `source_uri` are carried only for ACTIVE / SUPERSEDED rows (INV-SEC-10): a held artifact is its existence, never its content. `revision` is the journal tip; pass it back as `if_revision` and an unchanged graph answers {revision, unchanged: true}.",
+      "params": [
+        {
+          "name": "spaces",
+          "type": "array",
+          "required": false,
+          "description": "restrict to these spaces"
+        },
+        {
+          "name": "states",
+          "type": "array",
+          "required": false,
+          "description": "restrict to these lifecycle states"
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "nodes, newest state change first; default and ceiling 2000"
+        },
+        {
+          "name": "if_revision",
+          "type": "string",
+          "required": false,
+          "description": "the revision the caller already holds"
+        }
+      ],
+      "returns": "object: {revision, unchanged} | {revision, full, nodes[], edges[], pins[], bans[], total, truncated, counts, spaces, states, viewer}"
+    },
+    {
       "name": "dg.hide",
-      "role": "both",
-      "proof": "optional",
+      "service": "both",
+      "role": "agent",
       "summary": "Stop serving a promoted artifact to one audience, or to all — reversibly (ADR-0052 d4). The row stays ACTIVE and why-able; include_hidden returns it. A total hide by a non-operator is journaled `lowered`.",
       "params": [
         {
@@ -313,20 +417,14 @@
           "type": "boolean",
           "required": false,
           "description": "true reverses an earlier hide for this audience — a second event, both kept"
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object: {artifact_id, audience, hidden, event_id, hidden_for[], lowered?}"
     },
     {
       "name": "dg.ingest",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "agent",
       "summary": "Propose content. Scanned before this answers (ADR-0053 d1) and lands in quarantine at L1 (or L1b on a finding); nothing is readable until promoted. Writer identity is the connection's, never a parameter (I2).",
       "params": [
         {
@@ -339,7 +437,48 @@
           "name": "content_type",
           "type": "string",
           "required": true,
-          "description": "derived_fact | imported_document | memory | prompt_template | skill | summary | event | fetch | generation | message | message_part | scratchpad_state | session | state_snapshot | tool_call | trace | usage_record | verdict; the second group is the recorded path (taxonomy §2.2) — written and replayable, never graded as a belief; an unregistered type enters at the strictest class (FR-18)"
+          "description": "bundle_asset | bundle_document | bundle_python | bundle_skill | derived_fact | imported_document | memory | prompt_template | skill | skill_archive | summary | bundle_manifest | event | fetch | generation | message | message_part | scratchpad_state | session | state_snapshot | tool_call | trace | usage_record | verdict; the second group is the recorded path (taxonomy §2.2) — written and replayable, never graded as a belief; an unregistered type enters at the strictest class (FR-18)",
+          "enum": [
+            "bundle_asset",
+            "bundle_document",
+            "bundle_python",
+            "bundle_skill",
+            "derived_fact",
+            "imported_document",
+            "memory",
+            "prompt_template",
+            "skill",
+            "skill_archive",
+            "summary",
+            "bundle_manifest",
+            "event",
+            "fetch",
+            "generation",
+            "message",
+            "message_part",
+            "scratchpad_state",
+            "session",
+            "state_snapshot",
+            "tool_call",
+            "trace",
+            "usage_record",
+            "verdict"
+          ],
+          "recorded": [
+            "bundle_manifest",
+            "event",
+            "fetch",
+            "generation",
+            "message",
+            "message_part",
+            "scratchpad_state",
+            "session",
+            "state_snapshot",
+            "tool_call",
+            "trace",
+            "usage_record",
+            "verdict"
+          ]
         },
         {
           "name": "source_uri",
@@ -379,9 +518,155 @@
       }
     },
     {
+      "name": "dg.ingest_bundle",
+      "service": "both",
+      "role": "agent",
+      "summary": "Inspect a ZIP without execution. Retain the original archive, its complete canonical manifest and every scanned file occurrence in quarantine, all at T-5 (the daemon proposes the class; the verb takes none). Fetch evidence must match the retained body's hash, size, successful status and URL — consistency, not network attestation. Writer is the connection identity. Validation never authorizes installation or promotion.",
+      "params": [
+        {
+          "name": "content",
+          "type": "string",
+          "required": true,
+          "description": "base64 ZIP bytes (strict decoding)"
+        },
+        {
+          "name": "source_uri",
+          "type": "string",
+          "required": true,
+          "description": "must match the fetch's final_url (or url if absent), ignoring the URI fragment — a connector's `#fetch=…` label never reaches the wire"
+        },
+        {
+          "name": "fetch_artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "same-space retained fetch artifact: content_hash, bytes, status, url/final_url"
+        },
+        {
+          "name": "manifest",
+          "type": "object",
+          "required": false,
+          "description": "optional SDK v1 manifest, recomputed completely against the archive bytes"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "default main"
+        }
+      ],
+      "returns": "object: {state: quarantined, validation: valid|failed, archive_artifact_id, manifest_artifact_id, members: [{path, content_hash, size_bytes, classification, artifact_id, state, scan_event}], reason?}. Failed validation retains the archive only, and `reason` is one of: fetch_missing | fetch_wrong_type | fetch_wrong_space | fetch_blob_mismatch | fetch_mismatch:<field> | archive_invalid:<detail>. An invalid fetch never creates a provenance edge. No model judgment or installation.",
+      "errors": {
+        "-32602": "invalid arguments",
+        "-32001": "request too large",
+        "-32006": "quarantine full; interrupted writes remain held"
+      }
+    },
+    {
+      "name": "dg.inventory",
+      "service": "both",
+      "role": "reader",
+      "summary": "Every artifact in EVERY lifecycle state, as metadata, paged and filterable — the operator workspace's list. Deliberately wider than dg.pending, which answers about quarantine only and so can never show the ACTIVE row a handoff is made from. Carries the spaces the store actually holds, because a caller that cannot name a space cannot pass `spaces` to dg.recall, and a recall without it falls back to `main` and answers nothing. Metadata only: no content, ever.",
+      "params": [
+        {
+          "name": "states",
+          "type": "array",
+          "required": false,
+          "description": "restrict to these lifecycle states; default all. Unknown names are ignored"
+        },
+        {
+          "name": "spaces",
+          "type": "array",
+          "required": false,
+          "description": "restrict to these spaces; default all"
+        },
+        {
+          "name": "q",
+          "type": "string",
+          "required": false,
+          "description": "substring match on artifact id, content type or writer identity"
+        },
+        {
+          "name": "offset",
+          "type": "integer",
+          "required": false,
+          "description": "page offset; default 0"
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "page size; default 50, capped at 200"
+        }
+      ],
+      "returns": "object: {artifacts[], total, offset, limit, counts{state: n}, spaces[], states[]} — `counts` is over the filtered set, `spaces` and `states` are the whole store's vocabulary so a filter control can be rendered from the answer itself"
+    },
+    {
+      "name": "dg.keys",
+      "service": "both",
+      "role": "reviewer",
+      "summary": "API keys (AUTH-3): list the key table, issue a `dgk_…` key (shown once; stored as its hash in an `apikey-issued` event) with a role no higher than the caller's, or revoke one by id.",
+      "params": [
+        {
+          "name": "action",
+          "type": "string",
+          "required": false,
+          "description": "list | issue | revoke; default list"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "who or what holds the key (issue)"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "required": false,
+          "description": "reader | agent | reviewer | admin; default agent (issue)"
+        },
+        {
+          "name": "expires_in_days",
+          "type": "integer",
+          "required": false,
+          "description": "optional expiry (issue)"
+        },
+        {
+          "name": "key_id",
+          "type": "string",
+          "required": false,
+          "description": "the key to revoke (revoke)"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": "why (revoke)"
+        }
+      ],
+      "returns": "object: list → {keys[{key_id, label, role, issued_by, issued_at, expires_at, revoked_at}]}; issue → {key, key_id, role, label, expires_at, event_id}; revoke → {key_id, revoked, already?, event_id?} + the list",
+      "errors": {
+        "-32602": "unknown action, bad role, unknown key_id, or a role above the issuer's"
+      }
+    },
+    {
+      "name": "dg.node",
+      "service": "both",
+      "role": "reader",
+      "summary": "One node in full for a review surface: the status row, the approval trail, the comment thread, relations, the served tip, bundle members (`derives_from` children), and a bounded MASKED preview (INV-SEC-7; null when the content is erased or the blob is gone). The org gate's `read` scope sees promoted rows only.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        }
+      ],
+      "returns": "object: {artifact_id, status, approval, comments, relations, tip, members[], preview, preview_chars, self_authored, refusal?, revision}"
+    },
+    {
       "name": "dg.override_tip",
-      "role": "both",
-      "proof": "operator_proof",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Pin a chain's served head to this member (time travel). Reversible by a second override.",
       "params": [
         {
@@ -395,20 +680,14 @@
           "type": "string",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object"
     },
     {
       "name": "dg.pending",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "What is waiting in quarantine, as metadata (state, class, kind) — never content.",
       "params": [
         {
@@ -421,17 +700,53 @@
       "returns": "object: {pending[]}"
     },
     {
+      "name": "dg.people",
+      "service": "both",
+      "role": "admin",
+      "summary": "The role table (ADR-0082 d5, AUTH-4): list every identity this gate has a role for, assign a role to an (iss, sub), or remove one. A role never exceeds the assigner's. `list` also shows the built-in issuer's people and `[auth].admins`.",
+      "params": [
+        {
+          "name": "action",
+          "type": "string",
+          "required": false,
+          "description": "list | assign | remove; default list"
+        },
+        {
+          "name": "iss",
+          "type": "string",
+          "required": false,
+          "description": "the issuer; default this gate's person issuer"
+        },
+        {
+          "name": "sub",
+          "type": "string",
+          "required": false,
+          "description": "the subject at that issuer (assign, remove)"
+        },
+        {
+          "name": "role",
+          "type": "string",
+          "required": false,
+          "description": "reader | agent | reviewer | admin (assign)"
+        }
+      ],
+      "returns": "object: list → {issuer, people[{iss, sub, role, source, email?, name?, assigned_by?, assigned_at?}]}; assign → {iss, sub, role, event_id} + the list; remove → {iss, sub, removed, was?, event_id?} + the list",
+      "errors": {
+        "-32602": "unknown action, bad role, missing sub, or a role above the assigner's"
+      }
+    },
+    {
       "name": "dg.ping",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "Liveness and identity: deployment id, role, retrieval paths, degraded flags, quorum profile.",
       "params": [],
-      "returns": "object"
+      "returns": "object: {pong, deployment_id, role, paths, degraded, quorum_profile}"
     },
     {
       "name": "dg.promote",
-      "role": "both",
-      "proof": "operator_proof",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Admit an artifact whose quorum is met. On a solo client the promotion is provisional until an org gate countersigns (R3).",
       "params": [
         {
@@ -451,20 +766,14 @@
           "type": "string",
           "required": false,
           "description": "parent id this artifact supersedes (single-head chains, ADR-0035)"
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object: {artifact_id, state, provisional?}"
     },
     {
       "name": "dg.publish",
-      "role": "both",
-      "proof": "presence",
+      "service": "both",
+      "role": "reviewer",
       "summary": "The note publisher's cursors: status | poll | rewind <sink> [--to <event>] (ADR-0031).",
       "params": [
         {
@@ -490,8 +799,8 @@
     },
     {
       "name": "dg.rank",
-      "role": "both",
-      "proof": "optional",
+      "service": "both",
+      "role": "agent",
       "summary": "A weight for one audience (ADR-0052). recall(audience=…) multiplies the hit by it; 1.0 when none — less likely, never absent. Any non-writer identity, human or agent; the writer is refused (I2).",
       "params": [
         {
@@ -517,28 +826,22 @@
           "type": "string",
           "required": false,
           "description": ""
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object: {artifact_id, audience, weight, event_id, ranks{}}"
     },
     {
       "name": "dg.rebuild",
-      "role": "both",
-      "proof": "presence",
+      "service": "both",
+      "role": "admin",
       "summary": "Replay the journal into every projection; the result must equal the live state (I5).",
       "params": [],
       "returns": "object"
     },
     {
       "name": "dg.recall",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "Read the active store, plus the caller's own scanned claims still in quarantine marked unreviewed (ADR-0053 d2). Nobody else's quarantine, ever (I1). Provisional hits are marked; superseded are hidden unless asked for.",
       "params": [
         {
@@ -600,16 +903,16 @@
     },
     {
       "name": "dg.reconcile",
-      "role": "both",
-      "proof": "presence",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Re-derive the consumer surfaces from the journal (the integrator's rebuild).",
       "params": [],
       "returns": "object"
     },
     {
       "name": "dg.reject",
-      "role": "both",
-      "proof": "operator_proof",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Refuse an artifact in quarantine, with a category and optionally what it lost to (ADR-0037).",
       "params": [
         {
@@ -629,20 +932,14 @@
           "type": "string",
           "required": false,
           "description": "artifact id"
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object"
     },
     {
       "name": "dg.relate",
-      "role": "both",
-      "proof": "operator_proof",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Append a typed relation from artifact_id (child) to parent: supersedes | restates | corrects | contradicts | extends. Only supersedes hides.",
       "params": [
         {
@@ -662,20 +959,14 @@
           "type": "string",
           "required": true,
           "description": ""
-        },
-        {
-          "name": "operator_proof",
-          "type": "object",
-          "required": false,
-          "description": ""
         }
       ],
       "returns": "object: {artifact_id, relation, parent, event_id}"
     },
     {
       "name": "dg.relations",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "The typed relation edges touching one artifact (ADR-0035).",
       "params": [
         {
@@ -689,23 +980,23 @@
     },
     {
       "name": "dg.review",
-      "role": "both",
-      "proof": "none",
-      "summary": "The operator's queue: what needs a human, capped.",
+      "service": "both",
+      "role": "reviewer",
+      "summary": "The operator's queue: what needs a human, capped. Each row is annotated with a bounded content preview, whether the operator wrote it (I2), and the verdicts its state accepts.",
       "params": [
         {
           "name": "cap",
           "type": "integer",
           "required": false,
-          "description": "max items; default from [review]"
+          "description": "override the digest cap"
         }
       ],
-      "returns": "object"
+      "returns": "object: {items[], held_back, total_waiting, cap}"
     },
     {
       "name": "dg.review_pending",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reviewer",
       "summary": "ADR-0048: the second opinion. Under review.mode model|auto, every L2 row whose first pass escalated gets one `gate-review` verdict, charged to the same budget; a no-op under `human`. Never touches L1b (INV-SEC-5).",
       "params": [
         {
@@ -718,9 +1009,42 @@
       "returns": "object: {reviewed, cost_tokens, paused, budget_remaining}"
     },
     {
+      "name": "dg.review_runs",
+      "service": "both",
+      "role": "reader",
+      "summary": "The review-run log: bounded, filterable, searchable, newest first. Deliberately separate from dg.status's queue depths — a depth is what is WAITING, a run is what is being PROCESSED, and reading one as the other is the misreport this split prevents.",
+      "params": [
+        {
+          "name": "state",
+          "type": "string",
+          "required": false,
+          "description": "queued | running | completed | failed | blocked | all; default all"
+        },
+        {
+          "name": "q",
+          "type": "string",
+          "required": false,
+          "description": "search run id, artifact, reviewer or configuration revision"
+        },
+        {
+          "name": "offset",
+          "type": "integer",
+          "required": false,
+          "description": "page offset; default 0"
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "page size; default 25"
+        }
+      ],
+      "returns": "object: {reported, runs[], total, offset, limit, counts, in_flight[], last_failure, detail?} — `reported: false` when this worker emits no run events, and then the list is empty rather than inferred"
+    },
+    {
       "name": "dg.scan",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Run the deterministic scanner on one L0 artifact; a finding ≥ medium routes to L1b and no score clears it (INV-SEC-5). An explicit outcome is the manual override.",
       "params": [
         {
@@ -746,8 +1070,8 @@
     },
     {
       "name": "dg.scan_pending",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reviewer",
       "summary": "Scan every L0 artifact whose delay elapsed. Counts, never content.",
       "params": [
         {
@@ -766,9 +1090,80 @@
       "returns": "object"
     },
     {
+      "name": "dg.semantic_review",
+      "service": "both",
+      "role": "reviewer",
+      "summary": "ADR-0048/ADR-0053: ask the server-owned reviewer to look at one row. Every disposition it writes is reviewer_class='model' — a model is never laundered into a human signature by being triggered from a console. The caller supplies the subject and nothing else; the reviewer identity, the rendering, the scan event and the registry revision are read from the row.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "the row to review"
+        },
+        {
+          "name": "settle",
+          "type": "boolean",
+          "required": false,
+          "description": "default true — settle the row if the disposition clears it"
+        }
+      ],
+      "returns": "object: the reviewer's disposition payload",
+      "errors": {
+        "-32602": "unknown artifact: the id names no row in this quarantine",
+        "-32014": "the reviewer refused (no reviewable finding, unavailable backend, unusable reply); the row is unchanged"
+      }
+    },
+    {
+      "name": "dg.settings",
+      "service": "both",
+      "role": "admin",
+      "summary": "The review worker's configuration: configured (on disk) beside effective (in this process), plus the drift between them and the field/choice tables a configuration surface renders.",
+      "description_note": "Both halves, always. A settings view that shows only the file cannot tell the operator their last edit never took; one that shows only the runtime cannot tell them what a restart would bring back. Credential VALUES are never returned — `secrets` reports presence only.",
+      "params": [],
+      "returns": "object: {configured, explicit, secrets, effective, etag, config_rev, drift[], fields, choices, runs}"
+    },
+    {
+      "name": "dg.settings_save",
+      "service": "both",
+      "role": "admin",
+      "summary": "Compare-and-swap the configuration file, then apply it to this running daemon. Always both: a save that needs a restart to mean anything is a save the operator has to be told about twice.",
+      "description_note": "The etag the caller was shown is REQUIRED; without it two editors overwrite each other silently. A stale etag returns `conflict` with the current etag and the current values so the caller can show what is actually there.",
+      "params": [
+        {
+          "name": "values",
+          "type": "object",
+          "required": true,
+          "description": "dotted `table.key` → value"
+        },
+        {
+          "name": "etag",
+          "type": "string",
+          "required": true,
+          "description": "the revision this draft was editing"
+        }
+      ],
+      "returns": "object: {ok, saved, applied, etag, config_rev, configured, secrets, effective, drift[], note} or {ok: false, conflict|errors}"
+    },
+    {
+      "name": "dg.settings_validate",
+      "service": "both",
+      "role": "admin",
+      "summary": "Run a configuration draft through the real loader. Writes nothing, applies nothing — the call a form may make on every keystroke.",
+      "params": [
+        {
+          "name": "values",
+          "type": "object",
+          "required": true,
+          "description": "dotted `table.key` → value; only the keys being changed"
+        }
+      ],
+      "returns": "object: {ok, errors?} — field-keyed errors, never an exception"
+    },
+    {
       "name": "dg.settle_pending",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reviewer",
       "summary": "ADR-0048: under review.mode auto, promote every L2 row that meets k with no human required on its class — the deployment signs the promote, the integrator's boundary check applies unchanged. A no-op otherwise.",
       "params": [
         {
@@ -782,9 +1177,9 @@
     },
     {
       "name": "dg.sign",
-      "role": "both",
-      "proof": "operator_proof for the human's signature",
-      "summary": "Record a verdict. With operator_proof the human signs; without, the uid signs — which never satisfies a human requirement.",
+      "service": "both",
+      "role": "reviewer",
+      "summary": "Record a verdict as the calling principal (ADR-0082): a signed-in person's verdict is a human's, a key's or a socket peer's is a reviewer's and never satisfies a human requirement. With `promote: true` the signature and the promotion it was for happen in one call; a promotion the boundary refuses is reported in `promote.refused` and the signature stands.",
       "params": [
         {
           "name": "artifact_id",
@@ -805,18 +1200,18 @@
           "description": ""
         },
         {
-          "name": "operator_proof",
-          "type": "object",
+          "name": "promote",
+          "type": "boolean",
           "required": false,
-          "description": "{nonce, sig} over dg.challenge's nonce"
+          "description": "also promote once signed (default false)"
         }
       ],
-      "returns": "object"
+      "returns": "object: {artifact_id, state, event_id, promote?}"
     },
     {
       "name": "dg.status",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "Queue depths, journal tip, gate budget, role-specific gauges — or one artifact's lifecycle row.",
       "params": [
         {
@@ -830,8 +1225,8 @@
     },
     {
       "name": "dg.submit",
-      "role": "client",
-      "proof": "none",
+      "service": "client",
+      "role": "agent",
       "summary": "Queue an admitted artifact for the org gate (the outbox). Idempotent by artifact id.",
       "params": [
         {
@@ -845,16 +1240,16 @@
     },
     {
       "name": "dg.submit_drain",
-      "role": "client",
-      "proof": "none",
+      "service": "client",
+      "role": "agent",
       "summary": "Drain the outbox to the org gate now and pull outcomes (countersign / refuse) as peer events.",
       "params": [],
       "returns": "object: {accepted, retry, stopped, refused, pulled, resolved, halted_reason?}"
     },
     {
       "name": "dg.tip",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "The served head of an artifact's relation chain (ADR-0037).",
       "params": [
         {
@@ -868,16 +1263,16 @@
     },
     {
       "name": "dg.verify",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "Walk the journal chain and verify every signature.",
       "params": [],
       "returns": "object: {events, tip}"
     },
     {
       "name": "dg.why",
-      "role": "both",
-      "proof": "none",
+      "service": "both",
+      "role": "reader",
       "summary": "Every signed event about one artifact, in order — the provenance answer.",
       "params": [
         {
@@ -890,9 +1285,13 @@
       "returns": "object: {artifact_id, events[]}"
     }
   ],
+  "declared_not_dispatched": [],
   "documents": {
     "mcp_tools": "docs/api/mcp-tools.json",
     "note_schema": "docs/api/note.schema.json",
+    "openapi": "docs/api/openapi.json and GET /openapi.json on this gate's loopback listener (any principal)",
+    "mcp_catalog": "docs/api/mcp-catalog.json and GET /mcp/catalog.json (keyless, like POST /mcp)",
+    "docs_page": "GET /app#/api — the app's API view, the interactive rendering of the OpenAPI document (GET /docs redirects there)",
     "org_openapi": "doublegate-org: docs/api/openapi.json and GET /openapi.json on the keyed surface",
     "published": "https://doublegate-io.github.io/api/ (snapshot of all four, stamped with the commit) — https://doublegate-io.github.io/llms.txt first"
   }
