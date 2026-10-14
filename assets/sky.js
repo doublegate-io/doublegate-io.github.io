@@ -853,6 +853,17 @@
         yaw += 0.00004 * dt; dirty = true; // a slow idle turn about the vertical, only when not zoomed in
       }
     }
+    // A pause holds the whole figure, an arrival already in flight included.
+    // Landing is what increments the count, and the flight lasts up to 1100 ms,
+    // so without this the ledger keeps counting while the control reads Resume
+    // — the figure contradicting its own button. Carrying each clock forward by
+    // the frame delta freezes progress and resumes it where it stopped.
+    if (paused) {
+      for (var fi = 0; fi < inflight.length; fi++) {
+        var fa = inflight[fi];
+        if (fa.landed) fa.landedAt += dt; else fa.start += dt;
+      }
+    }
     if (!paused && !document.hidden && now >= nextAt) {
       arrive(now);
       // exponential inter-arrival, mean 2.1 s, clamped; one in eight is a burst
