@@ -83,8 +83,8 @@ UNLISTED = [
 NEXT_STEPS = ("the Solo release of today's gate, installable, backed up and restorable, with "
               "rotating signing keys and erasable content. Then Team, one gate a group shares "
               "over the network, under one review policy")
-AVAILABILITY = ('<p class="availability"><b>Runs today</b> on one machine: one gate, its console, '
-                'a Claude Code plugin and the offline SDK. '
+AVAILABILITY = ('<p class="availability"><b>Available today:</b> the gate, its console, a Claude Code '
+                'plugin and the offline SDK. '
                 f'<b>Next:</b> {NEXT_STEPS}.</p>')
 
 TITLES = {
@@ -332,7 +332,7 @@ HEROES = {'for-business.html': ('For business',
                        'person, a grading model or both, and which kinds of content need '
                        'a person.</p><div class="cta-row"><a class="btn" '
                        'href="#group">What a group gets next</a></div>',
-                       '<p class="availability"><b>Runs today</b> on one machine, where every '
+                       '<p class="availability"><b>Available today,</b> where every '
                        'agent shares one gate. Review costs model usage and someone’s time. '
                        '<b>Next:</b> Team, one gate a group shares over the network.</p>'),
  'for-engineers.html': ('For engineers',
@@ -379,7 +379,7 @@ HEROES = {'for-business.html': ('For business',
                 'area. By default an agent searches its own area and those above it.</p>\n'
                 '        <div class="cta-row"><a class="btn primary" href="#cost">See a reviewed '
                 'example</a><a class="btn" href="how-it-works.html">How it works</a></div>',
-                '<p class="availability"><b>Runs today</b> on one machine: one gate, its '
+                '<p class="availability"><b>Available today:</b> the gate, its '
                 'console, a Claude Code plugin and the offline SDK.</p>')}
 
 def hero_html(page: str) -> str:
@@ -460,7 +460,7 @@ LLMS_API = [
 # (build.py reads nothing outside this directory); compare them by hand with
 # doublegate-agent/src/doublegate_agent/mcp.py TOOLS when either changes.
 LLMS_RULES = [
-    "Claude Code: the `doublegate-agent` plugin gives an agent eleven tools: remember, record, recall, context, workarea, lineage, workarea_relate, complete, status, ask and cancel_question. It offers no act above an agent's. Over the gate's local socket, a process running as the gate's operating-system user is the gate's administrator, so the gate itself holds an agent to these acts only when the agent runs under another operating-system user.",
+    "Claude Code: the `doublegate-agent` plugin gives an agent thirteen tools: remember, record, recall, context, workarea, lineage, workarea_relate, complete, status, ask, cancel_question, questions_from_crews and answer_question. It offers no act above an agent's. Over the gate's local socket, a process running as the gate's operating-system user is the gate's administrator, so the gate itself holds an agent to these acts only when the agent runs under another operating-system user.",
     "The gate's built-in plugin, which is being retired, namespaces its tools `doublegate.*` — `doublegate.remember`, not `remember`. Launch it with `doublegate-client mcp` (this machine's gate) over stdio and call `tools/list`.",
     "Every write names a work area. `remember` returns a handle, never a promise of promotion; nothing you remember is readable to anyone else through `recall` until a reviewer other than its author has promoted it. Your own held claims come back to you marked `held`.",
     "Never send `writer_identity` or `deployment_id`; identity is derived from the connection and a request carrying it is refused.",

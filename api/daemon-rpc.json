@@ -628,6 +628,26 @@
           "enters": []
         },
         {
+          "type": "question-routed",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "question-answered-by-crew",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "question-referred",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "question-wait-over",
+          "object": "row",
+          "enters": []
+        },
+        {
           "type": "rank",
           "object": "row",
           "enters": []
@@ -915,7 +935,7 @@
     {
       "name": "dg.ingest",
       "role": "agent",
-      "summary": "Propose content into a work area (ADR-0102 d1): a gated class named by `kind`, whose trust class the gate derives (memory, derived_fact, summary, steering, question → T-1; skill, prompt_template → T-2; imported_document, third-party content → T-4; the scanner may only raise it), or a recorded-path class named by `content_type`, entered as T-1 and never graded. Scanned before this answers (ADR-0053 d1) and lands in quarantine at L1 (or L1b on a finding); nothing is readable until promoted. A repeat of the same bytes in the same space by the same identity, or of bytes already promoted there, answers `duplicate: true` with that row and the work area it was first written into; bytes another identity holds unpromoted become the caller's own new row (ADR-0102 d3). Writer identity is the connection's, never a parameter (I2). A request that names no `workarea` is refused, whatever else it carries (ADR-0102 d1). A `steering` row is a direction to the agents at its work area and every area below it: held, scanned and graded like any row, and once promoted shown by its place beside a recall's hits, never among them (ADR-0116 d16, d17). A `question` is a member's question to the people of its crew, addressed to people: its body is the closed form `question/1` (`doublegate_sdk.question`), checked here, and it is never a hit in any scope; one writer holds at most eight in one work area (ADR-0131 d1, d2). The `ingest` event records the writer's principal (AUTH-5).",
+      "summary": "Propose content into a work area (ADR-0102 d1): a gated class named by `kind`, whose trust class the gate derives (memory, derived_fact, summary, steering, question, answer → T-1; skill, prompt_template → T-2; imported_document, third-party content → T-4; the scanner may only raise it), or a recorded-path class named by `content_type`, entered as T-1 and never graded. Scanned before this answers (ADR-0053 d1) and lands in quarantine at L1 (or L1b on a finding); nothing is readable until promoted. A repeat of the same bytes in the same space by the same identity, or of bytes already promoted there, answers `duplicate: true` with that row and the work area it was first written into; bytes another identity holds unpromoted become the caller's own new row (ADR-0102 d3). Writer identity is the connection's, never a parameter (I2). A request that names no `workarea` is refused, whatever else it carries (ADR-0102 d1). A `steering` row is a direction to the agents at its work area and every area below it: held, scanned and graded like any row, and once promoted shown by its place beside a recall's hits, never among them (ADR-0116 d16, d17). A `question` is a member's question to the people of its crew, addressed to people: its body is the closed form `question/1` (`doublegate_sdk.question`), checked here, and it is never a hit in any scope; one writer holds at most eight in one work area (ADR-0131 d1, d2). The `ingest` event records the writer's principal (AUTH-5).",
       "params": [
         {
           "name": "content",
@@ -942,15 +962,17 @@
             "skill",
             "prompt_template",
             "imported_document",
-            "question"
+            "question",
+            "answer"
           ]
         },
         {
           "name": "content_type",
           "type": "string",
           "required": false,
-          "description": "bundle_asset | bundle_document | bundle_python | bundle_skill | derived_fact | imported_document | map_asset | map_document | map_source | memory | project_map | prompt_template | question | skill | skill_archive | steering | summary | bundle_manifest | event | generation | message | message_part | scratchpad_state | session | state_snapshot | tool_call | trace | usage_record | verdict; the second group is the recorded path (taxonomy §2.2) — written and replayable, never graded as a belief; an unregistered type enters at the strictest class (FR-18). On this verb it names a recorded-path class only; a gated class travels as kind (ADR-0102 d9)",
+          "description": "answer | bundle_asset | bundle_document | bundle_python | bundle_skill | derived_fact | imported_document | map_asset | map_document | map_source | memory | project_map | prompt_template | question | skill | skill_archive | steering | summary | bundle_manifest | event | generation | message | message_part | scratchpad_state | session | state_snapshot | tool_call | trace | usage_record | verdict; the second group is the recorded path (taxonomy §2.2) — written and replayable, never graded as a belief; an unregistered type enters at the strictest class (FR-18). On this verb it names a recorded-path class only; a gated class travels as kind (ADR-0102 d9)",
           "enum": [
+            "answer",
             "bundle_asset",
             "bundle_document",
             "bundle_python",
@@ -1048,7 +1070,7 @@
       ],
       "returns": "object: {artifact_id, state, space, workarea?, producer, kind?|content_type?, findings_count, scan_event, trust_class} — the scanner's rule pass ran before this answered (ADR-0053 d1); state is L1_SCANNED or L1B_FLAGGED (RECORDED on the recorded path), and a finding's text is never in the answer. A duplicate answers {artifact_id, state, space, workarea, producer, duplicate: true}, the producer the row was first written with",
       "errors": {
-        "-32602": "invalid arguments: an unknown space (named, with the spaces that exist), no workarea, a work area name outside the grammar, both or neither of kind and content_type, a trust_class, an unknown kind or recorded class, a producer outside ADR-0107 d1's shape, an addressed_to on any kind but steering or question or outside ADR-0116 d18's shape, or on a question any address but people; a question's body outside question/1, named by its first broken rule, a replaces or cancels its derives_from does not name, or a ninth question from one writer in one work area (data.reason `question_limit`); a derives_from id: unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing",
+        "-32602": "invalid arguments: an unknown space (named, with the spaces that exist), no workarea, a work area name outside the grammar, both or neither of kind and content_type, a trust_class, an unknown kind or recorded class, a producer outside ADR-0107 d1's shape, an addressed_to on any kind but steering or question or outside ADR-0116 d18's shape, or on a question any address but people; a question's body outside question/1, named by its first broken rule, a replaces or cancels its derives_from does not name, or a ninth question from one writer in one work area (data.reason `question_limit`); an answer's body outside answer/1, a question it names that derives_from does not name first, a question held or ended, values its form does not admit, a second answer or referral of the crew while one stands unless replaces names it, or a writer that is not a member key of the crew the question was routed to (data.reason `not_the_answering_crew`; ADR-0143 d2); a derives_from id: unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; for a member key of a routed crew, the question routed to it, its charter rows and its cited claims are readable here, and for a caller who may read a question, the routed crew's answer in force to it (ADR-0143 d2, d4)",
         "-32001": "request too large",
         "-32006": "quarantine at max_depth; data.retry_after_ms (below the reviewer role it names no number of held rows, GAPS 157)",
         "-32010": "data.reason `work_complete`: this identity completed that work area; nothing was written (ADR-0102 d6)",
@@ -1309,7 +1331,7 @@
     {
       "name": "dg.override_tip",
       "role": "reviewer",
-      "summary": "Pin a chain's served head to this member (time travel). Reversible by a second override.",
+      "summary": "Pin a chain's served head to this member (time travel). Reversible by a second override. A crew sheet is never pinned: promote and activation, both checked, are the only acts that change the sheet in force (ADR-0143 d8).",
       "params": [
         {
           "name": "artifact_id",
@@ -1324,7 +1346,10 @@
           "description": ""
         }
       ],
-      "returns": "object"
+      "returns": "object",
+      "errors": {
+        "-32602": "data.reason crew_sheet_not_pinned, \"Refused: a crew sheet is not pinned as tip; propose it in place of the sheet in force so its connections are checked.\""
+      }
     },
     {
       "name": "dg.pending",
@@ -1402,7 +1427,25 @@
       ],
       "returns": "object: {artifact_id, state, provisional?}",
       "errors": {
-        "-32602": "data.reason runner_lacks_type with data.missing, or runner_full, on a crew sheet whose space's assigned runner runs no model for a type it uses or has made no report since the gate started (ADR-0141 d5)"
+        "-32602": "data.reason runner_lacks_type with data.missing, or runner_full, on a crew sheet whose space's assigned runner runs no model for a type it uses or has made no report since the gate started (ADR-0141 d5); data.reason answering_not_a_crew on a person's crew sheet naming in answered_by a space with no crew sheet in force, answering_chain when the named crew names an answering crew of its own or a crew in force names this one, and, from a caller below admin, connection_needs_admin on a crew sheet that a writer below admin wrote and that adds a read or an answering crew against the space's last sheet in force, an admin's own sheet not held whether it replaces a sheet or none (ADR-0143 d1, d8)"
+      }
+    },
+    {
+      "name": "dg.question",
+      "role": "reader",
+      "summary": "One question's routing state, to a caller that may read the question (ADR-0143 d4; 17 — Crews §11.5): held; with_crew with its crew and the minutes left; with_people with no_crew, wait_over, crew_gone or referred; answered by a person or by the crew, a person's standing above; or ended as ADR-0131 d6 lists. The route is the question's question-routed event, never the sheets in force. A held answer or referral is served to nobody here.",
+      "params": [
+        {
+          "name": "question",
+          "type": "string",
+          "required": true,
+          "description": "the question's artifact id",
+          "readable": true
+        }
+      ],
+      "returns": "object: {question, state, reason, crew, wait_minutes, minutes_left, answers[{artifact_id, body, space, promoted_at}], person_answer, referral} — answers are the crew's in force citing it, newest first; referral {artifact_id, body} is served to a person alone, null to every other caller (GAPS 1382, 1387)",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing"
       }
     },
     {
@@ -1687,7 +1730,7 @@
     {
       "name": "dg.replacement_activate",
       "role": "reviewer",
-      "summary": "The one signed commit that flips a whole group (graph operations §4): every prepared child becomes servable together and every listed parent becomes SUPERSEDED together. Curation, never the author's: the proposer is refused by name, and a stale `graph_revision` is refused with the current one rather than activated against a graph that moved.",
+      "summary": "The one signed commit that flips a whole group (graph operations §4): every prepared child becomes servable together and every listed parent becomes SUPERSEDED together. Curation, never the author's: the proposer is refused by name, and a stale `graph_revision` is refused with the current one rather than activated against a graph that moved. In a development home the developer activates their own group, and `replacement-activated` carries `self_signed: true` (ADR-0135 d2's dated line). A crew sheet it brings into force is checked as a promote is, and one that adds a read or an answering crew is activated by an admin, or by any reviewer who did not propose it when an admin wrote it and the group replaces the sheet in force (ADR-0143 d8).",
       "params": [
         {
           "name": "group_id",
@@ -1704,7 +1747,7 @@
       ],
       "returns": "object: the group's status plus {event_id, promoted[], superseded[], frontier[], published}",
       "errors": {
-        "-32602": "the proposer, an unprepared child, a stale revision or pin, a competing group, a cycle, or a child the admission boundary refuses"
+        "-32602": "the proposer, an unprepared child, a stale revision or pin, a competing group, a cycle, or a child the admission boundary refuses; data.reason answering_not_a_crew, answering_chain or connection_needs_admin on a crew sheet child, in the record's words (ADR-0143 d1, d8)"
       }
     },
     {
@@ -1867,6 +1910,23 @@
       "returns": "object: {reported, runs[], total, offset, limit, counts, in_flight[], last_failure, detail?} — `reported: false` when this worker emits no run events, and then the list is empty rather than inferred"
     },
     {
+      "name": "dg.routed_questions",
+      "role": "agent",
+      "summary": "The questions routed to the crew of `space` and still with it, oldest promotion first, at most 50, each with the one set that crosses between two crews: the question's body, the asking crew's brief, its crew sheet and the asker's crew role's instructions in force at `claude`, and the promoted claims of the asking space it cites, at most four (ADR-0143 d4). Served only to an unrevoked agent key the gate issued by dg.runner_keys for a slot of `space`, read off its `apikey-issued` and never off its label, and to a person at reviewer or above holding read on `space`; a crew connected to it by a read grant is served nothing of it. Grants nothing.",
+      "params": [
+        {
+          "name": "space",
+          "type": "string",
+          "required": true,
+          "description": "the answering crew's space"
+        }
+      ],
+      "returns": "object: {space, questions[{question, body, space, asker{producer, role}, promoted_at, wait_minutes, minutes_left, brief, sheet, instructions, citations[]}], truncated} — each charter row and citation is {artifact_id, body} or null; minutes_left is counted on the daemon's monotonic clock, never on dg.status's now (GAPS 1382, 1386)",
+      "errors": {
+        "-32602": "an unknown space; any other caller: data.reason `not_the_answering_crew`, \"Refused: only the members of crew <space> and its reviewers are served the questions routed to it.\""
+      }
+    },
+    {
       "name": "dg.runner_assign",
       "role": "admin",
       "summary": "Assign a crew's space to a runner, switch it, or unassign it with `runner: null` (ADR-0140 d2, d3): journalled `runner-assigned {space, from, to, slots, sheet, key_days}`; the runner is granted `read` and `contribute` on the space; a switch, `reissue: true` or a change of slots revokes every member key of the old batch at the act, reason `reassigned`, and keeps every row. An assignment already in force journals nothing. An admin's act, never a claim.",
@@ -2015,7 +2075,7 @@
           "description": "{version, held}: the endpoint token version it holds, 0 for none"
         }
       ],
-      "returns": "object: {now, settings_version, settings? (every field of the runner's settings, only when the hello's settings_version differs), label, token: none|waiting|served|held|lost|unreadable, assignments[{space, slots[], sheet, keys: waiting|issued|held}]}",
+      "returns": "object: {now, settings_version, settings? (every field of the runner's settings, only when the hello's settings_version differs), label, token: none|waiting|served|held|lost|unreadable, assignments[{space, slots[], sheet, keys: waiting|issued|held}], questions?[{space, asked[{question, slot, state, reason}], routed[], truncated}]} — `questions`, present when an assigned space holds one, is per assigned space its open questions, oldest first, with the slot whose served key asked each and its routing state, and the ids of the questions routed to it and still with it, at most 50 each; ids and states, never a body (ADR-0143 d5)",
       "errors": {
         "-32602": "a field outside its rule, named; or any caller but a runner key"
       }
@@ -2192,7 +2252,7 @@
     {
       "name": "dg.runners",
       "role": "reviewer",
-      "summary": "Every runner key (ADR-0140 d5; 17 — Crews §12): its served label, standing, state (the first of revoked, two_instances, settings_refused, needs_settings, no_report_since_start, not_seen, budget_spent, paused, serving, idle, never_seen that holds), when it was first seen, its last report (with the machine's facts and the settings it could not apply, ADR-0142 d4) and that report's age on the gate's clock, the instances heard in 120 seconds, its settings with their version and, for each field ever set, the identity that set it and when (ADR-0142 d2), its assignments with each batch's state, the spaces reassigned away and not yet released, and the refused acknowledgements journalled on it. The report carries the hello's `backend`, `models` and `models_floor` (ADR-0141 d5), and each assignment the role types its sheet uses that the map runs no model for, `missing`. Below admin the assignments and the report's spaces are those the caller reads.",
+      "summary": "Every runner key (ADR-0140 d5; 17 — Crews §12): its served label, standing, state (the first of revoked, two_instances, settings_refused, needs_settings, no_report_since_start, not_seen, budget_spent, paused, serving, idle, never_seen that holds), when it was first seen, its last report (with the machine's facts and the settings it could not apply, ADR-0142 d4) and that receipt on the gate's clock (`received_at`), that report's age and the instances heard in 120 seconds on the daemon's monotonic clock, never on `now` (ADR-0140 d3, 2026-10-14; GAPS 1432), its settings with their version and, for each field ever set, the identity that set it and when (ADR-0142 d2), its assignments with each batch's state, the spaces reassigned away and not yet released, and the refused acknowledgements journalled on it. The report carries the hello's `backend`, `models` and `models_floor` (ADR-0141 d5), and each assignment the role types its sheet uses that the map runs no model for, `missing`. Below admin the assignments and the report's spaces are those the caller reads.",
       "params": [],
       "returns": "object: {now, started_at, runners[{runner, label, standing, state, first_seen_at, report, received_at, age_ms, instances[], settings, settings_version, settings_set{<field>: {by, at}}, assignments[{space, slots, sheet, keys, missing[], key_ids, issued_at, revoke_at}], released_pending[{space, running}], refused, token{state, version, origin, set_at, served_at, reason, box}}], token_store: the last token set refused for keys/, or null}"
     },
@@ -2364,7 +2424,7 @@
       ],
       "returns": "object: {artifact_id, state, event_id, promote?} — on a marked promoted row {artifact_id, state, event_id, confirmed, confirmation?}",
       "errors": {
-        "-32602": "data.reason runner_lacks_type with data.missing, or runner_full, on a crew sheet whose space's assigned runner runs no model for a type it uses or has made no report since the gate started (ADR-0141 d5); with `promote: true` it is refused before the signature, which is not recorded"
+        "-32602": "data.reason runner_lacks_type with data.missing, or runner_full, on a crew sheet whose space's assigned runner runs no model for a type it uses or has made no report since the gate started (ADR-0141 d5), and answering_not_a_crew, answering_chain or connection_needs_admin on a crew sheet as dg.promote refuses it (ADR-0143 d1, d8); with `promote: true` it is refused before the signature, which is not recorded"
       }
     },
     {
@@ -2406,7 +2466,7 @@
     {
       "name": "dg.status",
       "role": "reader",
-      "summary": "Queue depths, journal tip, gate budget, role-specific gauges — or one artifact's lifecycle row. Below the reviewer role `queues`, `replacements` and `runs` count only the rows the caller may read: the promoted rows and its own (INV-SEC-10), and `tip`, the journal's newest event, is null (GAPS 158). From the reviewer role up it carries `caps[]`, every cap that pauses a pass, `{setting, words, spent, limit, unit, day, resets_at}`, counted in the daemon's own process on its own clock, and `paused[]`, `{pass, cause, words, since, until?, cap?}` for each pass (grade, second_opinion, settle, re_review) that stopped on its last tick, cause `cap` or `backend` (ADR-0132 d5, d18). An API key of scope `events` is answered `{paused, caps, now}` alone (d6). `deployment {mode, in_file, why, since}` is the mode the gate resolved, the file's value (null when the line is absent), the first condition that keeps a file that says development out of it, and the time of the journal's last `deployment-mode`, null when it holds none (ADR-0135 d1). `now` is the daemon's clock in epoch milliseconds, the one every event's ts is stamped on, on every answer, an events key's and one row's included (ADR-0139 d6). From the reviewer role up, `grade_again {stale, oldest, per_tick}` is what the last grade pass left to grade again: the held claims graded before the grading in force for their kind, the oldest one's state ts, and `[gating].grade_again_per_tick` (ADR-0139 d2). Below the reviewer role the envelope's `derives_from` names only the parents the caller may read, and `derives_from_withheld`, present when any is left out, counts the rest (GAPS 156).",
+      "summary": "Queue depths, journal tip, gate budget, role-specific gauges — or one artifact's lifecycle row. Below the reviewer role `queues`, `replacements` and `runs` count only the rows the caller may read: the promoted rows and its own (INV-SEC-10), and `tip`, the journal's newest event, is null (GAPS 158). From the reviewer role up it carries `caps[]`, every cap that pauses a pass, `{setting, words, spent, limit, unit, day, resets_at}`, counted in the daemon's own process on its own clock, and `paused[]`, `{pass, cause, words, since, until?, cap?}` for each pass (grade, second_opinion, settle, re_review) that stopped on its last tick, cause `cap` or `backend` (ADR-0132 d5, d18). An API key of scope `events` is answered `{paused, caps, now}` alone (d6). `deployment {mode, in_file, why, since}` is the mode the gate resolved, the file's value (null when the line is absent), the first condition that keeps a file that says development out of it, and the time of the journal's last `deployment-mode`, null when it holds none (ADR-0135 d1). `now` is the daemon's clock in epoch milliseconds, the one every event's ts is stamped on, on every answer, an events key's and one row's included (ADR-0139 d6). From the reviewer role up, `grade_again {stale, oldest, per_tick}` is what the last grade pass left to grade again: the held claims graded before the grading in force for their kind, the oldest one's state ts, and `[gating].grade_again_per_tick` (ADR-0139 d2). To a caller who reads every space, `routing {open[{question, space, crew, wait_minutes, minutes_left, starts, held_clock}], held_sheets[{artifact_id, space, code, crew}], only_admin_proposed[{group_id, space, proposer}], starts_file}` is what doctor's questions and crews lines read: each question still with its answering crew, how many daemon starts restarted its count and whether its wait ran while the served clock was held, each held crew sheet the routing refuses, and each widening crew sheet version only its proposer, the one admin, could commit, and why routing-starts.json could not be read or written, null when it could (ADR-0143 d1, d8; GAPS 1386, 1391). Below the reviewer role the envelope's `derives_from` names only the parents the caller may read, and `derives_from_withheld`, present when any is left out, counts the rest (GAPS 156).",
       "params": [
         {
           "name": "artifact_id",
@@ -2529,6 +2589,7 @@
           "required": false,
           "description": "a kind the caller would write",
           "enum": [
+            "answer",
             "derived_fact",
             "imported_document",
             "memory",

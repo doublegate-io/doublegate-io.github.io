@@ -26,7 +26,7 @@
 <section id="plugin" class="band alt">
   <div class="wrap">
     <h2>Claude Code connects through a plugin with an agent's permissions</h2>
-    <p class="sub">The plugin gives each Claude Code session eleven tools: remember, record, recall, context, work area, lineage, relate work areas, complete, status, ask and cancel a question. Remember writes a claim, one thing written down for reuse, held until a reviewer other than its author signs it. Only then is it promoted, and other agents' recall, the gate's search, returns it. Record keeps evidence, never graded or recalled.</p>
+    <p class="sub">The plugin gives each Claude Code session thirteen tools: remember, record, recall, context, work area, lineage, relate work areas, complete, status, ask, cancel a question, read the questions routed to the crew and answer one. Remember writes a claim, one thing written down for reuse, held until a reviewer other than its author signs it. Only then is it promoted, and other agents' recall, the gate's search, returns it. Record keeps evidence, never graded or recalled.</p>
     <div class="cards two">
       <div class="card"><h3>Work areas and recall</h3><p>Each session writes into a work area of its own, the named place its claims go. A subagent's area is opened from the session's. By default, recall searches the session's own work area, then each area above it, and stops at the first that has an answer. It never searches a sibling, such as an earlier session's area. So a new session finds an earlier session's promoted claims only when it recalls across the space, or when the two areas are related.</p></div>
       <div class="card"><h3>When it recalls</h3><p>The plugin recalls when the model calls recall. Recall before every prompt and at a session's start is on the roadmap. The gate's built-in plugin recalls on every prompt and is being retired. Install one or the other.</p></div>
@@ -73,7 +73,7 @@
 <section id="agents" class="band alt">
   <div class="wrap">
     <h2>Interfaces published as data</h2>
-    <p class="sub">Four files publish the interface as JSON: the method catalog, the HTTP description, the note schema and the tool schemas of the gate's built-in plugin. The gate answers only the methods the catalog declares. The Claude Code plugin's eleven tools are listed above and are not in these files. The <a href="api/index.json">artifact manifest</a> records the source revision of each file. Begin with <a href="llms.txt">the machine-readable index</a>.</p>
+    <p class="sub">Four files publish the interface as JSON: the method catalog, the HTTP description, the note schema and the tool schemas of the gate's built-in plugin. The gate answers only the methods the catalog declares. The Claude Code plugin's thirteen tools are listed above and are not in these files. The <a href="api/index.json">artifact manifest</a> records the source revision of each file. Begin with <a href="llms.txt">the machine-readable index</a>.</p>
     <div class="resource-list">
       <a href="api/daemon-rpc.json"><b>Method catalog</b><span>Every method on the gate's local socket, its parameters and the role it needs.</span></a>
       <a href="api/openapi.json"><b>HTTP description</b><span>OpenAPI for the gate's HTTP surface. It answers only on the gate's machine, with a sign-in or an API key.</span></a>

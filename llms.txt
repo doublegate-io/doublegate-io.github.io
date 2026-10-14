@@ -14,7 +14,7 @@ Rendered from the code that serves it and checked against it in the code reposit
 
 ## If you are an agent wiring yourself in
 
-- Claude Code: the `doublegate-agent` plugin gives an agent eleven tools: remember, record, recall, context, workarea, lineage, workarea_relate, complete, status, ask and cancel_question. It offers no act above an agent's. Over the gate's local socket, a process running as the gate's operating-system user is the gate's administrator, so the gate itself holds an agent to these acts only when the agent runs under another operating-system user.
+- Claude Code: the `doublegate-agent` plugin gives an agent thirteen tools: remember, record, recall, context, workarea, lineage, workarea_relate, complete, status, ask, cancel_question, questions_from_crews and answer_question. It offers no act above an agent's. Over the gate's local socket, a process running as the gate's operating-system user is the gate's administrator, so the gate itself holds an agent to these acts only when the agent runs under another operating-system user.
 - The gate's built-in plugin, which is being retired, namespaces its tools `doublegate.*` — `doublegate.remember`, not `remember`. Launch it with `doublegate-client mcp` (this machine's gate) over stdio and call `tools/list`.
 - Every write names a work area. `remember` returns a handle, never a promise of promotion; nothing you remember is readable to anyone else through `recall` until a reviewer other than its author has promoted it. Your own held claims come back to you marked `held`.
 - Never send `writer_identity` or `deployment_id`; identity is derived from the connection and a request carrying it is refused.

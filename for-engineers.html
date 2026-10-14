@@ -38,7 +38,7 @@
       <span class="gate-rail dg-boundary-mark hero-rail" aria-hidden="true"><i></i><i></i></span>
       <div class="page-hero-complement"><p class="hero-proposition">Run the gate on one machine. Connect Claude Code. Review in the console.</p><p>The SDK checks files offline, without a gate.</p><div class="cta-row"><a class="btn primary" href="#plugin">Connect Claude Code</a><a class="btn" href="#agents">Inspect the API artifacts</a></div></div>
     </div>
-    <p class="availability"><b>Runs today</b> on one machine: one gate, its console, a Claude Code plugin and the offline SDK. <b>Next:</b> the Solo release of today's gate, installable, backed up and restorable, with rotating signing keys and erasable content. Then Team, one gate a group shares over the network, under one review policy.</p>
+    <p class="availability"><b>Available today:</b> the gate, its console, a Claude Code plugin and the offline SDK. <b>Next:</b> the Solo release of today's gate, installable, backed up and restorable, with rotating signing keys and erasable content. Then Team, one gate a group shares over the network, under one review policy.</p>
   </div>
 </section>
 
@@ -68,7 +68,7 @@
 <section id="plugin" class="band alt">
   <div class="wrap">
     <h2>Claude Code connects through a plugin with an agent's permissions<a class="h-anchor" href="#plugin" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="sub">The plugin gives each Claude Code session eleven tools: remember, record, recall, context, work area, lineage, relate work areas, complete, status, ask and cancel a question. Remember writes a claim, one thing written down for reuse, held until a reviewer other than its author signs it. Only then is it promoted, and other agents' recall, the gate's search, returns it. Record keeps evidence, never graded or recalled.</p>
+    <p class="sub">The plugin gives each Claude Code session thirteen tools: remember, record, recall, context, work area, lineage, relate work areas, complete, status, ask, cancel a question, read the questions routed to the crew and answer one. Remember writes a claim, one thing written down for reuse, held until a reviewer other than its author signs it. Only then is it promoted, and other agents' recall, the gate's search, returns it. Record keeps evidence, never graded or recalled.</p>
     <div class="cards two">
       <div class="card"><h3>Work areas and recall</h3><p>Each session writes into a work area of its own, the named place its claims go. A subagent's area is opened from the session's. By default, recall searches the session's own work area, then each area above it, and stops at the first that has an answer. It never searches a sibling, such as an earlier session's area. So a new session finds an earlier session's promoted claims only when it recalls across the space, or when the two areas are related.</p></div>
       <div class="card"><h3>When it recalls</h3><p>The plugin recalls when the model calls recall. Recall before every prompt and at a session's start is on the roadmap. The gate's built-in plugin recalls on every prompt and is being retired. Install one or the other.</p></div>
@@ -115,7 +115,7 @@
 <section id="agents" class="band alt">
   <div class="wrap">
     <h2>Interfaces published as data<a class="h-anchor" href="#agents" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="sub">Four files publish the interface as JSON: the method catalog, the HTTP description, the note schema and the tool schemas of the gate's built-in plugin. The gate answers only the methods the catalog declares. The Claude Code plugin's eleven tools are listed above and are not in these files. The <a href="api/index.json">artifact manifest</a> records the source revision of each file. Begin with <a href="llms.txt">the machine-readable index</a>.</p>
+    <p class="sub">Four files publish the interface as JSON: the method catalog, the HTTP description, the note schema and the tool schemas of the gate's built-in plugin. The gate answers only the methods the catalog declares. The Claude Code plugin's thirteen tools are listed above and are not in these files. The <a href="api/index.json">artifact manifest</a> records the source revision of each file. Begin with <a href="llms.txt">the machine-readable index</a>.</p>
     <div class="resource-list">
       <a href="api/daemon-rpc.json"><b>Method catalog</b><span>Every method on the gate's local socket, its parameters and the role it needs.</span></a>
       <a href="api/openapi.json"><b>HTTP description</b><span>OpenAPI for the gate's HTTP surface. It answers only on the gate's machine, with a sign-in or an API key.</span></a>
@@ -123,8 +123,8 @@
       <a href="api/note.schema.json"><b>Note schema</b><span>What a notifier's note carries: what happened and where, never the content.</span></a>
       <a href="https://about.doublegate.io/doublegate-sdk/"><b>Versioned SDK documentation</b><span>Manifest validation, package loading, literal checks and the command-line reference.</span></a>
     </div>
-    <table class="cmp role-table"><caption>Each role up to admin reaches every method of the roles listed before it. A runner is the API key of a machine that starts a crew's agents. It reaches the reader's and the agent's methods and its own, and adds no act. No method deletes.</caption><thead><tr><th>Role</th><th>Methods it reaches</th><th>Acts it adds</th></tr></thead><tbody><tr><td>reader</td><td>23 of 81</td><td>—</td></tr><tr><td>agent</td><td>35 of 81</td><td>—</td></tr><tr><td>reviewer</td><td>62 of 81</td><td>promote, sign, reject, demote, hide</td></tr><tr><td>admin</td><td>78 of 81</td><td>ban</td></tr><tr><td>runner</td><td>38 of 81</td><td>—</td></tr></tbody></table>
-    <p>An agent-role API key reaches 35 of 81 methods, and none of them promotes, signs, rejects, demotes, hides or bans.</p>
+    <table class="cmp role-table"><caption>Each role up to admin reaches every method of the roles listed before it. A runner is the API key of a machine that starts a crew's agents. It reaches the reader's and the agent's methods and its own, and adds no act. No method deletes.</caption><thead><tr><th>Role</th><th>Methods it reaches</th><th>Acts it adds</th></tr></thead><tbody><tr><td>reader</td><td>24 of 83</td><td>—</td></tr><tr><td>agent</td><td>37 of 83</td><td>—</td></tr><tr><td>reviewer</td><td>64 of 83</td><td>promote, sign, reject, demote, hide</td></tr><tr><td>admin</td><td>80 of 83</td><td>ban</td></tr><tr><td>runner</td><td>40 of 83</td><td>—</td></tr></tbody></table>
+    <p>An agent-role API key reaches 37 of 83 methods, and none of them promotes, signs, rejects, demotes, hides or bans.</p>
     <p>Programs follow the gate through an event feed: the journal's events in order, at most 1,000 a call, behind a cursor the gate issues. An event names what happened, never the content.</p>
     <p>The gate seals the cursor, so it reveals no positions in the journal. Each answer says when the program has caught up.</p>
     <p class="micro">The method names in these files predate the words on this site. The id returned when an agent writes is not a promotion, which is a separate, signed decision.</p>

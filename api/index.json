@@ -3,7 +3,7 @@
   "rendered_from": {
     "client-gate": {
       "repository": "https://github.com/doublegate-io/client-gate",
-      "commit": "27825b4a27388d4d482726456bf77b820d37f6a5"
+      "commit": "f556a67216d248b1caedb0f5cb9a597a86ac929f"
     },
     "doublegate-peers": {
       "repository": "https://github.com/doublegate-io/doublegate-peers",
