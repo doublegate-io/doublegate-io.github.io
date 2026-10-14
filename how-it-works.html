@@ -131,7 +131,97 @@
 <div class="wrap">
 <h2>Corrections, contradictions and merges<a class="h-anchor" href="#path" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
 <p class="sub">A correction is a new version linked to the claim it replaces, and the old one is kept. When two claims contradict, recall returns both and the gate picks neither. Only reviewers merge or split claims, and the one who starts a merge cannot finish it.</p>
-<div class="diagram wide"> <img src="assets/claim-path.svg" width="100%" alt="A claim is written and held in quarantine, scanned, graded twice, signed by a reviewer who is not its author, and promoted as a signed journal event marked provisional. A correction is a new claim that takes the same path. Four endings: promoted; superseded, with the old version kept; merged, with the parents kept; rejected, with the reason kept."> </div> </div>
+<figure class="architecture connected-route native-flow" aria-labelledby="connections-caption">
+<figcaption id="connections-caption">Three readings of one address, with the same gate in all three. One claim is held where only its writer and a reviewer can read it, scanned, read twice by a model that did not write it, and promoted as one signed event in the journal, marked provisional. Recall then walks up from the work area it was given and answers from the first level that holds a promoted claim. A crew is a space of its own, and no content passes between two crews.</figcaption>
+<div class="three-readings">
+<div class="gate-col">
+<p class="gate-rail" aria-hidden="true"><i></i><i></i></p>
+<b>The same gate in all three</b>
+<ol class="gate-acts">
+<li><b>Scan</b><p>Every write is scanned before its answer comes back. A hard finding holds the claim until a reviewer rejects it or it expires.</p></li>
+<li><b>Grade</b><p>A model that did not write it reads it twice, for and against. A person reads it when the gate&rsquo;s settings ask.</p></li>
+<li><b>Signed and promoted</b><p>By default those two readings are the two signatures a promotion needs, so a claim can be promoted with no person. Promotion is one signed event in the journal, marked provisional.</p></li>
+</ol>
+<p class="gate-foot">Every claim in all three readings takes this column. A crew member&rsquo;s write is held and graded like any other.</p>
+</div>
+
+<section class="reading">
+<p class="scale"><small>One claim</small></p>
+<h3>In the space <code>sources-crawl</code>, one member&rsquo;s claim and what recall returns</h3>
+<div class="walk">
+<div>
+<p class="railkey"><small>Recall was called in the lowest work area and looked upward.</small></p>
+<ol class="spine">
+<li class="wrow lvl1"><code>claude</code> <small>the top segment of the path</small><p>Not reached, because the level below answered.</p></li>
+<li class="wrow lvl2 answers"><code>claude/7b8</code> <small>the researcher&rsquo;s work area</small> <span class="mark mark-read"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8s2.6-4.5 7-4.5S15 8 15 8s-2.6 4.5-7 4.5S1 8 1 8z"/><circle cx="8" cy="8" r="1.8"/></svg>Readable</span><p>Answers here, and the walk stops at the first level that holds a promoted claim.</p></li>
+<li class="wrow lvl3"><code>claude/7b8/fetch</code> <small>a subagent&rsquo;s work area, where recall was called</small> <span class="mark mark-held"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h8M4 14h8M5 2c0 3 6 3 6 6s-6 3-6 6"/></svg>Held</span><p>Its one claim is held, so it is not an answer.</p></li>
+<li class="wrow lvl2 wside"><code>claude/4e1</code> <small>the lead&rsquo;s work area</small><p>A sibling is never searched. A caller that wants every area asks for the whole space.</p></li>
+</ol>
+<p class="railkey"><small>Violet, full height: instructions in force, collected from every level. Cyan, one rung: promoted claims, from the one level that answered.</small></p>
+</div>
+<div class="answers">
+<div class="answer"><b>What the member who wrote it is shown</b>
+<ol class="ans-rows">
+<li>Instructions in force &middot; 2</li>
+<li>Promoted claims &middot; 3</li>
+<li class="faint">two of them contradict</li>
+<li class="faint">one was replaced, and is superseded</li>
+<li>Its own held claim &middot; 1</li>
+</ol></div>
+<div class="answer"><b>What another member is shown</b>
+<ol class="ans-rows">
+<li>Instructions in force &middot; 2</li>
+<li>Promoted claims &middot; 3</li>
+<li class="faint">two of them contradict</li>
+<li class="faint">one was replaced, and is superseded</li>
+</ol></div>
+</div>
+</div>
+<p>The instructions in force are collected from this work area and every one above it, whatever the search asked for. They arrive first, apart from the claims, and are never ranked.</p>
+<p>Each promoted claim the answer returns says which work area it came from and how far up, one level up here. Neither changes the order.</p>
+<p>Two of the claims contradict. Recall returns both, ranked like any others, and the gate picks neither.</p>
+<p>The second answer has one fewer row, with no count and no hint. Another member&rsquo;s held claims are never answered.</p>
+</section>
+
+<section class="reading">
+<p class="scale"><small>One space</small></p>
+<h3>A crew is a space of its own</h3>
+<p class="crewhead"><b>sources-crawl</b> <span class="dg-status" data-state="experimental">Experimental</span></p>
+<p>Crews run today, and how well they work is unmeasured.</p>
+<ol class="spine">
+<li class="wrow lvl1"><code>claude</code> <small>the crew&rsquo;s own place</small> <span class="mark mark-signed"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8.5l3.2 3.2L13 5"/></svg>Signed</span><p>The charter, each role&rsquo;s instructions and the crew sheet sit here as reviewed claims. A person writes them and another identity signs them.</p></li>
+<li class="wrow lvl2"><small>lead, researcher and builder</small>
+<ul class="members">
+<li><code>sources-crawl/lead/1</code></li>
+<li><code>sources-crawl/researcher/1</code></li>
+<li><code>sources-crawl/builder/1</code></li>
+</ul>
+<p>One API key a member, one work area a member.</p></li>
+<li class="wrow lvl3"><code>claude/7b8/fetch</code> <small>a subagent of the researcher</small><p>A subagent writes under its member&rsquo;s API key, in an area below its member&rsquo;s.</p></li>
+</ol>
+<p class="apart"><b>runner</b> <small>outside the gate</small><br>A program outside the gate. It holds an API key of its own, records what it started, and signs and promotes nothing.</p>
+</section>
+
+<section class="reading">
+<p class="scale"><small>Two spaces</small></p>
+<h3>What one crew drew from another is counted</h3>
+<p><small>Two crews on one gate, as an example.</small></p>
+<div class="spaces">
+<div><b>docs-fix</b> <small>crew &middot; 4 members</small><p class="cite">Derived from <b>sources-crawl</b> &middot; 12 claims</p></div>
+<div><b>sources-crawl</b> <small>crew &middot; 3 members</small><p class="cite">docs-fix derives from it &middot; 12 claims</p></div>
+</div>
+<p>No line is drawn between two crews, because nothing passes between them. An administrator grants one crew&rsquo;s API keys read on the other crew&rsquo;s space, and only promoted claims answer that read.</p>
+<p>The count is what the read shows: promoted claims in one space naming promoted claims in the other.</p>
+</section>
+</div>
+<ul class="mark-key">
+<li><span class="mark mark-held"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 2h8M4 14h8M5 2c0 3 6 3 6 6s-6 3-6 6"/></svg>Held</span> <span>Only its writer and a reviewer can read it.</span></li>
+<li><span class="mark mark-signed"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 8.5l3.2 3.2L13 5"/></svg>Signed</span> <span>An identity other than its author signed it.</span></li>
+<li><span class="mark mark-read"><svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M1 8s2.6-4.5 7-4.5S15 8 15 8s-2.6 4.5-7 4.5S1 8 1 8z"/><circle cx="8" cy="8" r="1.8"/></svg>Readable</span> <span>Promoted, and an answer recall can return.</span></li>
+</ul>
+<p class="availability">Granting read on a space from the console is on the roadmap. Today an administrator grants it from the gate&rsquo;s API or its command line.</p>
+</figure>
+</div>
 </section>
 <section id="reads" class="band alt">
 <div class="wrap tight">

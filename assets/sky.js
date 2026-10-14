@@ -70,6 +70,7 @@
     line: v('--line', '#1e2430')
   };
   var SANS = v('--sans', 'system-ui, sans-serif');
+  var bgGrad = null, bgW = 0, bgH = 0;
   var VERDICTS = ['new', 'sharp', 'merge', 'held', 'refused'];
   var WEIGHT = { 'new': 23, sharp: 14, merge: 11, held: 8, refused: 4 };
   var CHIP = {
@@ -214,12 +215,24 @@
     dormant = new Set(['devenv', 'product', 'queues', 'ml', 'testing', 'analytics']);
     founded = {};
     var r = rng(11);
+    // Every resting star arrived by some verdict; drawing them all in ink hid
+    // the one distribution this field exists to show. A rejected claim falls
+    // away rather than resting, so it is not in the resting mix. Its own
+    // generator, so the positions r() draws are unchanged.
+    var vr = rng(29);
+    var RESTING = [['new', 23], ['sharp', 14], ['merge', 11], ['held', 8]];
+    var RESTING_N = RESTING.reduce(function (t, x) { return t + x[1]; }, 0);
+    function seedVerdict() {
+      var t = vr() * RESTING_N;
+      for (var i = 0; i < RESTING.length; i++) { t -= RESTING[i][1]; if (t <= 0) return RESTING[i][0]; }
+      return 'new';
+    }
     cats.forEach(function (c, ci) {
       var order = c.claims.map(function (_, j) { return j; });
       for (var i = order.length - 1; i > 0; i--) { var j = Math.floor(r() * (i + 1)); var t = order[i]; order[i] = order[j]; order[j] = t; }
       var seedN = dormant.has(c.id) ? 0 : 9 + Math.floor(r() * 8);
       order.forEach(function (j, n) {
-        if (n < seedN) makeStar(ci, j, c.claims[j][0], c.claims[j][1], seededPos(ci, j), null, now - 60000);
+        if (n < seedN) makeStar(ci, j, c.claims[j][0], c.claims[j][1], seededPos(ci, j), seedVerdict(), now - 60000);
         else pool.push([ci, j]);
       });
     });
@@ -231,12 +244,12 @@
       cats.forEach(function (c, ci) {
         var j = c.claims.findIndex(function (claim) { return claim[1] === exampleText; });
         if (j < 0) return;
-        example = makeStar(ci, j, c.claims[j][0], c.claims[j][1], seededPos(ci, j), null, now - 60000);
+        example = makeStar(ci, j, c.claims[j][0], c.claims[j][1], seededPos(ci, j), seedVerdict(), now - 60000);
         pool = pool.filter(function (item) { return item[0] !== ci || item[1] !== j; });
       });
     }
     example = example || stars[0];
-    example.verdict = 'new';
+    example.verdict = 'new'; example.via = 'new';
     pinned = example;
     counts.new = 1; arrivals = 1;
     feed(example, false);
@@ -481,6 +494,17 @@
 
   function draw(now) {
     ctx.clearRect(0, 0, W, H);
+    // depth: the field sits in a soft well rather than on flat black, so the
+    // clusters nearer the centre read as nearer.
+    if (!bgGrad || bgW !== W || bgH !== H) {
+      bgGrad = ctx.createRadialGradient(W * 0.5, H * 0.46, 0, W * 0.5, H * 0.46, Math.max(W, H) * 0.72);
+      bgGrad.addColorStop(0, 'rgba(32,41,61,0.55)');
+      bgGrad.addColorStop(0.55, 'rgba(16,21,32,0.30)');
+      bgGrad.addColorStop(1, 'rgba(0,0,0,0)');
+      bgW = W; bgH = H;
+    }
+    ctx.fillStyle = bgGrad;
+    ctx.fillRect(0, 0, W, H);
     var i, j;
     var lw = Math.min(2, 0.8 + 0.3 * Z);      // lines thicken a little when zoomed
 
@@ -555,7 +579,12 @@
       }
       var isHover = st === hover || st === pinned;
       var inHl = hover && st.ci === hover.ci;
-      ctx.fillStyle = rgba(COLOR.ink, P.a * (isHover ? 1 : inHl ? 0.98 : 0.88));
+      var vc = COLOR[st.via] || COLOR.ink;
+      // bloom: one cheap translucent disc, no shadowBlur — the field holds
+      // hundreds of points and a real blur costs more than the look is worth.
+      ctx.fillStyle = rgba(vc, P.a * 0.14);
+      ctx.beginPath(); ctx.arc(P.x, P.y, r * 3.4 * pop, 0, 6.2832); ctx.fill();
+      ctx.fillStyle = rgba(vc, P.a * (isHover ? 1 : inHl ? 0.98 : 0.9));
       ctx.beginPath(); ctx.arc(P.x, P.y, r * pop, 0, 6.2832); ctx.fill();
       if (st.revs > 0) { // a revised star carries a thin ring
         ctx.strokeStyle = rgba(COLOR.sharp, P.a * 0.65); ctx.lineWidth = 1;

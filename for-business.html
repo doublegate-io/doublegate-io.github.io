@@ -131,9 +131,7 @@
     <p class="lede">The console draws every work area as one tree, with the producers that wrote
       there. It lays out one area's claims on a timeline, and shows the journal, the signed record
       of every decision, as a stream.</p>
-    <p>Work areas are grouped in named spaces. Today any API key can read the promoted claims in
-      every space.
-      Access granted per space comes with Team.</p>
+    <p>Work areas are grouped in named spaces. An administrator grants an API key read or write on each space it may use. The gate refuses every other space on every transport: a promoted claim there answers as if it did not exist.</p>
   </div>
 </section>
 
@@ -198,7 +196,7 @@
   </div>
   <!-- Native text and dedicated connectors reflow into a vertical route. -->
   <div class="wrap">
-<figure class="architecture connected-route native-flow" aria-labelledby="organization-flow-caption"><figcaption id="organization-flow-caption">From one agent's correction to knowledge a group can use. Every step but the access check, which comes with Team, runs today.</figcaption><ol class="authority-route flow-route"><li class="flow-step route-held"><small>Remember</small><h3>Keep the correction</h3><p>An agent remembers a correction, or a person writes one, with its source. It is held and scanned.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Grade</small><h3>Read the evidence</h3><p>A grading model reads it twice, for and against. A person reads it when the gate's settings ask.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step route-signed"><small>Sign</small><h3>Sign or reject</h3><p>A reviewer other than its author signs or rejects that exact version.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Access</small><h3>Check the reader</h3><p>Comes with Team: only those granted access to the space can read the promoted version.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step route-readable"><small>Recall</small><h3>Reuse the promoted version</h3><p>Recall returns it, marked provisional.</p></li></ol></figure>
+<figure class="architecture connected-route native-flow" aria-labelledby="organization-flow-caption"><figcaption id="organization-flow-caption">From one agent's correction to knowledge a group can use. Every step runs today on one machine.</figcaption><ol class="authority-route flow-route"><li class="flow-step route-held"><small>Remember</small><h3>Keep the correction</h3><p>An agent remembers a correction, or a person writes one, with its source. It is held and scanned.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Grade</small><h3>Read the evidence</h3><p>A grading model reads it twice, for and against. A person reads it when the gate's settings ask.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step route-signed"><small>Sign</small><h3>Sign or reject</h3><p>A reviewer other than its author signs or rejects that exact version.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Access</small><h3>Check the reader</h3><p>Only an API key granted read on the space can read the promoted version.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step route-readable"><small>Recall</small><h3>Reuse the promoted version</h3><p>Recall returns it, marked provisional.</p></li></ol></figure>
   </div>
 </section>
 
@@ -216,11 +214,11 @@
     <p>An organization pays for four things: the machine, the grading model's usage, review time, and storage,
       which only grows because nothing is deleted.</p>
     <p>Next: an installable release with backup, key rotation and erasure. Then one gate a group
-      shares, with access granted per space. Later: a second, independent gate that
+      shares, under one review policy. Later: a second, independent gate that
       countersigns.</p>
     <div class="cards two">
       <div class="card"><h3>Solo, on one machine</h3><p>The operator chooses the grading model, local or hosted, and pays for its usage. A hosted model receives the claim's text with secrets masked. It runs on Python 3.11 or later. The Solo release makes it installable. The console opens only on that machine.</p></div>
-      <div class="card"><h3>Team, on infrastructure the organization controls</h3><p>On the roadmap: one gate a group shares, with access granted per space. The organization runs its backup, upgrades, identity and access.</p></div>
+      <div class="card"><h3>Team, on infrastructure the organization controls</h3><p>On the roadmap: one gate a group shares, under one review policy. The organization runs its backup, upgrades, identity and access.</p></div>
     </div>
     <p class="micro">Review also delays when other agents can recall a claim. Plan for sensitive data, retention and erasure, including backups and downstream copies. Availability and service terms are agreed per deployment. <a href="governance.html">Governance and privacy requirements</a> · <a href="for-engineers.html#costs">Costs and limitations</a>.</p>
   </div>
@@ -231,8 +229,7 @@
     <h2>What a group gets next<a class="h-anchor" href="#group" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">Four changes come next for a group.</p>
     <ul>
-      <li><b>Team:</b> a group shares one gate over the network, with read and write access
-        granted per space and revoked the same way.</li>
+      <li><b>Team:</b> a group shares one gate over the network, under one review policy.</li>
       <li><b>Steering:</b> a person writes a direction for the agents in a work area and the
         areas below it. It is reviewed like any claim, then shown to them ahead of what recall
         returns.</li>
@@ -241,6 +238,20 @@
       <li><b>Crews:</b> agent sessions started together in one space by a program outside the
         gate. Each has its own API key and works to a charter a reviewer signs.</li>
     </ul>
+    <figure class="architecture connected-route native-flow" aria-labelledby="crew-flow-caption">
+      <figcaption id="crew-flow-caption">A crew of three, in the space <code>sources-crawl</code>: a lead, a researcher and a builder. The runner that starts them holds an API key and adds no act.</figcaption>
+      <ol class="authority-route flow-route">
+        <li class="flow-step route-held"><small>Charter</small><h3>A person writes it</h3><p>The topic, the pattern and each role's instructions. Whoever writes a charter cannot sign it.</p></li>
+        <li class="flow-connector" aria-hidden="true"><span></span></li>
+        <li class="flow-step route-signed"><small>Review</small><h3>Another identity signs it</h3><p>The charter is graded and signed like any claim. Until it is signed, no member starts.</p></li>
+        <li class="flow-connector" aria-hidden="true"><span></span></li>
+        <li class="flow-step"><small>Start</small><h3>The runner starts one session a role</h3><p>A program outside the gate, holding an API key of its own. It starts the lead, then each helper once the lead has written. It signs nothing and promotes nothing.</p></li>
+        <li class="flow-connector" aria-hidden="true"><span></span></li>
+        <li class="flow-step"><small>Work</small><h3>Each member writes under an API key of its own</h3><p>Three API keys, one a role: <code>sources-crawl/lead/1</code>, <code>/researcher/1</code>, <code>/builder/1</code>. Every write is held, scanned and graded like any other.</p></li>
+        <li class="flow-connector" aria-hidden="true"><span></span></li>
+        <li class="flow-step route-readable"><small>Reuse</small><h3>The crew's space holds what was signed</h3><p>A second crew reads it only where an administrator granted its API keys read on this space, and what it draws is recorded as derived from this crew.</p></li>
+      </ol>
+    </figure>
   </div>
 </section>
 

@@ -82,7 +82,7 @@ UNLISTED = [
 # sentences: the Solo release, then Team.
 NEXT_STEPS = ("the Solo release of today's gate, installable, backed up and restorable, with "
               "rotating signing keys and erasable content. Then Team, one gate a group shares "
-              "over the network, with access granted per space")
+              "over the network, under one review policy")
 AVAILABILITY = ('<p class="availability"><b>Runs today</b> on one machine: one gate, its console, '
                 'a Claude Code plugin and the offline SDK. '
                 f'<b>Next:</b> {NEXT_STEPS}.</p>')
@@ -120,7 +120,7 @@ TITLES = {
     "pricing.html": (
         "Pricing — Solo and Team",
         "Solo is free and self-hosted on one machine. Team, on the roadmap, adds one gate a "
-        "group shares over the network, with access granted per space.",
+        "group shares over the network, under one review policy.",
     ),
     "evidence.html": (
         "Evidence — every finding, with its source",

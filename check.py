@@ -701,6 +701,13 @@ FIGURE_COPY = {
         "over every field above — checked with one command on the gate",
         "change any field and the signature stops verifying",
     ]),
+    "how-it-works.html": ("three-readings", [
+        "Answers here, and the walk stops at the first level that holds a promoted claim",
+        "A sibling is never searched",
+        "held claims are never answered",
+        "No line is drawn between two crews, because nothing passes between them",
+        "records what it started, and signs and promotes nothing",
+    ]),
 }
 for name, (container, phrases) in FIGURE_COPY.items():
     page = ROOT / name
@@ -717,7 +724,7 @@ for name, (container, phrases) in FIGURE_COPY.items():
             fail(f"{name}: figure copy missing from visible text -> {phrase!r}")
 for page in pages:
     for src in re.findall(r'<img[^>]*src="/?assets/([^"]+)"', page.read_text()):
-        if src in ("scope-flow.svg", "record-fields.svg"):
+        if src in ("scope-flow.svg", "record-fields.svg", "claim-path.svg"):
             fail(f"{page.name}: {src} is back as an image — it is a table of words; "
                  f"keep it as markup so it reflows and the copy gates reach it")
 

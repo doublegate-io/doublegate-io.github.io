@@ -1003,3 +1003,66 @@ footer { padding: 40px 0; }
   .audience-nav a { font-size: 13px; }
 }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* ---- #path: three readings of one address -------------------------------
+   Nothing here animates or transitions: the figure it replaced carried two
+   motion paths and a kill switch, and this one has nothing to suppress. */
+.three-readings{display:grid;grid-template-columns:17rem minmax(0,1fr);column-gap:32px}
+.gate-col{grid-column:1;grid-row:1/span 3;border-right:1px solid var(--line);padding-right:32px}
+.gate-col>b{display:block;margin:10px 0 14px;font-size:15px}
+.gate-acts{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.gate-acts>li>b{display:block;font-size:13px;color:var(--amb)}
+.gate-acts>li>p,.gate-foot{margin:4px 0 0;font-size:12.5px;color:var(--ink-dim);line-height:1.55}
+.gate-foot{margin-top:18px;padding-top:14px;border-top:1px solid var(--line-soft)}
+.reading{grid-column:2;padding:0 0 26px}
+.reading+.reading{margin-top:26px;border-top:1px solid var(--line);padding-top:26px}
+.reading>h3{margin:2px 0 14px;font-size:17px}
+.scale{margin:0}
+.walk{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+.railkey{margin:0 0 8px}
+.spine{list-style:none;margin:10px 0 0;padding:0 0 0 14px;border-left:2px solid var(--vio)}
+.spine>li{position:relative;padding:8px 0 8px 12px;display:grid;grid-template-columns:auto 1fr auto;gap:4px 10px;align-items:baseline}
+.spine>li>p,.spine>li>ul{grid-column:1/-1}
+.spine>li>small{min-width:0}
+.spine>li.lvl2{margin-left:18px}
+.spine>li.lvl3{margin-left:36px}
+.spine>li.answers{box-shadow:inset 2px 0 var(--cyn)}
+.spine>li.wside{border-left:1px dashed var(--line);margin-left:18px;opacity:.72}
+.spine code{font-family:var(--mono);font-size:13px;overflow-wrap:anywhere}
+.spine>li>p{margin:4px 0 0;font-size:12.5px;color:var(--ink-dim);line-height:1.55}
+.members{list-style:none;margin:6px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.members code{font-size:11.5px}
+.answers{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.answer{border:1px solid var(--line);padding:10px;background:var(--panel)}
+.answer>b{display:block;font-size:12px;margin-bottom:8px}
+.ans-rows{list-style:none;margin:0;padding:0;display:grid;gap:5px;font-family:var(--mono);font-size:11.5px}
+.ans-rows>li.faint{color:var(--ink-faint)}
+.crewhead{margin:0 0 4px}
+.apart{margin-top:16px;padding-top:12px;border-top:1px dashed var(--line);font-size:12.5px;color:var(--ink-dim)}
+.spaces{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:10px 0 14px}
+.spaces>div{border:1px solid var(--line);padding:12px;background:var(--panel)}
+.cite{margin:8px 0 0;font-size:12px;color:var(--ink-dim)}
+.mark{display:inline-flex;align-items:center;gap:5px;border:1px solid currentColor;border-radius:2px;
+  padding:1px 6px;font-size:10.5px;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.mark-held{color:var(--red);background:color-mix(in srgb,var(--red) 12%,transparent)}
+.mark-signed{color:var(--grn);background:color-mix(in srgb,var(--grn) 12%,transparent)}
+.mark-read{color:var(--cyn);background:color-mix(in srgb,var(--cyn) 12%,transparent)}
+.mark-key{list-style:none;margin:20px 0 0;padding:16px 0 0;border-top:1px solid var(--line);
+  display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.mark-key>li{display:flex;align-items:baseline;gap:8px;font-size:12px;color:var(--ink-dim)}
+@media (max-width:1100px){
+  .three-readings{grid-template-columns:minmax(0,1fr)}
+  .gate-col{grid-column:1;grid-row:1;border-right:0;border-bottom:1px solid var(--line);padding:0 0 24px}
+  .gate-acts{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .reading{grid-column:1}
+  .walk{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:600px){
+  .gate-acts,.members,.spaces,.mark-key{grid-template-columns:minmax(0,1fr)}
+  .spine>li.lvl2,.spine>li.wside{margin-left:8px}
+  .spine>li.lvl3{margin-left:16px}
+}
+@media (forced-colors:active){
+  .mark,.answer,.spaces>div,.gate-col{border-color:CanvasText}
+  .gate-rail i{background:CanvasText}
+}
