@@ -91,8 +91,8 @@ TITLES = {
     "index.html": (
         "doublegate — reviewed memory for AI agents",
         "What an AI agent writes is held and scanned, and other agents recall it only after a "
-        "reviewer other than its author signs it. One gate on one machine today, with a "
-        "console and a Claude Code plugin.",
+        "reviewer other than its author signs it. The gate, its console and a Claude Code "
+        "plugin are available today.",
     ),
     "how-it-works.html": (
         "How doublegate works — a correction becomes shared knowledge",
@@ -108,7 +108,7 @@ TITLES = {
     ),
     "for-engineers.html": (
         "For engineers — build with reviewed knowledge",
-        "Run the gate on one machine, connect Claude Code through its plugin, review in the "
+        "Run the gate, connect Claude Code through its plugin, review in the "
         "console, and check files offline with the SDK. Interfaces, running costs and the "
         "release sequence.",
     ),
@@ -338,7 +338,7 @@ HEROES = {'for-business.html': ('For business',
                        '<b>Next:</b> Team, one gate a group shares over the network.</p>'),
  'for-engineers.html': ('For engineers',
                         'Build with reviewed knowledge.',
-                        '<p class="hero-proposition">Run the gate on one machine. Connect Claude '
+                        '<p class="hero-proposition">Run the gate. Connect Claude '
                         'Code. Review in the console.</p><p>The SDK checks files offline, '
                         'without a gate.</p><div class="cta-row"><a class="btn primary" '
                         'href="#plugin">Connect Claude Code</a><a class="btn" '
@@ -356,12 +356,12 @@ HEROES = {'for-business.html': ('For business',
  'how-it-works.html': ('How it works',
                        'A correction becomes shared knowledge.',
                        '<p class="hero-proposition">One claim, from the agent that writes it to '
-                       'the agent that finds it.</p><p>Follow an illustrative correction: the '
+                       'the agent that finds it.</p><p>Follow one correction: the '
                        'payments sandbox rate-limits per API key, not per account. Each stage '
                        'below changes who may read it.</p><a '
                        'href="#diagram">Follow the review lifecycle</a>',
-                       '<p class="availability">Every stage here runs today, on one '
-                       'machine. Sharing a gate across a group comes with Team.</p>'),
+                       '<p class="availability">Every stage here is available today. '
+                       'Sharing a gate across a group comes with Team.</p>'),
  'evidence.html': ('Evidence',
                    'Every finding, with its source.',
                    '<p class="hero-proposition">Read the finding. Check what it actually '
@@ -438,7 +438,7 @@ def render_robots() -> str:
 LLMS_INTRO = (
     "> doublegate is gated memory for AI agents. What an agent writes goes into a named work "
     "area, where it is held and scanned. No other agent's recall returns it until an identity "
-    "that did not write it has reviewed and signed it. One gate runs on one machine today. "
+    "that did not write it has reviewed and signed it. "
     "Every promotion is that gate's own and is marked provisional. Recall with no scope "
     "searches the caller's work area, then each parent, and stops at the first level that "
     "answers. Ask with scope `space` to search the whole space. By default a grading model "
