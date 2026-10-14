@@ -250,7 +250,7 @@ SHELL = """<!doctype html>
     <span class="gate-rail dg-boundary-mark foot-rail" aria-hidden="true"><i></i><i></i></span>
     <div class="foot">
       <div>
-        <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · <a href="evidence.html">Research and evaluation sources</a>
+        <b>doublegate</b> · <a href="index.html#implementation">Availability and roadmap</a> · <a href="evidence.html">Research and evaluation sources</a>
         <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>.
         <a href="{contact}">Questions, objections and corrections go here</a>, a report that
         the site is wrong included.</p>

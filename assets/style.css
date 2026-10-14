@@ -1066,3 +1066,9 @@ footer { padding: 40px 0; }
   .mark,.answer,.spaces>div,.gate-col{border-color:CanvasText}
   .gate-rail i{background:CanvasText}
 }
+
+/* Availability states for the index status table. institutional.css styles the pill
+   and colours its four maturity states; the site shows two, so it owns their colour,
+   reusing that file's own tokens. The label is the non-colour channel (ADR-0138). */
+.dg-status[data-state="available"] {color:#9bc7a7;border-color:#416249}
+.dg-status[data-state="roadmap"] {color:#abb8c8;border-color:#4c5968}
