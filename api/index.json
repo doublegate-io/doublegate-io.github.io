@@ -3,30 +3,30 @@
   "rendered_from": {
     "client-gate": {
       "repository": "https://github.com/doublegate-io/client-gate",
-      "commit": "cb8061243ad50dcbf55cf250bac42225c014b784"
+      "commit": "27825b4a27388d4d482726456bf77b820d37f6a5"
     },
-    "organization-gate": {
-      "repository": "https://github.com/doublegate-io/organization-gate",
-      "commit": "1d9834ab542446957d9085d235c3b8ca10d678d8"
+    "doublegate-peers": {
+      "repository": "https://github.com/doublegate-io/doublegate-peers",
+      "commit": "c8d86cc675cd07b1f383f0147c7390c2e830eac6"
     }
   },
   "documents": {
     "mcp-tools.json": {
       "from": "client-gate/docs/api/mcp-tools.json",
-      "about": "the tool schemas each tier serves over the agent-tool protocol — what tools/list answers — and the instructions paragraph the handshake carries"
+      "about": "the tool schemas of the gate's built-in plugin, which is retiring, as its tools/list answers them; the Claude Code plugin's tools are not in this file"
     },
     "daemon-rpc.json": {
       "from": "client-gate/docs/api/daemon-rpc.json",
       "about": "every verb on the gate's local socket: parameters, role, the proof each needs; a running gate answers the same to dg.describe"
     },
-    "note.schema.json": {
-      "from": "client-gate/docs/api/note.schema.json",
-      "about": "JSON Schema of a published note's data — the closed field set a subscriber or a knowledge map may rely on"
-    },
     "openapi.json": {
-      "from": "organization-gate/docs/api/openapi.json",
-      "about": "OpenAPI 3.1 for the organization gate's keyed HTTP surface; a running gate serves it at GET /openapi.json to any valid key"
+      "from": "client-gate/docs/api/openapi.json",
+      "about": "OpenAPI for the gate's HTTP surface on this machine; it answers on loopback only, with a sign-in or an API key"
+    },
+    "note.schema.json": {
+      "from": "doublegate-peers/docs/api/note.schema.json",
+      "about": "JSON Schema of a note's data, which the notifier peer publishes — the closed field set a subscriber or a knowledge map may rely on"
     }
   },
-  "read_first": "https://doublegate-io.github.io/llms.txt"
+  "read_first": "https://about.doublegate.io/llms.txt"
 }

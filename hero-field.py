@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Generate hero-field.svg -- what the gate DOES to each thing submitted.
+"""Generate hero-field.svg -- what the gate DOES to each thing an agent writes.
 
 The subject, and why it changed twice
 ------------------------------------
 Draft 1 drew a pipeline: the sequence one claim passes through. That is what
-artifact-flow.svg already draws on how-it-works, in full, with 44 labels.
+how-it-works draws in full, as the lifecycle flow in #diagram (then the
+44-label artifact-flow.svg, now HTML markup).
 
 Draft 2 drew a population: 500 agent dots siloed, pooled, gated. That answered
 "should we pool our knowledge at all?" -- and by the time a reader has scrolled
@@ -15,11 +16,11 @@ skill, and what comes back? Five verdicts, and every submission lands in exactly
 one of them. That is the thing no other figure on the site shows, and the thing a
 reader evaluating a *gate* wants to know.
 
-Four of the five verdicts are the design's own; SHARPENED is a named-for-the-figure
+Four of the five verdicts are the design's own; REVISED is a named-for-the-figure
 reading of single-parent consolidation, flagged as such below:
 
-  NEW        nothing like it existed; promoted as a new artifact
-  SHARPENED  it corrects an existing skill, so a revision supersedes the parent.
+  NEW        nothing like it existed; promoted as a claim of its own
+  REVISED    it corrects an existing skill, so a revision supersedes the parent.
              Read from ADR-0016 + ratification §4 pre-processing step 3 ("a
              revision supersedes, both retained"): sharpening is a consolidation
              whose parent set happens to be a single artifact. This is an
@@ -32,7 +33,7 @@ reading of single-parent consolidation, flagged as such below:
              stay ACTIVE and the contradiction stays visible with provenance
              (ADR-0016 decision 4 -- the store staying contradictory is the
               correct outcome, not a bug)
-  REFUSED    injection, secrets, or simply wrong; never readable, reasons recorded
+  REJECTED   injection, secrets, or simply wrong; kept with its reasons, never promoted
 
 Honesty constraint
 ------------------
@@ -44,7 +45,7 @@ is the rare case -- while the caption states plainly that the mix is illustrativ
 The one number that IS exact is the total: sixty submissions, sixty dots, rows
 that sum to sixty and can be counted by eye.
 
-Fewer dots on purpose
+Fewer dots, by design
 ---------------------
 1500 dots became 60. The population figure needed 500 because the number WAS the
 claim. Here the number only needs to be countable: one dot per submission, one
@@ -74,7 +75,7 @@ W = 1080
 PAD = 24
 # The left column carries a verdict name AND its one-line meaning stacked, so it
 # is sized for the wider of the two, measured -- not for the name alone. Sizing it
-# at 132px for "SHARPENED" left the meaning line running through the count.
+# at 132px for the longest name left the meaning line running through the count.
 LABEL_W = 320
 COUNT_W = 30           # the count, right-aligned just before the dots
 ROW_H = 52
@@ -95,35 +96,35 @@ TOTAL = 60
 VERDICTS = [
     dict(key="new", name="NEW", n=23, colour="#22d3ee",
          head="nothing like it existed",
-         note="promoted as its own artifact, readable once signed"),
-    dict(key="sharp", name="SHARPENED", n=14, colour="#34d399",
+         note="promoted as a claim of its own once signed"),
+    dict(key="sharp", name="REVISED", n=14, colour="#34d399",
          head="it corrects a skill you already have",
          note="a revision supersedes the parent \u2014 both are kept"),
     dict(key="merge", name="MERGED", n=11, colour="#a78bfa",
          head="several beliefs reconciled into one",
          note="parents superseded, never edited, never deleted"),
     dict(key="held", name="HELD", n=8, colour="#fbbf24",
-         head="it contradicts, and the merge was refused",
-         note="both parents stay live, the disagreement stays open"),
-    dict(key="refused", name="REFUSED", n=4, colour="#fb7185",
+         head="it contradicts a claim already promoted",
+         note="held beside it; recall returns only the promoted one"),
+    dict(key="refused", name="REJECTED", n=4, colour="#fb7185",
          head="injection, a secret, or simply wrong",
-         note="never readable by anyone; the reasons are recorded"),
+         note="kept with its reasons, never promoted"),
 ]
 assert sum(v["n"] for v in VERDICTS) == TOTAL, sum(v["n"] for v in VERDICTS)
 
 EYEBROW = "SIXTY THINGS YOUR AGENTS WROTE DOWN \u2014 WHAT CAME BACK"
-FOOT = ("Every submission ends in exactly one verdict, signed. Nothing is edited in "
-        "place, and nothing vanishes.")
-CAVEAT = ("Design phase: the split across the five is illustrative, not a measured rate. "
-          "The mechanism is what is being shown.")
+FOOT = ("Every write ends in exactly one outcome, signed in the journal. Nothing is "
+        "edited in place, and nothing is deleted.")
+CAVEAT = ("Illustrative: the split across the five is not a measured rate. The mechanism "
+          "is what is being shown.")
 # One entry per mark the rows use, in row order. Faint dots behind a mark are the
 # parents the ledger retains -- the product's claim that nothing is deleted, drawn.
 KEY_ITEMS = [
-    ("plain", "one submission, no parent"),
+    ("plain", "one claim, no parent"),
     ("one", "supersedes one parent"),
     ("many", "supersedes several"),
-    ("pair", "two, both left live"),
-    ("hollow", "kept, never readable"),
+    ("pair", "held beside a promoted one"),
+    ("hollow", "kept, never promoted"),
 ]
 
 STYLE = """    .eyebrow { font-size:11.5px; font-weight:700; letter-spacing:.1em; fill:#8d97a9; }
@@ -135,7 +136,7 @@ STYLE = """    .eyebrow { font-size:11.5px; font-weight:700; letter-spacing:.1em
     .cav  { font-size:11.5px; fill:#6b7484; }
 
     /* A reader who asks the OS for less motion gets the static figure. The only
-       motion is one ring on the newest submission; the figure reads standing still. */
+       motion is one ring on the newest arrival; the figure reads standing still. */
     @media (prefers-reduced-motion: reduce) { .mover { display:none; } }"""
 
 DEFS = """  <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
@@ -190,7 +191,7 @@ def build(Wd):
     # rather than left to be inferred: the faint dots behind a mark ARE the parents
     # the ledger retains, and that is the product's whole claim about not deleting.
     # Each glyph in the key is the glyph the rows use, in row order, so the
-    # one-parent / two-parent / two-live / hollow distinctions are shown rather
+    # one-parent / two-parent / held-pair / hollow distinctions are shown rather
     # than described. Drawn on its own line under the eyebrow: on one line with
     # the eyebrow there was room for the marks but not for naming them.
     ky = 60
@@ -249,7 +250,7 @@ def build(Wd):
             cx = TRACK_X + i * pitch
             jy = rnd.uniform(-0.5, 0.5)
             if v["key"] == "refused":
-                # refused dots are hollow: present in the ledger, never readable.
+                # rejected dots are hollow: kept in the journal, never promoted.
                 # That distinction is the product, so it gets a distinct shape
                 # rather than only a colour.
                 o.append(f'<circle cx="{cx:.1f}" cy="{cy + jy:.1f}" r="{DOT_R - 0.6:g}" '
@@ -274,8 +275,8 @@ def build(Wd):
                 o.append(f'<circle cx="{cx:.1f}" cy="{cy + jy:.1f}" r="{DOT_R}" '
                          f'fill="{v["colour"]}" fill-opacity=".95"/>')
             elif v["key"] == "held":
-                # held: two parents, both still live, neither preferred. Two dots
-                # of equal weight touching -- the contradiction is not resolved.
+                # held: the new claim held beside the promoted one it contradicts. Two
+                # dots touching -- the contradiction stays open; only the promoted one is recalled.
                 o.append(f'<circle cx="{cx - 2.6:.1f}" cy="{cy + jy:.1f}" '
                          f'r="{DOT_R - 2.2:g}" fill="{v["colour"]}" fill-opacity=".9"/>')
                 o.append(f'<circle cx="{cx + 2.6:.1f}" cy="{cy + jy:.1f}" '
@@ -309,23 +310,24 @@ def build(Wd):
     desc = (
         "Five rows, one per verdict, showing what came back for sixty things agents "
         "wrote down. Twenty-three were NEW: nothing like them existed, so each was "
-        "promoted as its own artifact, readable once signed. Fourteen were SHARPENED: "
-        "they corrected a skill already held, so a revision superseded the parent and "
+        "promoted as a claim of its own once signed. Fourteen were REVISED: "
+        "they corrected a skill you already have, so a revision superseded the parent and "
         "both are kept, drawn as a bright dot with the retained parent dimmer behind "
         "it. Eleven were MERGED: several beliefs reconciled into one, with the parents "
-        "superseded rather than edited or deleted. Eight were HELD: they contradicted "
-        "something and the merge was refused, so both parents stay live and the "
-        "contradiction stays visible with its provenance, drawn as two dots of equal "
-        "weight. Four were REFUSED as injection, a secret, or simply wrong, drawn "
-        "hollow because they remain in the ledger with their reasons recorded but are "
-        "never readable by anyone. The counts sum to sixty. Every submission ends in "
-        "exactly one verdict, carrying a signature naming who decided and on what "
-        "basis; nothing is edited in place and nothing vanishes. The split across the "
-        "five verdicts is illustrative of the mechanism, not a measured rate.")
+        "superseded rather than edited or deleted. Eight were HELD: each contradicted "
+        "a claim already promoted, so it is held beside that claim, recall returns "
+        "only the promoted one, and the contradiction stays visible with its "
+        "provenance, drawn as a pair of dots. Four were "
+        "REJECTED as injection, a secret, or simply wrong, drawn hollow because they "
+        "stay in the journal with their reasons recorded and are never promoted. The "
+        "counts sum to sixty. Every write ends in exactly one outcome, signed in the "
+        "journal, naming who decided and on what basis; nothing is edited in place "
+        "and nothing is deleted. The split across the five outcomes is illustrative "
+        "of the mechanism, not a measured rate.")
 
     return f"""<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {height}" width="{W}" height="{height}"
      role="img" aria-labelledby="t d" font-family="{FONT}">
-<title id="t">What the gate returns for sixty submitted memories and skills</title>
+<title id="t">What the gate returns for sixty memories and skills agents wrote</title>
 <desc id="d">{desc}</desc>
 <defs>
   <style><![CDATA[

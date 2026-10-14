@@ -1,112 +1,103 @@
 {hero}
-
 <section id="diagram" class="band">
-  <div class="wrap">
-<figure class="architecture connected-route native-flow" aria-labelledby="review-flow-caption"><figcaption id="review-flow-caption">Review before shared publication. These are lifecycle stages, not deployment boundaries. Planned for releases 3 and 4.</figcaption><ol class="authority-route flow-route"><li class="flow-step"><small>Propose</small><h3>Hold and scan</h3><p>Keep the exact revision, evidence and intended use in review; scan before review access.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Stage 1</small><h3>AI assessment</h3><p>A non-author AI gives a trust assessment from 0–100 with reasons and counterevidence.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Stage 2</small><h3>Authorized decision</h3><p>Another authorized AI or human records APPROVE or REJECT, without a second score.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Publish</small><h3>Apply local authority</h3><p>Approval permits publication within scope. Receiving deployments apply their own rules.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Maintain</small><h3>Check eligible use</h3><p>Current access, expiry and applicability govern use. Withdrawal preserves the decision history.</p></li></ol></figure>
-  </div>
+<div class="wrap"> <figure class="architecture connected-route native-flow" aria-labelledby="review-flow-caption"><figcaption id="review-flow-caption">Five stages on one gate, the doublegate service on the operator&rsquo;s machine.</figcaption>
+<ol class="authority-route flow-route">
+<li class="flow-step"><small>Write</small>
+<h3>Written</h3>
+<p>An agent or a person writes it into a work area, a named place for claims.</p></li>
+<li class="flow-connector" aria-hidden="true"><span></span></li>
+<li class="flow-step route-held"><small>Scan</small>
+<h3>Held and scanned</h3>
+<p>Only its author&rsquo;s recall, the gate&rsquo;s search, returns it.</p>
+<p><b>Can stop here:</b> flagged by the scan. A hard finding stays held until rejected or expired.</p></li>
+<li class="flow-connector" aria-hidden="true"><span></span></li>
+<li class="flow-step"><small>Grade</small>
+<h3>Graded</h3>
+<p>A model that did not write it reads it twice, for and against. A person can read it too.</p>
+<p><b>Can end here:</b> rejected, with the reason kept.</p></li>
+<li class="flow-connector" aria-hidden="true"><span></span></li>
+<li class="flow-step route-signed"><small>Sign</small>
+<h3>Signed and promoted</h3>
+<p>A signed event in the journal, marked provisional.</p></li>
+<li class="flow-connector" aria-hidden="true"><span></span></li>
+<li class="flow-step route-readable"><small>Recall</small>
+<h3>Recalled</h3>
+<p>Any agent that searches the whole space can find it.</p>
+<p><b>Can end here:</b> demoted, or replaced by a correction. Both are kept.</p></li>
+</ol></figure> </div>
 </section>
-
 <section id="stages" class="band alt">
-  <div class="wrap">
-    <h2>The five stages</h2>
-    <p class="sub">The release-3 review workflow, extended to shared team knowledge in release 4.</p>
-    <ol class="stages">
-      <li class="stage"><span class="stage-n">1</span><div>
-        <h3>A contributor proposes a revision</h3>
-        <p>A correction carries its source evidence, intended use and version. Shared claims
-        identify the verified contributor and a required team, validated against membership
-        at submission. An agent retains its own workload identity.</p>
-        <p class="stage-risk"><b>Accountability:</b> later team moves preserve the original
-        attribution. Ownership transfer and access grants are separately authorized decisions.</p>
-      </div></li>
-      <li class="stage"><span class="stage-n">2</span><div>
-        <h3>The gate holds and scans it</h3>
-        <p>The proposed claim enters a separate review store. The scanner checks for credentials,
-        injection and executable content. Reviewers receive the evidence needed for their task;
-        ordinary shared retrieval uses the admitted collection.</p>
-        <p class="stage-risk"><b>Pending work:</b> a scan-cleared writer view is explicitly
-        pending review. It does not confer shared approval.</p>
-      </div></li>
-      <li class="stage"><span class="stage-n">3</span><div>
-        <h3>An AI assesses trust</h3>
-        <p>A non-author AI reviewer gives a <b>trust score from 0–100</b> using a versioned rubric.
-        Its rationale, evidence, counterevidence and reviewer provenance are bound to the exact
-        revision. The score informs review; it is neither an approval nor a probability of truth.</p>
-        <p class="stage-risk"><b>Evidence first:</b> missing support and known disagreements stay
-        visible to the next reviewer. A high score never automatically approves a claim.</p>
-      </div></li>
-      <li class="stage"><span class="stage-n">4</span><div>
-        <h3>Another AI or human decides</h3>
-        <p>A distinct verified, authorized non-author reviewer records <b>APPROVE or REJECT</b>,
-        with reasons and evidence. This stage has no numeric score. Approval means
-        <b>production-ready for the declared scope, version and use</b>, with required hard
-        checks satisfied. Execution permissions remain with the systems performing the work.</p>
-        <p class="stage-risk"><b>Human authority:</b> human review is optional under the selected
-        policy. An explicit authorized human override remains binding until an authorized human
-        releases or replaces it; ordinary human approval is a separate decision.</p>
-      </div></li>
-      <li class="stage"><span class="stage-n">5</span><div>
-        <h3>Publish for eligible use</h3>
-        <p>Publication makes the approved revision available within its permitted scope.
-        Connected deployments exchange contributions and signed outcomes over authenticated HTTP;
-        each receiving authority applies its own rules. These deployment boundaries are separate
-        from the two review stages.</p>
-        <p class="stage-risk"><b>Currentness:</b> every use checks current access, applicability,
-        expiry and authority. A challenge, withdrawal or superseding revision changes what is
-        eligible while preserving the decision history.</p>
-      </div></li>
-    </ol>
-  </div>
+<div class="wrap">
+<h2>The five stages</h2>
+<p class="sub">The payments sandbox correction passes each stage in order.</p>
+<ol class="stages">
+<li class="stage"><span class="stage-n">1</span><div>
+<h3>Written into a work area</h3>
+<p>No caller can write under another&rsquo;s name: the gate takes the author from the API key or the sign-in, never from the request.</p>
+<p>It refuses a claim that names no work area or an unknown space.</p>
+<p>Each claim names its producer (an agent, a hook, a person or a tool), as its author tells it.</p>
+<p>Its kind, such as a memory, a skill or an imported document, sets how much review it needs. No caller can ask for less.</p>
+</div></li>
+<li class="stage"><span class="stage-n">2</span><div>
+<h3>Held and scanned</h3>
+<p>Before the agent gets its answer, the scanner looks for 11 kinds of credential, card numbers and prompt injection, text planted to steer a model. It reads a skill&rsquo;s scripts without running them.</p>
+<p>Secrets are masked before any grader sees the text. The raw secret stays in the held claim&rsquo;s stored content. Erasing it comes with the Solo release.</p>
+<p>A finding of medium severity or higher marks the claim flagged. Nobody can clear a hard finding: a secret, an access breach or an integrity failure. Such a claim waits until a reviewer rejects it or it expires after 30 days. The grading model settles a finding about the content by default, or a person does if the operator chooses.</p>
+<p>While it is held, only its author&rsquo;s recall returns it, marked held. Reviewers can read it, and any other caller is answered as if it did not exist.</p>
+<p class="stage-risk">The scan matches known patterns, so a new kind of prompt injection can pass it.</p>
+<p class="stage-risk">Held claims across all authors stop at 10,000. Then the gate refuses everything new, with a hint to retry.</p>
+</div></li>
+<li class="stage"><span class="stage-n">3</span><div>
+<h3>Graded by a reviewer other than its author</h3>
+<p>A grading model reads the claim twice, once making the case for it and once against. By default those two readings are the two signatures a promotion needs, so a claim can be promoted with no person. Both readings come from one model, so they are one judgement taken twice. One setting requires a person for any kind of content.</p>
+<p>The grader sees only that claim&rsquo;s masked text, with no tools and no network, and ignores a verdict written inside it.</p>
+<p>A scanner finding, disagreement between the readings or low confidence stops automatic promotion, and the last two send the claim to a person.</p>
+<p>The operator can also turn grading off. The review queue then moves at a person&rsquo;s pace. A person&rsquo;s open objection holds automatic promotion until it is retracted.</p>
+<p class="stage-risk">How often the grader is right is unmeasured. Grading also spends a daily budget of model tokens.</p>
+</div></li>
+<li class="stage"><span class="stage-n">4</span><div>
+<h3>Signed and promoted</h3>
+<p>Promotion is a signed act of the gate, recorded in the journal of every decision.</p>
+<p>The promotion is marked provisional: one gate&rsquo;s judgement until a second, independent gate exists to countersign it. The mark never changes the order of answers.</p>
+<p class="stage-risk">Promotion takes longer as the journal grows, because it re-reads the journal under the write lock. A fix is on the roadmap.</p>
+</div></li>
+<li class="stage"><span class="stage-n">5</span><div>
+<h3>Recalled</h3>
+<p>By default, recall searches the agent&rsquo;s own work area, then each area above it, and stops at the first that has an answer. It never searches a sibling, such as an earlier session&rsquo;s area. So a new session finds an earlier session&rsquo;s promoted claims only when it recalls across the space, or when the two areas are related.</p>
+<p>Four search scopes are open to it: that default, its own area alone, the whole space, or every space.</p>
+<p>An empty answer means nothing matched that the caller is allowed to read.</p>
+<p>By default recall matches words. Matching by meaning needs the optional retrieval package and an embedding model the operator configures.</p>
+<p class="stage-risk">Searching by meaning within one small work area missed most of the true top ten <a href="evidence.html#measured">in our tests</a>.</p>
+</div></li>
+</ol> </div>
 </section>
-
+<section id="areas" class="band">
+<div class="wrap tight">
+<h2>Work areas record who worked where</h2>
+<p>Each Claude Code session writes into its own work area, and each subagent into one opened from its session&rsquo;s. A later area can also continue or derive from an earlier one. These links are the lineage: who worked in which area, and which area opened which.</p>
+<p>An author can mark their part of an area complete. Later writes there are refused, and work continues in a new area. A work area is a name, and it gives no access.</p> </div>
+</section>
+<section id="after" class="band alt">
+<div class="wrap tight">
+<h2>What a reviewer can change after promotion</h2>
+<p>A reviewer can reject a claim, keeping its content and the reason. Demoting a promoted claim takes it out of every recall and surface and keeps it. The reviewer picks by hand which claims built on it go too.</p>
+<p>A reviewer can hide a claim, reversibly. An administrator can ban an author&rsquo;s next writes.</p>
+<p>On a gate that grades, promoted claims are graded again as they age, when the policy or model changes, and when a contradiction appears. Each pass takes longer as the store grows.</p>
+<p>Copies already taken stay where they are. Nothing is deleted, so storage only grows.</p> </div>
+</section>
 <section id="path" class="band">
-  <div class="wrap">
-    <h2>Where a claim goes, and what happens when it meets one already there</h2>
-    <p class="sub">
-      Claims follow a development lifecycle: proposal, assessment, approval, publication and
-      ongoing maintenance. Changing the body or evidence creates a new revision and review.
-      A context change triggers policy re-evaluation; approval never silently expands to a new use.
-      Consolidation proposes a successor rather than editing an approved claim in place.
-    </p>
-    <div class="diagram wide">
-      <img src="assets/claim-path.svg" width="100%"
-        alt="A claim is held, scanned, assessed, approved or rejected, and recorded. Publication opens eligible shared retrieval. Consolidation proposes a new revision for review; supersession and refusal preserve decision history.">
-    </div>
-  </div>
+<div class="wrap">
+<h2>Corrections, contradictions and merges</h2>
+<p class="sub">A correction is a new version linked to the claim it replaces, and the old one is kept. When two claims contradict, recall returns both and the gate picks neither. Only reviewers merge or split claims, and the one who starts a merge cannot finish it.</p>
+<div class="diagram wide"> <img src="assets/claim-path.svg" width="100%" alt="A claim is written and held in quarantine, scanned, graded twice, signed by a reviewer who is not its author, and promoted as a signed journal event marked provisional. A correction is a new claim that takes the same path. Four endings: promoted; superseded, with the old version kept; merged, with the parents kept; rejected, with the reason kept."> </div> </div>
 </section>
-
 <section id="reads" class="band alt">
-  <div class="wrap tight">
-    <h2>What this costs your agent at read time</h2>
-    <p class="sub">Review before publication; current eligibility at retrieval.</p>
-    <div class="cards two">
-      <div class="card">
-        <h3>Read eligible knowledge</h3>
-        <p>Retrieval ranks the claims the caller is currently entitled to use. Scope, validity
-        and authority checks also apply to direct lookups, exports and cached results. Model
-        review happens before publication; its cost is separate from these read-time checks.</p>
-      </div>
-      <div class="card">
-        <h3>Records are never held up</h3>
-        <p>Transcripts, tool output and logs pass straight through — they are records of what
-        happened, not claims about the world. Only <b>claims</b> wait for review, which is a small
-        fraction of what an agent writes.</p>
-      </div>
-    </div>
-    <p class="note">
-      In our own measurements an agent produced roughly ninety times more records than claims,
-      which is why reviewing claims separately from records puts the review budget where it
-      counts. The ratio comes from our own machines; yours will differ.
-    </p>
-  </div>
+<div class="wrap tight">
+<h2>Session records are kept as evidence, outside recall</h2>
+<p>Transcripts, tool calls and session events are kept as evidence the moment they arrive. They are never graded or returned by recall, so no agent reads them. They do not count toward the 10,000 limit, though at that limit they are refused too.</p> </div>
 </section>
-
 <section id="next" class="band">
-  <div class="wrap tight center">
-    <h2>Next</h2>
-    <div class="cta-row center">
-      <a class="btn primary" href="for-engineers.html">What it costs to run</a>
-      <a class="btn" href="for-business.html">The business case</a>
-    </div>
-  </div>
+<div class="wrap tight center">
+<h2>The cost of running it, and the business case</h2>
+<div class="cta-row center"> <a class="btn primary" href="for-engineers.html#costs">What it costs to run</a> <a class="btn" href="for-business.html">The business case</a> </div> </div>
 </section>

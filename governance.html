@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Business governance — decisions, provenance and source authority</title>
-<meta name="description" content="Planned connectors and shared review controls for agent knowledge: scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.">
-<meta property="og:title" content="Business governance — decisions, provenance and source authority">
-<meta property="og:description" content="Planned connectors and shared review controls for agent knowledge: scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.">
+<title>Business governance — decisions, provenance and a signed record</title>
+<meta name="description" content="Who wrote each claim, who reviewed it and why, in a signed journal an auditor can verify. Quoted references to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239.">
+<meta property="og:title" content="Business governance — decisions, provenance and a signed record">
+<meta property="og:description" content="Who wrote each claim, who reviewed it and why, in a signed journal an auditor can verify. Quoted references to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-<meta property="og:image" content="https://doublegate-io.github.io/assets/social-card.svg">
-<meta property="og:url" content="https://doublegate-io.github.io/governance.html">
-<link rel="canonical" href="https://doublegate-io.github.io/governance.html">
+<meta property="og:image" content="https://about.doublegate.io/assets/social-card.svg">
+<meta property="og:url" content="https://about.doublegate.io/governance.html">
+<link rel="canonical" href="https://about.doublegate.io/governance.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/institutional.css">
 <link rel="stylesheet" href="assets/style.css">
@@ -22,203 +22,242 @@
 
 <header class="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="DoubleGate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
+    <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="doublegate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
     <nav class="desktop-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="for-business.html" class="here" aria-current="page">For business</a><a href="for-engineers.html">For engineers</a><a href="how-it-works.html">How it works</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav>
     <details class="mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation"><a href="index.html">Home</a><a href="for-business.html" class="here" aria-current="page">For business</a><a href="for-engineers.html">For engineers</a><a href="how-it-works.html">How it works</a><a href="evidence.html">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav></details>
   </div>
 </header>
 
-<div class="audience-nav"><div class="wrap"><span>For business</span><nav aria-label="For business"><a href="for-business.html">Overview</a><a href="governance.html" aria-current="page">Governance</a><a href="commons-for-business.html">Commons</a></nav></div></div>
+<div class="audience-nav"><div class="wrap"><span>For business</span><nav aria-label="For business"><a href="for-business.html">Overview</a><a href="governance.html" aria-current="page">Governance</a></nav></div></div>
 <main class="audience-page"><section id="top" class="page-hero">
   <div class="wrap">
     <p class="page-context">For business / Governance</p>
     <div class="page-hero-grid">
       <div class="page-hero-title"><h1>Know who approved what. And why.</h1></div>
       <span class="gate-rail dg-boundary-mark hero-rail" aria-hidden="true"><i></i><i></i></span>
-      <div class="page-hero-complement"><p class="hero-proposition">Governance begins with a scoped decision and a record you can inspect.</p><p>Connect proposed knowledge to its source, reviewer and permitted use. Source-system credentials confer no approval authority.</p><a href="#how">Follow a system contribution</a></div>
+      <div class="page-hero-complement"><p class="hero-proposition">Every decision is signed into a record an auditor can verify.</p><p>Every claim carries its author and every grade and signature on it. The identity that wrote a claim can never approve it.</p><a href="#how">Follow a claim from its author</a></div>
     </div>
-    <p class="availability"><b>Available now:</b> signed decisions and keyed reads. <b>Releases 3 and 4:</b> two-stage review and shared-team controls; connectors carry their own acceptance checks.</p>
+    <p class="availability"><b>Runs today:</b> a signed journal anyone holding it can verify, with the reviewer named on each decision. <b>Next:</b> the Solo release of today's gate, installable, backed up and restorable, with rotating signing keys and erasable content. Then Team, one gate a group shares over the network, with access granted per space.</p>
   </div>
 </section>
 
 
 <section id="how" class="band">
   <div class="wrap">
-    <h2>A system proposes, the gate decides<a class="h-anchor" href="#how" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>An agent or a person writes, and a reviewer other than the author decides<a class="h-anchor" href="#how" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="sub">
-      The connector contract scopes which source data can become a proposal. The gate reviews
-      that proposal before shared admission; source credentials confer no approval authority.
+      A claim, one thing written down for reuse, is written by an agent, a person or a program
+      the operator runs, each under its own identity. The gate holds and scans it, and promotes it only
+      when a person or grading model other than its author signs it.
     </p>
     <div class="cards three">
       <div class="card">
         <span class="card-ico held">◫</span>
-        <h3>Scoped by contract</h3>
-        <p>A connector declares which dataset, which fields, and which refresh cadence it may
-        derive from. Anything outside that scope is refused at the boundary rather than reviewed
-        and rejected later.</p>
+        <h3>Written under its own identity</h3>
+        <p>No one can write under another&rsquo;s name. A program proves who it is with its API
+        key, and a person signs in. The gate takes the author from that connection and refuses a
+        request that names an author itself.</p>
       </div>
       <div class="card">
         <span class="card-ico check">⊘</span>
-        <h3>Reviewed like everything else</h3>
-        <p>A non-author AI scores trust from 0&ndash;100 on the revision&rsquo;s evidence; a distinct
-        authorized AI or human returns APPROVE or REJECT.
-        <a href="how-it-works.html#stages">The two stages in full</a>.</p>
+        <h3>Held until a reviewer other than its author signs</h3>
+        <p>While it is held, only its author&rsquo;s recall, the gate&rsquo;s search, returns
+        it, marked held. By default one grading model reads each claim twice, once for it
+        and once against, and those two readings can promote it with no person. One setting
+        requires a person for any kind of content.</p>
+        <p><a href="how-it-works.html#stages">The five stages, in full →</a></p>
       </div>
       <div class="card">
         <span class="card-ico audit">⎔</span>
-        <h3>Traceable to the row it came from</h3>
-        <p>Every derived belief keeps a link to the source system, the dataset slice, the fields
-        in scope and the run that produced it. "Where did this come from?" resolves to a record,
-        not a guess.</p>
+        <h3>Traceable to who wrote it</h3>
+        <p>For every claim, the record answers &ldquo;Where did this come from?&rdquo; It keeps
+        the author, the work area (a named place for claims), what the author says produced the
+        claim, and what it derives from.</p>
       </div>
     </div>
     <p class="note">
-      A connector is a new kind of author, and that means a new kind of risk: one with your
-      organization's own credentials behind it. A misconfigured connector proposing thousands of
-      wrong beliefs is exactly what review is for — and why a connector cannot be its own
-      approver.
+      The gate tells authors and reviewers apart by API key and sign-in. If an agent starts
+      as the gate&rsquo;s own operating-system user, its shell can promote what its session wrote
+      (<a href="for-engineers.html#plugin">how to prevent that</a>). Run the agent as another
+      operating-system user and the rule holds against it. A gate that runs under a
+      service user of its own is on the roadmap. Reading from outside
+      systems is a later step, by a separate program with its own API key.
     </p>
   </div>
 </section>
 
-<section id="examples" class="band alt">
+<section id="private" class="band alt">
+  <div class="wrap tight">
+    <h2>Until it is promoted, only its author and reviewers can read a claim<a class="h-anchor" href="#private" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <p class="lede">
+      Say an agent asks the gate for another agent&rsquo;s held claim by its id. Without the
+      reviewer role, it gets the same answer as for a claim that does not exist. The same holds
+      wherever it looks: by id, in a listing, a count, a refusal, a history or a position in the
+      journal. A caller can still learn four things, and we publish them:
+    </p>
+    <ul>
+      <li>Timing. Refusing such a claim takes about 2.6 µs longer over the gate&rsquo;s local
+      connection, on one test machine, 2026-10-06. Over many timed calls, a caller that holds the
+      claim&rsquo;s id can confirm that the claim exists. So can a caller that can compute the
+      id, which is a digest of the whole write: its author, time and text. Neither learns
+      anything else about it.</li>
+      <li>That the quarantine, where claims wait for review, is full: the gate tells an author
+      so.</li>
+      <li>That a program following the journal is more than 1,000 events behind.</li>
+      <li>Roughly how long the journal is, from how long checking the whole chain takes.</li>
+    </ul>
+  </div>
+</section>
+
+<section id="examples" class="band">
   <div class="wrap">
-    <h2>What a connector actually produces<a class="h-anchor" href="#examples" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="sub">Three intended connector uses, from the concrete to the organizational.</p>
+    <h2>Where a claim comes from today<a class="h-anchor" href="#examples" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <p class="sub">
+      An agent writes through the Claude Code plugin, and a person in the gate&rsquo;s web
+      console on its machine. The skill watcher writes the skill files it finds. Each claim is held,
+      scanned and reviewed the same way.
+    </p>
 
     <div class="evidence">
       <article class="ev">
-        <h3>From a dataset slice</h3>
-        <p>A connector reads a defined slice — say a product catalogue, a fee schedule, or a
-        reference table — and proposes the stable facts an agent keeps getting wrong. Reviewed
-        once, they stop being re-derived from scratch by every agent that needs them.</p>
-        <p class="ev-use"><b>What is recorded:</b> the source system, the slice, the fields in
-        scope, the run that produced it, the reviewer, and the signature.</p>
+        <h3>A lesson from an agent&rsquo;s work</h3>
+        <p>Say an agent learns that the payments sandbox rate-limits per API key, and writes it
+        into its work area. Until a reviewer other than the agent signs it, only the agent and the
+        gate&rsquo;s reviewers can read it (<a href="#private">what others can still
+        learn</a>).</p>
+        <p class="ev-use"><b>What is recorded:</b> the agent&rsquo;s identity, the work area,
+        what the agent says produced the claim, what the scanner found, the reviewer, and the
+        signature.</p>
       </article>
       <article class="ev">
-        <h3>From operational history</h3>
-        <p>A ticketing or incident system holds the resolutions your team has already worked out.
-        A connector proposes those as reusable knowledge instead of leaving them to be
-        rediscovered by whoever is on call next.</p>
-        <p class="ev-use"><b>What is recorded:</b> which incidents a belief was derived from, so a
-        wrong generalisation can be traced back and withdrawn.</p>
+        <h3>A correction from a person</h3>
+        <p>A person signed in to the console writes a fact or a correction with its New claim
+        form, into a work area they pick. It is reviewed like an agent&rsquo;s claim, and its
+        author cannot approve it.</p>
+        <p class="ev-use"><b>What is recorded:</b> who wrote it, as their sign-in names them,
+        the work area, the claims it derives from, the reviewer, and the signature.</p>
       </article>
       <article class="ev">
-        <h3>From documented policy</h3>
-        <p>Internal standards, approved procedures and conventions live in wikis nobody reads.
-        Proposed through a gate, they become knowledge an agent holds and cites — with a
-        signature saying who confirmed it is current.</p>
-        <p class="ev-use"><b>What is recorded:</b> the document version a belief came from, so
-        knowledge goes stale visibly rather than silently.</p>
+        <h3>A skill file from a folder the operator keeps</h3>
+        <p>The skill watcher, a program the operator runs under its own API key, finds each new skill file
+        in a folder the operator keeps and writes it into the gate once. A skill changes what other agents
+        do, so the gate scans it for injected instructions, secrets and scripts before a reviewer sees it. The default
+        review can promote it. An imported skill bundle is checked without running anything and
+        stays held: one gate alone never promotes it.</p>
+        <p class="ev-use"><b>What is recorded:</b> the skill&rsquo;s exact text, the
+        watcher&rsquo;s identity, what the scanner found, the reviewer, and the signature.</p>
       </article>
     </div>
   </div>
 </section>
 
-<section id="four" class="band">
+<section id="four" class="band alt">
   <div class="wrap">
-    <h2>Four properties, every artifact<a class="h-anchor" href="#four" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>What one signed record holds, and the four properties it gives<a class="h-anchor" href="#four" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="sub">
-      The intended record connects contributor, evidence, review and scope. Connector lineage
-      and shared-team attribution extend the signed history; the illustration below describes
-      that target record rather than a new current API schema.
+      Each field below is part of the record a reviewer signs. Beside it is the requirement it
+      answers.
     </p>
     <dl class="record">
       <div class="record-head"><span>One signed record — what it holds, and what each field is for</span><span>The requirement it answers</span></div>
       <div class="rec">
-        <dt>artifact</dt>
-        <dd>memory · v3 · replaces v2</dd>
+        <dt>claim</dt>
+        <dd>claim · v3 · replaces v2</dd>
         <span class="req">Versioned, not edited in place</span>
-        <span class="reqd">a correction is a new version linked to what it replaced</span>
+        <span class="reqd">a correction is a new version linked to what it replaces</span>
       </div>
       <div class="rec">
-        <dt>the claim</dt>
+        <dt>what it says</dt>
         <dd>what is asserted to be true</dd>
         <span class="req">The thing under review</span>
-        <span class="reqd">held in a separate store until this record exists</span>
+        <span class="reqd">held in the quarantine until a decision on it is signed</span>
       </div>
       <div class="rec">
         <dt>where it came from</dt>
-        <dd>source system · slice · fields in scope<br>the run that produced it</dd>
+        <dd>the author · what produced it · the work area<br>the claims it derives from</dd>
         <span class="req">ECB RDARR — lineage</span>
         <span class="reqd"><q>track back the source of the issue in a timely manner</q> and <q>allow traceability for (external) validation</q></span>
       </div>
       <div class="rec">
-        <dt>what the scanners found</dt>
-        <dd>injection · secrets · executables<br>every check, pass or fail</dd>
+        <dt>what the scanner found</dt>
+        <dd>injection · secrets · personal data · skill scripts<br>each finding, with secrets masked</dd>
         <span class="req">EU AI Act, Article 12</span>
         <span class="reqd"><q>automatic recording of events (logs) over the lifetime of the system</q></span>
       </div>
       <div class="rec">
         <dt>who reviewed it</dt>
-        <dd>AI assessor and distinct authorized AI or human decider — neither the author<br>verified contributor and team at submission</dd>
+        <dd>graders and the reviewer who signed — none of them the author<br>the author, taken from its API key or sign-in</dd>
         <span class="req">GDPR, Article 22(3)</span>
         <span class="reqd">the right <q>to obtain human intervention</q> and <q>to express his or her point of view</q></span>
       </div>
       <div class="rec">
         <dt>the verdict, and its reasons</dt>
-        <dd>trust assessment with evidence<br>APPROVE or REJECT, with separate reasons</dd>
+        <dd>promote or reject, with the reasons given<br>a rejection names its category</dd>
         <span class="req">GDPR, Article 30(1)</span>
         <span class="reqd"><q>maintain a record of processing activities</q></span>
       </div>
       <div class="rec">
         <dt>when</dt>
-        <dd>decided at · valid from · expires at<br>declared version, scope and use</dd>
+        <dd>decided at</dd>
         <span class="req">BCBS 239, Principle 3</span>
         <span class="reqd"><q>a single authoritative source for risk data per each type of risk</q></span>
       </div>
+      <div class="rec">
+        <dt>provisional</dt>
+        <dd>the mark every promotion carries on one gate</dd>
+        <span class="req">Checked by this one gate</span>
+        <span class="reqd">shown on every answer, and it never changes the order of results</span>
+      </div>
       <div class="rec sig">
         <dt>signature</dt>
-        <dd>over every field above — verifiable without asking us</dd>
-        <span class="req">Why an auditor can check it themselves</span>
+        <dd>over every field above — checked with one command on the gate</dd>
+        <span class="req">Why an auditor can check it</span>
         <span class="reqd">change any field and the signature stops verifying</span>
       </div>
     </dl>
-    <p class="record-note">A refusal produces this same record with a refused verdict. The record
-    exists either way — a gate that only files its successes is not an audit trail.</p>
+    <p class="record-note">A rejection produces the same record, kept and signed like a promotion,
+    so the journal shows what was turned down and why.</p>
     <div class="cards four">
       <div class="card">
         <span class="card-ico audit">⎔</span>
         <h3>Audited</h3>
-        <p>Every approval and rejection is a signed record: who decided, when, on what basis, and
-        what they were looking at. Including the rejections — a gate that only records its
-        successes is not an audit trail. Nothing is ever silently dropped: reject, demote and
-        expire are themselves recorded events with their reasons.</p>
+        <p>Every promotion, rejection, demotion and expiry is a signed event with its reason:
+        who decided, when, and on what basis.</p>
       </div>
       <div class="card">
         <span class="card-ico share">◈</span>
         <h3>Traceable</h3>
-        <p>Every belief links back to the evidence it was derived from. When something turns out
-        to be wrong, you can find what produced it and what else came from the same source.</p>
+        <p>Each claim links to what it derives from. When one turns out to be wrong, a reviewer can
+        find what produced it and what else came from the same source.</p>
       </div>
       <div class="card">
         <span class="card-ico check">⊘</span>
         <h3>Versioned</h3>
-        <p>Nothing is edited in place. A correction is a new version with a link to what it
-        replaced, so the history of what your organization believed — and when it changed its
-        mind — stays intact.</p>
+        <p>A correction is a new version linked to what it replaces. So the history of what the organization believed, and when it changed its mind, stays
+        intact.</p>
       </div>
       <div class="card">
         <span class="card-ico held">◫</span>
         <h3>Discoverable</h3>
-        <p>Approved knowledge is searchable by the agents entitled to read it, with its
-        provenance attached. Consumer retrieval and privileged review access remain separate;
-        a planned writer preview is not shared admission.</p>
+        <p>Recall finds promoted claims with the record of where each came from. Reviewers see
+        every held claim. Recall never returns another author&rsquo;s held claim.</p>
       </div>
     </div>
   </div>
 </section>
 
-<section id="regulatory" class="band alt">
+<section id="regulatory" class="band">
   <div class="wrap">
     <h2>What regulators already ask for<a class="h-anchor" href="#regulatory" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
-      No product makes you compliant. Compliance is an assessment of your organization
-      against a control framework &mdash; what we produce is the evidence that goes into one.
-      Each requirement below is quoted from its source, beside what this product gives an
-      auditor to see.
+      No product makes an organization compliant. Compliance is the organization&rsquo;s judgement against a
+      control framework, and doublegate produces evidence for that judgement. Each requirement
+      below is quoted from its source, beside what an auditor can see.
     </p>
 
+    <!-- Row 4's dates are checked against the Official Journal: Regulation (EU) 2026/1744
+         Art. 1(40), amending Art. 113, sets 2 December 2027 (Annex III) and 2 August 2028
+         (Annex I); quoted in research/12 §2.1, fetched 2026-10-06. -->
     <table class="cmp wide">
       <thead>
         <tr><th>The requirement, quoted</th><th>Source</th><th>What an auditor can see</th></tr>
@@ -228,35 +267,42 @@
           <td>"rigorous documentation and audit trailing of changes, data overrides and sign-offs"
           under a <b>four-eyes principle</b></td>
           <td class="dim">ECB Guide on effective risk data aggregation and reporting, May 2024</td>
-          <td class="yes">the reviewer is never the author — enforced structurally</td>
+          <td class="yes">the reviewer is never the author: the gate enforces it between every
+          API key and sign-in. On one machine it binds an agent that runs under another
+          operating-system user (<a href="#how">who writes and who decides</a>).</td>
         </tr>
         <tr>
           <td>lineage must "in case of data quality incidents be able to track back the source of
           the issue in a timely manner"</td>
           <td class="dim">ECB Guide on effective RDARR, May 2024</td>
-          <td class="yes">every belief links to the evidence it came from</td>
+          <td class="yes">every claim links to what it derives from</td>
         </tr>
         <tr>
           <td>lineage must "allow traceability for (external) validation"</td>
           <td class="dim">ECB Guide on effective RDARR, May 2024</td>
-          <td class="yes">signed records an auditor verifies without asking us</td>
+          <td class="yes">a signed journal that an auditor with access to the gate checks with
+          one command. An export for the auditor&rsquo;s own tools comes with the Solo
+          release.</td>
         </tr>
         <tr>
           <td>"shall technically allow for the automatic recording of events (logs) over the
           lifetime of the system"</td>
-          <td class="dim">EU AI Act, Article 12(1) — applies from Dec 2027 / Aug 2028</td>
+          <td class="dim">EU AI Act, Article 12(1) — applies from Dec 2027 (Annex III systems) or Aug 2028 (systems under EU product-safety law)</td>
           <td class="yes">append-only signed journal, from the first write</td>
         </tr>
         <tr>
           <td>"shall maintain a record of processing activities under its responsibility"</td>
-          <td class="dim">GDPR Article 30(1)</td>
-          <td class="yes">per-artifact provenance: actor, purpose, source, time</td>
+          <td class="dim"><a href="https://eur-lex.europa.eu/eli/reg/2016/679/oj">GDPR Article 30(1)</a></td>
+          <td class="yes">per claim: the author, the work area, what produced it, its source,
+          the time</td>
         </tr>
         <tr>
           <td>the right "to obtain human intervention […] to express his or her point of view and
           to contest the decision"</td>
           <td class="dim">GDPR Article 22(3)</td>
-          <td class="yes">decision provenance supports investigation; a human-intervention and contest process is a separate organizational duty</td>
+          <td class="yes">a record of who decided and why, to support an investigation. A
+          process for a person to intervene and contest a decision is a separate duty of the
+          organization.</td>
         </tr>
         <tr>
           <td>"strive towards a single authoritative source for risk data per each type of risk"</td>
@@ -267,11 +313,8 @@
     </table>
 
     <p class="note">
-      Even the checking can stay inside your walls: the gate&rsquo;s small preparation models run
-      on your CPU and prepare evidence only. Stage-1 scoring is advisory; stage 2 is an explicit
-      authorized decision, which can be made by AI. Human review is optional by default under the
-      selected design. An explicit authorized human override stays binding until an authorized
-      human releases or replaces it; no model can silently lift it.
+      Grading can run on a model the organization hosts on its own hardware. The operator can require a person for any
+      kind of content, and a model can never overrule a person&rsquo;s decision.
     </p>
     <p class="micro">
       Every quote above is verbatim from the named source and checked against it.
@@ -280,81 +323,77 @@
   </div>
 </section>
 
-<section id="standards" class="band">
+<section id="standards" class="band alt">
   <div class="wrap tight">
-    <h2>Speaking formats your governance team already has tools for<a class="h-anchor" href="#standards" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>Check the record with two commands<a class="h-anchor" href="#standards" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
-      An audit trail nobody can import is an audit trail nobody reads. The records are designed to
-      express in established vocabularies, and the two mappings below are design targets toward them.
+      The record is the journal, kept on the gate&rsquo;s machine. Each entry is signed and
+      linked to the one before, so a later change shows.
     </p>
     <div class="cards two">
       <div class="card">
-        <h3>Provenance as a standard graph</h3>
-        <p>Derivation records map onto the <b>W3C provenance vocabulary</b> — entity, activity,
-        agent, "was derived from", "was attributed to". A settled W3C Recommendation, not
-        something we invented for this.</p>
-        <a class="src" href="https://www.w3.org/TR/prov-o/">W3C PROV-O</a>
+        <h3>Verify the chain</h3>
+        <p><code>doublegate verify</code> checks every signature and every link in the journal.
+        A changed field, a removed decision or a reordered event makes the check fail. It takes
+        about 56 µs an event on one test machine, 2026-10-05.</p>
       </div>
       <div class="card">
-        <h3>Lineage your catalogue understands</h3>
-        <p>Connector runs are designed to emit <b>OpenLineage</b> events, the open lineage standard
-        under the Linux Foundation, including its field-level lineage facet. Your data catalogue
-        would use that standard interface, subject to connector and catalogue validation.</p>
-        <a class="src" href="https://openlineage.io/">OpenLineage — Apache-2.0, LF AI &amp; Data</a>
+        <h3>Read one claim&rsquo;s decisions</h3>
+        <p><code>doublegate audit</code> prints one claim&rsquo;s decisions in order, with their
+        signatures checked.</p>
       </div>
     </div>
     <p class="note">
-      A field-level mapping is clean for a direct transformation and genuinely
-      hard for a generative one. When a model reads two hundred rows and proposes one claim, we can
-      record the slice and the fields in scope — we will not pretend to a per-column derivation we
-      cannot compute.
+      Both run where the gate runs. An export a third party can verify offline comes with the
+      Solo release, beside backup and restore.
+    </p>
+    <p class="note">
+      Each decision is recorded with who made it and signed with the gate&rsquo;s signing key.
+      Checked against the latest entry an auditor holds, a changed or missing entry shows. If the
+      newest entries are cut off, the shorter journal still checks out on its own. Keep a copy
+      of the latest entry elsewhere to catch that. The signature does not make the claim true.
     </p>
   </div>
 </section>
 
-<section id="honest" class="band alt">
+<section id="honest" class="band">
   <div class="wrap tight">
-    <h2>The evidence is the deliverable<a class="h-anchor" href="#honest" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>The limits an auditor should know<a class="h-anchor" href="#honest" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
-      What a reviewer signs is a record: the artifact and its version, the scope it was approved
-      for, the identity behind the decision, and the evidence it rests on.
+      A reviewer signs a record: the claim and its version, the identity behind the decision,
+      and the evidence it rests on. This is how far it reaches today.
     </p>
     <p class="note">
-      Approval means production-ready for the declared scope, version and use under required
-      checks. It is neither factual certainty nor permission to execute production actions.
-      Publication and current read access remain separate decisions. The shared-team design
-      requires a verified contributor and one accountable team at submission; later membership
-      or ownership changes preserve that attribution and do not create access grants.
+      A promotion means one gate&rsquo;s reviewers signed the claim. It stays marked
+      provisional, checked by this gate alone, until a second gate exists. After a demotion,
+      rejection or expiry, recall no longer returns the claim, and its history is kept. A
+      person&rsquo;s objection stops automatic promotion until it is retracted.
     </p>
     <p class="note">
-      Counterevidence can challenge approval and trigger re-evaluation; required holds block
-      affected use. Withdrawal, revocation and expiry end current eligibility while preserving
-      decision history. Changed content or evidence needs a new revision and review; changed
-      context cannot silently widen an old approval. Commons appeals add a planned staffed
-      human route for disputed refusals, not a universal human-review requirement.
+      The journal is append-only: nothing written to it is deleted. That conflicts with the
+      right to erasure in GDPR Article 17 until erasure comes with the Solo release. Access
+      granted per space comes with Team.
     </p>
     <p class="note">
-      Internal approval does not authorize Commons publication. Public nomination requires
-      publishing rights, privacy review and receiving-authority checks. Public reuse follows
-      an artifact's terms and never grants access to private organizational claims or evidence.
+      The gate does not defend against a compromised machine that holds its signing key, or a
+      grading model that colludes with an author. Nor does it defend against side channels, such
+      as how long an answer takes or how much is stored. In each case the recovery is demotion: a reviewer takes the claim out of every recall and keeps
+      it, with the reason. Anyone who can read the journal and guesses a claim&rsquo;s exact
+      text can confirm the guess. A fix is on the roadmap.
     </p>
     <p class="micro">
-      Two specifics, because precision here is the product. BCBS 239 does not contain the word
-      &ldquo;lineage&rdquo; &mdash; we checked the 2013 text and found zero occurrences, so we cite
-      the requirement to the ECB&rsquo;s 2024 implementation guide, which is where it actually
-      lives. Organization-gate reads use revocable keys granted access to named folders;
-      administrative changes require separate authority. A folder selects a collection,
-      while an access grant determines who may read it.
+      BCBS 239 does not contain the word &ldquo;lineage&rdquo;: we found zero occurrences in the
+      2013 text. So we cite the requirement to the ECB&rsquo;s 2024 implementation guide, which
+      is where it lives.
     </p>
   </div>
 </section>
 
-<section id="next" class="band">
+<section id="next" class="band alt">
   <div class="wrap tight center">
-    <h2>Next<a class="h-anchor" href="#next" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>Who pays, and what it costs<a class="h-anchor" href="#next" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <div class="cta-row center">
       <a class="btn primary" href="for-business.html">The business case</a>
-      <a class="btn" href="for-engineers.html">What it costs to run</a>
     </div>
   </div>
 </section></main>
@@ -365,21 +404,19 @@
     <div class="foot">
       <div>
         <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · <a href="evidence.html">Research and evaluation sources</a>
-        <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>. The organization gate is private and proprietary.
-        <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
-        "you got this wrong".</p>
+        <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>.
+        <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a>, a report that
+        the site is wrong included.</p>
       </div>
       <div class="foot-links">
         <a href="how-it-works.html">How it works</a>
         <a href="for-business.html">For business</a>
         <a href="for-engineers.html">For engineers</a>
         <a href="governance.html">Governance</a>
-        <a href="commons-for-business.html">Commons for business</a>
-        <a href="commons-for-engineers.html">Commons for engineers</a>
         <a href="evidence.html">Evidence</a>
         <a href="https://github.com/doublegate-io">GitHub</a>
         <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
-        <a href="mailto:eugene.korniichuk@gmail.com">Email</a>
+        <a href="mailto:eugene@doublegate.io">Email</a>
       </div>
     </div>
   </div>

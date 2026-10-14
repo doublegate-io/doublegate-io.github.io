@@ -72,8 +72,10 @@ const output = path.join(__dirname,'.tmp/business-ia');
     results.push({route,width,...geometry});
    }
   }
-  // Exercise every original Commons section bookmark, not just a sample hash.
-  const legacy={ 'for-organizations.html':['top','accountability','offering','honest'], 'commons.html':['top','gap','how','properties','appeals','why-contribute','limits','next'] };
+  // Exercise the retired pages' bookmarks. The Commons pages were retired whole on
+  // 2026-10-04, so their readers land at the top of the audience overview.
+  // for-business#honest left on 2026-10-06; #evaluate joins this list if it ships.
+  const legacy={ 'for-organizations.html':['top','accountability','offering'], 'commons.html':['top'], 'commons-for-business.html':['top'], 'commons-for-engineers.html':['top'] };
   let redirectChecks=0;
   for(const [old,target] of Object.entries(manifest.redirects)) for(const hash of legacy[old]) {
    await load(`${old}?from=bookmark#${hash}`);

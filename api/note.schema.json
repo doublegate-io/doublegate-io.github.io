@@ -26,6 +26,7 @@
         "refuse",
         "reject",
         "relation",
+        "reopen",
         "scan",
         "tip-override"
       ]
@@ -45,6 +46,7 @@
         "refused",
         "rejected",
         "related",
+        "reopened",
         "scanned",
         "signed",
         "tip-overridden"

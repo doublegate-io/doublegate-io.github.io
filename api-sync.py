@@ -7,11 +7,11 @@ are private, this site is the only place an agent can scan — so the rendered
 documents are published here, under `api/`, as a *snapshot* stamped with the
 commit each came from. Nothing under `api/` is written by hand.
 
-    python3 api-sync.py            # copy from ../client-gate and ../organization-gate, stamp api/index.json
+    python3 api-sync.py            # copy from ../client-gate and ../doublegate-peers, stamp api/index.json
     python3 api-sync.py --check    # with the checkouts present: fail if the snapshot is behind them
                                    # without them (CI): fail only if the snapshot is malformed
 
-Override the checkout locations with DOUBLEGATE_SRC / DOUBLEGATE_ORG_SRC.
+Override the checkout locations with DOUBLEGATE_SRC / DOUBLEGATE_PEERS_SRC.
 """
 
 from __future__ import annotations
@@ -28,23 +28,37 @@ API = ROOT / "api"
 # (site file, source repo, file inside that repo's docs/api/, one line for the manifest)
 DOCUMENTS = [
     ("mcp-tools.json", "client-gate", "mcp-tools.json",
-     "the tool schemas each tier serves over the agent-tool protocol — what tools/list answers — and the instructions paragraph the handshake carries"),
+     "the tool schemas of the gate's built-in plugin, which is retiring, as its tools/list answers them; the Claude Code plugin's tools are not in this file"),
     ("daemon-rpc.json", "client-gate", "daemon-rpc.json",
      "every verb on the gate's local socket: parameters, role, the proof each needs; a running gate answers the same to dg.describe"),
-    ("note.schema.json", "client-gate", "note.schema.json",
-     "JSON Schema of a published note's data — the closed field set a subscriber or a knowledge map may rely on"),
-    ("openapi.json", "organization-gate", "openapi.json",
-     "OpenAPI 3.1 for the organization gate's keyed HTTP surface; a running gate serves it at GET /openapi.json to any valid key"),
+    ("openapi.json", "client-gate", "openapi.json",
+     "OpenAPI for the gate's HTTP surface on this machine; it answers on loopback only, with a sign-in or an API key"),
+    ("note.schema.json", "doublegate-peers", "note.schema.json",
+     "JSON Schema of a note's data, which the notifier peer publishes — the closed field set a subscriber or a knowledge map may rely on"),
 ]
 
 SOURCES = {
     "client-gate": Path(os.environ.get("DOUBLEGATE_SRC", ROOT.parent / "client-gate")),
-    "organization-gate": Path(os.environ.get("DOUBLEGATE_ORG_SRC", ROOT.parent / "organization-gate")),
+    "doublegate-peers": Path(os.environ.get("DOUBLEGATE_PEERS_SRC", ROOT.parent / "doublegate-peers")),
 }
 
 
 def head(repo: Path) -> str:
-    return subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"], capture_output=True, text=True, check=True).stdout.strip()
+    """The last commit that touched this package's API docs, not the repository HEAD.
+
+    Across seven repositories those were the same thing: client-gate's HEAD moved only when
+    client-gate moved. ADR-0083 merged them, so HEAD now advances on every commit to anything
+    and the snapshot is stale the moment it is recorded — `--check` could never pass again,
+    including on the commit that regenerated it. Stamping the API directory's own last commit
+    restores what the stamp meant: this snapshot matches that state of those files.
+    """
+    api = Path(repo) / "docs" / "api"
+    out = subprocess.run(["git", "-C", str(repo), "log", "-1", "--format=%H", "--", str(api)],
+                         capture_output=True, text=True, check=True).stdout.strip()
+    # A path git has never recorded (a fresh checkout, a submodule) yields nothing; the
+    # repository HEAD is the honest fallback and keeps the field non-empty.
+    return out or subprocess.run(["git", "-C", str(repo), "rev-parse", "HEAD"],
+                                 capture_output=True, text=True, check=True).stdout.strip()
 
 
 def sources_present() -> bool:
@@ -56,7 +70,7 @@ def manifest(stamps: dict[str, str]) -> dict:
         "what": "doublegate's API as data — rendered from the code that serves it, checked against it in the code repositories' CI, published here as a snapshot",
         "rendered_from": {name: {"repository": f"https://github.com/doublegate-io/{name}", "commit": sha} for name, sha in stamps.items()},
         "documents": {site: {"from": f"{repo}/docs/api/{src}", "about": about} for site, repo, src, about in DOCUMENTS},
-        "read_first": "https://doublegate-io.github.io/llms.txt",
+        "read_first": "https://about.doublegate.io/llms.txt",
     }
 
 

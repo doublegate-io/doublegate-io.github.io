@@ -7,47 +7,106 @@
   "errors": {
     "-32600": "invalid request",
     "-32601": "method not found",
-    "-32602": "invalid params / refused with the reason; a field the verb does not list here is refused by name (I7); a verb above the caller's role names the role needed (AUTH-4)",
+    "-32602": "invalid params / refused with the reason; a field the verb does not list here is refused by name (I7); a verb above the caller's role names the role needed (AUTH-4); a write into a space the caller holds no `contribute` on carries data {reason: `not_granted`, space, capability} (ADR-0115 d14); an operand that names a claim is read with or without `sha256:`, and any other form of it is refused by rule before dispatch (ADR-0134 d7)",
     "-32000": "identity underivable (I6)",
     "-32001": "request too large",
-    "-32006": "quarantine full; data.retry_after_ms",
-    "-32014": "the semantic reviewer refused: a workflow blocker (ADR-0048 d4), never an approval and never a demand for a human — the row stays where it was"
+    "-32006": "quarantine full; data.retry_after_ms (below the reviewer role it names no number of held rows, GAPS 157)",
+    "-32010": "a lifecycle refusal; data.reason names it when it has one — `work_complete`: this identity completed the work area it wrote into (ADR-0102 d6)",
+    "-32014": "the semantic reviewer refused: a workflow blocker (ADR-0048 d4), never an approval and never a demand for a human — the row stays where it was",
+    "-32015": "attachment storage at its bound: data.reason upload_quota (with data.retry_after_ms until the caller's oldest upload expires) or attachment_budget (a review frees it)"
   },
-  "role": "any",
   "verbs": [
     {
       "name": "dg.approval",
-      "service": "both",
       "role": "reader",
-      "summary": "Who approved one artifact, or why it waits — a read model folded from its journal, never a state. `status` is one of rejected | refused | vetoed | withdrawn | countersigned | human_approved | ai_approved | escalated | pending | not_applicable; `signers[]` lists every decision with the signer's class (human | model | org | deployment | agent), the model label off the verdict, and whether it counts toward k.",
+      "summary": "Who approved one artifact, or why it waits — a read model folded from its journal, never a state. `status` is one of rejected | refused | vetoed | withdrawn | countersigned | human_approved | ai_approved | escalated | pending | not_applicable; `signers[]` lists every decision with the signer's class (human | model | authority | deployment | agent; `authority` is the signer of a countersign or a refuse), the model label off the verdict, and whether it counts toward k.",
       "params": [
         {
           "name": "artifact_id",
           "type": "string",
           "required": true,
-          "description": ""
+          "description": "",
+          "readable": true
         }
       ],
-      "returns": "object: {artifact_id, state, status, reason, k_required, k_have, signers[], approved_by{model,human,org}, model_labels[], provisional, human_veto_available, human_sign_available, decisions[], veto?, open_objections, revision}"
+      "returns": "object: {artifact_id, state, status, reason, k_required, k_have, signers[], approved_by{model,human,authority}, model_labels[], provisional, human_veto_available, human_sign_available, decisions[], veto?, open_objections, revision} — below the reviewer role `revision` is a digest of the answer (GAPS 158)",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing"
+      }
+    },
+    {
+      "name": "dg.ask_to_sign",
+      "role": "agent",
+      "summary": "The author of a held row, a signed-in person, asks the people who may sign it (ADR-0134 d3): appends sign-asked {to}, the identities dg.who_can_sign lists, and moves nothing. Once per row a UTC day; a notifier carries it to the sinks the operator configured. Refused to every caller who is not a signed-in person (an agent asks through a question), to anyone but the row's author, and on a row that is not held.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "a held row the caller wrote",
+          "readable": true
+        }
+      ],
+      "returns": "object: {artifact_id, to[], asked_at, event_id} — `asked_at` HH:MM UTC",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; each refusal in its sentence (doublegate_sdk.acts), a second ask that day `asked at HH:MM`"
+      }
+    },
+    {
+      "name": "dg.attachment",
+      "role": "reader",
+      "summary": "One page of one attachment of a claim the caller may read (ADR-0126 d6; 24 — Attachments §5): the served copy, an image keeping only the chunks that draw it and a PDF as stored, to every reader; the original, with original true, to the claim's writer and a reviewer that reads the space alone. Never by a hash alone: an id the caller may not read, a hash the claim does not carry, or an original below those two are answered as an unknown id. A page served whole and in order is logged, and a promoting or clearing signature counts only from an identity served every attachment to its end (`unseen_attachment` on dg.sign).",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "the claim; held to the one read rule by the verb itself, and a claim the caller may not read is answered as an unknown id"
+        },
+        {
+          "name": "content_hash",
+          "type": "string",
+          "required": true,
+          "description": "an attachment hash the claim's envelope names"
+        },
+        {
+          "name": "offset",
+          "type": "integer",
+          "required": false,
+          "description": "default 0; pages are 524,288 bytes"
+        },
+        {
+          "name": "original",
+          "type": "boolean",
+          "required": false,
+          "description": "the stored bytes; the writer and reviewers only; default false"
+        }
+      ],
+      "returns": "object: {content_hash, media_type, name (masked), copy: served|original, size, offset, content (base64), next_offset|null}; the last page adds served_hash, stripped[], and to a reviewer metadata[{kind, text}] (masked, at most 65,536 bytes of JSON); an image whose chunks cannot be walked answers {copy: served, prepared: false} and no content",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; an offset past the copy's end"
+      }
     },
     {
       "name": "dg.audit",
-      "service": "both",
       "role": "reader",
-      "summary": "The decisions about one artifact with signatures verified.",
+      "summary": "The decisions about one artifact with signatures verified. Below the reviewer role a payload's id of a row the caller may not read is null (GAPS 156). Below the reviewer role the envelope's `derives_from` names only the parents the caller may read, and `derives_from_withheld`, present when any is left out, counts the rest (GAPS 156).",
       "params": [
         {
           "name": "artifact_id",
           "type": "string",
           "required": true,
-          "description": ""
+          "description": "",
+          "readable": true
         }
       ],
-      "returns": "object"
+      "returns": "object",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing"
+      }
     },
     {
       "name": "dg.away",
-      "service": "both",
       "role": "admin",
       "summary": "The operator declares an absence (ADR-0045): the human-review TTLs stop until `back`, the time away subtracted on restart. Nothing is promoted meanwhile.",
       "params": [
@@ -68,15 +127,31 @@
     },
     {
       "name": "dg.back",
-      "service": "both",
       "role": "admin",
       "summary": "The operator is back: the clocks restart with the time away subtracted (ADR-0045).",
       "params": [],
       "returns": "object: {away, held_d, declared}"
     },
     {
+      "name": "dg.backend_check",
+      "role": "admin",
+      "summary": "Ask one grading backend's provider, through this gate, whether its credential reaches its model and whether the model takes its effort and structured outputs (ADR-0125 d7). One call at a time; answers in words.",
+      "description_note": "An anthropic table is probed at the Models API, `GET /v1/models/{model}`, through the same closed opener its grading uses; an openai_compat table at `{base_url}/models`. The credential is never returned: `credential` is present, absent or why it was refused.",
+      "params": [
+        {
+          "name": "backend",
+          "type": "string",
+          "required": false,
+          "description": "a [gating.backend.<name>] table's name; omitted, the first-pass positive stance's"
+        }
+      ],
+      "returns": "object: {backend, reachable, credential, model, effort, structured_outputs, words}",
+      "errors": {
+        "-32602": "no backend table of that name"
+      }
+    },
+    {
       "name": "dg.ban",
-      "service": "both",
       "role": "admin",
       "summary": "Refuse a writer's, or a source prefix's, next ingest at the door with -32009 (ADR-0052 d6). Operator only; touches nothing already admitted (I4); not replicated.",
       "params": [
@@ -109,15 +184,20 @@
           "type": "boolean",
           "required": false,
           "description": "true lifts a ban in effect"
+        },
+        {
+          "name": "dry_run",
+          "type": "boolean",
+          "required": false,
+          "description": "true answers what the ban would reach and appends nothing (ADR-0133 d3)"
         }
       ],
-      "returns": "object: {kind, subject, active, event_id, until?}"
+      "returns": "object: {kind, subject, active, event_id, until?}; with dry_run, for a writer {kind, subject, dry_run, promoted, held, last_write_ts, refused_last_7_days}, for a source {kind, subject, dry_run, sources[≤50], truncated, promoted, held} — what a ban leaves as it is"
     },
     {
       "name": "dg.bans",
-      "service": "both",
       "role": "reader",
-      "summary": "The bans in effect and what they refused at the door (ADR-0052 d6). Read-only; `status` carries the same list.",
+      "summary": "The bans in effect and what they refused at the door (ADR-0052 d6). Read-only; `status` and `dg.graph` carry the same list. Below the reviewer role, only the bans whose subject is the caller's own identity and the caller's own refused writes: a ban names an identity or a source and no space, so nothing narrower is the caller's (CR14, GAPS 366).",
       "params": [
         {
           "name": "limit",
@@ -126,11 +206,34 @@
           "description": "refused-at-door records to return; default 100"
         }
       ],
-      "returns": "object: {bans[], refused[]}"
+      "returns": "object: {bans[], refused[], truncated} — `truncated` when older refusals past the limit were left out (ADR-0133 d4)"
+    },
+    {
+      "name": "dg.cancel",
+      "role": "reader",
+      "summary": "A signed-in person cancels a held claim they wrote (ADR-0132 d2): it goes to REJECTED with its words, events and attachments kept, and dg.approval answers `cancelled`. Refused to every caller whose role is agent, to every caller who is not a signed-in person (a program's key, a socket peer), to anyone but the claim's author, and on a claim that is promoted, signed and being promoted (L3_RATIFIED), not held, or named by a pending replacement group.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "a held claim the caller wrote",
+          "readable": true
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": "why, 1 to 500 characters; kept in the journal and never served"
+        }
+      ],
+      "returns": "object: {artifact_id, state, status, event_id}",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; each refusal in its sentence (doublegate_sdk.acts)"
+      }
     },
     {
       "name": "dg.comment",
-      "service": "both",
       "role": "agent",
       "summary": "Record a remark on an artifact — an annotation, never a decision. Changes nothing about the row's standing and counts toward nothing; an open `objection` by the operator holds auto-promotion until a `resolution` replies to it or it is retracted. The author class (human/model/agent) is derived from the signing identity, never a parameter (I2). Comments are never published (I1) and never leave this gate.",
       "params": [
@@ -138,7 +241,8 @@
           "name": "artifact_id",
           "type": "string",
           "required": true,
-          "description": "the row to comment on; any state"
+          "description": "the row to comment on; any state, and below the reviewer role a row the caller may read",
+          "readable": true
         },
         {
           "name": "body",
@@ -163,16 +267,21 @@
           "type": "array",
           "required": false,
           "description": "finding kinds on the row this remark is about"
+        },
+        {
+          "name": "audience",
+          "type": "string",
+          "required": false,
+          "description": "all (default) | people — a note served to signed-in people alone, and to every other caller as if it did not exist; refused from a caller whose role is agent or who is not a signed-in person, and on any kind but note (ADR-0132 d3, GAPS 664)"
         }
       ],
       "returns": "object: {artifact_id, event_id, comment, counts}",
       "errors": {
-        "-32602": "unknown artifact, bad kind, empty body, reply_to not a live comment here"
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; a bad kind, an empty body, or reply_to not a live comment here"
       }
     },
     {
       "name": "dg.comment_retract",
-      "service": "both",
       "role": "agent",
       "summary": "Withdraw a comment: its author, or the operator. The comment stays as a tombstone; an open objection retracted this way releases the hold it held.",
       "params": [
@@ -180,7 +289,8 @@
           "name": "artifact_id",
           "type": "string",
           "required": true,
-          "description": "the row"
+          "description": "the row",
+          "readable": true
         },
         {
           "name": "event_id",
@@ -197,12 +307,11 @@
       ],
       "returns": "object: {artifact_id, event_id, retract_event_id}",
       "errors": {
-        "-32602": "unknown comment, already retracted, or not yours to retract"
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; an unknown comment, one already retracted, or one the caller did not write"
       }
     },
     {
       "name": "dg.comments",
-      "service": "both",
       "role": "reader",
       "summary": "The comment thread on one artifact, oldest first, with counts (total, open human objections).",
       "params": [
@@ -210,7 +319,8 @@
           "name": "artifact_id",
           "type": "string",
           "required": true,
-          "description": "the row"
+          "description": "the row",
+          "readable": true
         },
         {
           "name": "include_retracted",
@@ -219,71 +329,73 @@
           "description": "default false — tombstones are kept in the projection"
         }
       ],
-      "returns": "object: {artifact_id, comments[], counts{total, open_objections, last_ts}}"
+      "returns": "object: {artifact_id, comments[], counts{total, open_objections, last_ts}}",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing"
+      }
     },
     {
-      "name": "dg.crawler_policy",
-      "service": "both",
-      "role": "reviewer",
-      "summary": "Issue or retrieve a source-scoped, expiring robots exception on the deployment journal. Never exposed as an MCP tool.",
+      "name": "dg.complete",
+      "role": "agent",
+      "summary": "Mark one identity's part of a work area complete (ADR-0102 d6): the gate signs a `workarea-completed` event under its own key, and later writes by that identity into that work area are refused -32010 with reason `work_complete`. It changes no visibility, decides nothing and releases nothing — held rows stay in review exactly where they were — and there is no reopen. An agent completes its own part; a reviewer or an admin may complete any identity's by naming it. A second complete answers `changed: false` and journals nothing.",
       "params": [
         {
-          "name": "action",
+          "name": "workarea",
           "type": "string",
-          "required": false,
-          "description": "issue | get"
+          "required": true,
+          "description": "the work area, by its path"
         },
         {
-          "name": "source",
+          "name": "space",
           "type": "string",
           "required": false,
-          "description": "source name"
+          "description": "default main; must already exist"
         },
         {
-          "name": "scope_hash",
+          "name": "note",
           "type": "string",
           "required": false,
-          "description": "sha256 of canonical crawler source scope"
+          "description": "why, for the journal"
         },
         {
-          "name": "reason",
+          "name": "identity",
           "type": "string",
           "required": false,
-          "description": "operator reason"
-        },
-        {
-          "name": "expires_at_ms",
-          "type": "integer",
-          "required": false,
-          "description": "expiry within 24 hours"
-        },
-        {
-          "name": "event_id",
-          "type": "string",
-          "required": false,
-          "description": "journal event id for get"
+          "description": "whose part: reviewer and admin only; an agent naming any identity but its own is refused (I2). Default the caller"
         }
       ],
-      "returns": "object: signed policy event"
+      "returns": "object: {space, name, identity, state: complete, changed, event_id?}",
+      "errors": {
+        "-32602": "an unknown space, a name outside the grammar, a part the identity never wrote into, or an agent naming another identity"
+      }
     },
     {
       "name": "dg.defer",
-      "service": "both",
       "role": "agent",
-      "summary": "Record that the operator looked and moved on (F40). Not a lifecycle transition.",
+      "summary": "Record that the operator looked and moved on (F40). Not a lifecycle transition; no journal event, single or bulk. `artifact_ids`, 1 to 100 ids in place of `artifact_id`, is a person's bulk Defer on Action needed, served from the reviewer role up: every id is checked readable before anything is counted, and the call adds its count to `deferred_in_bulk`, never to `deferred` (ADR-0132 d7).",
       "params": [
         {
           "name": "artifact_id",
           "type": "string",
-          "required": true,
-          "description": ""
+          "required": false,
+          "description": "one held row; or name artifact_ids",
+          "readable": true
+        },
+        {
+          "name": "artifact_ids",
+          "type": "array",
+          "required": false,
+          "description": "1 to 100 distinct ids, reviewer and up (ADR-0132 d7)",
+          "readable": true
         }
       ],
-      "returns": "object: {artifact_id, deferred}"
+      "returns": "object: {artifact_id, deferred} or {artifact_ids, deferred: n}",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; both or neither of artifact_id and artifact_ids; artifact_ids below the reviewer role, empty, over 100 or repeating an id"
+      }
     },
     {
       "name": "dg.demote",
-      "service": "both",
       "role": "reviewer",
       "summary": "Withdraw an admitted artifact from every consumer surface; the content is kept.",
       "params": [
@@ -304,17 +416,15 @@
     },
     {
       "name": "dg.describe",
-      "service": "both",
       "role": "reader",
-      "summary": "This catalog, for the answering daemon's role — the socket describing itself — plus `you`: who the gate took the caller for and the role every verb is held to (ADR-0082).",
+      "summary": "This catalog — the socket describing itself — plus the caller's own identity, role and kind as the gate took them, the role every verb is held to (ADR-0082), and `deployment_mode`, development or production, which says why a row may be signed by its author and grants nothing (ADR-0135 d1).",
       "params": [],
-      "returns": "object: {service, version, role, verbs[], documents{}, you{identity, role, kind}}"
+      "returns": "object: {service, version, verbs[], documents{}, `you`{identity, role, kind, demo}, deployment_mode} — `demo` is true for a signed-in person the people file marks a demo person and false for every other caller, an API key and the socket's owner included (ADR-0135 d5)"
     },
     {
       "name": "dg.engagement",
-      "service": "both",
       "role": "reader",
-      "summary": "Did the operator actually review? Counts over a window.",
+      "summary": "Did the operator actually review? Counts over a window: `items_deferred_in_bulk` and each history day's `deferred_in_bulk` say how many items a bulk Defer passed over without opening them (ADR-0132 d7).",
       "params": [
         {
           "name": "days",
@@ -326,25 +436,309 @@
       "returns": "object"
     },
     {
+      "name": "dg.events",
+      "role": "reader",
+      "summary": "The gate's journal as events, in the order it was appended and never by `ts` (ADR-0109 d3), for a program that follows the lifecycle from a cursor it keeps: a peer. Each event names its type in the journal's own word, the row, replacement group, work area or space it is about, its space and work area, the state it leaves and enters when it moved one, who acted, and the fields `doublegate_sdk.events.CATALOG` lists for its type: identifiers, closed words and counts, never content, a title, a finding, a score or words a person wrote. One call reads at most 1000 events, served or not, and answers `next`, where the next call reads on, and `caught_up`, whether the caller has caught up with what it may read: true when nothing more it would be served lies before the end the read moves toward (the tip, or backward the journal's head), so there is nothing more to read now, and false when the caller reads on, an empty page included. A page full at `limit` reads on, serving nothing, to the next event it would serve, and `next` stands before that event, so a full page says nothing about events the caller may not read; a call that spends its 1000 events first answers false (GAPS 158). Every cursor is sealed (ADR-0117 d4, GAPS 158): encrypted and authenticated under a key derived from the deployment key, one length, and fresh on every answer, so none says where it stands or whether the journal moved, and two are never compared. Below the reviewer role a caller sees every event of a row it wrote and a row's events from its promotion on, a work area's where `dg.lineage` shows it, a group's when it may see every row the group names, and the space registry's; from reviewer up, every served event (AUTH-4). Events that belong to no space, and a pinned authority's, are not served (GAPS 118, 119). Pull only: the gate opens no connection and keeps no position for a reader. Every answer names `tip`, the cursor past the last journal event its projections hold, where a follower starts reading forward from the newest event; `direction: backward` reads from since, or from the tip, toward the journal's head, newest first, and its `next` continues backward (ADR-0111 d2, GAPS 127).",
+      "params": [
+        {
+          "name": "since",
+          "type": "string",
+          "required": false,
+          "description": "the `next` or `tip` of an earlier answer from this gate, sealed and opaque; omit to read from the journal's start, or backward from the tip. One this journal did not issue, one in the readable form it no longer issues, an altered one, or one it can no longer serve (beyond its tip after a restore, or rewritten under it), is refused naming since (GAPS 117, 158)"
+        },
+        {
+          "name": "types",
+          "type": "array",
+          "required": false,
+          "description": "event types to serve, each one `doublegate_sdk.events` serves; a type the catalog lacks or does not serve is refused by name"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "only events in this space; must already exist"
+        },
+        {
+          "name": "workarea",
+          "type": "string",
+          "required": false,
+          "description": "only events in this work area, exactly"
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "most events served; 1-1000, default 100"
+        },
+        {
+          "name": "direction",
+          "type": "string",
+          "required": false,
+          "description": "forward (default) or backward, newest first",
+          "enum": [
+            "forward",
+            "backward"
+          ]
+        }
+      ],
+      "returns": "object: {events[{type, object, artifact_id, space, workarea, leaves, enters, by, event_id, ts, trust_class?, content_type?, provisional?, …the type's own fields}], next, tip, caught_up, format_version} — next and tip sealed, caught_up a boolean",
+      "serves": [
+        {
+          "type": "ingest",
+          "object": "row",
+          "enters": [
+            "L0_RAW"
+          ]
+        },
+        {
+          "type": "scan",
+          "object": "row",
+          "enters": [
+            "L1B_FLAGGED",
+            "L1_SCANNED"
+          ]
+        },
+        {
+          "type": "record",
+          "object": "row",
+          "enters": [
+            "RECORDED"
+          ]
+        },
+        {
+          "type": "verdict",
+          "object": "row",
+          "enters": [
+            "L2_SCORED"
+          ]
+        },
+        {
+          "type": "manual-sign",
+          "object": "row",
+          "enters": [
+            "ARCHIVED",
+            "L2_SCORED",
+            "REJECTED"
+          ]
+        },
+        {
+          "type": "disposition",
+          "object": "row",
+          "enters": [
+            "L1B_FLAGGED",
+            "L2_SCORED",
+            "REJECTED"
+          ]
+        },
+        {
+          "type": "ratify",
+          "object": "row",
+          "enters": [
+            "L3_RATIFIED",
+            "NEEDS_EVIDENCE",
+            "REJECTED"
+          ]
+        },
+        {
+          "type": "promote",
+          "object": "row",
+          "enters": [
+            "ACTIVE"
+          ]
+        },
+        {
+          "type": "reject",
+          "object": "row",
+          "enters": [
+            "REJECTED"
+          ]
+        },
+        {
+          "type": "expire",
+          "object": "row",
+          "enters": [
+            "REJECTED"
+          ]
+        },
+        {
+          "type": "cancel",
+          "object": "row",
+          "enters": [
+            "REJECTED"
+          ]
+        },
+        {
+          "type": "reopen",
+          "object": "row",
+          "enters": [
+            "L1B_FLAGGED",
+            "L1_SCANNED"
+          ]
+        },
+        {
+          "type": "demote",
+          "object": "row",
+          "enters": [
+            "DEMOTED",
+            "L2_SCORED"
+          ]
+        },
+        {
+          "type": "countersign",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "refuse",
+          "object": "row",
+          "enters": [
+            "DEMOTED"
+          ]
+        },
+        {
+          "type": "relation",
+          "object": "row",
+          "enters": [
+            "SUPERSEDED"
+          ]
+        },
+        {
+          "type": "tip-override",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "steering-shown",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "sign-asked",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "confirm-sign",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "review-confirmed",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "rank",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "hide",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "title",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "assessment",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "comment",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "comment-retract",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "content_erased",
+          "object": "row",
+          "enters": []
+        },
+        {
+          "type": "replacement-proposed",
+          "object": "group",
+          "enters": []
+        },
+        {
+          "type": "replacement-prepared",
+          "object": "group",
+          "enters": []
+        },
+        {
+          "type": "replacement-activated",
+          "object": "group",
+          "enters": []
+        },
+        {
+          "type": "replacement-aborted",
+          "object": "group",
+          "enters": []
+        },
+        {
+          "type": "workarea-completed",
+          "object": "workarea",
+          "enters": []
+        },
+        {
+          "type": "workarea-related",
+          "object": "workarea",
+          "enters": []
+        },
+        {
+          "type": "space-created",
+          "object": "space",
+          "enters": []
+        },
+        {
+          "type": "space-linked",
+          "object": "space",
+          "enters": []
+        },
+        {
+          "type": "space-unlinked",
+          "object": "space",
+          "enters": []
+        }
+      ],
+      "errors": {
+        "-32602": "a since this journal cannot serve (malformed, another journal's, in the readable form, or one it no longer holds, which names no position; `doublegate doctor --cursor` says whether it lies beyond the tip or was rewritten under), a type the verb does not serve, an unknown space, a work area name outside the grammar, a limit outside 1-1000, or a direction other than forward or backward"
+      }
+    },
+    {
       "name": "dg.grade",
-      "service": "both",
       "role": "reviewer",
-      "summary": "Run the gate engine on one artifact: one model call per stance, one verdict per item.",
+      "summary": "Run the gate engine on one artifact: one model call per stance, one verdict per item. Unchanged bytes on an unchanged model are answered from the decision record at no cost; `fresh: true` asks past it (ADR-0129 d9). On a held row graded before the grading in force for its kind, each verdict carries `graded_before {rubric_version, kind_note}`, the grading it replaces, and every model verdict before it counts toward nothing; on any other row a grade writes no marker (ADR-0139 d2).",
       "params": [
         {
           "name": "artifact_id",
           "type": "string",
           "required": true,
           "description": ""
+        },
+        {
+          "name": "fresh",
+          "type": "boolean",
+          "required": false,
+          "description": "ask past the decision record, the typed answer's and the writer's"
         }
       ],
-      "returns": "object"
+      "returns": "object",
+      "errors": {
+        "-32602": "on a row that holds a verdict, its writer and a demo person on the developer's row: \"Refused: the claim's author cannot ask for it to be graded again.\"; outside a test home, a socket peer: \"A grading again asked over this machine's socket is refused: …\" followed by the row's who_can_sign words (ADR-0139 d2); nothing is appended"
+      }
     },
     {
       "name": "dg.grade_pending",
-      "service": "both",
       "role": "reviewer",
-      "summary": "Grade what waits at L1, within the day's budget (fail-closed when spent, I6).",
+      "summary": "Grade what waits at L1, within the day's budget (fail-closed when spent, I6). A reviewer's call grades and counts rows in the spaces it reads alone (GAPS 401).",
       "params": [
         {
           "name": "limit",
@@ -356,43 +750,134 @@
       "returns": "object"
     },
     {
+      "name": "dg.grant",
+      "role": "admin",
+      "summary": "Issue or revoke per-space grants as one act (ADR-0115 d16, GAPS 362): every entry names a principal (`<iss>|<sub>`, `key:<key_id>`, `uid:<n>`), one declared space and a non-empty subset of `read`, `contribute` and `submit`. The list is applied under one journal lock and refused whole if any entry is refused, one `space-grant-issued` or `-revoked` per entry that changes something; an entry already as asked answers `changed: false` and journals nothing. A connection between two crews is the `read` grants on one crew's space held by the other's keys, made and undone as one such list (ADR-0121 d8); access is never transitive. A revocation deletes nothing and applies to every answer after its event. An admin holds every capability by role and needs no grant (d15).",
+      "params": [
+        {
+          "name": "action",
+          "type": "string",
+          "required": true,
+          "description": "issue | revoke"
+        },
+        {
+          "name": "grants",
+          "type": "array",
+          "required": true,
+          "description": "[{principal, space, capabilities[]}], one to 500 entries, no principal on one space twice"
+        }
+      ],
+      "returns": "object: {action, changed, grants[{principal, space, capabilities, changed, event_id, held}]}",
+      "errors": {
+        "-32602": "an unknown space (naming the spaces that exist), a capability outside the three, a malformed entry, or a role below admin"
+      }
+    },
+    {
+      "name": "dg.grants",
+      "role": "admin",
+      "summary": "The open grants, one row per principal and space, each capability with the event that issued it and its reason (`upgrade` for the grants upgrade, ADR-0115 d14); `principal` and `space` narrow the list. A `uid:` principal covers every process that user runs (d17).",
+      "params": [
+        {
+          "name": "principal",
+          "type": "string",
+          "required": false,
+          "description": "only this principal's grants"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "only grants on this space"
+        }
+      ],
+      "returns": "object: {grants[{principal, space, capabilities, issued, every_process_of_that_user}], upgrade: {ts, event_id} | null, refused_not_granted: {principal: count since the daemon started}}"
+    },
+    {
       "name": "dg.graph",
-      "service": "both",
       "role": "reader",
-      "summary": "The constellation: every artifact as a node, every relation edge, every pin, every ban — the ADR-0035 projection serialized at once, bounded. `label` and `source_uri` are carried only for ACTIVE / SUPERSEDED rows (INV-SEC-10): a held artifact is its existence, never its content. `revision` is the journal tip; pass it back as `if_revision` and an unchanged graph answers {revision, unchanged: true}.",
+      "summary": "The constellation: every artifact as a node, every relation edge, every pin, every ban — the ADR-0035 projection serialized at once, bounded. `label` and `source_uri` are carried only for ACTIVE / SUPERSEDED rows (INV-SEC-10): a held artifact is its existence, never its content. `revision` is the journal tip, and below the reviewer role a digest of the answer itself, which moves only when what the caller is shown moves (GAPS 158); pass it back as `if_revision` and an unchanged graph answers {revision, unchanged: true}. With `workarea` named it is that area's work graph (ADR-0107 d5): the area's rows the caller may see — every row for a reviewer, the promoted rows and the caller's own below (AUTH-4) — plus every row one relation edge away under the same rule, each node marked with its workarea, producer, kind and whether it is foreign to the area, and `completed`, the completion markers. Computed per call, kept nowhere.",
       "params": [
         {
           "name": "spaces",
           "type": "array",
           "required": false,
-          "description": "restrict to these spaces"
+          "description": "restrict to these spaces; not with workarea"
         },
         {
           "name": "states",
           "type": "array",
           "required": false,
-          "description": "restrict to these lifecycle states"
+          "description": "restrict to these lifecycle states; unknown names are ignored"
         },
         {
           "name": "limit",
           "type": "integer",
           "required": false,
-          "description": "nodes, newest state change first; default and ceiling 2000"
+          "description": "nodes, newest state change first (the work graph: the area's rows in write order, then the rows one edge away); default and ceiling 2000"
         },
         {
           "name": "if_revision",
           "type": "string",
           "required": false,
           "description": "the revision the caller already holds"
+        },
+        {
+          "name": "kinds",
+          "type": "array",
+          "required": false,
+          "description": "restrict the constellation to these kinds of the closed table, in the query before the cut, so total, counts and the cut are over them; not with workarea (ADR-0131 d8)"
+        },
+        {
+          "name": "workarea",
+          "type": "string",
+          "required": false,
+          "description": "draw this work area's work graph instead of the constellation"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "the work area's space; default main; only with workarea"
         }
       ],
-      "returns": "object: {revision, unchanged} | {revision, full, nodes[], edges[], pins[], bans[], total, truncated, counts, spaces, states, viewer}"
+      "returns": "object: {revision, unchanged} | {revision, full, nodes[], edges[], pins[], bans[], total, truncated, counts, spaces, states, viewer} — `total`, `truncated`, `counts` and `spaces` are over the rows the caller may see, below reviewer the promoted rows and its own; every node carries {workarea, producer, kind, addressed_to, writer_kind}, so both answers draw one node shape (ADR-0111 d2), writer_kind the principal kind its ingest recorded (person, program, local; ADR-0131 d8); a question's node in the constellation also carries cited_by[{artifact_id, kind, state, writer_identity, writer_kind, ts, state_ts, replaces?, cancels?}], the claims citing it the caller may read, replaces and cancels on a citing question whose body names it there; with workarea, each node also carries `foreign` and the answer {space, workarea, completed[{writer_identity, ts}]}; a node's `ts` is its ingest time in ms",
+      "errors": {
+        "-32602": "an unknown space (naming the spaces that exist); a work area nobody wrote into, or one where the caller sees no row, in one sentence; space beside spaces, workarea beside spaces, or space without workarea; kinds empty, naming a word outside the closed table, or beside workarea"
+      }
+    },
+    {
+      "name": "dg.health",
+      "role": "reviewer",
+      "summary": "Six counts of trouble among the promoted claims of the spaces the caller reads, the newest 2,000 by promotion (ADR-0133 d2): `same_words` (bodies equal after NFC, case folding and collapsed white space), `similar` (a cosine of at least 0.92 in this gate's embedding index, words differing; not computed without one), `cites_retired` (derives from a superseded, demoted or wholly hidden claim), `not_served` (promoted more than stale_days ago and returned by no recall since; not computed until the served days are that old), `unrelated` (no relation and no derives_from either way; steering excepted) and `not_reviewed` (a promotion that rested on its author's or a demo person's signature, ADR-0135 d3). Writes nothing, ranks nothing.",
+      "params": [
+        {
+          "name": "spaces",
+          "type": "array",
+          "required": false,
+          "description": "declared space names; default every space the caller reads"
+        },
+        {
+          "name": "stale_days",
+          "type": "integer",
+          "required": false,
+          "description": "1 to 365, default 30"
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "ids listed per check, 1 to 100, default 20"
+        }
+      ],
+      "returns": "object: {checked_at, rows_checked, truncated, checks{same_words, similar, cites_retired, not_served, unrelated, not_reviewed: {count, at_least, artifact_ids[], computed, why_not?}}}",
+      "errors": {
+        "-32602": "an unknown space, or stale_days or limit outside its bounds"
+      }
     },
     {
       "name": "dg.hide",
-      "service": "both",
-      "role": "agent",
-      "summary": "Stop serving a promoted artifact to one audience, or to all — reversibly (ADR-0052 d4). The row stays ACTIVE and why-able; include_hidden returns it. A total hide by a non-operator is journaled `lowered`.",
+      "role": "reviewer",
+      "summary": "Stop serving a promoted artifact to one audience, or to all — reversibly (ADR-0052 d4). The row stays ACTIVE and why-able; include_hidden returns it. A total hide by anyone but a signed-in person is journaled `lowered`.",
       "params": [
         {
           "name": "artifact_id",
@@ -417,15 +902,20 @@
           "type": "boolean",
           "required": false,
           "description": "true reverses an earlier hide for this audience — a second event, both kept"
+        },
+        {
+          "name": "dry_run",
+          "type": "boolean",
+          "required": false,
+          "description": "true answers what the hide would reach and appends nothing (ADR-0133 d3)"
         }
       ],
-      "returns": "object: {artifact_id, audience, hidden, event_id, hidden_for[], lowered?}"
+      "returns": "object: {artifact_id, audience, hidden, event_id, hidden_for[], lowered?}; with dry_run {artifact_id, audience, dry_run, already_hidden_for[], derived_served, derived_ids[≤20]} — the claims deriving from it that stay served, which a hide does not reach"
     },
     {
       "name": "dg.ingest",
-      "service": "both",
       "role": "agent",
-      "summary": "Propose content. Scanned before this answers (ADR-0053 d1) and lands in quarantine at L1 (or L1b on a finding); nothing is readable until promoted. Writer identity is the connection's, never a parameter (I2).",
+      "summary": "Propose content into a work area (ADR-0102 d1): a gated class named by `kind`, whose trust class the gate derives (memory, derived_fact, summary, steering, question → T-1; skill, prompt_template → T-2; imported_document, third-party content → T-4; the scanner may only raise it), or a recorded-path class named by `content_type`, entered as T-1 and never graded. Scanned before this answers (ADR-0053 d1) and lands in quarantine at L1 (or L1b on a finding); nothing is readable until promoted. A repeat of the same bytes in the same space by the same identity, or of bytes already promoted there, answers `duplicate: true` with that row and the work area it was first written into; bytes another identity holds unpromoted become the caller's own new row (ADR-0102 d3). Writer identity is the connection's, never a parameter (I2). A request that names no `workarea` is refused, whatever else it carries (ADR-0102 d1). A `steering` row is a direction to the agents at its work area and every area below it: held, scanned and graded like any row, and once promoted shown by its place beside a recall's hits, never among them (ADR-0116 d16, d17). A `question` is a member's question to the people of its crew, addressed to people: its body is the closed form `question/1` (`doublegate_sdk.question`), checked here, and it is never a hit in any scope; one writer holds at most eight in one work area (ADR-0131 d1, d2). The `ingest` event records the writer's principal (AUTH-5).",
       "params": [
         {
           "name": "content",
@@ -434,10 +924,32 @@
           "description": "utf-8 text, or base64 with encoding='base64'"
         },
         {
-          "name": "content_type",
+          "name": "workarea",
           "type": "string",
           "required": true,
-          "description": "bundle_asset | bundle_document | bundle_python | bundle_skill | derived_fact | imported_document | memory | prompt_template | skill | skill_archive | summary | bundle_manifest | event | fetch | generation | message | message_part | scratchpad_state | session | state_snapshot | tool_call | trace | usage_record | verdict; the second group is the recorded path (taxonomy §2.2) — written and replayable, never graded as a belief; an unregistered type enters at the strictest class (FR-18)",
+          "description": "the work area this is remembered into (ADR-0102 d1): a path of 1-8 segments joined by `/`, each segment the space-name grammar, at most 200 characters (d4). Comes into being on the first write that names it; grants nothing; never creates a space. Required: a write that names none is refused"
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "required": false,
+          "description": "the gated class this is, which decides its trust class (ADR-0102 d8); exactly one of kind and content_type",
+          "enum": [
+            "memory",
+            "derived_fact",
+            "summary",
+            "steering",
+            "skill",
+            "prompt_template",
+            "imported_document",
+            "question"
+          ]
+        },
+        {
+          "name": "content_type",
+          "type": "string",
+          "required": false,
+          "description": "bundle_asset | bundle_document | bundle_python | bundle_skill | derived_fact | imported_document | map_asset | map_document | map_source | memory | project_map | prompt_template | question | skill | skill_archive | steering | summary | bundle_manifest | event | generation | message | message_part | scratchpad_state | session | state_snapshot | tool_call | trace | usage_record | verdict; the second group is the recorded path (taxonomy §2.2) — written and replayable, never graded as a belief; an unregistered type enters at the strictest class (FR-18). On this verb it names a recorded-path class only; a gated class travels as kind (ADR-0102 d9)",
           "enum": [
             "bundle_asset",
             "bundle_document",
@@ -445,14 +957,19 @@
             "bundle_skill",
             "derived_fact",
             "imported_document",
+            "map_asset",
+            "map_document",
+            "map_source",
             "memory",
+            "project_map",
             "prompt_template",
+            "question",
             "skill",
             "skill_archive",
+            "steering",
             "summary",
             "bundle_manifest",
             "event",
-            "fetch",
             "generation",
             "message",
             "message_part",
@@ -467,7 +984,6 @@
           "recorded": [
             "bundle_manifest",
             "event",
-            "fetch",
             "generation",
             "message",
             "message_part",
@@ -490,38 +1006,59 @@
           "name": "trust_class",
           "type": "string",
           "required": false,
-          "description": "T-0…T-5, proposed; default T-1"
+          "description": "refused by name: the class follows the kind, a recorded write enters at T-1, and the scanner may only raise either (ADR-0102 d8, ADR-0021)"
         },
         {
           "name": "space",
           "type": "string",
           "required": false,
-          "description": "the folder within the deployment; default main (ADR-0023)"
+          "description": "the folder within the deployment; default main; must already exist — an unknown one is refused before anything is written (ADR-0091 d2)"
         },
         {
           "name": "encoding",
           "type": "string",
           "required": false,
-          "description": "'base64' when content is not text"
+          "description": "'base64', decoded strictly, or absent for text; the decoded body must be UTF-8 text with no NUL, and a file is an attachment (24 — Attachments §3.1, `content_not_text`)"
+        },
+        {
+          "name": "producer",
+          "type": "object",
+          "required": false,
+          "description": "what produced this write, in the writer's own words (ADR-0107 d1): {name, kind}, kind one of agent, hook, person, tool and name one segment of the work-area grammar. Read by people and never checked as an authorization; the identity stays the connection's (I2). Rides the ingest event beside the work area, never the envelope, so it changes no artifact id"
+        },
+        {
+          "name": "addressed_to",
+          "type": "object",
+          "required": false,
+          "description": "on a steering write or a question only: whom it is for, {names, kinds}, either or both and at least one a nonempty list — names 1-64 producer names, kinds among agent, hook, person, tool, none repeated. A recall that declares a producer is shown the rows with no address and those whose names, where given, hold its name and whose kinds, where given, hold its kind. The writer's word: it narrows, and grants and hides nothing (ADR-0116 d18). On a question kinds is exactly [\"person\"], names optional (ADR-0131 d1). Refused on any other kind and on a recorded write. Rides the ingest event beside the producer, never the envelope"
         },
         {
           "name": "derives_from",
           "type": "array",
           "required": false,
-          "description": "parent artifact ids (provenance edges, frozen in the envelope)"
+          "description": "parent artifact ids (provenance edges, frozen in the envelope); below the reviewer role each a row the caller may read, checked after the write's other checks, the space first (ADR-0102 d2)",
+          "readable": true
+        },
+        {
+          "name": "attachments",
+          "type": "array",
+          "required": false,
+          "description": "up to 4 {sha256, name?, source_uri?}, each a completed dg.upload of the caller's, bound to this claim by hash (ADR-0126 d3); the envelope is then v2, a source_uri lifts the claim to T-4 (d5), and the duplicate key is the words' hash and the ordered attachment hashes. steering, skill, prompt_template and recorded classes carry none"
         }
       ],
-      "returns": "object: {artifact_id, state, findings_count, scan_event} — the scanner's rule pass ran before this answered (ADR-0053 d1); state is L1_SCANNED or L1B_FLAGGED, and a finding's text is never in the answer",
+      "returns": "object: {artifact_id, state, space, workarea?, producer, kind?|content_type?, findings_count, scan_event, trust_class} — the scanner's rule pass ran before this answered (ADR-0053 d1); state is L1_SCANNED or L1B_FLAGGED (RECORDED on the recorded path), and a finding's text is never in the answer. A duplicate answers {artifact_id, state, space, workarea, producer, duplicate: true}, the producer the row was first written with",
       "errors": {
+        "-32602": "invalid arguments: an unknown space (named, with the spaces that exist), no workarea, a work area name outside the grammar, both or neither of kind and content_type, a trust_class, an unknown kind or recorded class, a producer outside ADR-0107 d1's shape, an addressed_to on any kind but steering or question or outside ADR-0116 d18's shape, or on a question any address but people; a question's body outside question/1, named by its first broken rule, a replaces or cancels its derives_from does not name, or a ninth question from one writer in one work area (data.reason `question_limit`); a derives_from id: unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing",
         "-32001": "request too large",
-        "-32006": "quarantine at max_depth; data.retry_after_ms"
+        "-32006": "quarantine at max_depth; data.retry_after_ms (below the reviewer role it names no number of held rows, GAPS 157)",
+        "-32010": "data.reason `work_complete`: this identity completed that work area; nothing was written (ADR-0102 d6)",
+        "-32015": "attachment storage at its bound: data.reason upload_quota (with data.retry_after_ms until the caller's oldest upload expires) or attachment_budget (a review frees it)"
       }
     },
     {
       "name": "dg.ingest_bundle",
-      "service": "both",
       "role": "agent",
-      "summary": "Inspect a ZIP without execution. Retain the original archive, its complete canonical manifest and every scanned file occurrence in quarantine, all at T-5 (the daemon proposes the class; the verb takes none). Fetch evidence must match the retained body's hash, size, successful status and URL — consistency, not network attestation. Writer is the connection identity. Validation never authorizes installation or promotion.",
+      "summary": "Inspect a ZIP without execution. Retain the original archive, its complete canonical manifest and every scanned file occurrence in quarantine, all at T-5 (the daemon proposes the class; the verb takes none). The bytes are vouched for by the identity that proposes them; no fetch record travels (ADR-0110 d6). Writer is the connection identity. Validation never authorizes installation or promotion.",
       "params": [
         {
           "name": "content",
@@ -533,13 +1070,7 @@
           "name": "source_uri",
           "type": "string",
           "required": true,
-          "description": "must match the fetch's final_url (or url if absent), ignoring the URI fragment — a connector's `#fetch=…` label never reaches the wire"
-        },
-        {
-          "name": "fetch_artifact_id",
-          "type": "string",
-          "required": true,
-          "description": "same-space retained fetch artifact: content_hash, bytes, status, url/final_url"
+          "description": "where the archive came from"
         },
         {
           "name": "manifest",
@@ -551,21 +1082,96 @@
           "name": "space",
           "type": "string",
           "required": false,
-          "description": "default main"
+          "description": "default main; must already exist (ADR-0091 d2)"
+        },
+        {
+          "name": "workarea",
+          "type": "string",
+          "required": true,
+          "description": "the work area this is remembered into (ADR-0102 d1): a path of 1-8 segments joined by `/`, each segment the space-name grammar, at most 200 characters (d4). Comes into being on the first write that names it; grants nothing; never creates a space. Required: a write that names none is refused"
+        },
+        {
+          "name": "producer",
+          "type": "object",
+          "required": false,
+          "description": "what produced this write, in the writer's own words (ADR-0107 d1): {name, kind}, kind one of agent, hook, person, tool and name one segment of the work-area grammar. Read by people and never checked as an authorization; the identity stays the connection's (I2). Rides the ingest event beside the work area, never the envelope, so it changes no artifact id"
         }
       ],
-      "returns": "object: {state: quarantined, validation: valid|failed, archive_artifact_id, manifest_artifact_id, members: [{path, content_hash, size_bytes, classification, artifact_id, state, scan_event}], reason?}. Failed validation retains the archive only, and `reason` is one of: fetch_missing | fetch_wrong_type | fetch_wrong_space | fetch_blob_mismatch | fetch_mismatch:<field> | archive_invalid:<detail>. An invalid fetch never creates a provenance edge. No model judgment or installation.",
+      "returns": "object: {state: quarantined, validation: valid|failed, archive_artifact_id, manifest_artifact_id, members: [{path, content_hash, size_bytes, classification, artifact_id, state, scan_event}], workarea, space?, producer, reason?}. Failed validation retains the archive only, and `reason` is archive_invalid:<detail>. No model judgment or installation. Every row of the unit carries the producer.",
       "errors": {
-        "-32602": "invalid arguments",
+        "-32602": "invalid arguments, an unknown space, no workarea, or a work area name outside the grammar",
         "-32001": "request too large",
-        "-32006": "quarantine full; interrupted writes remain held"
+        "-32006": "quarantine full; interrupted writes remain held (below the reviewer role it names no number of held rows, GAPS 157)",
+        "-32010": "data.reason `work_complete`: this identity completed that work area (ADR-0102 d6)"
+      }
+    },
+    {
+      "name": "dg.ingest_map",
+      "role": "agent",
+      "summary": "Admit a project map: one tree's nodes and edges as a single gated artifact at T-5 (the daemon proposes the class; the verb takes none). The manifest IS the map and its edges are bytes inside it — they never enter the relation graph, never appear in `tip` or `relations`, and can never move what recall serves (ADR-0089). The gate validates and admits; it parses no source and knows no language (ADR-0090). Validation is whole against the SDK's `project_map/v1` contract: a manifest that does not check admits nothing at all. Send the archive beside it and the member table, the file and directory nodes and the `contains` edges are recomputed from those bytes, and every content node is retained as an occurrence of this map. Writer is the connection identity.",
+      "params": [
+        {
+          "name": "manifest",
+          "type": "object",
+          "required": true,
+          "description": "an SDK `project_map/v1` manifest: map_version, project, produced_by, members, nodes, edges, and archive_hash with archive_size when the members came from a container — `doublegate_sdk.project_map.check_manifest` is the schema"
+        },
+        {
+          "name": "source_uri",
+          "type": "string",
+          "required": true,
+          "description": "where the map was taken, e.g. repo://client-gate@316e2cb"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "required": false,
+          "description": "optional: the base64 ZIP the manifest was computed from (strict decoding). With it the answer is `valid`; without it, `structural`"
+        },
+        {
+          "name": "encoding",
+          "type": "string",
+          "required": false,
+          "description": "base64 — required with content, refused without it"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "default main; must already exist (ADR-0091 d2)"
+        },
+        {
+          "name": "workarea",
+          "type": "string",
+          "required": true,
+          "description": "the work area this is remembered into (ADR-0102 d1): a path of 1-8 segments joined by `/`, each segment the space-name grammar, at most 200 characters (d4). Comes into being on the first write that names it; grants nothing; never creates a space. Required: a write that names none is refused"
+        },
+        {
+          "name": "producer",
+          "type": "object",
+          "required": false,
+          "description": "what produced this write, in the writer's own words (ADR-0107 d1): {name, kind}, kind one of agent, hook, person, tool and name one segment of the work-area grammar. Read by people and never checked as an authorization; the identity stays the connection's (I2). Rides the ingest event beside the work area, never the envelope, so it changes no artifact id. Carried by the map and every member row"
+        },
+        {
+          "name": "derives_from",
+          "type": "array",
+          "required": false,
+          "description": "parent artifact ids (provenance edges, frozen in the envelope); below the reviewer role each a row the caller may read, checked after the write's other checks, the space first (ADR-0102 d2)",
+          "readable": true
+        }
+      ],
+      "returns": "object: {state: quarantined|refused, validation: valid|structural|failed, map_artifact_id, artifact_state, space, workarea, producer, project, produced_by, nodes, edges, members: [{path, content_hash, size_bytes, classification, artifact_id, state}], duplicate, reason?}. `validation` names which of 16 §9's two checks ran and a check that did not happen is never reported as one (GAPS 83): `valid` when the archive travelled and recomputed, `structural` when the manifest arrived alone, and a map with no archive carries no member rows. A refusal retains nothing and `reason` is one of: map_invalid:<detail> | archive_invalid:<detail>. The map's bytes are vouched for by the identity that proposes them; no fetch record travels (ADR-0110 d6).",
+      "errors": {
+        "-32602": "invalid arguments, an unknown space, no workarea, or a work area name outside the grammar; a derives_from id: unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing",
+        "-32001": "request too large",
+        "-32006": "quarantine full (below the reviewer role it names no number of held rows, GAPS 157)",
+        "-32010": "data.reason `work_complete`: this identity completed that work area (ADR-0102 d6)"
       }
     },
     {
       "name": "dg.inventory",
-      "service": "both",
       "role": "reader",
-      "summary": "Every artifact in EVERY lifecycle state, as metadata, paged and filterable — the operator workspace's list. Deliberately wider than dg.pending, which answers about quarantine only and so can never show the ACTIVE row a handoff is made from. Carries the spaces the store actually holds, because a caller that cannot name a space cannot pass `spaces` to dg.recall, and a recall without it falls back to `main` and answers nothing. Metadata only: no content, ever.",
+      "summary": "Every artifact in EVERY lifecycle state, as metadata, paged and filterable — the operator workspace's list. Deliberately wider than dg.pending, which answers about quarantine only and so can never show the ACTIVE row a handoff is made from. Carries the spaces the store actually holds, because a caller that cannot name a space cannot pass `spaces` to dg.recall, and a recall without it falls back to `main` and answers nothing. Metadata only: no content, ever. Below the reviewer role the rows, `total`, `counts` and `spaces` cover only the promoted rows and the caller's own, as dg.graph's do (INV-SEC-10).",
       "params": [
         {
           "name": "states",
@@ -598,13 +1204,12 @@
           "description": "page size; default 50, capped at 200"
         }
       ],
-      "returns": "object: {artifacts[], total, offset, limit, counts{state: n}, spaces[], states[]} — `counts` is over the filtered set, `spaces` and `states` are the whole store's vocabulary so a filter control can be rendered from the answer itself"
+      "returns": "object: {artifacts[], total, offset, limit, counts{state: n}, spaces[], states[]} — `counts` is over the filtered set, `spaces` the spaces holding a row the caller may list and `states` the lifecycle's vocabulary, so a filter control can be rendered from the answer itself"
     },
     {
       "name": "dg.keys",
-      "service": "both",
       "role": "reviewer",
-      "summary": "API keys (AUTH-3): list the key table, issue a `dgk_…` key (shown once; stored as its hash in an `apikey-issued` event) with a role no higher than the caller's, or revoke one by id.",
+      "summary": "API keys (AUTH-3): list the key table, issue a `dgk_…` key (shown once; stored as its hash in an `apikey-issued` event) with a role no higher than the caller's, or revoke one by id. Below admin, list and revoke reach a key the caller issued and a key of a role no higher than its own whose open grants lie within the spaces it reads; any other key is answered as one that does not exist (GAPS 402).",
       "params": [
         {
           "name": "action",
@@ -622,13 +1227,19 @@
           "name": "role",
           "type": "string",
           "required": false,
-          "description": "reader | agent | reviewer | admin; default agent (issue)"
+          "description": "reader | agent | reviewer | admin | runner; default agent (issue). A runner key is an admin's alone to issue or revoke (ADR-0140 d1)"
         },
         {
           "name": "expires_in_days",
           "type": "integer",
           "required": false,
           "description": "optional expiry (issue)"
+        },
+        {
+          "name": "scope",
+          "type": "string",
+          "required": false,
+          "description": "events — the key reads dg.events and dg.status's paused and caps and is refused every other method; a reviewer key alone (issue; ADR-0132 d6)"
         },
         {
           "name": "key_id",
@@ -643,29 +1254,60 @@
           "description": "why (revoke)"
         }
       ],
-      "returns": "object: list → {keys[{key_id, label, role, issued_by, issued_at, expires_at, revoked_at}]}; issue → {key, key_id, role, label, expires_at, event_id}; revoke → {key_id, revoked, already?, event_id?} + the list",
+      "returns": "object: list → {keys[{key_id, label, role, issued_by, issued_at, expires_at, revoked_at, scope}]}; issue → {key, key_id, role, label, expires_at, event_id, scope}; revoke → {key_id, revoked, already?, event_id?} + the list",
       "errors": {
-        "-32602": "unknown action, bad role, unknown key_id, or a role above the issuer's"
+        "-32602": "unknown action, bad role, unknown key_id, a role above the issuer's, or a runner key below admin"
+      }
+    },
+    {
+      "name": "dg.lineage",
+      "role": "reader",
+      "summary": "The lineage of a space, or of one work area with its ancestors, its descendants and every area one relation or derivation away (ADR-0107 d3): a view computed on each call, never a store. Nodes are work areas with their writers, each writer's open or complete state, the producers with their counts and last writes, and promoted, held and recorded counts. Every edge points from the area that depends to the one it depends on and names its provenance: `path` (a/b under a, by name alone), `declared` (a relation in effect) or `derived` (promoted rows whose derives_from crosses two areas, counted). Below the reviewer role an area appears only when it holds a promoted row or the caller wrote into it, counts are over promoted rows and the caller's own, a path the caller sees nothing in is drawn `implicit`, and a derived edge is a count, never rows (AUTH-4). An orchestrator with subagents, a pipeline and a swarm are shapes of this graph; none is stored.",
+      "params": [
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "default main; must already exist"
+        },
+        {
+          "name": "workarea",
+          "type": "string",
+          "required": false,
+          "description": "the area to centre on; default the whole space"
+        }
+      ],
+      "returns": "object: {space, workarea, nodes[{name, implicit, writers[], states{identity: open|complete}, producers[{name, kind, rows, last_write}], promoted, held, recorded, first_write, last_write, rows?[{artifact_id, state, kind, held, trust_class, producer}]}], edges[{source, target, provenance: path|declared|derived, kind?, by?, producer?, count?, rows?}]} — `first_write`, `last_write` and a producer's `last_write` are ingest times in ms, a producer's the newest among the rows it is counted over; `recorded` counts the recorded evidence rows by the rule the producer counts follow, so an area holding only hook rows reads as evidence (ADR-0111 d2); a node's `rows`, the claims each producer wrote, only on the named area's node and only those the caller may see there (ADR-0107 d5, GAPS 107); an edge's `rows`, the (child, parent) id pairs behind a derived edge, only for a reviewer",
+      "errors": {
+        "-32602": "an unknown space or a work area name outside the grammar"
       }
     },
     {
       "name": "dg.node",
-      "service": "both",
       "role": "reader",
-      "summary": "One node in full for a review surface: the status row, the approval trail, the comment thread, relations, the served tip, bundle members (`derives_from` children), and a bounded MASKED preview (INV-SEC-7; null when the content is erased or the blob is gone). The org gate's `read` scope sees promoted rows only.",
+      "summary": "One node in full for a review surface: the status row, the approval trail, the comment thread, relations, the served tip, bundle members (`derives_from` children), and a bounded MASKED preview (INV-SEC-7; null when the content is erased or the blob is gone). Below the reviewer role the members and relations are the rows the caller may read. Below the reviewer role the envelope's `derives_from` names only the parents the caller may read, and `derives_from_withheld`, present when any is left out, counts the rest (GAPS 156).",
       "params": [
         {
           "name": "artifact_id",
           "type": "string",
           "required": true,
-          "description": ""
+          "description": "",
+          "readable": true
+        },
+        {
+          "name": "body",
+          "type": "boolean",
+          "required": false,
+          "description": "the whole masked body of a promoted row or the caller's own, with body_exact, content_hash, size_bytes, source_uri and signers; never another writer's held row, whatever the role (ADR-0127 d8; GAPS 395)"
         }
       ],
-      "returns": "object: {artifact_id, status, approval, comments, relations, tip, members[], preview, preview_chars, self_authored, refusal?, revision}"
+      "returns": "object: {artifact_id, status, approval, comments, relations, tip, members[], preview, preview_chars, self_authored, refusal?, revision, supersedes} — `supersedes` is {artifact_ids, operation, via, group_id} when the row is a child of a pending replacement group, its ids the parents the caller may read, else null (ADR-0133 d1); below the reviewer role `revision` is a digest of the answer (GAPS 158); with body, also {body, body_exact, content_hash, size_bytes, source_uri, signers[{identity, class, decision}]}, `body` null and `body_exact` false when the content is erased or the blob is gone",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; with body, a held row the caller did not write: \"refused: dg.node serves a body for a promoted row or the caller's own; …\"; body not a boolean"
+      }
     },
     {
       "name": "dg.override_tip",
-      "service": "both",
       "role": "reviewer",
       "summary": "Pin a chain's served head to this member (time travel). Reversible by a second override.",
       "params": [
@@ -686,7 +1328,6 @@
     },
     {
       "name": "dg.pending",
-      "service": "both",
       "role": "reader",
       "summary": "What is waiting in quarantine, as metadata (state, class, kind) — never content.",
       "params": [
@@ -697,11 +1338,10 @@
           "description": "default 100"
         }
       ],
-      "returns": "object: {pending[]}"
+      "returns": "object: {pending[], truncated} — `truncated` when rows past the limit were left out (ADR-0133 d4)"
     },
     {
       "name": "dg.people",
-      "service": "both",
       "role": "admin",
       "summary": "The role table (ADR-0082 d5, AUTH-4): list every identity this gate has a role for, assign a role to an (iss, sub), or remove one. A role never exceeds the assigner's. `list` also shows the built-in issuer's people and `[auth].admins`.",
       "params": [
@@ -730,14 +1370,13 @@
           "description": "reader | agent | reviewer | admin (assign)"
         }
       ],
-      "returns": "object: list → {issuer, people[{iss, sub, role, source, email?, name?, assigned_by?, assigned_at?}]}; assign → {iss, sub, role, event_id} + the list; remove → {iss, sub, removed, was?, event_id?} + the list",
+      "returns": "object: list → {issuer, people[{iss, sub, role, source, demo, email?, name?, assigned_by?, assigned_at?}]}; assign → {iss, sub, role, event_id} + the list; remove → {iss, sub, removed, was?, event_id?} + the list — `demo` is true where the people file marks a demo person (ADR-0135 d5)",
       "errors": {
         "-32602": "unknown action, bad role, missing sub, or a role above the assigner's"
       }
     },
     {
       "name": "dg.ping",
-      "service": "both",
       "role": "reader",
       "summary": "Liveness and identity: deployment id, role, retrieval paths, degraded flags, quorum profile.",
       "params": [],
@@ -745,21 +1384,14 @@
     },
     {
       "name": "dg.promote",
-      "service": "both",
       "role": "reviewer",
-      "summary": "Admit an artifact whose quorum is met. On a solo client the promotion is provisional until an org gate countersigns (R3).",
+      "summary": "Admit an artifact whose quorum is met. On every profile the promotion is provisional until a second authority countersigns (R3), and T-3 and T-5 are refused and held until one has (trust model §3, GAPS 109). It sets no weight a read multiplies in (ADR-0110 d6).",
       "params": [
         {
           "name": "artifact_id",
           "type": "string",
           "required": true,
           "description": ""
-        },
-        {
-          "name": "importance",
-          "type": "number",
-          "required": false,
-          "description": "0..1; default 0.5"
         },
         {
           "name": "supersedes",
@@ -768,71 +1400,13 @@
           "description": "parent id this artifact supersedes (single-head chains, ADR-0035)"
         }
       ],
-      "returns": "object: {artifact_id, state, provisional?}"
-    },
-    {
-      "name": "dg.publish",
-      "service": "both",
-      "role": "reviewer",
-      "summary": "The note publisher's cursors: status | poll | rewind <sink> [--to <event>] (ADR-0031).",
-      "params": [
-        {
-          "name": "action",
-          "type": "string",
-          "required": false,
-          "description": "status | poll | rewind; default status"
-        },
-        {
-          "name": "sink",
-          "type": "string",
-          "required": false,
-          "description": "for rewind"
-        },
-        {
-          "name": "to",
-          "type": "string",
-          "required": false,
-          "description": "event id to rewind to"
-        }
-      ],
-      "returns": "object"
-    },
-    {
-      "name": "dg.rank",
-      "service": "both",
-      "role": "agent",
-      "summary": "A weight for one audience (ADR-0052). recall(audience=…) multiplies the hit by it; 1.0 when none — less likely, never absent. Any non-writer identity, human or agent; the writer is refused (I2).",
-      "params": [
-        {
-          "name": "artifact_id",
-          "type": "string",
-          "required": true,
-          "description": "a promoted artifact"
-        },
-        {
-          "name": "audience",
-          "type": "string",
-          "required": true,
-          "description": "a string the caller chooses; nothing validates it against a taxonomy"
-        },
-        {
-          "name": "weight",
-          "type": "number",
-          "required": true,
-          "description": "in (0, 10.0]; 1.0 is neutral and zero is what `hide` is for. A console reads this as 1-100 logarithmically, 50 neutral (ADR-0058 §2)"
-        },
-        {
-          "name": "reason",
-          "type": "string",
-          "required": false,
-          "description": ""
-        }
-      ],
-      "returns": "object: {artifact_id, audience, weight, event_id, ranks{}}"
+      "returns": "object: {artifact_id, state, provisional?}",
+      "errors": {
+        "-32602": "data.reason runner_lacks_type with data.missing, or runner_full, on a crew sheet whose space's assigned runner runs no model for a type it uses or has made no report since the gate started (ADR-0141 d5)"
+      }
     },
     {
       "name": "dg.rebuild",
-      "service": "both",
       "role": "admin",
       "summary": "Replay the journal into every projection; the result must equal the live state (I5).",
       "params": [],
@@ -840,27 +1414,50 @@
     },
     {
       "name": "dg.recall",
-      "service": "both",
       "role": "reader",
-      "summary": "Read the active store, plus the caller's own scanned claims still in quarantine marked unreviewed (ADR-0053 d2). Nobody else's quarantine, ever (I1). Provisional hits are marked; superseded are hidden unless asked for.",
+      "summary": "Read the active store as far as a scope says to look (ADR-0102 d5), plus the caller's own scanned claims still in quarantine, appended after the ranked hits and marked held (ADR-0053 d2). `closest` starts at a work area and walks up its path to the first level any promoted row answers; `workarea` is that area alone; `space` is every row in one space, those written before work areas included; `all` is every space this gate declares. Default: `closest` with a work area, `space` without. A scope chooses which rows are searched, never how they rank. Nobody else's quarantine, ever (I1). Provisional hits are marked; superseded are hidden unless asked for. A recall that names a work area (`closest`, `workarea`) also answers `steering`, the steering in force there: every promoted steering row in the space at the area or one of its ancestors, whatever the query, less what a supersession or a reviewer's hide withdraws, nearest place first and the newest write first within a place, cut at `steering_k` with `steering_omitted` counting the rest (ADR-0116 d17-d19). A steering row is never a ranked hit. With a work area the query may be left out: the answer is then the steering alone, no hits (GAPS 251).",
       "params": [
         {
           "name": "query",
           "type": "string",
-          "required": true,
-          "description": "natural-language query"
+          "required": false,
+          "description": "natural-language query; may be left out when a work area is named, and the answer is then the steering in force there and no hits (ADR-0116 d19)"
+        },
+        {
+          "name": "scope",
+          "type": "string",
+          "required": false,
+          "description": "closest | workarea | space | all (ADR-0102 d5); default closest when a workarea is named, space when none is",
+          "enum": [
+            "closest",
+            "workarea",
+            "space",
+            "all"
+          ]
+        },
+        {
+          "name": "workarea",
+          "type": "string",
+          "required": false,
+          "description": "where closest starts, or the one area workarea searches; refused under space and all (ADR-0102 d9)"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "the space searched, default main; must already exist; refused under all"
         },
         {
           "name": "spaces",
           "type": "array",
           "required": false,
-          "description": "restrict to these spaces; default all the caller may read"
+          "description": "the space scope over several spaces, the earlier operand; refused beside space or any other scope (GAPS 96)"
         },
         {
           "name": "k",
           "type": "integer",
           "required": false,
-          "description": "max hits; default 10"
+          "description": "max hits; default 10. The held rows are capped at k apart from the ranked"
         },
         {
           "name": "mode",
@@ -884,7 +1481,7 @@
           "name": "audience",
           "type": "string",
           "required": false,
-          "description": "ADR-0052 d2: the reader's preference, an argument never an identity — each hit's fused score is multiplied by its rank for this audience (1.0 when none) and hides for it apply; omitted = today's answer, byte for byte"
+          "description": "ADR-0052 d2: the reader's preference, an argument never an identity — hides for it apply; it weights nothing, since the audience weight retired with dg.rank (ADR-0110 d6); omitted = only a hide for all applies"
         },
         {
           "name": "include_hidden",
@@ -896,22 +1493,76 @@
           "name": "include_own_pending",
           "type": "boolean",
           "required": false,
-          "description": "ADR-0053 d2 (FR-13): default true — the caller's OWN scanned, unflagged claims still in quarantine are appended after the ranked hits, each `ratified: false`, `provenance.unreviewed: true`, with its state; never anyone else's, never L0 or L1b"
+          "description": "ADR-0053 d2 (FR-13): default true — the caller's OWN scanned, unflagged claims still in quarantine, from the levels the scope searched, are appended after the ranked hits, each `held: true`, `ratified: false`, `provenance.unreviewed: true`, with its state; never anyone else's, never L0 or L1b"
+        },
+        {
+          "name": "producer",
+          "type": "object",
+          "required": false,
+          "description": "the producer the caller declares itself to be, {name, kind} as dg.ingest takes it: the steering is then the rows with no address and those addressed to it (ADR-0116 d18). It narrows, never orders; refused under space and all"
+        },
+        {
+          "name": "steering_k",
+          "type": "integer",
+          "required": false,
+          "description": "how many rows of the steering in force are answered; 1-20, default 5; the rest are counted in steering_omitted (ADR-0116 d19). Refused under space and all"
         }
       ],
-      "returns": "object: {hits[], paths, audience?}"
+      "returns": "object: {scope, space, workarea, answered_by, hits[{artifact_id, score, body, space, workarea, producer, held, distance, provisional, provenance, signals}], paths, audience?, steering[{artifact_id, body, space, workarea, distance, producer, writer{identity, kind}, addressed_to, promoted_at, provisional}], steering_omitted} — the ranked hits first, then the caller's own held rows. `distance` is the levels walked up from the named work area (0 under workarea; null under space and all); `answered_by` the level that answered; `workarea` null on a row written before work areas. `steering` is empty and `steering_omitted` 0 under space and all; a steering entry's `writer.kind` is the principal kind its ingest recorded (person, program, local), null where none was recorded, and `promoted_at` the promotion's time in ms",
+      "errors": {
+        "-32602": "an unknown scope or space, a scope missing its operand, an operand the scope does not use (producer and steering_k under space and all among them), a recall naming neither a query nor a work area, a steering_k outside 1-20, a producer outside ADR-0107 d1's shape, or a work area name outside the grammar"
+      }
     },
     {
       "name": "dg.reconcile",
-      "service": "both",
-      "role": "reviewer",
-      "summary": "Re-derive the consumer surfaces from the journal (the integrator's rebuild).",
+      "role": "admin",
+      "summary": "Re-derive the consumer surfaces of every space from the journal (the integrator's rebuild): the deployment's own work, beside dg.rebuild (GAPS 401).",
       "params": [],
       "returns": "object"
     },
     {
+      "name": "dg.records",
+      "role": "reviewer",
+      "summary": "The bodies of recorded rows whose class is event, usage_record or state_snapshot, in a space the caller holds a read grant in, newest first (ADR-0132 d19). Each body is the JSON object the row's masked body carries when it parses and is at most 4,096 bytes, else null with body_refused. Never session, the plugin's transcript tail, or any other class; an events key is refused it.",
+      "params": [
+        {
+          "name": "space",
+          "type": "string",
+          "required": true,
+          "description": "a declared space the caller reads"
+        },
+        {
+          "name": "classes",
+          "type": "array",
+          "required": true,
+          "description": "one or more of event, usage_record, state_snapshot"
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": true,
+          "description": "1 to 200"
+        },
+        {
+          "name": "workarea",
+          "type": "string",
+          "required": false,
+          "description": "this area and every area below it"
+        },
+        {
+          "name": "since",
+          "type": "integer",
+          "required": false,
+          "description": "a ts; only later records are served"
+        }
+      ],
+      "returns": "object: {items[{artifact_id, class, workarea, writer_identity, ts, body, body_refused?}], truncated}",
+      "errors": {
+        "-32602": "an unknown space; not granted: read on it; a class outside the three; limit or since outside its bounds"
+      }
+    },
+    {
       "name": "dg.reject",
-      "service": "both",
       "role": "reviewer",
       "summary": "Refuse an artifact in quarantine, with a category and optionally what it lost to (ADR-0037).",
       "params": [
@@ -938,7 +1589,6 @@
     },
     {
       "name": "dg.relate",
-      "service": "both",
       "role": "reviewer",
       "summary": "Append a typed relation from artifact_id (child) to parent: supersedes | restates | corrects | contradicts | extends. Only supersedes hides.",
       "params": [
@@ -965,22 +1615,199 @@
     },
     {
       "name": "dg.relations",
-      "service": "both",
       "role": "reader",
-      "summary": "The typed relation edges touching one artifact (ADR-0035).",
+      "summary": "The typed relation edges touching one artifact (ADR-0035); below the reviewer role only the edges whose other end the caller may read.",
       "params": [
         {
           "name": "artifact_id",
           "type": "string",
           "required": true,
-          "description": ""
+          "description": "",
+          "readable": true
         }
       ],
-      "returns": "object: {artifact_id, relations[]}"
+      "returns": "object: {artifact_id, relations[]}",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing"
+      }
+    },
+    {
+      "name": "dg.reopen",
+      "role": "reviewer",
+      "summary": "Return a rejected claim to the held state its scan left (L1B while a finding is at veto severity, else L1), with a reason (ADR-0133 d5). It makes nothing readable: the count of signatures starts again from the reopen, and the verdicts before it stay in the trail. Refused to a caller who is not a signed-in person, to the claim's author (in development the one person reopens their own, ADR-0135 d2), on a claim that is not rejected or that its author cancelled, and past three reopens of one claim.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": true,
+          "description": "a rejected claim",
+          "readable": true
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": true,
+          "description": "why, 1 to 500 characters"
+        }
+      ],
+      "returns": "object: {artifact_id, state, reopens, event_id}",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; each refusal in its sentence (doublegate_sdk.acts)"
+      }
+    },
+    {
+      "name": "dg.replacement_abort",
+      "role": "reviewer",
+      "summary": "Close a pending group and keep everything it held (graph operations §4) — not a deletion and not a demotion: nothing it prepared was ever served. There is no abort after activation.",
+      "params": [
+        {
+          "name": "group_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": false,
+          "description": "cancelled | child_rejected | admission_refused | expired; default cancelled"
+        },
+        {
+          "name": "evidence",
+          "type": "array",
+          "required": false,
+          "description": "artifact or event ids the reason rests on"
+        }
+      ],
+      "returns": "object: the group's status plus {event_id | recorded}",
+      "errors": {
+        "-32602": "an unknown reason, a role below reviewer, or a group already activated"
+      }
+    },
+    {
+      "name": "dg.replacement_activate",
+      "role": "reviewer",
+      "summary": "The one signed commit that flips a whole group (graph operations §4): every prepared child becomes servable together and every listed parent becomes SUPERSEDED together. Curation, never the author's: the proposer is refused by name, and a stale `graph_revision` is refused with the current one rather than activated against a graph that moved.",
+      "params": [
+        {
+          "name": "group_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "graph_revision",
+          "type": "string",
+          "required": true,
+          "description": "the revision dg.replacements showed the caller"
+        }
+      ],
+      "returns": "object: the group's status plus {event_id, promoted[], superseded[], frontier[], published}",
+      "errors": {
+        "-32602": "the proposer, an unprepared child, a stale revision or pin, a competing group, a cycle, or a child the admission boundary refuses"
+      }
+    },
+    {
+      "name": "dg.replacement_prepare",
+      "role": "reviewer",
+      "summary": "Take one child of a pending group to ratified-and-not-serving (graph operations §3). It appends no promote, so the child reaches no serving surface by any flag; a child its reviewers rejected aborts the whole group instead.",
+      "params": [
+        {
+          "name": "group_id",
+          "type": "string",
+          "required": true,
+          "description": ""
+        },
+        {
+          "name": "child_id",
+          "type": "string",
+          "required": true,
+          "description": "a member of that group"
+        }
+      ],
+      "returns": "object: the group's status plus {child_id, event_id | recorded}",
+      "errors": {
+        "-32602": "not a member, body not here yet, not ratifiable, or the group is terminal"
+      }
+    },
+    {
+      "name": "dg.replacement_propose",
+      "role": "reviewer",
+      "summary": "Propose one replacement group: a split, a merge or a supersede, with its membership fixed at acceptance (graph operations §3). The proposer is the connection's identity (I2) and is the one identity that may never activate the result (§3: proposer is not ratifier). Nothing is admitted and nothing is served by this call; a retry of the same manifest returns the recorded group.",
+      "params": [
+        {
+          "name": "operation",
+          "type": "string",
+          "required": true,
+          "description": "merge | split | supersede"
+        },
+        {
+          "name": "parent_ids",
+          "type": "array",
+          "required": true,
+          "description": "the artifacts this group retires; a split has exactly one"
+        },
+        {
+          "name": "child_ids",
+          "type": "array",
+          "required": true,
+          "description": "the replacement set; a merge has exactly one, a split at least two"
+        },
+        {
+          "name": "reason",
+          "type": "string",
+          "required": true,
+          "description": "why — the line `why` shows a later reader"
+        },
+        {
+          "name": "policy_revision",
+          "type": "string",
+          "required": false,
+          "description": "the admission policy this was proposed against"
+        },
+        {
+          "name": "group_id",
+          "type": "string",
+          "required": false,
+          "description": "an id to retry under; derived from the manifest when omitted"
+        }
+      ],
+      "returns": "object: {group_id, state, operation, parent_ids, child_ids, prepared[], pending_children[], manifest_digest, proposer, proposed_event, event_id | recorded}",
+      "errors": {
+        "-32602": "the field that refused it: a membership, an arity, a trust class, a space, a competing group, a cycle, or an id already recorded with a different manifest"
+      }
+    },
+    {
+      "name": "dg.replacements",
+      "role": "reviewer",
+      "summary": "Every replacement group with its membership, its manifest and why it is held — the reviewer's view of what is waiting to be activated. Metadata, never content (I1). `revision` is the graph revision this reading was taken at: pass it to dg.replacement_activate.",
+      "params": [
+        {
+          "name": "group_id",
+          "type": "string",
+          "required": false,
+          "description": "one group instead of the list"
+        },
+        {
+          "name": "state",
+          "type": "string",
+          "required": false,
+          "description": "PENDING | ACTIVATED | ABORTED"
+        },
+        {
+          "name": "limit",
+          "type": "integer",
+          "required": false,
+          "description": "default 50"
+        }
+      ],
+      "returns": "object: {groups[{group_id, state, operation, members[{artifact_id, side, state, prepared}], manifest, held, ready, prepared[], pending_children[], activation?, abort?}], total, counts{state: n}, revision, scope}",
+      "errors": {
+        "-32602": "no such replacement group"
+      }
     },
     {
       "name": "dg.review",
-      "service": "both",
       "role": "reviewer",
       "summary": "The operator's queue: what needs a human, capped. Each row is annotated with a bounded content preview, whether the operator wrote it (I2), and the verdicts its state accepts.",
       "params": [
@@ -991,13 +1818,12 @@
           "description": "override the digest cap"
         }
       ],
-      "returns": "object: {items[], held_back, total_waiting, cap}"
+      "returns": "object: {held_steering[{…the item's shape}], held_steering_truncated, items[{artifact_id, state, waits_for{blocker, code, words, rubric?, missing?}, stances?[{stance, backend_label, provider, decision, reason, kind_note, stale}], waiting_since, supersedes, content, content_type, trust_class, writer_identity, ingest_ts, source_uri, findings[], verdicts[], expires_at, expires_in_s, space, workarea, producer, kind, attachments[{content_hash, size_bytes, media_type, name, source_uri, extracts}], …}], held_back, total_waiting, cap} — `attachments` lists each attachment entry, its name masked, never a byte (ADR-0126); `space`, `workarea`, `producer` and `kind` say where the held row was written and what produced it, the row's own fields (ADR-0111 d2); `workarea` and `producer` are null on a row that named none; `waits_for` is why the row waits, the first that holds of ADR-0070's blockers with the gate's own code and sentence beside it, and `waiting_since` the ts of the event that put it in its held state (ADR-0132 d6, d9); `supersedes` is dg.node's (ADR-0133 d1); `who_can_sign` is dg.who_can_sign's answer for the row, one letter per person across the whole answer, and `self_authored` whether the caller wrote it (ADR-0134 d3); `held_steering` is every held steering row the caller reads, its own included, oldest wait first, at most 50 with `held_steering_truncated`, before the digest and never counted in `cap`, `items` or `held_back` (ADR-0134 d4); `waits_for.code` `rubric_changed`, on the `semantic_review` blocker, is a row graded before the grading in force for its kind, with `rubric {was, now}`, each a kind paragraph's id or \"claim\"; `waits_for.code` `runner_lacks_type`, on the `hard_constraint` blocker, is a crew sheet whose space's assigned runner runs no model for a type it uses, with `missing` the types, and `runner_full` one whose runner has made no report since the gate started (ADR-0141 d5); `stances` is on an item whose code is a disagreement, an abstention, low confidence or rubric_changed alone: each current model verdict, first pass then review, then the latest superseded one of each stance, `reason` its rationale's first sentence of at most 200 characters and `stale` true where its grading is not the one the row is read under (ADR-0139 d2, d3)"
     },
     {
       "name": "dg.review_pending",
-      "service": "both",
       "role": "reviewer",
-      "summary": "ADR-0048: the second opinion. Under review.mode model|auto, every L2 row whose first pass escalated gets one `gate-review` verdict, charged to the same budget; a no-op under `human`. Never touches L1b (INV-SEC-5).",
+      "summary": "ADR-0048: the second opinion. Under review.mode model|auto, every L2 row whose first pass escalated gets one `gate-review` verdict, charged to the same budget; a no-op under `human`. Never touches L1b (INV-SEC-5). A reviewer's call reviews rows in the spaces it reads alone (GAPS 401).",
       "params": [
         {
           "name": "limit",
@@ -1010,9 +1836,8 @@
     },
     {
       "name": "dg.review_runs",
-      "service": "both",
       "role": "reader",
-      "summary": "The review-run log: bounded, filterable, searchable, newest first. Deliberately separate from dg.status's queue depths — a depth is what is WAITING, a run is what is being PROCESSED, and reading one as the other is the misreport this split prevents.",
+      "summary": "The review-run log: bounded, filterable, searchable, newest first. Deliberately separate from dg.status's queue depths — a depth is what is WAITING, a run is what is being PROCESSED, and reading one as the other is the misreport this split prevents. Below the reviewer role, only the runs on rows the caller may read.",
       "params": [
         {
           "name": "state",
@@ -1042,8 +1867,337 @@
       "returns": "object: {reported, runs[], total, offset, limit, counts, in_flight[], last_failure, detail?} — `reported: false` when this worker emits no run events, and then the list is empty rather than inferred"
     },
     {
+      "name": "dg.runner_assign",
+      "role": "admin",
+      "summary": "Assign a crew's space to a runner, switch it, or unassign it with `runner: null` (ADR-0140 d2, d3): journalled `runner-assigned {space, from, to, slots, sheet, key_days}`; the runner is granted `read` and `contribute` on the space; a switch, `reissue: true` or a change of slots revokes every member key of the old batch at the act, reason `reassigned`, and keeps every row. An assignment already in force journals nothing. An admin's act, never a claim.",
+      "params": [
+        {
+          "name": "space",
+          "type": "string",
+          "required": true,
+          "description": "the crew's space"
+        },
+        {
+          "name": "runner",
+          "type": "string",
+          "required": true,
+          "description": "a runner key id, or null to unassign"
+        },
+        {
+          "name": "slots",
+          "type": "array",
+          "required": false,
+          "description": "the member labels <space>/<role>/<n>"
+        },
+        {
+          "name": "sheet",
+          "type": "string",
+          "required": false,
+          "description": "the id of the crew sheet, a row of the space"
+        },
+        {
+          "name": "key_days",
+          "type": "integer",
+          "required": false,
+          "description": "the member keys' expiry in days, 1-90"
+        },
+        {
+          "name": "reissue",
+          "type": "boolean",
+          "required": false,
+          "description": "true replaces the crew's keys on the same runner"
+        }
+      ],
+      "returns": "object: {space, from, to, changed, revoked[], event_id}",
+      "errors": {
+        "-32602": "data.reason not_a_runner, runner_unconfigured (the runner's command, plugin_dir, workdir_root or models unset, ADR-0142 d2), runner_lacks_type with data.missing the role types the sheet uses that the runner's last report runs no model for (ADR-0141 d5), or runner_full; a field outside its rule, named; a sheet that names no row of the space, or a row that is no crew sheet of it, naming the field"
+      }
+    },
+    {
+      "name": "dg.runner_hello",
+      "role": "runner",
+      "summary": "A runner's report of itself, at most once a minute (ADR-0140 d1): the gate keeps the newest per key in memory, on its own clock, as the runner's last report, never checked and never a claim, and journals only what it acts on: `runner-first-seen` on a key's first hello ever, `runner-keys-acknowledged` when a space's `holds` equals its batch and the hello comes from the batch's instance, `runner-keys-refused` when it comes from another, and `runner-released` when a space reassigned away is no longer listed, revoking the runner's `read` and `contribute` there. The body is `doublegate.runner-hello/1` (`doublegate_sdk.crew.hello`). The hello carries the machine's facts, the settings version it holds, each setting it could not apply and its endpoint token's version (ADR-0142 d4); the answer carries the whole settings only when that version differs from the gate's.",
+      "params": [
+        {
+          "name": "format",
+          "type": "string",
+          "required": true,
+          "description": "exactly doublegate.runner-hello/1"
+        },
+        {
+          "name": "instance",
+          "type": "string",
+          "required": true,
+          "description": "32 lower-case hex characters, made by the runner process at start"
+        },
+        {
+          "name": "runner",
+          "type": "string",
+          "required": true,
+          "description": "the runner program's version, MAJOR.MINOR.PATCH"
+        },
+        {
+          "name": "harness",
+          "type": "string",
+          "required": true,
+          "description": "Claude Code's version, or empty"
+        },
+        {
+          "name": "host",
+          "type": "string",
+          "required": true,
+          "description": "what the runner says its machine is called, 1-64 printable characters"
+        },
+        {
+          "name": "backend",
+          "type": "string",
+          "required": true,
+          "description": "anthropic, or the endpoint's host, lower-case, 1-253 characters, never a scheme, path, port or token (ADR-0141 d5)"
+        },
+        {
+          "name": "models",
+          "type": "object",
+          "required": true,
+          "description": "0-5 {<role type>: {model, effort?}}: each type of reasoning, research, coding, review, fast the runner serves, its model and the effort its line names (ADR-0141 d4)"
+        },
+        {
+          "name": "models_floor",
+          "type": "string",
+          "required": true,
+          "description": "the highest Claude Code floor among the map's models, or empty"
+        },
+        {
+          "name": "capacity",
+          "type": "object",
+          "required": true,
+          "description": "{crews 1-16, members 1-64}"
+        },
+        {
+          "name": "recorded",
+          "type": "object",
+          "required": true,
+          "description": "{version, ok}: the recorded session's version and its check"
+        },
+        {
+          "name": "budget",
+          "type": "object",
+          "required": true,
+          "description": "{day, spent, of}: the UTC day, calls charged, the day's budget"
+        },
+        {
+          "name": "serving",
+          "type": "array",
+          "required": true,
+          "description": "0-16 {space, running, holds[]}: per space, members running and the key ids held"
+        },
+        {
+          "name": "facts",
+          "type": "object",
+          "required": true,
+          "description": "{node, claude{path, found}, plugin{path, mcp}, workdir{path, writable}, git, home}: what the machine shows, the runner's word (ADR-0142 d1)"
+        },
+        {
+          "name": "settings_version",
+          "type": "integer",
+          "required": true,
+          "description": "the settings version the runner holds, 0 before any"
+        },
+        {
+          "name": "refused",
+          "type": "array",
+          "required": true,
+          "description": "0-16 {field, code}: each setting it could not apply at this pass, code one of not_found, no_mcp_json, not_the_plugin, missing, not_writable, inside_home, inside_workdir, not_a_git_checkout"
+        },
+        {
+          "name": "token",
+          "type": "object",
+          "required": true,
+          "description": "{version, held}: the endpoint token version it holds, 0 for none"
+        }
+      ],
+      "returns": "object: {now, settings_version, settings? (every field of the runner's settings, only when the hello's settings_version differs), label, token: none|waiting|served|held|lost|unreadable, assignments[{space, slots[], sheet, keys: waiting|issued|held}]}",
+      "errors": {
+        "-32602": "a field outside its rule, named; or any caller but a runner key"
+      }
+    },
+    {
+      "name": "dg.runner_keys",
+      "role": "runner",
+      "summary": "A crew's member keys, issued once to the runner the space is assigned to (ADR-0140 d3): one `agent` key per slot, labelled with the slot, expiring after the assignment's `key_days`, granted `read` and `contribute` on the space and `read` on the crew's connections, each journalled `apikey-issued` with `issued_by` the admin who assigned and `served_to` the runner. The raw keys are in this answer alone; the gate keeps their hashes (INV-SEC-9). The batch is bound to the one instance heard on the key; a second call before the runner's hello acknowledges it revokes it, reason `superseded`, and issues anew; after, it is refused.",
+      "params": [
+        {
+          "name": "space",
+          "type": "string",
+          "required": true,
+          "description": "the crew's space"
+        }
+      ],
+      "returns": "object: {space, members[{slot, role, key}]}",
+      "errors": {
+        "-32602": "data.reason not_assigned (another runner, none assigned, or no hello since the gate started), two_instances, already_served; or any caller but a runner key"
+      }
+    },
+    {
+      "name": "dg.runner_set",
+      "role": "admin",
+      "summary": "Set one or more of a runner's settings (ADR-0140 d4; ADR-0142 d2; 17 — Crews §12): each field checked on its own, then the settings with the change checked whole; journalled `runner-settings-set {runner, version, fields}` under the admin, the version the count of the runner's settings lines, and served in its next answer. The limits and intervals take effect at the runner's next pass; the launch settings, the endpoint and the map at its next launch or resume. No setting is a secret: the endpoint's token is `dg.runner_token_set`'s.",
+      "params": [
+        {
+          "name": "runner",
+          "type": "string",
+          "required": true,
+          "description": "the runner key id"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "required": false,
+          "description": "the runner's display name, a space name of 1-64 characters"
+        },
+        {
+          "name": "paused",
+          "type": "boolean",
+          "required": false,
+          "description": "launch and resume nothing; a run under way ends at its own end"
+        },
+        {
+          "name": "max_running",
+          "type": "integer",
+          "required": false,
+          "description": "1-64, never above the capacity the runner reports"
+        },
+        {
+          "name": "budget_per_day",
+          "type": "integer",
+          "required": false,
+          "description": "2,880 or more; default 50,000"
+        },
+        {
+          "name": "command",
+          "type": "string",
+          "required": false,
+          "description": "one bare program name the runner resolves on its own PATH: no path separator, no white space, 1-255 characters"
+        },
+        {
+          "name": "plugin_dir",
+          "type": "string",
+          "required": false,
+          "description": "an absolute path or one beginning ~/, never inside workdir_root"
+        },
+        {
+          "name": "workdir_root",
+          "type": "string",
+          "required": false,
+          "description": "an absolute path or one beginning ~/, where members' directories go"
+        },
+        {
+          "name": "repository",
+          "type": "string",
+          "required": false,
+          "description": "a path as workdir_root's, or null to clear"
+        },
+        {
+          "name": "deny_read",
+          "type": "array",
+          "required": false,
+          "description": "0-64 paths a member may not read, none inside workdir_root"
+        },
+        {
+          "name": "managed_settings",
+          "type": "array",
+          "required": false,
+          "description": "0-8 absolute paths, none inside workdir_root, or null to clear"
+        },
+        {
+          "name": "poll_seconds",
+          "type": "number",
+          "required": false,
+          "description": "0.1-60; default 5"
+        },
+        {
+          "name": "idle_poll_seconds",
+          "type": "number",
+          "required": false,
+          "description": "poll_seconds-600; default 60"
+        },
+        {
+          "name": "grace_seconds",
+          "type": "number",
+          "required": false,
+          "description": "0.5-300; default 10"
+        },
+        {
+          "name": "key_seconds",
+          "type": "number",
+          "required": false,
+          "description": "1-3,600; default 60"
+        },
+        {
+          "name": "progress_seconds",
+          "type": "number",
+          "required": false,
+          "description": "0 (off) or 1-3,600; default 600"
+        },
+        {
+          "name": "base_url",
+          "type": "string",
+          "required": false,
+          "description": "https://, or http:// to a loopback host, no user, query or fragment; null for Anthropic's own endpoint. A change of origin clears the token"
+        },
+        {
+          "name": "models",
+          "type": "object",
+          "required": false,
+          "description": "{<role type>: {model, effort?}, retention_days_accepted?} (ADR-0141 d4)"
+        }
+      ],
+      "returns": "object: {runner, settings_version, settings, event_id}",
+      "errors": {
+        "-32602": "data.reason not_a_runner; a field outside its rule, named in data.field, with data.reason inside_workdir for a sandbox path inside workdir_root"
+      }
+    },
+    {
+      "name": "dg.runner_token",
+      "role": "runner",
+      "summary": "The caller's own endpoint token, once (ADR-0142 d3): to the one instance heard on its key within 120 seconds, with the origin it was set for. In the act the gate removes its sealed copy and journals `runner-token-served {runner, instance, version}`; the runner's next hello acknowledges it, and one not acknowledged within 600 seconds is lost.",
+      "params": [],
+      "returns": "object: {version, token, origin}",
+      "errors": {
+        "-32602": "data.reason no_token (none waiting, lost, or no hello heard), two_instances, already_served, unreadable (the gate cannot open its sealed copy); or any caller but a runner key"
+      }
+    },
+    {
+      "name": "dg.runner_token_set",
+      "role": "admin",
+      "summary": "Enter, rotate or clear a runner's endpoint token (ADR-0142 d3; 17 — Crews §12): sealed under the deployment's `keys/runner-secrets.key` until the runner takes it once with `dg.runner_token`, then held nowhere by the gate. Journalled `runner-token-set {runner, version, origin, rotated}` or `runner-token-cleared {runner, reason: admin}`; no answer, log line or event carries the value. A change of the runner's `base_url` origin clears it.",
+      "params": [
+        {
+          "name": "runner",
+          "type": "string",
+          "required": true,
+          "description": "the runner key id"
+        },
+        {
+          "name": "token",
+          "type": "string",
+          "required": true,
+          "description": "1-4,096 printable characters with no white space, or null to clear"
+        }
+      ],
+      "returns": "object: {runner, version?, token: waiting|none, event_id}",
+      "errors": {
+        "-32602": "data.reason not_a_runner, or no_endpoint while the runner has no base_url; a token outside its rule, named and never repeated"
+      }
+    },
+    {
+      "name": "dg.runners",
+      "role": "reviewer",
+      "summary": "Every runner key (ADR-0140 d5; 17 — Crews §12): its served label, standing, state (the first of revoked, two_instances, settings_refused, needs_settings, no_report_since_start, not_seen, budget_spent, paused, serving, idle, never_seen that holds), when it was first seen, its last report (with the machine's facts and the settings it could not apply, ADR-0142 d4) and that report's age on the gate's clock, the instances heard in 120 seconds, its settings with their version and, for each field ever set, the identity that set it and when (ADR-0142 d2), its assignments with each batch's state, the spaces reassigned away and not yet released, and the refused acknowledgements journalled on it. The report carries the hello's `backend`, `models` and `models_floor` (ADR-0141 d5), and each assignment the role types its sheet uses that the map runs no model for, `missing`. Below admin the assignments and the report's spaces are those the caller reads.",
+      "params": [],
+      "returns": "object: {now, started_at, runners[{runner, label, standing, state, first_seen_at, report, received_at, age_ms, instances[], settings, settings_version, settings_set{<field>: {by, at}}, assignments[{space, slots, sheet, keys, missing[], key_ids, issued_at, revoke_at}], released_pending[{space, running}], refused, token{state, version, origin, set_at, served_at, reason, box}}], token_store: the last token set refused for keys/, or null}"
+    },
+    {
       "name": "dg.scan",
-      "service": "both",
       "role": "reviewer",
       "summary": "Run the deterministic scanner on one L0 artifact; a finding ≥ medium routes to L1b and no score clears it (INV-SEC-5). An explicit outcome is the manual override.",
       "params": [
@@ -1070,9 +2224,8 @@
     },
     {
       "name": "dg.scan_pending",
-      "service": "both",
       "role": "reviewer",
-      "summary": "Scan every L0 artifact whose delay elapsed. Counts, never content.",
+      "summary": "Scan every L0 artifact whose delay elapsed. Counts, never content. A reviewer's call scans rows in the spaces it reads alone (GAPS 401).",
       "params": [
         {
           "name": "limit",
@@ -1091,7 +2244,6 @@
     },
     {
       "name": "dg.semantic_review",
-      "service": "both",
       "role": "reviewer",
       "summary": "ADR-0048/ADR-0053: ask the server-owned reviewer to look at one row. Every disposition it writes is reviewer_class='model' — a model is never laundered into a human signature by being triggered from a console. The caller supplies the subject and nothing else; the reviewer identity, the rendering, the scan event and the registry revision are read from the row.",
       "params": [
@@ -1116,16 +2268,14 @@
     },
     {
       "name": "dg.settings",
-      "service": "both",
       "role": "admin",
       "summary": "The review worker's configuration: configured (on disk) beside effective (in this process), plus the drift between them and the field/choice tables a configuration surface renders.",
       "description_note": "Both halves, always. A settings view that shows only the file cannot tell the operator their last edit never took; one that shows only the runtime cannot tell them what a restart would bring back. Credential VALUES are never returned — `secrets` reports presence only.",
       "params": [],
-      "returns": "object: {configured, explicit, secrets, effective, etag, config_rev, drift[], fields, choices, runs}"
+      "returns": "object: {configured, explicit, secrets, effective, etag, config_rev, drift[], fields, choices, runs, caps[], defaults} — `caps` as dg.status serves them (ADR-0132 d18); `defaults` names each setting \"Use the default\" returns to, `{set, value, why}`, the value the gate resolves when the file is silent (ADR-0134 d2, d6)"
     },
     {
       "name": "dg.settings_save",
-      "service": "both",
       "role": "admin",
       "summary": "Compare-and-swap the configuration file, then apply it to this running daemon. Always both: a save that needs a restart to mean anything is a save the operator has to be told about twice.",
       "description_note": "The etag the caller was shown is REQUIRED; without it two editors overwrite each other silently. A stale etag returns `conflict` with the current etag and the current values so the caller can show what is actually there.",
@@ -1134,20 +2284,28 @@
           "name": "values",
           "type": "object",
           "required": true,
-          "description": "dotted `table.key` → value"
+          "description": "dotted `table.key` → value; a decision kind's caps as `decisions.<kind>.typed_tokens_per_day` and `writer_tokens_per_day`, written into its `[decisions.<kind>]` table (ADR-0132 d18)"
         },
         {
           "name": "etag",
           "type": "string",
           "required": true,
           "description": "the revision this draft was editing"
+        },
+        {
+          "name": "unset",
+          "type": "array",
+          "required": false,
+          "description": "\"Use the default\": names whose line the save removes, so the gate's own resolution answers: `review.mode`, `gating.budget_tokens_per_day` and `decisions.<kind>.writer_tokens_per_day` (ADR-0134 d2, d6)"
         }
       ],
-      "returns": "object: {ok, saved, applied, etag, config_rev, configured, secrets, effective, drift[], note} or {ok: false, conflict|errors}"
+      "errors": {
+        "-32602": "`deployment.mode` in values or unset: the deployment mode is set in config.toml and read at start (ADR-0135 d1)"
+      },
+      "returns": "object: {ok, saved, applied, etag, config_rev, configured, secrets, effective, drift[], defaults, note} or {ok: false, conflict|errors}"
     },
     {
       "name": "dg.settings_validate",
-      "service": "both",
       "role": "admin",
       "summary": "Run a configuration draft through the real loader. Writes nothing, applies nothing — the call a form may make on every keystroke.",
       "params": [
@@ -1162,9 +2320,8 @@
     },
     {
       "name": "dg.settle_pending",
-      "service": "both",
       "role": "reviewer",
-      "summary": "ADR-0048: under review.mode auto, promote every L2 row that meets k with no human required on its class — the deployment signs the promote, the integrator's boundary check applies unchanged. A no-op otherwise.",
+      "summary": "ADR-0048: under review.mode auto, promote every L2 row that meets k with no human required on its class — the deployment signs the promote, the integrator's boundary check applies unchanged. A no-op otherwise. A reviewer's call settles and counts rows in the spaces it reads alone (GAPS 401).",
       "params": [
         {
           "name": "limit",
@@ -1177,9 +2334,8 @@
     },
     {
       "name": "dg.sign",
-      "service": "both",
       "role": "reviewer",
-      "summary": "Record a verdict as the calling principal (ADR-0082): a signed-in person's verdict is a human's, a key's or a socket peer's is a reviewer's and never satisfies a human requirement. With `promote: true` the signature and the promotion it was for happen in one call; a promotion the boundary refuses is reported in `promote.refused` and the signature stands.",
+      "summary": "Record a verdict as the calling principal (ADR-0082): a signed-in person's verdict is a human's, a key's or a socket peer's is a reviewer's and never satisfies a human requirement. With `promote: true` the signature and the promotion it was for happen in one call; a promotion the boundary refuses is reported in `promote.refused` and the signature stands. The claim's author is refused, except in development, where the one person's promote on a held row they wrote counts once, marked `self_signed` (ADR-0135 d2); a demo person's verdict is marked `demo_signed`, counts for nothing on the developer's row and is refused outside development (d5). On a promoted row marked either way, a promote from a signed-in person who neither wrote it nor is a demo person appends `confirm-sign`, and `review-confirmed` once such signatures meet k (d3).",
       "params": [
         {
           "name": "artifact_id",
@@ -1206,49 +2362,67 @@
           "description": "also promote once signed (default false)"
         }
       ],
-      "returns": "object: {artifact_id, state, event_id, promote?}"
+      "returns": "object: {artifact_id, state, event_id, promote?} — on a marked promoted row {artifact_id, state, event_id, confirmed, confirmation?}",
+      "errors": {
+        "-32602": "data.reason runner_lacks_type with data.missing, or runner_full, on a crew sheet whose space's assigned runner runs no model for a type it uses or has made no report since the gate started (ADR-0141 d5); with `promote: true` it is refused before the signature, which is not recorded"
+      }
+    },
+    {
+      "name": "dg.space_create",
+      "role": "admin",
+      "summary": "Declare a space (ADR-0023 d1). Until a space is declared, writing to its name is refused -32602 rather than quietly opening a partition nobody can find again — the reason this verb exists. `main` exists at install and needs no creation. An operator's act: an agent may name a space it was granted and may never open one.",
+      "params": [
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "1-64 characters, starting alphanumeric, then letters, digits, dot, dash or underscore"
+        },
+        {
+          "name": "owner",
+          "type": "string",
+          "required": false,
+          "description": "who owns it; default the calling identity"
+        },
+        {
+          "name": "policy",
+          "type": "string",
+          "required": false,
+          "description": "its review policy; default `inherit` — this deployment's configured policy. ADR-0023 d1 requires a space to carry one and names no vocabulary, so the string is stored verbatim"
+        }
+      ],
+      "returns": "object: {name, owner, policy, created, event_id} — or the existing row with `duplicate: true`",
+      "errors": {
+        "-32602": "a name outside the charset, or a role below admin"
+      }
+    },
+    {
+      "name": "dg.spaces",
+      "role": "reader",
+      "summary": "The store's partitions (ADR-0023 d1): every declared space with its owner, its review policy and how many artifacts sit in it (below the reviewer role, how many the caller may read: the promoted rows and its own, in a space it holds `read` on, and its own anywhere), `granted`, the capabilities the caller holds there (ADR-0115 d6; every one for an admin), and which space a write defaults to. `unregistered` names spaces the store holds rows in that nothing declared — empty on a deployment this daemon has started, because startup registers exactly those. Names and counts, never content: this is a directory, not a read.",
+      "params": [],
+      "returns": "object: {default, spaces[{name, owner, policy, artifacts, granted[], event_id, identity, ts, builtin?}], unregistered[]}"
     },
     {
       "name": "dg.status",
-      "service": "both",
       "role": "reader",
-      "summary": "Queue depths, journal tip, gate budget, role-specific gauges — or one artifact's lifecycle row.",
+      "summary": "Queue depths, journal tip, gate budget, role-specific gauges — or one artifact's lifecycle row. Below the reviewer role `queues`, `replacements` and `runs` count only the rows the caller may read: the promoted rows and its own (INV-SEC-10), and `tip`, the journal's newest event, is null (GAPS 158). From the reviewer role up it carries `caps[]`, every cap that pauses a pass, `{setting, words, spent, limit, unit, day, resets_at}`, counted in the daemon's own process on its own clock, and `paused[]`, `{pass, cause, words, since, until?, cap?}` for each pass (grade, second_opinion, settle, re_review) that stopped on its last tick, cause `cap` or `backend` (ADR-0132 d5, d18). An API key of scope `events` is answered `{paused, caps, now}` alone (d6). `deployment {mode, in_file, why, since}` is the mode the gate resolved, the file's value (null when the line is absent), the first condition that keeps a file that says development out of it, and the time of the journal's last `deployment-mode`, null when it holds none (ADR-0135 d1). `now` is the daemon's clock in epoch milliseconds, the one every event's ts is stamped on, on every answer, an events key's and one row's included (ADR-0139 d6). From the reviewer role up, `grade_again {stale, oldest, per_tick}` is what the last grade pass left to grade again: the held claims graded before the grading in force for their kind, the oldest one's state ts, and `[gating].grade_again_per_tick` (ADR-0139 d2). Below the reviewer role the envelope's `derives_from` names only the parents the caller may read, and `derives_from_withheld`, present when any is left out, counts the rest (GAPS 156).",
       "params": [
         {
           "name": "artifact_id",
           "type": "string",
           "required": false,
-          "description": "one artifact instead of the deployment"
+          "description": "one artifact instead of the deployment",
+          "readable": true
         }
       ],
-      "returns": "object"
-    },
-    {
-      "name": "dg.submit",
-      "service": "client",
-      "role": "agent",
-      "summary": "Queue an admitted artifact for the org gate (the outbox). Idempotent by artifact id.",
-      "params": [
-        {
-          "name": "artifact_id",
-          "type": "string",
-          "required": true,
-          "description": ""
-        }
-      ],
-      "returns": "object: {artifact_id, queued}"
-    },
-    {
-      "name": "dg.submit_drain",
-      "service": "client",
-      "role": "agent",
-      "summary": "Drain the outbox to the org gate now and pull outcomes (countersign / refuse) as peer events.",
-      "params": [],
-      "returns": "object: {accepted, retry, stopped, refused, pulled, resolved, halted_reason?}"
+      "returns": "object",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing"
+      }
     },
     {
       "name": "dg.tip",
-      "service": "both",
       "role": "reader",
       "summary": "The served head of an artifact's relation chain (ADR-0037).",
       "params": [
@@ -1256,43 +2430,256 @@
           "name": "artifact_id",
           "type": "string",
           "required": true,
-          "description": ""
+          "description": "",
+          "readable": true
         }
       ],
-      "returns": "object: {artifact_id, root, tip, chain[]}"
+      "returns": "object: {artifact_id, root, tip, chain[]}",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing"
+      }
+    },
+    {
+      "name": "dg.upload",
+      "role": "agent",
+      "summary": "Open or resume the caller's upload of one file before the dg.ingest that binds it (ADR-0126 d3; 24 — Attachments §3): a PNG, JPEG or WebP image up to 7 MiB, or a PDF up to 16 MiB, keyed by the caller and the file's SHA-256, so a second call answers the recorded offset. An upload is no content: no event names it, nobody but its uploader addresses it, and it is removed when it expires. Bytes another claim holds start a fresh upload. Refused when the caller may contribute nowhere. Writer identity is the connection's (I2).",
+      "params": [
+        {
+          "name": "sha256",
+          "type": "string",
+          "required": true,
+          "description": "the file's SHA-256, 64 lowercase hex"
+        },
+        {
+          "name": "size_bytes",
+          "type": "integer",
+          "required": true,
+          "description": "the file's exact length"
+        },
+        {
+          "name": "media_type",
+          "type": "string",
+          "required": true,
+          "description": "image/png, image/jpeg, image/webp or application/pdf; checked against the magic bytes at the last part"
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true,
+          "description": "1 to 255 UTF-8 bytes, no control character, slash, backslash or NUL; display only, never a file name on disk"
+        }
+      ],
+      "returns": "object: {upload_id, offset, size_bytes, part_bytes: 524288, complete, expires_at}",
+      "errors": {
+        "-32602": "data.reason media_type, attachment_too_large, upload_conflict, attachment_name or not_granted, each with its sentence (24 §3.1)",
+        "-32015": "attachment storage at its bound: data.reason upload_quota (with data.retry_after_ms until the caller's oldest upload expires) or attachment_budget (a review frees it)"
+      }
+    },
+    {
+      "name": "dg.upload_part",
+      "role": "agent",
+      "summary": "One part of the caller's open upload at the recorded offset, strict base64 of 1 to 524,288 bytes (24 §3). The last part re-hashes the file and checks its magic bytes, frames, sides and encryption; bytes that can never bind are removed and the sentence says so (GAPS 493). Another identity's upload id is answered as unknown.",
+      "params": [
+        {
+          "name": "upload_id",
+          "type": "string",
+          "required": true,
+          "description": "from dg.upload"
+        },
+        {
+          "name": "offset",
+          "type": "integer",
+          "required": true,
+          "description": "the recorded offset dg.upload or the last part answered"
+        },
+        {
+          "name": "content",
+          "type": "string",
+          "required": true,
+          "description": "the part, strict base64"
+        }
+      ],
+      "returns": "object: {offset}; on the last part {offset, complete: true, sha256}",
+      "errors": {
+        "-32602": "data.reason upload_unknown, encoding, part_offset (data.recorded), part_size, hash_mismatch, media_mismatch, animated, image_dimensions or pdf_encrypted, each with its sentence (24 §3.1)"
+      }
     },
     {
       "name": "dg.verify",
-      "service": "both",
       "role": "reader",
-      "summary": "Walk the journal chain and verify every signature.",
+      "summary": "Walk the journal chain and verify every signature. Below the reviewer role `events` counts the events the caller may read, as dg.events serves them, and `tip` names the last of them (GAPS 158).",
       "params": [],
       "returns": "object: {events, tip}"
     },
     {
+      "name": "dg.who_can_sign",
+      "role": "reviewer",
+      "summary": "Who may sign a held row, or a row of a kind the caller would write (ADR-0134 d3): the people who hold reviewer or admin and read on its space, never its writer, by name to an admin and by letter (A, B, ... in the people file's order) to anyone else, and the graders whose promote can count toward its k under the review mode and its class, each by its backend's words. In development the developer comes first on their own row with `self_signs`, and no demo person is listed on it; outside development no demo person is listed (ADR-0135 d2, d5). Refused to every API key, whatever its role or scope.",
+      "params": [
+        {
+          "name": "artifact_id",
+          "type": "string",
+          "required": false,
+          "description": "a held row; exactly one of artifact_id and content_type",
+          "readable": true
+        },
+        {
+          "name": "content_type",
+          "type": "string",
+          "required": false,
+          "description": "a kind the caller would write",
+          "enum": [
+            "derived_fact",
+            "imported_document",
+            "memory",
+            "prompt_template",
+            "question",
+            "skill",
+            "steering",
+            "summary"
+          ]
+        },
+        {
+          "name": "trust_class",
+          "type": "string",
+          "required": false,
+          "description": "with content_type: the class, else the kind's own"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "with content_type: the space it would be written in; absent, a space the caller would create, which the admins alone may sign in"
+        }
+      ],
+      "returns": "object: {people[{who, role, `you?`, self_signs?}], graders[{label, provider}], enough, words, notify} — `enough` is whether those listed can bring the row to its k with no one else, read through the count the auto pass reads; `words` the sentence a console prints; `notify` whether an events key reads the space, so an ask reaches a sink",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing; an API key is refused (doublegate_sdk.acts.WHO_CAN_SIGN_API_KEY)"
+      }
+    },
+    {
       "name": "dg.why",
-      "service": "both",
       "role": "reader",
-      "summary": "Every signed event about one artifact, in order — the provenance answer.",
+      "summary": "Every signed event about one artifact, in order — the provenance answer, with `self_signed` and `demo_signed`, whether its promotion rested on its author's or a demo person's signature (ADR-0135 d3). A reviewer may also name a journal key that is no row (a work area's, a group's); below the reviewer role only a row the caller may read is answered, and a payload's id of a row the caller may not read is null (GAPS 156).",
       "params": [
         {
           "name": "artifact_id",
           "type": "string",
           "required": true,
-          "description": ""
+          "description": "",
+          "readable": true
         }
       ],
-      "returns": "object: {artifact_id, events[]}"
+      "returns": "object: {artifact_id, producer, events[]} — `producer` is the row's, off its first ingest, null when it named none (ADR-0107 d1)",
+      "errors": {
+        "-32602": "unknown artifact: <the id's first 16 characters> — an id that names no row, and, below the reviewer role, a row the caller may not read: another identity's row that is not promoted, answered exactly as an id that names nothing"
+      }
+    },
+    {
+      "name": "dg.workarea",
+      "role": "agent",
+      "summary": "The caller's own work area from the inside (ADR-0102 d8): its own rows with their state, the promoted rows in it whoever wrote them, counts over those two by state, and the caller's own open or complete state. Another identity's rows that are not promoted are never in it, nor counted (ADR-0053, INV-SEC-10). The caller's recorded rows are evidence and are counted apart. Metadata only — ids, states and kinds, never content. The identity is the connection's (I2).",
+      "params": [
+        {
+          "name": "workarea",
+          "type": "string",
+          "required": true,
+          "description": "the work area, by its path"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "default main; must already exist"
+        }
+      ],
+      "returns": "object: {space, name, state: open|complete, counts{state: n}, rows[{artifact_id, state, kind, held, trust_class, producer}], recorded, producers[{name, kind, rows}]} — `producers` counts the rows shown by the producer each names (ADR-0107 d1)",
+      "errors": {
+        "-32602": "an unknown space, a name outside the grammar, or a work area the caller never wrote into — the same answer whether or not another identity did"
+      }
+    },
+    {
+      "name": "dg.workarea_relate",
+      "role": "agent",
+      "summary": "Relate one work area to another in the same space (ADR-0107 d2): `opened_by` (this area was opened by work in target: a subagent's area under its orchestrator's), `continues` (this area carries on target, which is complete) or `derived_from` (this area's work derives from target's promoted rows). The gate signs a `workarea-related` event under its own key, naming the caller as `by`. It changes no visibility, decides nothing and ranks nothing. An agent relates only an area it wrote into, to an area it wrote into or that holds a promoted row; a reviewer or an admin relates any area someone wrote into. A cycle, a missing target and a `continues` whose target is not complete are refused; the same relation again answers `changed: false` and journals nothing. `lift: true` withdraws a relation with a second event and is a reviewer's: nothing erases one.",
+      "params": [
+        {
+          "name": "workarea",
+          "type": "string",
+          "required": true,
+          "description": "the area that depends, by its path"
+        },
+        {
+          "name": "kind",
+          "type": "string",
+          "required": true,
+          "description": "how it relates to target (ADR-0107 d2)",
+          "enum": [
+            "opened_by",
+            "continues",
+            "derived_from"
+          ]
+        },
+        {
+          "name": "target",
+          "type": "string",
+          "required": true,
+          "description": "the area it depends on, in the same space"
+        },
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "default main; must already exist. Both areas are in it: cross-space lineage stays claim-level derives_from (ADR-0035 d1)"
+        },
+        {
+          "name": "note",
+          "type": "string",
+          "required": false,
+          "description": "why, for the journal"
+        },
+        {
+          "name": "producer",
+          "type": "object",
+          "required": false,
+          "description": "what produced this write, in the writer's own words (ADR-0107 d1): {name, kind}, kind one of agent, hook, person, tool and name one segment of the work-area grammar. Read by people and never checked as an authorization; the identity stays the connection's (I2). Rides the ingest event beside the work area, never the envelope, so it changes no artifact id"
+        },
+        {
+          "name": "lift",
+          "type": "boolean",
+          "required": false,
+          "description": "reviewer and admin only: withdraw the relation with a second event; a lift of a relation not in effect answers `changed: false`"
+        }
+      ],
+      "returns": "object: {space, workarea, kind, target, by, producer, note, lifted, changed, event_id?}",
+      "errors": {
+        "-32602": "an unknown space, a name outside the grammar, an unknown kind, a relation that would make a cycle among every relation in effect in the space (the refusal names no area; GAPS 106), a target this caller cannot relate to (one answer, whichever test failed), a continues whose target is not complete, an area the caller never wrote into, or an agent's lift"
+      }
+    },
+    {
+      "name": "dg.workareas",
+      "role": "reviewer",
+      "summary": "Every work area in a space, with each writer's own open or complete state and its rows counted by state (ADR-0102 d8): the reviewer's list of who is working where. Recorded rows are evidence and are not among the counts; `recorded` and `evidence_producers` count them beside them. Counts, never content.",
+      "params": [
+        {
+          "name": "space",
+          "type": "string",
+          "required": false,
+          "description": "default main; must already exist"
+        }
+      ],
+      "returns": "object: {space, workareas[{space, name, writers[{identity, state: open|complete, counts{state: n}, producers[{name, kind, rows}], recorded, evidence_producers[{name, kind, rows}]}]}]}",
+      "errors": {
+        "-32602": "an unknown space, or a caller below the reviewer role"
+      }
     }
   ],
   "declared_not_dispatched": [],
   "documents": {
     "mcp_tools": "docs/api/mcp-tools.json",
-    "note_schema": "docs/api/note.schema.json",
     "openapi": "docs/api/openapi.json and GET /openapi.json on this gate's loopback listener (any principal)",
     "mcp_catalog": "docs/api/mcp-catalog.json and GET /mcp/catalog.json (keyless, like POST /mcp)",
-    "docs_page": "GET /app#/api — the app's API view, the interactive rendering of the OpenAPI document (GET /docs redirects there)",
-    "org_openapi": "doublegate-org: docs/api/openapi.json and GET /openapi.json on the keyed surface",
-    "published": "https://doublegate-io.github.io/api/ (snapshot of all four, stamped with the commit) — https://doublegate-io.github.io/llms.txt first"
+    "docs_page": "GET /app#/api — the app's API view, the interactive rendering of the OpenAPI document",
+    "published": "https://doublegate-io.github.io/api/ (a snapshot, stamped with the commit) — https://doublegate-io.github.io/llms.txt first"
   }
 }

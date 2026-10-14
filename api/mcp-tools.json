@@ -1,5 +1,5 @@
 {
-  "protocol": "MCP; the tier is fixed by the binary launched (ADR-0034) or the endpoint reached (ADR-0050: POST /mcp — the client daemon's loopback listener keyless, the org gate's keyed surface with admin scope)",
+  "protocol": "MCP; the tier is fixed by the binary launched (ADR-0034) or the endpoint reached (ADR-0050: POST /mcp on the gate's loopback listener, keyless)",
   "tiers": {
     "plugin": {
       "binary": "doublegate-plugin",
@@ -9,7 +9,7 @@
       ],
       "memory_provider": true,
       "installable_on": "any harness host",
-      "instructions": "doublegate, in-harness tier: gated memory that works with no gate running. `doublegate.remember` files a claim and returns a handle — `local:` when no gate was reachable, `sha256:` once a gate stamped it — never a promise of admission; nothing you remember is readable to anyone until a reviewer that did not write it promotes it. `doublegate.recall` returns admitted beliefs plus this session's own unreviewed writes, marked `ratified: false`. Call `remember` when something durable is settled — a correction the user made, a convention this repo agreed, a decision with its reason; a claim with no reason gives a reviewer nothing to weigh. Call `recall` before answering from your own recollection of the store, and read an empty result as the gate working rather than the store being empty. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool: the thing being gated does not operate the gate. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
+      "instructions": "doublegate, in-harness tier: gated memory that works with no gate running. `doublegate.remember` files a claim and returns a handle — `local:` when no gate was reachable, `sha256:` once a gate stamped it — never a promise of admission; nothing you remember is readable to anyone until a reviewer that did not write it promotes it. `doublegate.recall` returns admitted beliefs plus this session's own unreviewed writes, marked `ratified: false`. Call `remember` when something durable is settled — a correction the user made, a convention this repo agreed, a decision with its reason; a claim with no reason gives a reviewer nothing to weigh. Call `recall` before answering from your own recollection of the store, and read an empty result as the gate working rather than the store being empty. Your writes go into this session's own work area, `plugin/<session>`: `doublegate.workarea` shows it and `doublegate.complete` closes it when the session's work is done, after which it takes no more writes. A subagent writes into `plugin/<session>/<name>`, and its first write there is related `opened_by` the session's area for you; a write may name its `producer`, the main thread `{name: main, kind: agent}`, and `doublegate.lineage` draws the work areas of a space and how they relate. `doublegate.recall` with no work area searches the whole space, rows from other sessions and from before work areas included; with a `workarea` it searches that area, then each parent, up to the first level that answers, and `scope: \"all\"` searches every space. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool: the thing being gated does not operate the gate. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
       "tools": [
         {
           "name": "doublegate.remember",
@@ -23,19 +23,19 @@
               },
               "content_type": {
                 "type": "string",
-                "description": "a class from the artifact taxonomy; an unregistered value is accepted and quarantined under the strictest policy (FR-18)"
+                "description": "a kind — memory, derived_fact, summary, steering, skill, prompt_template, imported_document — whose trust class the gate derives, or a recorded-path class (session, message, tool_call, …) kept as evidence and never graded; any other value is refused by name (ADR-0102 d8, d9). The class follows the kind and is never an argument: a call carrying trust_class is refused by name"
               },
               "source_uri": {
                 "type": "string",
                 "description": "provider, environment or import origin"
               },
-              "trust_class": {
-                "type": "string",
-                "description": "T-0..T-5 — a PROPOSAL; the scanner may reclassify (ADR-0021)"
-              },
               "space": {
                 "type": "string",
                 "description": "target space; defaults to 'main' (ADR-0023)"
+              },
+              "workarea": {
+                "type": "string",
+                "description": "the work area this is remembered into (ADR-0102 d1): a path of up to 8 segments joined by '/'. The client gate refuses a write that names none; on the plugin tier it is this session's own and may be left out. It comes into being with your first write, grants nothing and creates no space"
               },
               "derives_from": {
                 "type": "array",
@@ -43,6 +43,55 @@
                   "type": "string"
                 },
                 "description": "zero or more parent artifact ids; always a list (ADR-0016)"
+              },
+              "producer": {
+                "type": "object",
+                "description": "which agent, hook, person or tool wrote this, in your own words (ADR-0107 d1): a subagent names itself, the main thread is {name: main, kind: agent}. Read by people, never an identity and never an authorization",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "one segment of the work-area grammar"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "agent",
+                      "hook",
+                      "person",
+                      "tool"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "kind"
+                ],
+                "additionalProperties": false
+              },
+              "addressed_to": {
+                "type": "object",
+                "description": "on a steering write only: the producers it is for, by name, by kind, or both, which narrow together; the writer's own word, never a grant. Refused on any other kind, and when both lists are empty (ADR-0116 d18)",
+                "properties": {
+                  "names": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "kinds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "agent",
+                        "hook",
+                        "person",
+                        "tool"
+                      ]
+                    }
+                  }
+                },
+                "additionalProperties": false
               }
             },
             "required": [
@@ -83,19 +132,31 @@
         },
         {
           "name": "doublegate.recall",
-          "description": "Search ratified beliefs and recorded evidence. Returns provenance with every result.",
+          "description": "Search ratified beliefs and recorded evidence in one scope (ADR-0102 d5). Returns provenance with every result, each hit's work area, its distance from where the search started and whether it is your own held row, and names the scope and the level that answered.",
           "inputSchema": {
             "type": "object",
             "properties": {
               "query": {
-                "type": "string"
+                "type": "string",
+                "description": "what to search for; may be left out when a work area is named, and the answer is then the steering in force there and no hits (ADR-0116 d19)"
               },
-              "spaces": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "spaces to search; omitted means the caller's default space only — never all spaces (ADR-0023)"
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "closest",
+                  "workarea",
+                  "space",
+                  "all"
+                ],
+                "description": "which rows are searched: closest walks from a work area up its path to the first level that answers; workarea reads that one work area; space every work area in one space; all every space this gate declares. Default: closest when a work area is named, space when none is"
+              },
+              "workarea": {
+                "type": "string",
+                "description": "where closest starts its walk, or the one work area workarea reads; required by those two scopes and refused under space and all"
+              },
+              "space": {
+                "type": "string",
+                "description": "the space searched; defaults to 'main' and must already exist; refused under all"
               },
               "k": {
                 "type": "integer",
@@ -109,7 +170,7 @@
               "include_provisional": {
                 "type": "boolean",
                 "default": true,
-                "description": "FR-12 content, ranked with a penalty; excluding it is allowed, hiding it silently is not"
+                "description": "FR-12 content: marked provisional on the hit and ranked as any other (ADR-0110 d6); excluding it is allowed, hiding it silently is not"
               },
               "include_superseded": {
                 "type": "boolean",
@@ -117,8 +178,12 @@
                 "description": "ADR-0035 d5: chain members a later head replaced are hidden by default; true returns them, each marked provenance.superseded"
               },
               "audience": {
-                "type": "string",
-                "description": "ADR-0052 d2: the reader's preference, an argument never an identity — each hit's fused score is multiplied by its rank for this audience (1.0 when none) and hides for it apply; omitted = today's answer, byte for byte"
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "default": null,
+                "description": "ADR-0052 d2: the reader's preference, an argument never an identity — hides for it apply and it weights nothing (ADR-0110 d6); omitted or null = only a hide for all applies"
               },
               "include_hidden": {
                 "type": "boolean",
@@ -128,12 +193,41 @@
               "include_own_pending": {
                 "type": "boolean",
                 "default": true,
-                "description": "ADR-0053 d2 (FR-13): your own scanned, unflagged claims still awaiting review are appended after the ranked hits, each `ratified: false` and `provenance.unreviewed: true` — they may be rejected later and vanish; nobody else's pending claims are ever returned"
+                "description": "ADR-0053 d2 (FR-13): your own scanned, unflagged claims still awaiting review, from the levels the scope searched, are appended after the ranked hits, each `held: true` and `ratified: false` — they may be rejected later and vanish; nobody else's pending claims are ever returned"
+              },
+              "producer": {
+                "type": "object",
+                "description": "the producer you declare yourself to be, the shape remember takes; narrows the steering answered to the rows with no address and the rows addressed to it, and never orders anything (ADR-0116 d18)",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "one segment of the work-area grammar"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "agent",
+                      "hook",
+                      "person",
+                      "tool"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "kind"
+                ],
+                "additionalProperties": false
+              },
+              "steering_k": {
+                "type": "integer",
+                "default": 5,
+                "minimum": 1,
+                "maximum": 20,
+                "description": "how many rows of the steering in force are answered; the rest are counted in steering_omitted (ADR-0116 d19)"
               }
             },
-            "required": [
-              "query"
-            ],
+            "required": [],
             "additionalProperties": false
           },
           "annotations": {
@@ -180,6 +274,151 @@
             "readOnlyHint": true,
             "idempotentHint": true
           }
+        },
+        {
+          "name": "doublegate.workarea",
+          "description": "Your own part of one work area (ADR-0102 d8): your rows there with their state, the promoted rows in it whoever wrote them, counts over those two, and whether your part is open or complete. Metadata only, never content; another writer's rows still waiting for review are never shown or counted. A work area you never wrote into is refused.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "workarea": {
+                "type": "string",
+                "minLength": 1
+              },
+              "space": {
+                "type": "string",
+                "description": "defaults to 'main'"
+              }
+            },
+            "required": [
+              "workarea"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.complete",
+          "description": "Mark your own part of a work area done (ADR-0102 d6). Your later writes into it are refused with -32010 and reason work_complete; reads go on, and nothing in it is promoted, released or reviewed any sooner. There is no reopen: new work goes into a new work area. Completing twice changes nothing.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "workarea": {
+                "type": "string",
+                "minLength": 1
+              },
+              "space": {
+                "type": "string",
+                "description": "defaults to 'main'"
+              },
+              "note": {
+                "type": "string",
+                "description": "why, for the journal"
+              }
+            },
+            "required": [
+              "workarea"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.workarea_relate",
+          "description": "Say how one of your work areas relates to another in its space (ADR-0107 d2): opened_by (it was opened by work in target, as a subagent's area under its orchestrator's), continues (it carries on target, which you completed) or derived_from (its work derives from target's promoted rows). The gate records it, signed, naming you; it changes no visibility and decides nothing. You relate only an area you wrote into, to one you wrote into or one that holds a promoted row. A cycle is refused; asking twice changes nothing. There is no unlink here: only a reviewer withdraws a relation.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "workarea": {
+                "type": "string",
+                "minLength": 1
+              },
+              "kind": {
+                "type": "string",
+                "enum": [
+                  "opened_by",
+                  "continues",
+                  "derived_from"
+                ]
+              },
+              "target": {
+                "type": "string",
+                "minLength": 1
+              },
+              "space": {
+                "type": "string",
+                "description": "defaults to 'main'"
+              },
+              "note": {
+                "type": "string",
+                "description": "why, for the journal"
+              },
+              "producer": {
+                "type": "object",
+                "description": "which agent, hook, person or tool wrote this, in your own words (ADR-0107 d1): a subagent names itself, the main thread is {name: main, kind: agent}. Read by people, never an identity and never an authorization",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "one segment of the work-area grammar"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "agent",
+                      "hook",
+                      "person",
+                      "tool"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "kind"
+                ],
+                "additionalProperties": false
+              }
+            },
+            "required": [
+              "workarea",
+              "kind",
+              "target"
+            ],
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": false,
+            "destructiveHint": false,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.lineage",
+          "description": "The work areas of a space as a graph (ADR-0107 d3): each area with its writers, their open or complete state, its producers and how many rows are promoted or held, and edges that say where they came from — path (a/b sits under a), declared (a relation someone recorded) or derived (promoted rows citing rows in another area, counted). Name a workarea to see it with its ancestors, its sub-areas and its neighbours. Metadata only; another writer's rows still waiting for review are never shown or counted.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "space": {
+                "type": "string",
+                "description": "defaults to 'main'"
+              },
+              "workarea": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
         }
       ]
     },
@@ -191,7 +430,7 @@
       ],
       "memory_provider": true,
       "installable_on": "any harness host",
-      "instructions": "doublegate, client-gate tier: the gate on this host. `doublegate.remember` scans the content before it answers and returns an artifact id and a state (`L1_SCANNED`, or `L1B_FLAGGED` with a findings count and no finding text); content is NOT retrievable to others until ratified — a reviewer that did not write it must sign. `doublegate.recall` searches the admitted store plus YOUR OWN scanned claims still awaiting review, each marked `ratified: false` — treat those as tentative, they may be rejected and vanish; never anyone else's quarantine. Provisional hits are marked, superseded ones hidden unless `include_superseded`. Call `remember` when something durable is settled — a correction the user made, a convention this repo agreed, a decision with its reason. Call `recall` before answering a question the store may already answer; an empty result usually means nothing has cleared review yet, so check `pending` and `why` before concluding the store is empty. `doublegate.why` is the signed audit trail of one artifact; `doublegate.tip` the served head of its supersession chain; `doublegate.pending` what waits, as metadata only. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
+      "instructions": "doublegate, client-gate tier: the gate on this host. `doublegate.remember` scans the content before it answers and returns an artifact id and a state (`L1_SCANNED`, or `L1B_FLAGGED` with a findings count and no finding text); content is NOT retrievable to others until ratified — a reviewer that did not write it must sign. `doublegate.recall` searches the admitted store plus YOUR OWN scanned claims still awaiting review, each marked `ratified: false` — treat those as tentative, they may be rejected and vanish; never anyone else's quarantine. Provisional hits are marked, superseded ones hidden unless `include_superseded`. Call `remember` when something durable is settled — a correction the user made, a convention this repo agreed, a decision with its reason. Call `recall` before answering a question the store may already answer; an empty result usually means nothing has cleared review yet, so check `pending` and `why` before concluding the store is empty. `doublegate.why` is the signed audit trail of one artifact; `doublegate.tip` the served head of its supersession chain; `doublegate.pending` what waits, as metadata only. Every `remember` names a `workarea`, a path such as `repo/topic` that keeps related work together, and one naming none is refused: it comes into being with your first write and grants nothing; `doublegate.workarea` shows your own part of it and `doublegate.complete` closes your part, after which your writes there are refused and nothing is released any sooner. `doublegate.recall` with a `workarea` searches it, then each parent, up to the first level that answers; `scope` names `workarea`, `space` (the default with no work area) or `all` instead. A recall that names a work area also answers `steering`, the reviewed directions in force at that place and above it, apart from the results and never among them; with a work area the `query` may be left out to read them alone, and `producer` narrows them to the ones addressed to you. Cite a steering row you act on in `derives_from`. A write may name its `producer`, the agent, hook, person or tool that wrote it; `doublegate.workarea_relate` records how one of your work areas relates to another (opened_by, continues, derived_from), and `doublegate.lineage` draws a space's work areas and how they relate. Do not send `writer_identity` or `deployment_id`: identity is derived from the connection and a request carrying it is refused. There is no promote, sign, delete or trust-class tool. Machine-readable API: https://doublegate-io.github.io/llms.txt, then /api/.",
       "tools": [
         {
           "name": "doublegate.remember",
@@ -205,19 +444,19 @@
               },
               "content_type": {
                 "type": "string",
-                "description": "a class from the artifact taxonomy; an unregistered value is accepted and quarantined under the strictest policy (FR-18)"
+                "description": "a kind — memory, derived_fact, summary, steering, skill, prompt_template, imported_document — whose trust class the gate derives, or a recorded-path class (session, message, tool_call, …) kept as evidence and never graded; any other value is refused by name (ADR-0102 d8, d9). The class follows the kind and is never an argument: a call carrying trust_class is refused by name"
               },
               "source_uri": {
                 "type": "string",
                 "description": "provider, environment or import origin"
               },
-              "trust_class": {
-                "type": "string",
-                "description": "T-0..T-5 — a PROPOSAL; the scanner may reclassify (ADR-0021)"
-              },
               "space": {
                 "type": "string",
                 "description": "target space; defaults to 'main' (ADR-0023)"
+              },
+              "workarea": {
+                "type": "string",
+                "description": "the work area this is remembered into (ADR-0102 d1): a path of up to 8 segments joined by '/'. The client gate refuses a write that names none; on the plugin tier it is this session's own and may be left out. It comes into being with your first write, grants nothing and creates no space"
               },
               "derives_from": {
                 "type": "array",
@@ -225,6 +464,55 @@
                   "type": "string"
                 },
                 "description": "zero or more parent artifact ids; always a list (ADR-0016)"
+              },
+              "producer": {
+                "type": "object",
+                "description": "which agent, hook, person or tool wrote this, in your own words (ADR-0107 d1): a subagent names itself, the main thread is {name: main, kind: agent}. Read by people, never an identity and never an authorization",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "one segment of the work-area grammar"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "agent",
+                      "hook",
+                      "person",
+                      "tool"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "kind"
+                ],
+                "additionalProperties": false
+              },
+              "addressed_to": {
+                "type": "object",
+                "description": "on a steering write only: the producers it is for, by name, by kind, or both, which narrow together; the writer's own word, never a grant. Refused on any other kind, and when both lists are empty (ADR-0116 d18)",
+                "properties": {
+                  "names": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "kinds": {
+                    "type": "array",
+                    "items": {
+                      "type": "string",
+                      "enum": [
+                        "agent",
+                        "hook",
+                        "person",
+                        "tool"
+                      ]
+                    }
+                  }
+                },
+                "additionalProperties": false
               }
             },
             "required": [
@@ -265,19 +553,31 @@
         },
         {
           "name": "doublegate.recall",
-          "description": "Search ratified beliefs and recorded evidence. Returns provenance with every result.",
+          "description": "Search ratified beliefs and recorded evidence in one scope (ADR-0102 d5). Returns provenance with every result, each hit's work area, its distance from where the search started and whether it is your own held row, and names the scope and the level that answered.",
           "inputSchema": {
             "type": "object",
             "properties": {
               "query": {
-                "type": "string"
+                "type": "string",
+                "description": "what to search for; may be left out when a work area is named, and the answer is then the steering in force there and no hits (ADR-0116 d19)"
               },
-              "spaces": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                },
-                "description": "spaces to search; omitted means the caller's default space only — never all spaces (ADR-0023)"
+              "scope": {
+                "type": "string",
+                "enum": [
+                  "closest",
+                  "workarea",
+                  "space",
+                  "all"
+                ],
+                "description": "which rows are searched: closest walks from a work area up its path to the first level that answers; workarea reads that one work area; space every work area in one space; all every space this gate declares. Default: closest when a work area is named, space when none is"
+              },
+              "workarea": {
+                "type": "string",
+                "description": "where closest starts its walk, or the one work area workarea reads; required by those two scopes and refused under space and all"
+              },
+              "space": {
+                "type": "string",
+                "description": "the space searched; defaults to 'main' and must already exist; refused under all"
               },
               "k": {
                 "type": "integer",
@@ -291,7 +591,7 @@
               "include_provisional": {
                 "type": "boolean",
                 "default": true,
-                "description": "FR-12 content, ranked with a penalty; excluding it is allowed, hiding it silently is not"
+                "description": "FR-12 content: marked provisional on the hit and ranked as any other (ADR-0110 d6); excluding it is allowed, hiding it silently is not"
               },
               "include_superseded": {
                 "type": "boolean",
@@ -299,8 +599,12 @@
                 "description": "ADR-0035 d5: chain members a later head replaced are hidden by default; true returns them, each marked provenance.superseded"
               },
               "audience": {
-                "type": "string",
-                "description": "ADR-0052 d2: the reader's preference, an argument never an identity — each hit's fused score is multiplied by its rank for this audience (1.0 when none) and hides for it apply; omitted = today's answer, byte for byte"
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "default": null,
+                "description": "ADR-0052 d2: the reader's preference, an argument never an identity — hides for it apply and it weights nothing (ADR-0110 d6); omitted or null = only a hide for all applies"
               },
               "include_hidden": {
                 "type": "boolean",
@@ -310,12 +614,41 @@
               "include_own_pending": {
                 "type": "boolean",
                 "default": true,
-                "description": "ADR-0053 d2 (FR-13): your own scanned, unflagged claims still awaiting review are appended after the ranked hits, each `ratified: false` and `provenance.unreviewed: true` — they may be rejected later and vanish; nobody else's pending claims are ever returned"
+                "description": "ADR-0053 d2 (FR-13): your own scanned, unflagged claims still awaiting review, from the levels the scope searched, are appended after the ranked hits, each `held: true` and `ratified: false` — they may be rejected later and vanish; nobody else's pending claims are ever returned"
+              },
+              "producer": {
+                "type": "object",
+                "description": "the producer you declare yourself to be, the shape remember takes; narrows the steering answered to the rows with no address and the rows addressed to it, and never orders anything (ADR-0116 d18)",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "one segment of the work-area grammar"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "agent",
+                      "hook",
+                      "person",
+                      "tool"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "kind"
+                ],
+                "additionalProperties": false
+              },
+              "steering_k": {
+                "type": "integer",
+                "default": 5,
+                "minimum": 1,
+                "maximum": 20,
+                "description": "how many rows of the steering in force are answered; the rest are counted in steering_omitted (ADR-0116 d19)"
               }
             },
-            "required": [
-              "query"
-            ],
+            "required": [],
             "additionalProperties": false
           },
           "annotations": {
@@ -406,61 +739,66 @@
           }
         },
         {
-          "name": "doublegate.rank",
-          "description": "Weight a promoted claim for one audience (ADR-0052). recall(audience=…) multiplies the hit by it; 1.0 when none — less likely, never absent. Any non-writer identity may rank, human or agent; the claim's own writer is refused (I2). The audience is a string you choose.",
+          "name": "doublegate.spaces",
+          "description": "The folders this gate partitions its store into (ADR-0023): each space's name, owner, review policy and how many artifacts are in it. Read this before passing `space` to remember or recall — a space nobody declared is refused rather than opened, so a name you invent will not work and a name you mistype is the reason a memory is never found again. There is no tool here to create one: declaring a partition is the operator's, on every tier and every transport.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {},
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.workarea",
+          "description": "Your own part of one work area (ADR-0102 d8): your rows there with their state, the promoted rows in it whoever wrote them, counts over those two, and whether your part is open or complete. Metadata only, never content; another writer's rows still waiting for review are never shown or counted. A work area you never wrote into is refused.",
           "inputSchema": {
             "type": "object",
             "properties": {
-              "artifact_id": {
-                "type": "string",
-                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
-              },
-              "audience": {
+              "workarea": {
                 "type": "string",
                 "minLength": 1
               },
-              "weight": {
-                "type": "number",
-                "exclusiveMinimum": 0,
-                "maximum": 10.0
-              },
-              "reason": {
-                "type": "string"
+              "space": {
+                "type": "string",
+                "description": "defaults to 'main'"
               }
             },
             "required": [
-              "artifact_id",
-              "audience",
-              "weight"
+              "workarea"
             ],
             "additionalProperties": false
           },
-          "outputSchema": {
+          "annotations": {
+            "readOnlyHint": true,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.complete",
+          "description": "Mark your own part of a work area done (ADR-0102 d6). Your later writes into it are refused with -32010 and reason work_complete; reads go on, and nothing in it is promoted, released or reviewed any sooner. There is no reopen: new work goes into a new work area. Completing twice changes nothing.",
+          "inputSchema": {
             "type": "object",
             "properties": {
-              "artifact_id": {
+              "workarea": {
                 "type": "string",
-                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+                "minLength": 1
               },
-              "audience": {
-                "type": "string"
+              "space": {
+                "type": "string",
+                "description": "defaults to 'main'"
               },
-              "weight": {
-                "type": "number"
-              },
-              "event_id": {
-                "type": "string"
-              },
-              "ranks": {
-                "type": "object"
+              "note": {
+                "type": "string",
+                "description": "why, for the journal"
               }
             },
             "required": [
-              "artifact_id",
-              "audience",
-              "weight",
-              "event_id"
-            ]
+              "workarea"
+            ],
+            "additionalProperties": false
           },
           "annotations": {
             "readOnlyHint": false,
@@ -469,108 +807,92 @@
           }
         },
         {
-          "name": "doublegate.hide",
-          "description": "Stop serving a promoted claim to one audience, or to all — reversibly (ADR-0052 d4). The claim stays active and why-able; include_hidden returns it. lift=true reverses. A hide for `all` by a non-operator is journaled `lowered` and listed by doctor. Ending a claim is the operator's demote.",
+          "name": "doublegate.workarea_relate",
+          "description": "Say how one of your work areas relates to another in its space (ADR-0107 d2): opened_by (it was opened by work in target, as a subagent's area under its orchestrator's), continues (it carries on target, which you completed) or derived_from (its work derives from target's promoted rows). The gate records it, signed, naming you; it changes no visibility and decides nothing. You relate only an area you wrote into, to one you wrote into or one that holds a promoted row. A cycle is refused; asking twice changes nothing. There is no unlink here: only a reviewer withdraws a relation.",
           "inputSchema": {
             "type": "object",
             "properties": {
-              "artifact_id": {
+              "workarea": {
                 "type": "string",
-                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
+                "minLength": 1
               },
-              "audience": {
-                "type": "string",
-                "minLength": 1,
-                "default": "all"
-              },
-              "reason": {
-                "type": "string"
-              },
-              "lift": {
-                "type": "boolean",
-                "default": false
-              }
-            },
-            "required": [
-              "artifact_id"
-            ],
-            "additionalProperties": false
-          },
-          "outputSchema": {
-            "type": "object",
-            "properties": {
-              "artifact_id": {
-                "type": "string",
-                "description": "sha256:<64 hex> — always prefixed on the wire (§4)"
-              },
-              "audience": {
-                "type": "string"
-              },
-              "hidden": {
-                "type": "boolean"
-              },
-              "event_id": {
-                "type": "string"
-              },
-              "hidden_for": {
-                "type": "array",
-                "items": {
-                  "type": "string"
-                }
-              }
-            },
-            "required": [
-              "artifact_id",
-              "audience",
-              "hidden",
-              "event_id",
-              "hidden_for"
-            ]
-          },
-          "annotations": {
-            "readOnlyHint": false,
-            "destructiveHint": false,
-            "idempotentHint": true
-          }
-        },
-        {
-          "name": "doublegate.ban",
-          "description": "Refuse a writer's, or a source prefix's, next remember at the door (ADR-0052 d6) — operator only; an agent calling this is refused. Touches nothing already admitted.",
-          "inputSchema": {
-            "type": "object",
-            "properties": {
               "kind": {
                 "type": "string",
                 "enum": [
-                  "writer",
-                  "source"
+                  "opened_by",
+                  "continues",
+                  "derived_from"
                 ]
               },
-              "subject": {
+              "target": {
                 "type": "string",
                 "minLength": 1
               },
-              "reason": {
-                "type": "string"
+              "space": {
+                "type": "string",
+                "description": "defaults to 'main'"
               },
-              "until": {
-                "type": "integer",
-                "description": "ms epoch; omitted = until lifted"
+              "note": {
+                "type": "string",
+                "description": "why, for the journal"
               },
-              "lift": {
-                "type": "boolean",
-                "default": false
+              "producer": {
+                "type": "object",
+                "description": "which agent, hook, person or tool wrote this, in your own words (ADR-0107 d1): a subagent names itself, the main thread is {name: main, kind: agent}. Read by people, never an identity and never an authorization",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "one segment of the work-area grammar"
+                  },
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "agent",
+                      "hook",
+                      "person",
+                      "tool"
+                    ]
+                  }
+                },
+                "required": [
+                  "name",
+                  "kind"
+                ],
+                "additionalProperties": false
               }
             },
             "required": [
+              "workarea",
               "kind",
-              "subject"
+              "target"
             ],
             "additionalProperties": false
           },
           "annotations": {
             "readOnlyHint": false,
             "destructiveHint": false,
+            "idempotentHint": true
+          }
+        },
+        {
+          "name": "doublegate.lineage",
+          "description": "The work areas of a space as a graph (ADR-0107 d3): each area with its writers, their open or complete state, its producers and how many rows are promoted or held, and edges that say where they came from — path (a/b sits under a), declared (a relation someone recorded) or derived (promoted rows citing rows in another area, counted). Name a workarea to see it with its ancestors, its sub-areas and its neighbours. Metadata only; another writer's rows still waiting for review are never shown or counted.",
+          "inputSchema": {
+            "type": "object",
+            "properties": {
+              "space": {
+                "type": "string",
+                "description": "defaults to 'main'"
+              },
+              "workarea": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "additionalProperties": false
+          },
+          "annotations": {
+            "readOnlyHint": true,
             "idempotentHint": true
           }
         }

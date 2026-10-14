@@ -3,11 +3,13 @@
 happened once already.
 
 Run:  python3 check.py
+      python3 check.py --selftest   # gates 22 and 24 on the SDK's word-list fixture
 Exit non-zero on any failure, so it can be wired into CI as-is.
 """
 from __future__ import annotations
 
 import html as H
+import json
 import re
 import sys
 from pathlib import Path
@@ -26,6 +28,24 @@ LEAKS = {
     "trust class": r"\bT-[0-4]\b",
     "sub-level": r"\bL[0-3]b?\b(?!\w)",
     "jargon": r"\b(?:quorum|limbo|k-of-n|MCP|MemoryService|hybrid retrieval|FTS|rerank)\b",
+}
+
+# 5c. words the decided vocabulary retired (design ADR-0104 d8), in visible copy.
+#     Found 2026-10-06 by reading the seven rewritten pages in order: three pages
+#     said "an agent key", "the author's own key" and "the gate's key" where the
+#     rest said "an agent-role API key" and "the gate's signing key", and every
+#     gate here was green, because the vocabulary list lived in a plan and a grep.
+#     A bare "key" names two different things on this site (a program's API key,
+#     the gate's signing key) and a reader cannot tell which. "key rotation" and a
+#     JWT "key set" are the compound nouns, not the bare word. The phrases below
+#     are the retired senses no page may carry in any sense, so a match is never
+#     a legitimate use; a word that is retired in one sense only ("approval",
+#     "refused", "folder") is read by hand instead.
+RETIRED = {
+    "bare key": r"(?<!API )(?<!signing )\bkeys?\b(?! (?:rotation|set)\b)",
+    "retired word": r"\b(?:per folder|piece of work|pending review|projection|withdraw\w*|assess\w*"
+                    r"|publication|two-stage|trust score|preparation models?|admission|admit\w*"
+                    r"|ledger|inbox)\b",
 }
 
 fails: list[str] = []
@@ -48,6 +68,74 @@ def visible(markup: str) -> str:
     out = re.sub(r"(?is)<(script|style)[^>]*>.*?</\1>", " ", markup)
     out = re.sub(r'\b(?:href|src|alt|content)="[^"]*"', " ", out)
     return H.unescape(re.sub(r"(?s)<[^>]+>", " ", out))
+
+
+# 24 and 25 read the word list (ADR-0137 d6, d7; 29 — Words §8, §9). The site
+#     cannot import the SDK, so it keeps a byte-for-byte copy, voice.json beside
+#     this file, refreshed by one `cp` from the SDK's in the commit that changes
+#     it; gate 25 holds the two equal. Every pattern is in the dialect Python's re
+#     and JavaScript's RegExp read alike, case spelled in the pattern; ai_tells
+#     alone is matched ignoring case. An entry whose `except` names this package
+#     does not bind it: the site keeps "we" for the company's own commitments.
+PACKAGE = "doublegate-site"
+VOICE_COPY = ROOT / "voice.json"
+VOICE_SDK = ROOT.parent / "doublegate-sdk" / "src" / "doublegate_sdk" / "voice.json"
+VOICE_FIXTURE = VOICE_SDK.with_name("voice_fixture.json")
+VOICE_CP = "cp doublegate-sdk/src/doublegate_sdk/voice.json doublegate-site/voice.json"
+VOICE = json.loads(VOICE_COPY.read_text("utf-8"))
+AI_TELL = re.compile("|".join(VOICE["ai_tells"]), re.I)
+VOICE_ENTRIES = (
+    [("second_person", "the second person", re.compile(VOICE["second_person"]))]
+    + [("banned", e["word"], re.compile(e["pattern"]))
+       for e in VOICE["banned"] if PACKAGE not in e.get("except", ())]
+    + [("prefer", e["avoid"], re.compile(e["pattern"])) for e in VOICE["prefer"]]
+)
+VOICE_ALLOW = {e["text"] for e in VOICE["allow"]}
+# a span between backticks on one line is code a program reads (29 §8, 2026-10-11)
+VOICE_CODE = re.compile(r"`[^`\n]*`")
+
+
+def voice_findings(text: str) -> list[tuple[str, str, re.Match]]:
+    """Each entry of the word list `text` breaks, as (section, entry, match):
+    the second person, a banned word, a phrase the list retires. Text equal to an
+    `allow` entry breaks nothing."""
+    if text in VOICE_ALLOW:
+        return []
+    text = VOICE_CODE.sub(" ", text)
+    return [(sec, word, m) for sec, word, pat in VOICE_ENTRIES for m in pat.finditer(text)]
+
+
+def voice_selftest() -> list[str]:
+    """Gate 24's matcher and gate 22's AI tells on the SDK's fixture: each case's
+    `catches` sentence is caught by its entry and its `passes` sentence by none,
+    except an entry whose `except` names the site, which catches nothing here.
+    Returns the problems; an empty list is a pass."""
+    excepted = {e["word"] for e in VOICE["banned"] if PACKAGE in e.get("except", ())}
+    problems = []
+    for case in json.loads(VOICE_FIXTURE.read_text("utf-8"))["cases"]:
+        section, entry = case["section"], case["entry"]
+        if section == "ai_tells":
+            caught = bool(AI_TELL.search(VOICE_CODE.sub(" ", case["catches"])))
+        else:
+            name = "the second person" if section == "second_person" else entry
+            caught = name in {word for _, word, _ in voice_findings(case["catches"])}
+        if caught == (entry in excepted):
+            problems.append(f"{section} {entry!r}: {'caught' if caught else 'missed'} {case['catches']!r}")
+        if voice_findings(case["passes"]) or AI_TELL.search(VOICE_CODE.sub(" ", case["passes"])):
+            problems.append(f"{section} {entry!r}: caught the passing {case['passes']!r}")
+    return problems
+
+
+if "--selftest" in sys.argv[1:]:
+    if not VOICE_FIXTURE.exists():
+        print(f"SKIP — the SDK's fixture is absent ({VOICE_FIXTURE}); a checkout of the site alone")
+        sys.exit(0)
+    found = voice_selftest()
+    for problem in found:
+        print(f"  · {problem}")
+    print(f"{'FAIL' if found else 'PASS'} — self-test: gates 22 and 24 on the SDK's fixture, "
+          f"{len(json.loads(VOICE_FIXTURE.read_text('utf-8'))['cases'])} cases")
+    sys.exit(1 if found else 0)
 
 
 # scratch files (.tmp_*) are probes, not pages — scanning them produced 14
@@ -112,6 +200,11 @@ for page in pages:
         hits = set(re.findall(pattern, body, re.I))
         if hits:
             fail(f"{name}: {label} leak -> {sorted(hits)}")
+    flat = re.sub(r"\s+", " ", body)
+    for label, pattern in RETIRED.items():
+        hits = sorted({m.group(0) for m in re.finditer(pattern, flat, re.I)})
+        if hits:
+            fail(f"{name}: {label} in visible copy (ADR-0104 d8) -> {hits}")
 
     # 5b. every chapter heading links to its own section. build.py stamps these
     #     from the section id, so a mismatch means a heading was hand-anchored
@@ -226,16 +319,8 @@ for page in pages:
 if len({tuple(v) for v in navs.values()}) > 1:
     fail(f"nav differs between pages: {navs}")
 
-# 10. the SVG's motion paths must resolve, or artifacts animate to nowhere.
-svg_path = ROOT / "assets" / "artifact-flow.svg"
-if svg_path.exists():
-    svg = svg_path.read_text()
-    svg_ids = set(re.findall(r'id="([^"]+)"', svg))
-    for ref in re.findall(r'<mpath[^>]*(?:xlink:)?href="#([^"]+)"', svg):
-        if ref not in svg_ids:
-            fail(f"artifact-flow.svg: mpath -> missing #{ref}")
-else:
-    fail("artifact-flow.svg missing")
+# 10. retired 2026-10-06: it checked the motion paths of artifact-flow.svg, which
+#     left the site with cost-flow.svg when both figures became HTML markup.
 
 
 # 11. the repo README's inline HTML must stay well-formed. A string replacement
@@ -375,8 +460,8 @@ else:
 #     honesty list onto three pages as copy — "read permissions have no design
 #     yet — scheduled, not drawn", "designed, not shipped" — and every gate here
 #     stayed green, because none had an opinion on phase language. Three commits
-#     to unwind. The rule (site AGENTS.md rule 1): the phase is stated once, as a
-#     dated release (build.py FIRST_RELEASE); every limit is a dated roadmap item;
+#     to unwind. The rule (site AGENTS.md rule 1): what ships next is stated once
+#     (build.py NEXT_STEPS), in order and undated until its acceptance list passes;
 #     nothing on a visitor-facing page says what does not exist. Same for the
 #     older class of defensive framing ("we are not claiming", "not just another")
 #     and negative-chapter headings ("What we will not tell you").
@@ -609,19 +694,11 @@ if (ROOT / "sky-data.py").exists() and (ROOT / "tests" / "fixtures" / "org-feed.
 #     language) all reach them — which is the second reason markup beats an
 #     image, and the reason a returning SVG must not pass silently.
 FIGURE_COPY = {
-    "commons-for-business.html": ("ladder", [
-        "Four scopes — separate authority at each boundary",
-        "you, on your own machine",
-        "a group sharing one gate",
-        "many teams, one authority",
-        "anyone, outside your company",
-        "Wider reuse requires review, current access and publishing permission",
-    ]),
     "governance.html": ("record", [
         "One signed record — what it holds, and what each field is for",
         "The requirement it answers",
-        "AI assessor and distinct authorized AI or human decider — neither the author",
-        "over every field above — verifiable without asking us",
+        "graders and the reviewer who signed — none of them the author",
+        "over every field above — checked with one command on the gate",
         "change any field and the signature stops verifying",
     ]),
 }
@@ -696,7 +773,7 @@ for name, _ in LISTED:
         fail(f"{name}: expected one H1 in the shared hero")
     if 'class="page-hero-complement"' not in markup:
         fail(f"{name}: missing hero complement")
-    if "For organizations" in markup or re.search(r'href="(?:for-organizations|commons)\.html', markup):
+    if "For organizations" in markup or re.search(r'href="(?:for-organizations|commons|commons-for-business|commons-for-engineers)\.html', markup):
         fail(f"{name}: obsolete audience route")
     audience = audience_for(name)
     subnav = re.search(r'<nav aria-label="For [^"]+">(.*?)</nav>', markup, re.S)
@@ -764,11 +841,8 @@ if urls != {SITE if p == 'index.html' else SITE+p for p, _ in LISTED}:
 #     Python snippet to run by hand since this file was written — a check kept
 #     in prose, which is what rule 7 says not to do. The hedge list is
 #     deliberately NOT here: rule 3 audits hedges, it does not ban them.
-AI_TELL = re.compile(
-    r"delve|leverage|robust|seamless|cutting-edge|game.chang"
-    r"|revolution|unlock|empower|harness|in today'?s landscape",
-    re.I,
-)
+#     The tells are the word list's ai_tells (ADR-0137 d6), read from the copy
+#     into AI_TELL above; the list this gate carried moved there whole.
 #     The classes that paint a band surface. Everything else — .band, .statement,
 #     a section with no class — shows the page background, which is the point of
 #     counting them: a reader sees alt/base/alt, not alt/nothing/alt.
@@ -817,13 +891,10 @@ for page in pages:
 #     own prose; 12 words is the threshold, because below it shared phrasing is
 #     the house register rather than a moved sentence.
 DUPLICATE_SHINGLE = 12
-DUPLICATE_OK = {
-    "a non author ai scores trust from 0 100 on the revision":
-        "the score is a number, and every page that states it must state it the same",
-    "tasks using the same tools and source access with and without reviewed":
-        "one metric: defined on evidence#refuse, named where the release "
-        "sequence is promised. A definition that differs between them is the bug",
-}
+#     Phrases two pages are entitled to share, each with its reason. Empty since
+#     2026-10-06: both earlier entries (the 0-100 score and the evidence#refuse
+#     metric) left the site with the text they excused.
+DUPLICATE_OK: dict[str, str] = {}
 
 
 def prose_sentences(markup: str) -> list[tuple[str, list[str]]]:
@@ -862,6 +933,46 @@ for shingle, hits in sorted(shared.items()):
     warn("one sentence on two pages -> "
          + " | ".join(f"{name}: {written[:80]}…" for name, written in shown))
 
+# 24. THE SITE SPEAKS IN THE THIRD PERSON OUTSIDE A CALL TO ACT.
+#     ADR-0137 d6: the reader is addressed only where the reader acts, and a
+#     call to act on the site is the text of an <a> or a <button>. Every other
+#     sentence names the organization, the team or the operator in the third
+#     person. Measured 2026-10-11 on the built pages before the rewrite: 66
+#     second-person hits on the seven listed pages and 3 on the 404, against
+#     29 — Words §10's 51 in pages/ alone (the shell, heroes and footer that
+#     build.py writes carry the rest). The same pass holds the list's banned
+#     words (no exclamation, "please", apology, praise, "just now", first person
+#     singular; "we" stays for the company's commitments) and its retired
+#     phrases. Out of scope, as content is (29 §3.3): words inside <q> and
+#     <blockquote>, which belong to the source quoted, and sections not
+#     rendered. The fixture case for each entry runs with the gate, so a
+#     matcher that stops firing fails here, not in production copy.
+def addressed_text(markup: str) -> str:
+    """The page's own visible prose: no quotation, no hidden section, no call to act."""
+    out = re.sub(r"(?is)<(q|blockquote)\b[^>]*>.*?</\1>", " ", markup)
+    out = re.sub(r"(?is)<section\b[^>]*\bhidden\b[^>]*>.*?</section>", " ", out)
+    out = re.sub(r"(?is)<(a|button)\b[^>]*>.*?</\1>", " ", out)
+    return re.sub(r"\s+", " ", visible(out))
+
+
+for page in pages:
+    body = addressed_text(page.read_text())
+    for section, word, m in voice_findings(body):
+        fail(f"{page.name}: word list {section} ({word}) in visible copy -> "
+             f"…{body[max(0, m.start() - 45): m.end() + 30]}…")
+if VOICE_FIXTURE.exists():
+    for problem in voice_selftest():
+        fail(f"word list self-test: {problem}")
+
+# 25. THE SITE'S WORD LIST IS THE SDK'S.
+#     One list, owned by the SDK (ADR-0137 d7); the copy is refreshed by one
+#     `cp` in the commit that changes the SDK's file. Skips, naming why, only in
+#     a checkout of the site alone, where the SDK's file is absent.
+if not VOICE_SDK.exists():
+    warn(f"gate 25 skipped: the SDK's word list is absent ({VOICE_SDK}); a checkout of the site alone")
+elif VOICE_SDK.read_bytes() != VOICE_COPY.read_bytes():
+    fail(f"voice.json differs from the SDK's word list -> run `{VOICE_CP}` from the workspace root")
+
 # ---------------------------------------------------------------- report
 for w in warns:
     print(f"NOTICE · {w}")
@@ -872,11 +983,12 @@ if fails:
     sys.exit(1)
 
 print(f"PASS — {len(pages)} pages: " + ", ".join(p.name for p in pages))
-print("  tag balance · anchors · chapter links · cross-page links · assets · vocabulary")
-print("  metadata · calls to action · alt text · nav parity · svg motion paths")
+print("  tag balance · anchors · chapter links · cross-page links · assets · vocabulary · retired words")
+print("  metadata · calls to action · alt text · nav parity")
 print("  README inline HTML integrity · one contact address, reachable everywhere")
 print("  no phase language · knowledge-map scripts, data freshness and claim copy · the map from a real feed, labels only")
 print("  text figures are markup, not images · the API as data: snapshot well-formed, llms.txt resolves, nothing private in it")
 print("  the audience IA and its destination fragments resolve")
 print("  the band rhythm alternates · no AI tells in visible copy · a qualifier attaches to its claim, never opens a section")
 print("  a sentence is written once: cross-page repeats are listed above, not failed")
+print("  the third person outside a call to act, against the word list · the word list is the SDK's")

@@ -4,10 +4,25 @@ const assert = require('node:assert/strict');
 const path = require('node:path');
 const fs = require('node:fs');
 const { pathToFileURL } = require('node:url');
-const puppeteer = require('puppeteer-core');
+let puppeteer;
+try {
+  puppeteer = require('puppeteer-core');
+} catch (e) {
+  // An absent browser driver is an absent tool, not a failing page. Three sibling checks
+  // already skip on it; these three crashed instead, which reads as a broken site.
+  console.log('SKIP — puppeteer-core not installed (npm i -D puppeteer-core to enable)');
+  process.exit(0);
+}
 const expected = "every alert has an owner team, a runbook link and a severity; the linter rejects an alert missing any of them";
 (async () => {
-  const browser = await puppeteer.launch({executablePath: process.env.CHROME_PATH || '/usr/bin/chromium', headless: true, args: ['--no-sandbox']});
+  const CHROME = process.env.CHROME_PATH || '/usr/bin/chromium';
+  let browser;
+  try {
+    browser = await puppeteer.launch({executablePath: CHROME, headless: true, args: ['--no-sandbox']});
+  } catch (e) {
+    console.log('SKIP — no usable browser at ' + CHROME);
+    process.exit(0);
+  }
   const url = process.env.BASE_URL || pathToFileURL(path.join(__dirname, 'index.html')).href;
   const evidence = path.join(__dirname, '.tmp/site-fixes');
   fs.mkdirSync(evidence, {recursive: true});
@@ -64,7 +79,7 @@ const expected = "every alert has an owner team, a runbook link and a severity; 
       await page.keyboard.press('Enter');
       assert(activity.startsWith(await page.$eval('#sky-selection-text', e => e.textContent)));
       assert.equal(await page.$eval('#sky-selection', e => e.getAttribute('aria-live')), 'polite');
-      assert.match(await page.$eval('#sky-selection-outcome', e => e.textContent), /New|Sharpened|Merged|Held|Refused/);
+      assert.match(await page.$eval('#sky-selection-outcome', e => e.textContent), /New|Revised|Merged|Held|Rejected/);
       await keyboardClick('#sky-zoom-in');
       await page.waitForFunction(() => document.querySelector('#sky-zoom').textContent !== '1×');
       await keyboardClick('#sky-fit');

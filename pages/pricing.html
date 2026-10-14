@@ -1,15 +1,13 @@
 <section id="top">
   <div class="wrap hero">
     <p class="eyebrow">Deployment and pricing</p>
-    <h1>Reviewed knowledge,<br><span class="grad">scoped to who it serves</span></h1>
+    <h1>Free on one machine today.<br><span class="grad">Team is on the roadmap.</span></h1>
     <p class="lede">
-      Four scopes with explicit authority boundaries. The organization gate is private and
-      proprietary. Paid tiers provide shared review, identity and operating controls. The outermost
-      scope is free and points outward: knowledge your organization chooses to publish.
+      Solo is free and self-hosted. Team adds one gate a group shares.
     </p>
     <p class="micro warnline">
-      <b>Four scopes, one engine.</b> Team and Organization figures are set with the first
-      organization deployments; the scopes below are the model those figures attach to.
+      <b>One gate runs today, and it serves Solo.</b> Team has no price yet: it is set with its
+      first deployments.
     </p>
   </div>
 </section>
@@ -19,69 +17,35 @@
     <div class="tiers">
       <div class="tier">
         <h3>Solo</h3>
-        <p class="who">One developer, one machine</p>
-        <p class="runs">Self-hosted on your hardware, using local or hosted reviewing models you choose.</p>
+        <p class="who">One developer, today</p>
+        <p class="runs">One machine, self-hosted, with the grading model the operator chooses.</p>
         <ul>
-          <li>Review before your agent can act on what it wrote</li>
-          <li>Skills scanned before they reach your skill directory</li>
-          <li>Every agent on the machine shares one approved store</li>
-          <li>Signed local history you can export</li>
-          <li class="up-item">Grows into Team by adding one shared gate &mdash; the store and
-          its signatures move across as they are</li>
+          <li>Every agent on the machine shares one store of promoted claims.</li>
+          <li>Every claim is scanned and held for a reviewer, a person or a grading model, never
+          its author.</li>
+          <li>The gate&rsquo;s web console on that machine, and the Claude Code plugin.</li>
+          <li>Each session gets its own work area, where recall, the gate&rsquo;s search,
+          starts.</li>
+          <li>A signed journal of every decision, which anyone holding it can verify.</li>
+          <li>Session transcripts kept as evidence, outside recall.</li>
+          <li>Skill files the skill watcher finds in folders the operator keeps are reviewed like any claim
+          and can be promoted.</li>
+          <li>Imported skill bundles are scanned and held, never promoted on this gate, and
+          count toward its limit of 10,000 held claims.</li>
         </ul>
         <p class="price">Solo use is free, and stays that way.</p>
       </div>
 
       <div class="tier featured">
-        <span class="tier-flag">most teams start here</span>
         <h3>Team</h3>
         <p class="who">A squad or a department</p>
-        <p class="runs">One gate for the group — a shared runner, or each machine reporting to it.</p>
+        <p class="runs">One gate a group shares over the network, on the roadmap.</p>
         <ul>
-          <li><b>Everything in Solo</b></li>
-          <li>Approved knowledge shared within current scope and access grants</li>
-          <li>Separate folders per project or client &mdash; a query in one never returns another&rsquo;s content &mdash; connected only where you wire them</li>
-          <li>Reviewers who are never the author, enforced</li>
-          <li>New joiners receive reviewed knowledge within their assigned access</li>
-          <li>A review queue someone actually owns, with a daily digest</li>
-          <li class="up-item">Grows into Organization by adding a second gate &mdash; the
-          double gate itself, one tier up</li>
+          <li>Read and write access granted per space (a named set of work areas), and revoked
+          the same way.</li>
+          <li>The operating controls a group needs.</li>
         </ul>
-        <p class="price">Per active contributor, monthly. Self-host or managed.</p>
-      </div>
-
-      <div class="tier">
-        <h3>Organization</h3>
-        <p class="who">Company-wide, multiple teams</p>
-        <p class="runs">Team gates submit upward to one or more organization gates you control.</p>
-        <ul>
-          <li><b>Everything in Team</b></li>
-          <li>Independent second review before anything goes company-wide</li>
-          <li>Revocable organization-gate access, with read keys restricted to named folders</li>
-          <li>Exportable audit trail for regulators and internal audit</li>
-          <li>Planned erasure tooling, subject to deployment validation</li>
-          <li>Your own reviewing models and rules, not ours</li>
-          <li>Agents can report what their folder is missing — and propose the fix</li>
-        </ul>
-        <p class="price">Annual, by organization size. Runs in your infrastructure or ours.</p>
-      </div>
-
-      <div class="tier commons">
-        <span class="tier-flag alt">free, and outward-facing</span>
-        <h3>Commons</h3>
-        <p class="who">Anyone, publicly</p>
-        <p class="runs">A hosted gate for knowledge published beyond one organization.</p>
-        <ul>
-          <li>Skills, memories and knowledge artifacts anyone can draw on</li>
-          <li>Wire a public folder into your own — every arrival reviewed on arrival</li>
-          <li>Nothing readable until a reviewer that did not write it has signed it</li>
-          <li>Published verdicts — including the rejections, with their reasons</li>
-          <li>Signatures travel with an artifact, so it arrives already vouched for</li>
-          <li>Contributors keep attribution; a bad approval can be traced and withdrawn</li>
-          <li class="up-item">Arrives pre-reviewed; your own gate still gives it the second
-          opinion it is designed for</li>
-        </ul>
-        <p class="price">Free to read, no account needed. Contribution under a named identity with a key.</p>
+        <p class="price">Priced per active contributor, monthly. Self-hosted.</p>
       </div>
     </div>
   </div>
@@ -91,91 +55,90 @@
   <div class="wrap tight">
     <h2>Why the tiers are drawn where they are</h2>
     <p class="lede">
-      The boundaries follow the trust model, not the price sheet. That is deliberate, and it is
-      checkable.
+      The tiers follow whose review the agents rely on: on Solo, one machine&rsquo;s gate, and
+      on Team, one gate a group shares.
     </p>
-    <div class="cards four">
+    <div class="cards two">
       <div class="card">
-        <h3>Solo — one reviewer, one beneficiary</h3>
-        <p>You get the scanning and the signed history. You do not get sharing, because there is
-        nobody to share with. That is most of the value, which is why this tier is free rather
-        than crippled.</p>
+        <h3>Solo — one machine, one gate</h3>
+        <p>The scan, review by someone other than the author, the signed journal, and one store
+        every agent on the machine shares.</p>
       </div>
       <div class="card">
-        <h3>Team — one gate's authority</h3>
-        <p>A group defines one gate’s review policy. Reading an approved revision still requires current access and an applicable scope.</p>
-      </div>
-      <div class="card">
-        <h3>Organization — a second authority</h3>
-        <p>A second, independent gate reviews on its own judgement before anything crosses between
-        teams. That second authority <b>is the double gate</b> — the tier boundary and the
-        architecture are the same line.</p>
-      </div>
-      <div class="card">
-        <h3>Commons — the boundary moves outward</h3>
-        <p>Your gate signs, the commons gate countersigns on its own authority. Exactly the
-        Organization mechanism with the trust boundary one step further out. Reading is free;
-        operating the commons still requires review inference and moderation.</p>
+        <h3>Team — one review policy for a group</h3>
+        <p>A group sets one review policy for the gate it shares. Reading a promoted claim will
+        need access to the space that holds it.</p>
       </div>
     </div>
     <p class="note big">
-      A team can start on Solo and grow into Organization <b>without migrating anything</b> — same
-      store format, same signatures, same export. Growth adds gates; it does not replace the
-      engine. Publishing to the Commons is the same act as promoting between teams, aimed at a
-      wider audience.
+      Both tiers use the same store format and the same signatures, so a group can grow from one
+      machine without replacing anything. The name doublegate describes the next boundary: a second, independent gate that countersigns before knowledge crosses between
+      groups. It is on the roadmap after Team.
     </p>
   </div>
 </section>
 
 <section id="notfor" class="band">
   <div class="wrap tight">
-    <h2>Three questions that settle it</h2>
+    <h2>Three questions that decide whether it fits</h2>
     <p class="lede">
-      The mechanism is for teams whose agents accumulate knowledge that outlives one conversation
-      and one person.
+      doublegate is for organizations whose agents build up knowledge that outlives one
+      conversation and one person.
     </p>
     <div class="cards three">
       <div class="card">
         <h3>Who needs the knowledge next?</h3>
-        <p>The writer can recall a contribution as soon as its security scan clears, marked as
-        pending review. Sharing with others waits for admission, because a shared store
-        distributes a mistake as readily as a fix.</p>
-        <span class="card-tag">Private reuse after scanning; shared reuse after admission</span>
+        <p>Every claim waits for review before other agents can recall it, because a shared
+        store distributes a mistake as readily as a fix. Its author can recall it as soon as its
+        scan clears, marked held.</p>
+        <span class="card-tag">The author&rsquo;s recall after the scan, other agents&rsquo; after promotion</span>
       </div>
       <div class="card">
         <h3>Who owns the review policy?</h3>
-        <p>Choose human-led, model-assisted or automatic promotion under your rules.
-        A named operator still handles scanner findings and cases requiring human judgment.
-        Routine approvals can proceed automatically when the configured checks pass.</p>
-        <span class="card-tag">Automation with accountable exception handling</span>
+        <p>The operator chooses who reviews: a person, a grading model or both. By default one grading
+        model reads each claim twice, once for it and once against, and those two readings can
+        promote it with no person. Nobody can clear a finding about secrets, access or integrity, whichever the operator
+        choose.</p>
+        <span class="card-tag">One setting decides when a person must sign</span>
       </div>
       <div class="card">
         <h3>Does the knowledge need to outlive the person?</h3>
-        <p>Lessons tied to one engineer's workflow stay fine in that engineer's tool. Knowledge
-        a second agent, a new hire, or another team will rely on &mdash; that is what the
-        company inherits, and what this is for.</p>
-        <span class="card-tag">company-owned knowledge &rarr; this is exactly the job</span>
+        <p>Lessons tied to one engineer&rsquo;s workflow stay fine in that engineer&rsquo;s tool.
+        Knowledge a second agent, a new hire or another group will rely on &mdash; that is what
+        the company inherits, and what doublegate is for.</p>
+        <span class="card-tag">Knowledge the company inherits &rarr; reviewed once, kept for the next agent</span>
       </div>
     </div>
-    <p class="note">
-      Solo serves personal use. Team and Organization add reviewed distribution,
-      shared policy and responsibility for the exceptions.
+    <p class="note">Solo serves one person&rsquo;s agents on one machine. Team adds the same review
+    across a group, with one shared policy and access granted per space.</p>
+  </div>
+</section>
+
+<section id="costs-run" class="band alt">
+  <div class="wrap tight">
+    <h2>What it costs to run</h2>
+    <p class="lede">
+      Running it has four costs: the machine, the grading model&rsquo;s
+      usage, reviewer time, and storage. Usage is hardware for a local model, fees for a
+      hosted one. Storage only grows, because nothing is deleted: each claim uses
+      about 14.5 KB, <a href="evidence.html#measured">measured on one test machine on
+      2026-10-05</a>.
     </p>
   </div>
 </section>
 
-<section id="talk" class="band alt">
+<section id="talk" class="band">
   <div class="wrap tight">
     <h2>Further reading</h2>
     <div class="cta-row center">
       <a class="btn" href="for-business.html">The business case</a>
-      <a class="btn" href="for-engineers.html">What it costs to run</a>
+      <a class="btn" href="for-engineers.html#costs">What it costs to run</a>
     </div>
 
     <p class="micro center">
-      A question about the mechanism, or a correction to anything cited here, is better as
-      <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">a public issue</a>
-      &mdash; the reply is then visible to everyone else weighing the same question.
+      Ask a question about doublegate, or correct anything cited here, in
+      <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">a public issue on
+      GitHub</a>. Then everyone can read the reply.
     </p>
   </div>
 </section>

@@ -11,6 +11,7 @@ Run:  python3 site/build.py        (writes site/*.html)
 """
 from __future__ import annotations
 
+import json
 import re
 import sys
 from pathlib import Path
@@ -29,14 +30,20 @@ NAV = [
 ]
 CHILDREN = [
     ("governance.html", "Business governance"),
-    ("commons-for-business.html", "Commons for business"),
-    ("commons-for-engineers.html", "Commons for engineers"),
 ]
 LISTED = NAV + CHILDREN
-REDIRECTS = {"for-organizations.html": "for-business.html", "commons.html": "commons-for-business.html"}
+# Retired pages redirect so an old bookmark still lands somewhere that answers it.
+# The two Commons pages described a public library the 2026-10-04 feature review
+# declined; their readers land on the audience overview instead.
+REDIRECTS = {
+    "for-organizations.html": "for-business.html",
+    "commons.html": "for-business.html",
+    "commons-for-business.html": "for-business.html",
+    "commons-for-engineers.html": "for-engineers.html",
+}
 AUDIENCES = {
-    "business": [("for-business.html", "Overview"), ("governance.html", "Governance"), ("commons-for-business.html", "Commons")],
-    "engineers": [("for-engineers.html", "Overview"), ("for-engineers.html#sdk", "SDK"), ("commons-for-engineers.html", "Commons"), ("https://doublegate-io.github.io/doublegate-sdk/", "Technical docs")],
+    "business": [("for-business.html", "Overview"), ("governance.html", "Governance")],
+    "engineers": [("for-engineers.html", "Overview"), ("for-engineers.html#sdk", "SDK"), ("for-engineers.html#plugin", "Plugin"), ("https://about.doublegate.io/doublegate-sdk/", "Technical docs")],
 }
 
 
@@ -68,61 +75,120 @@ UNLISTED = [
     ("pricing.html", "Pricing"),
 ]
 
-# Adoption release (release 2) timing. One constant so every page
-# quotes the same date; change it here, rebuild, and nothing drifts.
-FIRST_RELEASE = "Q2 2027"
+# What ships next, in the order it ships. One constant so every page names the
+# same next steps; the Solo release is dated when its exit list is green, and
+# until then no page carries a date.
+# Every use reads "Next: {next_steps}.", so the constant holds two whole
+# sentences: the Solo release, then Team.
+NEXT_STEPS = ("the Solo release of today's gate, installable, backed up and restorable, with "
+              "rotating signing keys and erasable content. Then Team, one gate a group shares "
+              "over the network, with access granted per space")
+AVAILABILITY = ('<p class="availability"><b>Runs today</b> on one machine: one gate, its console, '
+                'a Claude Code plugin and the offline SDK. '
+                f'<b>Next:</b> {NEXT_STEPS}.</p>')
 
 TITLES = {
     "index.html": (
-        "doublegate — governed organizational knowledge",
-        "Governed organizational knowledge for humans, agents and applications. "
-        "Explore admission, authority and permitted projection through an illustrative "
-        "knowledge review, published interfaces and the release roadmap.",
+        "doublegate — reviewed memory for AI agents",
+        "What an AI agent writes is held and scanned, and other agents recall it only after a "
+        "reviewer other than its author signs it. One gate on one machine today, with a "
+        "console and a Claude Code plugin.",
     ),
     "how-it-works.html": (
         "How doublegate works — a correction becomes shared knowledge",
-        "Follow a proposed correction through evidence, assessment, an authorized decision "
-        "and eligible shared use. An illustration of the planned review and publication lifecycle.",
+        "Follow one correction from the moment an agent writes it to the moment another agent "
+        "recalls it. See each stage, from the work area to recall, and what happens when a step "
+        "refuses it.",
     ),
     "for-business.html": (
-        "For business — evaluate governed team knowledge",
-        "Retain corrections, conventions and skills across your teams. "
-        "Explore doublegate's deployment model, review controls and business case "
-        "for shared agent knowledge.",
+        "For business — keep what a company's agents learn",
+        "Keep the corrections, conventions and skills a company's agents learn as reviewed claims "
+        "that any agent on the gate can find. Who runs it, what it costs, and what a group "
+        "gets next.",
     ),
     "for-engineers.html": (
         "For engineers — build with reviewed knowledge",
-        "Start with offline SDK checks, inspect development interface snapshots and plan "
-        "the memory-provider integration. Operating costs, acceptance tests and the release sequence.",
+        "Run the gate on one machine, connect Claude Code through its plugin, review in the "
+        "console, and check files offline with the SDK. Interfaces, running costs and the "
+        "release sequence.",
     ),
     "governance.html": (
-        "Business governance — decisions, provenance and source authority",
-        "Planned connectors and shared review controls for agent knowledge: "
-        "scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, "
-        "EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.",
-    ),
-    "commons-for-business.html": (
-        "Commons for business — publishing rights and reviewed reuse",
-        "Decide what your organization can contribute to the planned Commons, what reuse costs, "
-        "and which licensing, privacy and accountability decisions remain yours.",
-    ),
-    "commons-for-engineers.html": (
-        "Commons for engineers — artifacts, attribution and integration",
-        "Prepare versioned artifacts and review evidence with the offline SDK. Inspect current "
-        "formats and interface snapshots separately from the planned release-5 Commons service.",
+        "Business governance — decisions, provenance and a signed record",
+        "Who wrote each claim, who reviewed it and why, in a signed journal an auditor can verify. "
+        "Quoted references to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239.",
     ),
     "pricing.html": (
-        "Pricing — Solo, Team, Organization",
-        "Solo use is free. The organization gate is private and proprietary. Team adds the "
-        "shared gate. Organization adds a second independent authority.",
+        "Pricing — Solo and Team",
+        "Solo is free and self-hosted on one machine. Team, on the roadmap, adds one gate a "
+        "group shares over the network, with access granted per space.",
     ),
     "evidence.html": (
-        "Evidence — every claim, with its source",
-        "The research behind the pitch: the 66-firm field experiment, Meta's in-house "
-        "build, the provider survey, and the skill security data. Each one linked to "
-        "its primary source.",
+        "Evidence — every finding, with its source",
+        # Ends at "one machine" while #against is hidden; once it renders, the
+        # description adds ", and the findings that cut against us".
+        "The research behind the problem, the rules the gate enforces and how to check each, "
+        "and what we measured on one machine.",
     ),
 }
+
+# The role table (for-engineers #agents, evidence #rules) and the count of
+# methods an agent key reaches are counted from the site's own snapshot of the
+# method catalog, api/daemon-rpc.json, so the page cannot drift from the file
+# published beside it. Nothing outside this directory is read. The visible
+# cells carry role names, counts and act words only; a method this map does not
+# name is counted, not listed. The build refuses a snapshot that contradicts the
+# copy built on it: an act reachable by an agent key, a method that deletes, or
+# an act the map names that the catalog no longer has.
+#
+# ROLES is the ranked ladder, each reaching every method of those before it.
+# UNRANKED names each role off that ladder and the ladder roles whose methods it
+# also reaches: a runner key answers as agent for every other method and alone
+# reaches its own, adds no act, and reaches nothing of reviewer or admin
+# (ADR-0140 d1; 17 — Crews §12). Its row is counted from those, never cumulated.
+ROLES = ("reader", "agent", "reviewer", "admin")
+UNRANKED = {"runner": ("reader", "agent")}
+ACT_WORDS = {"dg.promote": "promote", "dg.sign": "sign", "dg.reject": "reject",
+             "dg.demote": "demote", "dg.hide": "hide", "dg.ban": "ban"}
+
+
+def role_reach() -> tuple[str, str]:
+    """(the role table's markup, "<methods an agent key reaches> of <all methods>")."""
+    verbs = json.loads((ROOT / "api" / "daemon-rpc.json").read_text(encoding="utf-8"))["verbs"]
+    by_role = {role: {v["name"] for v in verbs if v["role"] == role}
+               for role in (*ROLES, *UNRANKED)}
+    problems = [f"a method needs a role the table does not know: {v['name']} ({v['role']})"
+                for v in verbs if v["role"] not in by_role]
+    problems += [f"{name} is not in the catalog" for name in ACT_WORDS
+                 if not any(name in names for names in by_role.values())]
+    problems += [f"an agent key reaches {name}" for name in ACT_WORDS
+                 if name in by_role["reader"] | by_role["agent"]]
+    problems += [f"a {role} key reaches {name}" for role, below in UNRANKED.items()
+                 for name in ACT_WORDS
+                 if name in by_role[role].union(*(by_role[r] for r in below))]
+    problems += [f"{v['name']} deletes" for v in verbs if "delete" in v["name"]]
+    if problems:
+        raise SystemExit("build.py: api/daemon-rpc.json contradicts the role table's copy: "
+                         + "; ".join(problems))
+    total, reached, rows, agent_reach = len(verbs), 0, [], ""
+    for role in ROLES:
+        reached += len(by_role[role])
+        acts = ", ".join(word for name, word in ACT_WORDS.items() if name in by_role[role])
+        rows.append(f"<tr><td>{role}</td><td>{reached} of {total}</td><td>{acts or '—'}</td></tr>")
+        if role == "agent":
+            agent_reach = f"{reached} of {total}"
+    for role, below in UNRANKED.items():
+        own = len(by_role[role]) + sum(len(by_role[r]) for r in below)
+        rows.append(f"<tr><td>{role}</td><td>{own} of {total}</td><td>—</td></tr>")
+    table = ('<table class="cmp role-table">'
+             "<caption>Each role up to admin reaches every method of the roles listed before it. "
+             "A runner is the API key of a machine that starts a crew's agents. It reaches the reader's "
+             "and the agent's methods and its own, and adds no act. No method deletes.</caption>"
+             "<thead><tr><th>Role</th><th>Methods it reaches</th><th>Acts it adds</th></tr></thead>"
+             f"<tbody>{''.join(rows)}</tbody></table>")
+    return table, agent_reach
+
+
+ROLE_TABLE, AGENT_REACH = role_reach()
 
 # ORG is where the nav's "GitHub" goes: the organization profile makes the case
 # for the project and lists every repo. GH is this site's own repo, which is what
@@ -141,9 +207,9 @@ DOCS = f"{GH}/blob/main/docs"
 #
 # Private email is available only through the footer Email link.
 CONTACT = f"{GH}/issues"
-EMAIL = "eugene.korniichuk@gmail.com"
+EMAIL = "eugene@doublegate.io"
 MAILTO = f"mailto:{EMAIL}"
-SITE = "https://doublegate-io.github.io/"
+SITE = "https://about.doublegate.io/"
 
 SHELL = """<!doctype html>
 <html lang="en">
@@ -158,7 +224,7 @@ SHELL = """<!doctype html>
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-<meta property="og:image" content="https://doublegate-io.github.io/assets/social-card.svg">
+<meta property="og:image" content="https://about.doublegate.io/assets/social-card.svg">
 <meta property="og:url" content="{canonical}">
 <link rel="canonical" href="{canonical}">
 <meta name="twitter:card" content="summary_large_image">
@@ -169,7 +235,7 @@ SHELL = """<!doctype html>
 
 <header class="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="DoubleGate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
+    <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="doublegate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
     <nav class="desktop-nav" aria-label="Main navigation">{nav}<a class="ghost" href="{org}">GitHub</a></nav>
     <details class="mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation">{nav}<a class="ghost" href="{org}">GitHub</a></nav></details>
   </div>
@@ -184,17 +250,15 @@ SHELL = """<!doctype html>
     <div class="foot">
       <div>
         <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · <a href="evidence.html">Research and evaluation sources</a>
-        <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>. The organization gate is private and proprietary.
-        <a href="{contact}">Questions, objections and corrections go here</a> — including
-        "you got this wrong".</p>
+        <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>.
+        <a href="{contact}">Questions, objections and corrections go here</a>, a report that
+        the site is wrong included.</p>
       </div>
       <div class="foot-links">
         <a href="how-it-works.html">How it works</a>
         <a href="for-business.html">For business</a>
         <a href="for-engineers.html">For engineers</a>
         <a href="governance.html">Governance</a>
-        <a href="commons-for-business.html">Commons for business</a>
-        <a href="commons-for-engineers.html">Commons for engineers</a>
         <a href="evidence.html">Evidence</a>
         <a href="{org}">GitHub</a>
         <a href="{contact}">Ask a question</a>
@@ -259,84 +323,64 @@ def anchor_headings(body: str) -> str:
 
 
 # Editorial hero content is rendered through one static template.
+# Each entry is (label, headline, complement, status). A status may carry
+# {next_steps} or {availability}; render() substitutes both after the hero is in.
 HEROES = {'for-business.html': ('For business',
-                       'Make team knowledge reusable.',
-                       '<p class="hero-proposition">Keep the correction, its evidence and who '
-                       'stands behind it.</p><p>Give one team a governed path from agent '
-                       'corrections to reusable knowledge. Your organization defines the criteria, '
-                       'ownership and access.</p><div class="cta-row"><a class="btn" '
-                       'href="#honest">Plan a team evaluation</a></div>',
-                       '<p class="availability"><b>Available now:</b> the offline SDK and the '
-                       'published API artifacts. <b>Release 4:</b> shared-team controls. Review '
-                       'consumes inference and operating effort; compare results with your '
-                       'existing workflow.</p>'),
+                       'Make what agents learn reusable.',
+                       '<p class="hero-proposition">Keep each correction with its evidence, who '
+                       'wrote it and who signed it.</p><p>The organization chooses who reviews: a '
+                       'person, a grading model or both, and which kinds of content need '
+                       'a person.</p><div class="cta-row"><a class="btn" '
+                       'href="#group">What a group gets next</a></div>',
+                       '<p class="availability"><b>Runs today</b> on one machine, where every '
+                       'agent shares one gate. Review costs model usage and someone’s time. '
+                       '<b>Next:</b> Team, one gate a group shares over the network.</p>'),
  'for-engineers.html': ('For engineers',
                         'Build with reviewed knowledge.',
-                        '<p class="hero-proposition">Start offline. Inspect the result before '
-                        'wiring a consumer.</p><p>The Python SDK checks declarative artifacts. '
-                        'Provider interfaces describe the next integration boundary; installing '
-                        'the SDK does not start a gate.</p><div class="cta-row"><a class="btn '
-                        'primary" href="#sdk">Run the SDK example</a><a class="btn" '
+                        '<p class="hero-proposition">Run the gate on one machine. Connect Claude '
+                        'Code. Review in the console.</p><p>The SDK checks files offline, '
+                        'without a gate.</p><div class="cta-row"><a class="btn primary" '
+                        'href="#plugin">Connect Claude Code</a><a class="btn" '
                         'href="#agents">Inspect the API artifacts</a></div>',
                         '{availability}'),
  'governance.html': ('For business / Governance',
                      'Know who approved what. And why.',
-                     '<p class="hero-proposition">Governance begins with a scoped decision and a '
-                     'record you can inspect.</p><p>Connect proposed knowledge to its source, '
-                     'reviewer and permitted use. Source-system credentials confer no approval '
-                     'authority.</p><a href="#how">Follow a system contribution</a>',
-                     '<p class="availability"><b>Available now:</b> signed decisions and keyed '
-                     'reads. <b>Releases 3 and 4:</b> two-stage review and shared-team controls; '
-                     'connectors carry their own acceptance checks.</p>'),
+                     '<p class="hero-proposition">Every decision is signed into a record an auditor '
+                     'can verify.</p><p>Every claim carries its author and every '
+                     'grade and signature on it. The identity that wrote a claim can never '
+                     'approve it.</p><a href="#how">Follow a claim from its author</a>',
+                     '<p class="availability"><b>Runs today:</b> a signed journal anyone holding '
+                     'it can verify, with the reviewer named on each decision. <b>Next:</b> '
+                     '{next_steps}.</p>'),
  'how-it-works.html': ('How it works',
                        'A correction becomes shared knowledge.',
-                       '<p class="hero-proposition">One revision. Evidence, a decision and a '
-                       'permitted use.</p><p>Follow an illustrative correction: the payments '
-                       'sandbox rate-limits per API key, not per account. Each stage below changes '
-                       'what others may do with that revision.</p><a href="#diagram">Follow the '
-                       'review lifecycle</a>',
-                       '<p class="availability">The journey shows the release-3 review and '
-                       'release-4 sharing workflow end to end.</p>'),
+                       '<p class="hero-proposition">One claim, from the agent that writes it to '
+                       'the agent that finds it.</p><p>Follow an illustrative correction: the '
+                       'payments sandbox rate-limits per API key, not per account. Each stage '
+                       'below changes who may read it.</p><a '
+                       'href="#diagram">Follow the review lifecycle</a>',
+                       '<p class="availability">Every stage here runs today, on one '
+                       'machine. Sharing a gate across a group comes with Team.</p>'),
  'evidence.html': ('Evidence',
-                   'Every claim, with its source.',
+                   'Every finding, with its source.',
                    '<p class="hero-proposition">Read the finding. Check what it actually '
-                   'supports.</p><p>Published research supports the problem and approach. '
-                   'DoubleGate’s own evaluations establish its outcomes, and the internal '
-                   'provider survey is available on request.</p><a href="#findings">Read the '
-                   'primary sources</a>',
+                   'supports.</p><p>Published research documents the problem. Anyone can check the '
+                   'gate’s rules against what we publish. Our own measurements come from one '
+                   'machine, and each says which.</p><a href="#findings">Read the primary '
+                   'sources</a>',
                    ''),
- 'commons-for-business.html': ('For business / Commons',
-                               'Share what you have the rights to share.',
-                               '<p class="hero-proposition">A reviewed supply of knowledge, with '
-                               'explicit costs and publishing choices.</p><p>Choose what leaves '
-                               'your organization. Assess the rights, evidence and maintenance '
-                               'work before contributing or reusing an artifact.</p><a '
-                               'href="#why-contribute">Evaluate contribution</a>',
-                               '<p class="availability"><b>Release 5:</b> the public Commons. '
-                               'Reading is free; reuse follows each artifact’s published '
-                               'terms.</p>'),
- 'commons-for-engineers.html': ('For engineers / Commons',
-                                'Carry the evidence with the artifact.',
-                                '<p class="hero-proposition">Version the content. Preserve '
-                                'attribution. Check eligible use.</p><p>Prepare artifacts with the '
-                                'offline SDK and inspect the published schemas. SDK findings '
-                                'inform review; they grant no publication or execution '
-                                'authority.</p><a href="#formats">Inspect the current formats</a>',
-                                '<p class="availability"><b>Available now:</b> the SDK artifacts. '
-                                '<b>Release 5:</b> Commons publication and public operation.</p>'),
- 'index.html': ('DoubleGate / Agent memory',
-                'Governed memory for AI agents.',
+ 'index.html': ('doublegate / Agent memory',
+                'Check what agents learn. Then reuse it.',
                 '\n'
-                '        <p class="hero-proposition">Claims, conventions and skills that carry their '
-                'evidence and the decision that accepted them.</p>\n'
-                '        <p>DoubleGate is the memory provider for knowledge your teams '
-                'already settled &mdash; so the next agent starts from it instead of relearning '
-                'it.</p>\n'
+                '        <p class="hero-proposition">A company&rsquo;s agents relearn the same lessons. '
+                'Keep the ones a reviewer checked.</p>\n'
+                '        <p>doublegate holds what an agent writes until a person or model other '
+                'than its author signs it. Other agents can then find it if they search every work '
+                'area. By default an agent searches its own area and those above it.</p>\n'
                 '        <div class="cta-row"><a class="btn primary" href="#cost">See a reviewed '
-                'example</a><a class="btn" href="for-engineers.html#sdk">Build with the '
-                'SDK</a></div>',
-                '<p class="availability"><b>Available now:</b> the offline SDK and the published '
-                'API snapshots.</p>')}
+                'example</a><a class="btn" href="how-it-works.html">How it works</a></div>',
+                '<p class="availability"><b>Runs today</b> on one machine: one gate, its '
+                'console, a Claude Code plugin and the offline SDK.</p>')}
 
 def hero_html(page: str) -> str:
     label, headline, complement, status = HEROES[page]
@@ -349,7 +393,7 @@ def render_redirect(target: str) -> str:
 
 def render(page: str) -> str:
     title, desc = TITLES[page]
-    body = anchor_headings((PAGES / page).read_text().strip().replace("{hero}", hero_html(page) if page in HEROES else "").replace("{first_release}", FIRST_RELEASE).replace("{availability}", f'<p class="availability"><b>Available now:</b> the offline SDK and the published API artifacts. <b>Next:</b> provider adoption in {FIRST_RELEASE}, then review and organizational sharing.</p>'))
+    body = anchor_headings((PAGES / page).read_text().strip().replace("{hero}", hero_html(page) if page in HEROES else "").replace("{next_steps}", NEXT_STEPS).replace("{availability}", AVAILABILITY).replace("{role_table}", ROLE_TABLE).replace("{agent_reach}", AGENT_REACH))
     if not body.startswith("<main"):
         body = f'<main class="audience-page">{body}</main>'
     # index.html is served at the domain root, so its canonical is the bare
@@ -358,7 +402,7 @@ def render(page: str) -> str:
     markup = SHELL.format(
         title=title, desc=desc, nav=nav_html(page), subnav=subnav_html(page), body=body, gh=GH, org=ORG,
         contact=CONTACT, mailto=MAILTO, email=EMAIL, canonical=canonical,
-        first_release=FIRST_RELEASE, scripts=scripts_html(page),
+        scripts=scripts_html(page),
     )
     if page in dict(UNLISTED):
         # Reachable, not advertised: no canonical to claim a place in the
@@ -392,29 +436,36 @@ def render_robots() -> str:
 # then the machine-readable documents, then the pages. Generated here so it quotes
 # the same release date as every page and cannot name a page that does not exist.
 LLMS_INTRO = (
-    "> doublegate is memory and knowledge-sharing software for AI agents. "
-    "Contributions are held for review; signed decisions establish scoped publication. "
-    "The release-3 workflow uses an AI trust assessment from 0–100, then a distinct "
-    "authorized AI or human APPROVE or REJECT decision without a second score. "
-    "Approval means production-ready for the declared scope, version and use; current "
-    "access and applicability govern retrieval. Release 4 adds shared team attribution "
-    "and publication over authenticated HTTP. The organization gate remains private and proprietary. Adoption release · {first_release}."
+    "> doublegate is gated memory for AI agents. What an agent writes goes into a named work "
+    "area, where it is held and scanned. No other agent's recall returns it until an identity "
+    "that did not write it has reviewed and signed it. One gate runs on one machine today. "
+    "Every promotion is that gate's own and is marked provisional. Recall with no scope "
+    "searches the caller's work area, then each parent, and stops at the first level that "
+    "answers. Ask with scope `space` to search the whole space. By default a grading model "
+    "reads each held claim twice, for and against, and those two readings can promote it with "
+    "no person. An operator can require a person for any kind of content. Next: {next_steps}."
 )
 
+# The descriptions of the api/ files say the same thing api-sync.py's manifest
+# says about them.
 LLMS_API = [
-    ("api/mcp-tools.json", "the tool schemas each tier serves over the agent-tool protocol (exactly what `tools/list` answers), and the `instructions` paragraph the handshake carries"),
+    ("api/mcp-tools.json", "the tool schemas of the gate's built-in plugin, which is being retired, as its `tools/list` answers them; the Claude Code plugin's tools are not in this file"),
     ("api/daemon-rpc.json", "every verb on a gate's local socket — parameters, which role serves it, the proof each needs; a running gate answers the same to `dg.describe`"),
-    ("api/note.schema.json", "JSON Schema of a published note's `data`: the closed field set a subscriber or a knowledge map may rely on — which claim, what happened, what kind; never the text"),
-    ("api/openapi.json", "OpenAPI 3.1 for the organization gate's keyed HTTP surface — submissions in, signed outcomes out, the ratified collection for read keys; a running gate serves it at `GET /openapi.json` to any valid key"),
+    ("api/openapi.json", "OpenAPI for the gate's HTTP surface on this machine; it answers on loopback only, with a sign-in or an API key"),
+    ("api/note.schema.json", "JSON Schema of a published note's `data`: the closed field set a subscriber may rely on — which claim, what happened, what kind; never the text"),
     ("api/index.json", "which commit of which repository each document was rendered from"),
 ]
 
+# Rule 1's eight tool names are typed here, not read from doublegate-agent
+# (build.py reads nothing outside this directory); compare them by hand with
+# doublegate-agent/src/doublegate_agent/mcp.py TOOLS when either changes.
 LLMS_RULES = [
-    "Tools are namespaced `doublegate.*` — `doublegate.remember`, not `remember`. Launch the plugin tier (`doublegate-plugin mcp`, works with no gate running) or the client tier (`doublegate-client mcp`, this machine's gate) over stdio and call `tools/list`.",
-    "`remember` returns a handle, never a promise of admission: `local:` when no gate was reachable, `sha256:` once a gate stamped it. Nothing is readable through `recall` until a reviewer that did not write it promoted it.",
+    "Claude Code: the `doublegate-agent` plugin gives an agent eleven tools: remember, record, recall, context, workarea, lineage, workarea_relate, complete, status, ask and cancel_question. It offers no act above an agent's. Over the gate's local socket, a process running as the gate's operating-system user is the gate's administrator, so the gate itself holds an agent to these acts only when the agent runs under another operating-system user.",
+    "The gate's built-in plugin, which is being retired, namespaces its tools `doublegate.*` — `doublegate.remember`, not `remember`. Launch it with `doublegate-client mcp` (this machine's gate) over stdio and call `tools/list`.",
+    "Every write names a work area. `remember` returns a handle, never a promise of promotion; nothing you remember is readable to anyone else through `recall` until a reviewer other than its author has promoted it. Your own held claims come back to you marked `held`.",
     "Never send `writer_identity` or `deployment_id`; identity is derived from the connection and a request carrying it is refused.",
-    "There is no promote, sign, delete or trust-class tool on any tier. The thing being gated does not operate the gate; a person, or a quorum that excludes the writer, does that on the gate's own socket.",
-    "The organization gate is not where memory lives. Client gates submit to it (`PUT /submissions/{id}`), and the verdict never rides the request — poll `GET /outcomes?since=<position>` with the same key.",
+    "There is no promote, sign, demote, delete or trust-class tool on any tier. The thing being gated does not operate the gate; a person, or a reviewer who is not the author, does that on the gate's own socket or in its console.",
+    "Every hit carries `provisional`: true while no second authority has countersigned, which on one gate is every hit. The flag is shown and never changes the order of hits.",
 ]
 
 
@@ -424,7 +475,7 @@ def render_llms() -> str:
     rules = "\n".join(f"- {r}" for r in LLMS_RULES)
     return (
         "# doublegate\n\n"
-        + LLMS_INTRO.format(first_release=FIRST_RELEASE) + "\n\n"
+        + LLMS_INTRO.format(next_steps=NEXT_STEPS) + "\n\n"
         "## The API, as data\n\n"
         "Rendered from the code that serves it and checked against it in the code repositories' continuous "
         "integration; published here as a snapshot stamped with the commit.\n\n"
@@ -448,14 +499,14 @@ NOT_FOUND_BODY = """<section id="top">
     <p class="eyebrow">404</p>
     <h1>That page <span class="grad">is not here</span></h1>
     <p class="lede">
-      The link is wrong, or it pointed at something that moved. Nothing is broken on your side.
+      The link is wrong, or it pointed at something that moved. Nothing on the visitor's side is broken.
     </p>
     <div class="cta-row">
       <a class="btn primary" href="index.html">Start at the overview</a>
       <a class="btn" href="how-it-works.html">See how it works</a>
     </div>
     <p class="micro">
-      If a link on this site brought you here, that is our bug —
+      A broken link on this site is our bug —
       <a href="{contact}">tell us where it was</a>.
     </p>
   </div>
@@ -479,7 +530,6 @@ def render_404() -> str:
         mailto=MAILTO,
         email=EMAIL,
         canonical=SITE,
-        first_release=FIRST_RELEASE,
         scripts="",
     )
     # An error page must not invite indexing, and must not claim to BE the home

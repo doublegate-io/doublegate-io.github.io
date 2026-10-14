@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 430" width="1080" height="430"
      role="img" aria-labelledby="t d" font-family="ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Inter, sans-serif">
-<title id="t">What the gate returns for sixty submitted memories and skills</title>
-<desc id="d">Five rows, one per verdict, showing what came back for sixty things agents wrote down. Twenty-three were NEW: nothing like them existed, so each was promoted as its own artifact, readable once signed. Fourteen were SHARPENED: they corrected a skill already held, so a revision superseded the parent and both are kept, drawn as a bright dot with the retained parent dimmer behind it. Eleven were MERGED: several beliefs reconciled into one, with the parents superseded rather than edited or deleted. Eight were HELD: they contradicted something and the merge was refused, so both parents stay live and the contradiction stays visible with its provenance, drawn as two dots of equal weight. Four were REFUSED as injection, a secret, or simply wrong, drawn hollow because they remain in the ledger with their reasons recorded but are never readable by anyone. The counts sum to sixty. Every submission ends in exactly one verdict, carrying a signature naming who decided and on what basis; nothing is edited in place and nothing vanishes. The split across the five verdicts is illustrative of the mechanism, not a measured rate.</desc>
+<title id="t">What the gate returns for sixty memories and skills agents wrote</title>
+<desc id="d">Five rows, one per verdict, showing what came back for sixty things agents wrote down. Twenty-three were NEW: nothing like them existed, so each was promoted as a claim of its own once signed. Fourteen were REVISED: they corrected a skill you already have, so a revision superseded the parent and both are kept, drawn as a bright dot with the retained parent dimmer behind it. Eleven were MERGED: several beliefs reconciled into one, with the parents superseded rather than edited or deleted. Eight were HELD: each contradicted a claim already promoted, so it is held beside that claim, recall returns only the promoted one, and the contradiction stays visible with its provenance, drawn as a pair of dots. Four were REJECTED as injection, a secret, or simply wrong, drawn hollow because they stay in the journal with their reasons recorded and are never promoted. The counts sum to sixty. Every write ends in exactly one outcome, signed in the journal, naming who decided and on what basis; nothing is edited in place and nothing is deleted. The split across the five outcomes is illustrative of the mechanism, not a measured rate.</desc>
 <defs>
   <style><![CDATA[
     .eyebrow { font-size:11.5px; font-weight:700; letter-spacing:.1em; fill:#8d97a9; }
@@ -13,7 +13,7 @@
     .cav  { font-size:11.5px; fill:#6b7484; }
 
     /* A reader who asks the OS for less motion gets the static figure. The only
-       motion is one ring on the newest submission; the figure reads standing still. */
+       motion is one ring on the newest arrival; the figure reads standing still. */
     @media (prefers-reduced-motion: reduce) { .mover { display:none; } }
   ]]></style>
   <linearGradient id="rule" x1="0" y1="0" x2="1" y2="0">
@@ -30,23 +30,23 @@
 <rect width="1080" height="430" fill="#08090c"/>
 <text class="eyebrow" x="24" y="40">SIXTY THINGS YOUR AGENTS WROTE DOWN — WHAT CAME BACK</text>
 <circle cx="29" cy="60" r="4.8" fill="#8d97a9" fill-opacity=".85"/>
-<text class="cav" x="40" y="64">one submission, no parent</text>
-<circle cx="218.4" cy="62.8" r="3.6" fill="#8d97a9" fill-opacity=".34"/>
-<circle cx="222" cy="60" r="4.8" fill="#8d97a9" fill-opacity=".9"/>
-<text class="cav" x="233" y="64">supersedes one parent</text>
-<circle cx="390.1" cy="63.2" r="3.1" fill="#8d97a9" fill-opacity=".34"/>
-<circle cx="395.8" cy="64.1" r="3.1" fill="#8d97a9" fill-opacity=".34"/>
-<circle cx="394.7" cy="60" r="4.8" fill="#8d97a9" fill-opacity=".9"/>
-<text class="cav" x="405.7" y="64">supersedes several</text>
-<circle cx="542.8" cy="60" r="3.2" fill="#8d97a9" fill-opacity=".85"/>
-<circle cx="549.4" cy="60" r="3.2" fill="#8d97a9" fill-opacity=".85"/>
-<text class="cav" x="557.1" y="64">two, both left live</text>
-<circle cx="686.7" cy="60" r="4.2" fill="none" stroke="#8d97a9" stroke-width="1.5" stroke-opacity=".75"/>
-<text class="cav" x="697.7" y="64">kept, never readable</text>
+<text class="cav" x="40" y="64">one claim, no parent</text>
+<circle cx="184.9" cy="62.8" r="3.6" fill="#8d97a9" fill-opacity=".34"/>
+<circle cx="188.5" cy="60" r="4.8" fill="#8d97a9" fill-opacity=".9"/>
+<text class="cav" x="199.5" y="64">supersedes one parent</text>
+<circle cx="356.6" cy="63.2" r="3.1" fill="#8d97a9" fill-opacity=".34"/>
+<circle cx="362.3" cy="64.1" r="3.1" fill="#8d97a9" fill-opacity=".34"/>
+<circle cx="361.2" cy="60" r="4.8" fill="#8d97a9" fill-opacity=".9"/>
+<text class="cav" x="372.2" y="64">supersedes several</text>
+<circle cx="509.3" cy="60" r="3.2" fill="#8d97a9" fill-opacity=".85"/>
+<circle cx="515.9" cy="60" r="3.2" fill="#8d97a9" fill-opacity=".85"/>
+<text class="cav" x="523.6" y="64">held beside a promoted one</text>
+<circle cx="714.4" cy="60" r="4.2" fill="none" stroke="#8d97a9" stroke-width="1.5" stroke-opacity=".75"/>
+<text class="cav" x="725.4" y="64">kept, never promoted</text>
 <path d="M 24 76 L 1056 76" stroke="url(#rule)" stroke-width="1" fill="none"/>
 <text class="vn" x="24" y="107" fill="#22d3ee">NEW</text>
 <text class="vh" x="24" y="124">nothing like it existed</text>
-<text class="vt" x="24" y="141">promoted as its own artifact, readable once signed</text>
+<text class="vt" x="24" y="141">promoted as a claim of its own once signed</text>
 <text class="vc" x="362" y="123" text-anchor="end" fill="#22d3ee">23</text>
 <circle cx="374.0" cy="118.4" r="5.2" fill="#22d3ee" fill-opacity=".9"/>
 <circle cx="389.6" cy="118.4" r="5.2" fill="#22d3ee" fill-opacity=".9"/>
@@ -71,7 +71,7 @@
 <circle cx="686.0" cy="117.6" r="5.2" fill="#22d3ee" fill-opacity=".9"/>
 <circle cx="701.6" cy="117.6" r="5.2" fill="#22d3ee" fill-opacity=".9"/>
 <circle cx="717.2" cy="117.5" r="5.2" fill="#22d3ee" fill-opacity=".9"/>
-<text class="vn" x="24" y="159" fill="#34d399">SHARPENED</text>
+<text class="vn" x="24" y="159" fill="#34d399">REVISED</text>
 <text class="vh" x="24" y="176">it corrects a skill you already have</text>
 <text class="vt" x="24" y="193">a revision supersedes the parent — both are kept</text>
 <text class="vc" x="362" y="175" text-anchor="end" fill="#34d399">14</text>
@@ -141,8 +141,8 @@
 <circle cx="531.2" cy="226.6" r="3.4" fill="#a78bfa" fill-opacity=".34"/>
 <circle cx="530.0" cy="222.2" r="5.2" fill="#a78bfa" fill-opacity=".95"/>
 <text class="vn" x="24" y="263" fill="#fbbf24">HELD</text>
-<text class="vh" x="24" y="280">it contradicts, and the merge was refused</text>
-<text class="vt" x="24" y="297">both parents stay live, the disagreement stays open</text>
+<text class="vh" x="24" y="280">it contradicts a claim already promoted</text>
+<text class="vt" x="24" y="297">held beside it; recall returns only the promoted one</text>
 <text class="vc" x="362" y="279" text-anchor="end" fill="#fbbf24">8</text>
 <circle cx="371.4" cy="274.5" r="3" fill="#fbbf24" fill-opacity=".9"/>
 <circle cx="376.6" cy="274.5" r="3" fill="#fbbf24" fill-opacity=".9"/>
@@ -160,9 +160,9 @@
 <circle cx="521.7" cy="273.7" r="3" fill="#fbbf24" fill-opacity=".9"/>
 <circle cx="540.7" cy="273.7" r="3" fill="#fbbf24" fill-opacity=".9"/>
 <circle cx="545.9" cy="273.7" r="3" fill="#fbbf24" fill-opacity=".9"/>
-<text class="vn" x="24" y="315" fill="#fb7185">REFUSED</text>
+<text class="vn" x="24" y="315" fill="#fb7185">REJECTED</text>
 <text class="vh" x="24" y="332">injection, a secret, or simply wrong</text>
-<text class="vt" x="24" y="349">never readable by anyone; the reasons are recorded</text>
+<text class="vt" x="24" y="349">kept with its reasons, never promoted</text>
 <text class="vc" x="362" y="331" text-anchor="end" fill="#fb7185">4</text>
 <circle cx="374.0" cy="325.7" r="4.6" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-opacity=".75"/>
 <circle cx="389.6" cy="326.4" r="4.6" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-opacity=".75"/>
@@ -170,6 +170,6 @@
 <circle cx="420.8" cy="325.5" r="4.6" fill="none" stroke="#fb7185" stroke-width="1.5" stroke-opacity=".75"/>
 <circle class="mover" cx="717.2" cy="117.5" r="7.2" fill="none" stroke="#22d3ee" stroke-width="1.5"><animate attributeName="r" dur="3.6s" repeatCount="indefinite" values="7.2;16.2;7.2" keyTimes="0;0.5;1"/><animate attributeName="stroke-opacity" dur="3.6s" repeatCount="indefinite" values=".85;0;.85" keyTimes="0;0.5;1"/></circle>
 <path d="M 24 364 L 1056 364" stroke="url(#rule)" stroke-width="1" fill="none"/>
-<text class="foot" x="24" y="390">Every submission ends in exactly one verdict, signed. Nothing is edited in place, and nothing vanishes.</text>
-<text class="cav" x="24" y="410">The split across the five is illustrative of the mechanism, not a measured rate; measured rates publish with release 3.</text>
+<text class="foot" x="24" y="390">Every write ends in exactly one outcome, signed in the journal. Nothing is edited in place, and nothing is deleted.</text>
+<text class="cav" x="24" y="410">Illustrative: the split across the five is not a measured rate. The mechanism is what is being shown.</text>
 </svg>

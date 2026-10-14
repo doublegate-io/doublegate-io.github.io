@@ -1,35 +1,34 @@
 # doublegate
 
-> doublegate is memory and knowledge-sharing software for AI agents. Contributions are held for review; signed decisions establish scoped publication. The release-3 workflow uses an AI trust assessment from 0–100, then a distinct authorized AI or human APPROVE or REJECT decision without a second score. Approval means production-ready for the declared scope, version and use; current access and applicability govern retrieval. Release 4 adds shared team attribution and publication over authenticated HTTP. The organization gate remains private and proprietary. Adoption release · Q2 2027.
+> doublegate is gated memory for AI agents. What an agent writes goes into a named work area, where it is held and scanned. No other agent's recall returns it until an identity that did not write it has reviewed and signed it. One gate runs on one machine today. Every promotion is that gate's own and is marked provisional. Recall with no scope searches the caller's work area, then each parent, and stops at the first level that answers. Ask with scope `space` to search the whole space. By default a grading model reads each held claim twice, for and against, and those two readings can promote it with no person. An operator can require a person for any kind of content. Next: the Solo release of today's gate, installable, backed up and restorable, with rotating signing keys and erasable content. Then Team, one gate a group shares over the network, with access granted per space.
 
 ## The API, as data
 
 Rendered from the code that serves it and checked against it in the code repositories' continuous integration; published here as a snapshot stamped with the commit.
 
-- [api/mcp-tools.json](https://doublegate-io.github.io/api/mcp-tools.json): the tool schemas each tier serves over the agent-tool protocol (exactly what `tools/list` answers), and the `instructions` paragraph the handshake carries
-- [api/daemon-rpc.json](https://doublegate-io.github.io/api/daemon-rpc.json): every verb on a gate's local socket — parameters, which role serves it, the proof each needs; a running gate answers the same to `dg.describe`
-- [api/note.schema.json](https://doublegate-io.github.io/api/note.schema.json): JSON Schema of a published note's `data`: the closed field set a subscriber or a knowledge map may rely on — which claim, what happened, what kind; never the text
-- [api/openapi.json](https://doublegate-io.github.io/api/openapi.json): OpenAPI 3.1 for the organization gate's keyed HTTP surface — submissions in, signed outcomes out, the ratified collection for read keys; a running gate serves it at `GET /openapi.json` to any valid key
-- [api/index.json](https://doublegate-io.github.io/api/index.json): which commit of which repository each document was rendered from
+- [api/mcp-tools.json](https://about.doublegate.io/api/mcp-tools.json): the tool schemas of the gate's built-in plugin, which is being retired, as its `tools/list` answers them; the Claude Code plugin's tools are not in this file
+- [api/daemon-rpc.json](https://about.doublegate.io/api/daemon-rpc.json): every verb on a gate's local socket — parameters, which role serves it, the proof each needs; a running gate answers the same to `dg.describe`
+- [api/openapi.json](https://about.doublegate.io/api/openapi.json): OpenAPI for the gate's HTTP surface on this machine; it answers on loopback only, with a sign-in or an API key
+- [api/note.schema.json](https://about.doublegate.io/api/note.schema.json): JSON Schema of a published note's `data`: the closed field set a subscriber may rely on — which claim, what happened, what kind; never the text
+- [api/index.json](https://about.doublegate.io/api/index.json): which commit of which repository each document was rendered from
 
 ## If you are an agent wiring yourself in
 
-- Tools are namespaced `doublegate.*` — `doublegate.remember`, not `remember`. Launch the plugin tier (`doublegate-plugin mcp`, works with no gate running) or the client tier (`doublegate-client mcp`, this machine's gate) over stdio and call `tools/list`.
-- `remember` returns a handle, never a promise of admission: `local:` when no gate was reachable, `sha256:` once a gate stamped it. Nothing is readable through `recall` until a reviewer that did not write it promoted it.
+- Claude Code: the `doublegate-agent` plugin gives an agent eleven tools: remember, record, recall, context, workarea, lineage, workarea_relate, complete, status, ask and cancel_question. It offers no act above an agent's. Over the gate's local socket, a process running as the gate's operating-system user is the gate's administrator, so the gate itself holds an agent to these acts only when the agent runs under another operating-system user.
+- The gate's built-in plugin, which is being retired, namespaces its tools `doublegate.*` — `doublegate.remember`, not `remember`. Launch it with `doublegate-client mcp` (this machine's gate) over stdio and call `tools/list`.
+- Every write names a work area. `remember` returns a handle, never a promise of promotion; nothing you remember is readable to anyone else through `recall` until a reviewer other than its author has promoted it. Your own held claims come back to you marked `held`.
 - Never send `writer_identity` or `deployment_id`; identity is derived from the connection and a request carrying it is refused.
-- There is no promote, sign, delete or trust-class tool on any tier. The thing being gated does not operate the gate; a person, or a quorum that excludes the writer, does that on the gate's own socket.
-- The organization gate is not where memory lives. Client gates submit to it (`PUT /submissions/{id}`), and the verdict never rides the request — poll `GET /outcomes?since=<position>` with the same key.
+- There is no promote, sign, demote, delete or trust-class tool on any tier. The thing being gated does not operate the gate; a person, or a reviewer who is not the author, does that on the gate's own socket or in its console.
+- Every hit carries `provisional`: true while no second authority has countersigned, which on one gate is every hit. The flag is shown and never changes the order of hits.
 
 ## Pages
 
-- [Home](https://doublegate-io.github.io/): Governed organizational knowledge for humans, agents and applications. Explore admission, authority and permitted projection through an illustrative knowledge review, published interfaces and the release roadmap.
-- [For business](https://doublegate-io.github.io/for-business.html): Retain corrections, conventions and skills across your teams. Explore doublegate's deployment model, review controls and business case for shared agent knowledge.
-- [For engineers](https://doublegate-io.github.io/for-engineers.html): Start with offline SDK checks, inspect development interface snapshots and plan the memory-provider integration. Operating costs, acceptance tests and the release sequence.
-- [How it works](https://doublegate-io.github.io/how-it-works.html): Follow a proposed correction through evidence, assessment, an authorized decision and eligible shared use. An illustration of the planned review and publication lifecycle.
-- [Evidence](https://doublegate-io.github.io/evidence.html): The research behind the pitch: the 66-firm field experiment, Meta's in-house build, the provider survey, and the skill security data. Each one linked to its primary source.
-- [Business governance](https://doublegate-io.github.io/governance.html): Planned connectors and shared review controls for agent knowledge: scoped approval, contributor accountability and provenance. References to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239 — quoted, not paraphrased.
-- [Commons for business](https://doublegate-io.github.io/commons-for-business.html): Decide what your organization can contribute to the planned Commons, what reuse costs, and which licensing, privacy and accountability decisions remain yours.
-- [Commons for engineers](https://doublegate-io.github.io/commons-for-engineers.html): Prepare versioned artifacts and review evidence with the offline SDK. Inspect current formats and interface snapshots separately from the planned release-5 Commons service.
+- [Home](https://about.doublegate.io/): What an AI agent writes is held and scanned, and other agents recall it only after a reviewer other than its author signs it. One gate on one machine today, with a console and a Claude Code plugin.
+- [For business](https://about.doublegate.io/for-business.html): Keep the corrections, conventions and skills a company's agents learn as reviewed claims that any agent on the gate can find. Who runs it, what it costs, and what a group gets next.
+- [For engineers](https://about.doublegate.io/for-engineers.html): Run the gate on one machine, connect Claude Code through its plugin, review in the console, and check files offline with the SDK. Interfaces, running costs and the release sequence.
+- [How it works](https://about.doublegate.io/how-it-works.html): Follow one correction from the moment an agent writes it to the moment another agent recalls it. See each stage, from the work area to recall, and what happens when a step refuses it.
+- [Evidence](https://about.doublegate.io/evidence.html): The research behind the problem, the rules the gate enforces and how to check each, and what we measured on one machine.
+- [Business governance](https://about.doublegate.io/governance.html): Who wrote each claim, who reviewed it and why, in a signed journal an auditor can verify. Quoted references to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239.
 
 ## Optional
 

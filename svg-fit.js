@@ -27,7 +27,15 @@
  */
 const fs = require('fs');
 const path = require('path');
-const puppeteer = require('puppeteer-core');
+let puppeteer;
+try {
+  puppeteer = require('puppeteer-core');
+} catch (e) {
+  // An absent browser driver is an absent tool, not a failing page. Three sibling checks
+  // already skip on it; these three crashed instead, which reads as a broken site.
+  console.log('SKIP — puppeteer-core not installed (npm i -D puppeteer-core to enable)');
+  process.exit(0);
+}
 
 const ROOT = __dirname;
 const ASSETS = path.join(ROOT, 'assets');

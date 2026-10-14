@@ -3,101 +3,148 @@
 
 <section id="sdk" class="band">
   <div class="wrap">
-    <div class="section-head"><div><p class="section-index">Python SDK · runs offline today</p><h2>A check you can run.<br>A result you can inspect.</h2></div><p>The standalone <b>doublegate-sdk</b> validates declarative manifests and runs bounded literal checks offline. Its output is evidence a reviewer can act on; permission to install, publish or execute stays with the systems that do those things.</p></div>
+    <div class="section-head"><div><p class="section-index">Python SDK · runs offline today</p><h2>Check a file offline with the SDK</h2></div><p>The standalone <b>doublegate-sdk</b> checks a file against a manifest, the declared checks that file must pass. It runs offline, with no runtime dependencies, and works without a gate. A clean result is evidence for a reviewer and approves nothing.</p></div>
     <div class="sdk-grid">
       <div>
-        <h3>Start from source</h3>
-        <p>Python 3.11+. The file loader runs on Linux and WSL and uses POSIX operations. The core has no runtime dependencies and installs no service.</p>
-<p>Clone the <a href="https://github.com/doublegate-io/doublegate-sdk">public SDK repository</a>, create a Python environment and follow the <a href="https://doublegate-io.github.io/doublegate-sdk/dev/quickstart/">versioned quickstart</a> for installation and execution commands.</p>
-        <p class="micro">Version 0.1.0.dev0, distributed from the GitHub repository. Install from the source checkout; the package index follows with the adoption release.</p>
-        <p><a href="https://doublegate-io.github.io/doublegate-sdk/dev/quickstart/">Versioned Python quickstart</a> · <a href="https://github.com/doublegate-io/doublegate-sdk">SDK source</a></p>
+        <h3>Install the SDK</h3>
+        <p>Python 3.11 or later. The file loader uses POSIX operations and runs on Linux and WSL. The core starts no service.</p>
+        <p>Clone the <a href="https://github.com/doublegate-io/doublegate-sdk">public SDK repository</a> and create a Python environment. The <a href="https://about.doublegate.io/doublegate-sdk/dev/quickstart/">versioned quickstart</a> gives the commands to install and run it.</p>
+        <p>Its clients for agents and reviewers check the access scope before sending anything. They never send an API key unencrypted off the machine.</p>
+        <p class="micro">doublegate-sdk is a development release.</p>
+        <p><a href="https://about.doublegate.io/doublegate-sdk/dev/quickstart/">Versioned Python quickstart</a> · <a href="https://github.com/doublegate-io/doublegate-sdk">SDK source</a></p>
       </div>
       <div>
-        <h3>Verify a runbook field</h3>
-        <p>Run from the SDK repository root. The bundled runbook manifest requires the literal text <code>Owner:</code>. Compare content with and without that field using the versioned example.</p>
-<p>The <a href="https://doublegate-io.github.io/doublegate-sdk/dev/quickstart/">published runbook quickstart</a> walks through package loading and evaluation. Use its current API and output format for the checked-out version.</p>
-        <p class="micro">A clean result means the literal check passed. Whether the owner is real and the runbook correct is what the human review on this manifest is for; that fixture policy is its own, and DoubleGate's general review design sets human participation by policy.</p>
+        <h3>Check a runbook field</h3>
+        <p>The bundled runbook manifest requires the literal text <code>Owner:</code>. From the SDK repository root, run the versioned example on a runbook with that line and on one without it.</p>
+        <p>The <a href="https://about.doublegate.io/doublegate-sdk/dev/quickstart/">published runbook quickstart</a> walks through loading the package and checking the file.</p>
+        <p class="micro">A clean result means the literal text is there. Whether the owner is real and the runbook correct is for a reviewer to decide. The gate's policy decides whether that reviewer is a person.</p>
       </div>
     </div>
   </div>
 </section>
 
+<section id="plugin" class="band alt">
+  <div class="wrap">
+    <h2>Claude Code connects through a plugin with an agent's permissions</h2>
+    <p class="sub">The plugin gives each Claude Code session eleven tools: remember, record, recall, context, work area, lineage, relate work areas, complete, status, ask and cancel a question. Remember writes a claim, one thing written down for reuse, held until a reviewer other than its author signs it. Only then is it promoted, and other agents' recall, the gate's search, returns it. Record keeps evidence, never graded or recalled.</p>
+    <div class="cards two">
+      <div class="card"><h3>Work areas and recall</h3><p>Each session writes into a work area of its own, the named place its claims go. A subagent's area is opened from the session's. By default, recall searches the session's own work area, then each area above it, and stops at the first that has an answer. It never searches a sibling, such as an earlier session's area. So a new session finds an earlier session's promoted claims only when it recalls across the space, or when the two areas are related.</p></div>
+      <div class="card"><h3>When it recalls</h3><p>The plugin recalls when the model calls recall. Recall before every prompt and at a session's start is on the roadmap. The gate's built-in plugin recalls on every prompt and is being retired. Install one or the other.</p></div>
+      <div class="card"><h3>Session records and the librarian</h3><p>Hooks record the session as evidence at its start, before Claude Code compacts the conversation, and at its end. They run silently and never block the session. A librarian subagent writes what a task learned as derived facts: claims that cite their sources. With no gate configured, every tool answers that the gate is unavailable, and keeps nothing.</p></div>
+      <div class="card"><h3>Who it acts as</h3><p>The plugin offers only an agent's acts: it writes and recalls, and never promotes, signs, rejects, demotes or hides. On one machine, the operating-system user that runs the gate is its administrator over the local socket. If Claude Code runs as that same user, as it does when one person starts both, its shell can promote what its own session wrote. The plugin's API key does not change that.</p><p>To hold Claude Code to an agent's acts, run it as another operating-system user. Give the plugin an agent-role API key over the gate's loopback address. A gate that runs under a service user of its own is on the roadmap.</p></div>
+    </div>
+    <p class="micro">A reviewer or administrator creates the plugin's agent-role API key on the console's Access page, which shows it once, beside the plugin's setup. A marketplace entry for the plugin is on the roadmap.</p>
+  </div>
+</section>
+
+<section id="console" class="band">
+  <div class="wrap tight">
+    <h2>People review in a console on the gate's machine</h2>
+    <p class="lede">Sign in through the organization&rsquo;s identity provider or the gate's own sign-in, in one of four roles: reader, agent, reviewer, admin. Programs hold API keys, which are shown once and stored as a hash. With the gate's own sign-in, a reload keeps the session signed in.</p>
+    <p>The console holds the review queue, work areas (topology, relation graph, work graph), activity, a recall bar, status, access, settings an administrator can save, and a manual. One Live switch keeps every page current. Every page fits a phone and follows the device&rsquo;s light or dark setting.</p>
+    <p>In the console a reviewer signs, rejects, defers, demotes and comments. Hiding a claim is done through the gate's API or its command line. The console uses the spaces that exist; an administrator creates new ones through the API.</p>
+    <p>The relation graph's 3D view needs WebGL. Its List view serves a keyboard and a screen reader.</p>
+    <p class="micro">The console and every data route answer only on the gate's machine, with no TLS and no network surface.</p>
+  </div>
+</section>
+
 <section id="connect" class="band alt">
   <div class="wrap">
-    <h2>Choose the integration boundary</h2>
-    <p class="sub">Offline authoring, a memory provider and an organization authority are different components. Installing the SDK does not start a gate or connect an agent.</p>
+    <h2>Three ways to connect</h2>
+    <p class="sub">The SDK, the gate and the plugin are separate pieces. Installing the SDK starts no gate and connects no agent.</p>
     <ol class="integration-path">
-      <li><h3>Author a bounded check</h3><p>Validate a manifest and evaluate an artifact with the SDK. Keep the returned findings as evidence. Review capabilities, input limits and the selected human-review policy.</p><a href="https://doublegate-io.github.io/doublegate-sdk/dev/manual/">SDK manual and limits</a></li>
-      <li><h3>Wire one consumer</h3><p>The planned adoption release provides storage, search and the agent-tool interface. Map your caller to the exact development catalog; test submission, recall and failure states before replacing its current memory path.</p><a href="#agents">Current interface snapshots</a></li>
-      <li><h3>Evaluate review and sharing</h3><p>Review and cross-team authority arrive later. Prove the chosen revision, reviewer authority, access scope and withdrawal behavior on the intended deployment before sharing real work.</p><a href="#validation">Integration acceptance criteria</a></li>
+      <li><h3>Check a file offline</h3><p>Check a file against a manifest with the SDK. Keep what it finds as evidence for the reviewer, together with the manifest's input limits and its review policy.</p><a href="https://about.doublegate.io/doublegate-sdk/dev/manual/">SDK manual and limits</a></li>
+      <li><h3>Connect Claude Code</h3><p>The plugin runs over the SDK alone. It gives each session an agent's acts in a work area of its own. Sessions write into main, the space a new install has, unless the operator sets another. An administrator creates any other space first, and the gate refuses a claim that names an unknown one.</p><a href="#plugin">The Claude Code plugin</a></li>
+      <li><h3>Speak the agent-tool protocol</h3><p>The gate speaks the Model Context Protocol over stdio and HTTP POST, request and response only, with no streaming. It takes the caller's identity from the connection and refuses a request that names an author. The protocol's own reference client connects to the gate's built-in plugin, which is being retired, with no change to its code.</p><a href="#agents">Current interface snapshots</a></li>
     </ol>
   </div>
 </section>
 
 <section id="shape" class="band">
   <div class="wrap split-heading">
-    <div><p class="section-index">Architecture</p><h2>Own the memory path.<br>Keep sources intact.</h2></div>
-    <div class="argument-copy"><p>DoubleGate is designed as a memory provider for the corpus routed through it: admission, storage and eligible retrieval. It is not an SDK wrapper that adds review to an arbitrary existing store.</p><p>Repositories, tickets and policy documents remain systems of record. Contributions reference their sources; a signed decision records who accepted a revision and why. A hash or signature establishes a binding, not the truth of the content.</p><p id="stores">Memories hold reusable claims; skills can carry executable instructions; records preserve events. Their risks differ. Review of a skill is separate from permission to execute it.</p><a href="how-it-works.html">Follow the review lifecycle</a></div>
+    <div><p class="section-index">Architecture</p><h2>What runs on the gate's machine, and what stays in the organization&rsquo;s systems</h2></div>
+    <div class="argument-copy"><p>The gate holds, stores and serves the claims written through it. One gate process writes the journal, the signed record of every decision, under one lock. A second gate process started on the same store is refused, and nothing in the store is lost.</p><p>The gate calls only the grading model the operator chooses and the sign-in provider the operator names. Two separate programs extend it, each under an API key of its own. The notifier follows the journal and sends a note, never the content, to a file, socket, webhook or script. The skill watcher reads folders the operator keeps and writes each new skill file it finds for review.</p><p>A note says who wrote what kind of claim, and where. A webhook sends that note off the machine. A notifier on a read-only API key reports a promotion, and never the demotion that later takes the claim out of recall.</p><p>Repositories, tickets and policy documents stay the systems of record, and a claim can cite them. A signed decision records who signed the claim and why. The signature binds the decision to the claim. It says nothing about whether the claim is true.</p><p id="stores">The gate keeps three kinds of thing, and their risks differ. Memories hold claims to reuse. Skills carry instructions, sometimes with scripts, that change what an agent does. Records keep events as evidence. Reviewing a skill is separate from permission to run it.</p><a href="how-it-works.html">Follow the review lifecycle</a></div>
+  </div>
+  <div class="wrap">
+    <figure class="architecture connected-route native-flow" aria-labelledby="topology-caption"><figcaption id="topology-caption">One gate on one machine: what writes into it, what it keeps, and what reads from it.</figcaption><ol class="authority-route flow-route"><li class="flow-step"><small>Write</small><h3>Sessions and people</h3><p>Each Claude Code session remembers through the plugin into its own work area. People write in the console, and the skill watcher writes new skill files.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step route-held"><small>Held</small><h3>Quarantine and scanner</h3><p>Every claim written is held and scanned before its author gets an answer. The scan looks for credentials, injected instructions and personal data, and checks skill scripts.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step"><small>Graded</small><h3>Grader and reviewers</h3><p>A grading model reads each held claim twice. By default those two readings can promote it with no person. When the gate's policy asks for a person, one signs or rejects in the console. No author signs its own claim.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step route-signed"><small>Signed</small><h3>Signed journal</h3><p>Each decision is a signed event. Each promotion is marked provisional, because it rests on this one gate's judgement.</p></li><li class="flow-connector" aria-hidden="true"><span></span></li><li class="flow-step route-readable"><small>Recalled</small><h3>Recall</h3><p>A session searches its own work area and the areas above it. Any agent on the gate can find a promoted claim by recalling across the space.</p></li></ol></figure>
   </div>
 </section>
 
 <section id="agents" class="band alt">
   <div class="wrap">
     <h2>Interfaces published as data</h2>
-    <p class="sub">These are development API snapshots. A hosted endpoint arrives with its release. The <a href="api/index.json">artifact manifest</a> records source revisions; begin with <a href="llms.txt">the machine-readable index</a>.</p>
+    <p class="sub">Four files publish the interface as JSON: the method catalog, the HTTP description, the note schema and the tool schemas of the gate's built-in plugin. The gate answers only the methods the catalog declares. The Claude Code plugin's eleven tools are listed above and are not in these files. The <a href="api/index.json">artifact manifest</a> records the source revision of each file. Begin with <a href="llms.txt">the machine-readable index</a>.</p>
     <div class="resource-list">
-      <a href="api/mcp-tools.json"><b>Agent-tool catalog</b><span>Actual tool names, inputs and caller rules for each deployment.</span></a>
-      <a href="api/daemon-rpc.json"><b>Local socket operations</b><span>Parameters and operator responsibilities inside a deployment.</span></a>
-      <a href="api/openapi.json"><b>Organization HTTP schema</b><span>Submission and collection interfaces for the organization gate.</span></a>
-      <a href="api/note.schema.json"><b>Published note schema</b><span>Outcome metadata; publication notes are not artifact bodies.</span></a>
-      <a href="https://doublegate-io.github.io/doublegate-sdk/"><b>Versioned SDK documentation</b><span>Manifest validation, package loading, literal checks and CLI reference.</span></a>
+      <a href="api/daemon-rpc.json"><b>Method catalog</b><span>Every method on the gate's local socket, its parameters and the role it needs.</span></a>
+      <a href="api/openapi.json"><b>HTTP description</b><span>OpenAPI for the gate's HTTP surface. It answers only on the gate's machine, with a sign-in or an API key.</span></a>
+      <a href="api/mcp-tools.json"><b>Built-in plugin tool schemas</b><span>The tools of the gate's built-in plugin, as its tool list reports them.</span></a>
+      <a href="api/note.schema.json"><b>Note schema</b><span>What a notifier's note carries: what happened and where, never the content.</span></a>
+      <a href="https://about.doublegate.io/doublegate-sdk/"><b>Versioned SDK documentation</b><span>Manifest validation, package loading, literal checks and the command-line reference.</span></a>
     </div>
-    <p class="micro">A submission handle is not approval. SDK results carry no gate authority. Validate the installed component versions and their interoperability; the broader shared lifecycle remains release work.</p>
+    {role_table}
+    <p>An agent-role API key reaches {agent_reach} methods, and none of them promotes, signs, rejects, demotes, hides or bans.</p>
+    <p>Programs follow the gate through an event feed: the journal's events in order, at most 1,000 a call, behind a cursor the gate issues. An event names what happened, never the content.</p>
+    <p>The gate seals the cursor, so it reveals no positions in the journal. Each answer says when the program has caught up.</p>
+    <p class="micro">The method names in these files predate the words on this site. The id returned when an agent writes is not a promotion, which is a separate, signed decision.</p>
   </div>
 </section>
 
 <section id="operations" class="band">
   <div class="wrap">
     <h2>Plan the deployment, not just the import</h2>
-    <div class="cards three">
-      <div class="card"><h3>Local client</h3><p>Python and local SQLite storage. Decide which agent memory path will use it and preserve a rollback route to your existing workflow.</p></div>
-      <div class="card"><h3>Organization design</h3><p>PostgreSQL is the intended decision authority; Delta supports rebuildable projections. Authenticated HTTP crosses deployments; local adapters stay local.</p></div>
-      <div class="card"><h3>Inference and operations</h3><p>Hosted reviewers receive reviewed content. Local models keep inference on your infrastructure. Budget for storage, queue monitoring, backups and restore tests.</p></div>
+    <div class="cards two">
+      <div class="card"><h3>Runtime</h3><p>Python 3.11 or later, with SQLite on local disk. PostgreSQL can hold the views the gate rebuilds from the journal. How PostgreSQL performs at scale is unmeasured. An installable package comes with the Solo release.</p></div>
+      <div class="card"><h3>Grading</h3><p>By default the gate sends grading to a model server the operator runs on this machine, at port 11435. With no grading model, every held claim waits for a person. A hosted grading model receives the text with secrets masked. A daily token budget pauses grading when it is spent.</p></div>
+      <div class="card"><h3>Running it</h3><p><code>doublegate doctor</code> names each failure with its fix. The console's Status page shows what waits at each step and the grading budget spent today. An export from another memory tool is imported through the same review as any claim.</p></div>
+      <div class="card"><h3>Administration and signing keys</h3><p>Any agent running as the gate's own operating-system user can promote what its session wrote (<a href="#plugin">who the plugin acts as</a>). A lost signing key has no recovery path today. Key rotation and recovery come with the Solo release.</p></div>
     </div>
-    <p class="micro">Customer-controlled and managed operation are proposed deployment options, not a live hosted SDK service. <a href="for-business.html#offering">Operating responsibilities</a> · <a href="governance.html">Identity, retention and governance requirements</a>.</p>
+    <p class="micro">The operator runs the gate on infrastructure the organization controls, and its stores stay there. <a href="for-business.html#offering">Operating responsibilities</a> · <a href="governance.html">Identity, retention and governance requirements</a>.</p>
   </div>
 </section>
 
 <section id="costs" class="band alt">
   <div class="wrap tight">
-    <h2>Measure the cost of useful knowledge</h2>
-    <p>Review adds model cost, time before publication and operational work. Measure retrieval relevance and latency alongside current eligibility checks; a fast wrong answer is not a useful result.</p>
-    <p id="broken">Access grants, retention and erasure are separate deployment requirements. Test recovery, expiry and withdrawal, including downstream copies and backups, rather than equating a local deletion with complete erasure.</p>
-    <p class="micro">Historical token measurements are available in <a href="evidence.html">the evidence</a>. They are not a budget guarantee for the selected two-stage review or your workload.</p>
+    <h2>What it costs to run</h2>
+    <p>By default each held claim costs two readings by the grading model. When the gate's policy asks for a person, it also costs that person's time. Every claim kept uses disk, and storage only grows because nothing is deleted. The rates below were measured on one test machine (WSL2 on an AMD Ryzen 9 5950X, 2026-10-05). Each illustrates how a cost behaves:</p>
+    <ul>
+      <li>The journal appends about 700 events a second, each on disk before the call returns. On the test machine, that rate caps how fast the gate writes.</li>
+      <li>Checking the journal's chain takes about 56 µs an event.</li>
+      <li>Each claim uses about 14.5 KB of disk, permanently.</li>
+      <li>The scanner runs at about 305 ms per MiB of prose (measured 2026-09-23).</li>
+      <li>Writing a 1 KiB claim, scan included, answers inside the 50 ms budget the test suite enforces. That time grows as the store grows. An index that halved it on test copies is on the roadmap.</li>
+    </ul>
+    <p id="broken">Promotion, and rebuilding the views from the journal, take longer as the journal grows. More readers at once lower throughput on SQLite. Fixes for both are on the roadmap.</p>
+    <p class="micro">The evidence page lists <a href="evidence.html#measured">every measurement, with its machine and date</a>.</p>
   </div>
 </section>
 
 <section id="validation" class="band">
   <div class="wrap tight">
-    <h2>Make the integration earn its place</h2>
-    <p>Use a non-sensitive, team-owned set of conventions or runbooks. Compare correct, applicable task completion with your existing storage and review workflow using the same source access and review budget.</p>
-    <p>Include harmful admissions, useful contributions rejected, stale revisions, unauthorized consumers, recovery and time to an effective correction. Record failures, reviewer effort and total cost. SDK fixture success proves none of those deployment outcomes.</p>
+    <h2>How to evaluate it on a group&rsquo;s own work</h2>
+    <p>Start from conventions or runbooks the group owns, with nothing sensitive in them. Run the same tasks through doublegate and the current workflow, with the same source access and review budget. Compare how many tasks each completes correctly.</p>
+    <p>Count harmful claims promoted, useful claims rejected and claims that went stale. Count any API key used beyond its role, and the time until a correction takes effect. Record failures, reviewer effort and total cost. A clean SDK result proves none of these outcomes.</p>
   </div>
 </section>
 
 <section id="try" class="band alt">
   <div class="wrap tight">
     <h2>Release sequence</h2>
-    <p class="lede">Current source and API artifacts support development evaluation. The provider adoption release is the first planned agent integration; the complete reviewed, shared system follows in stages.</p>
+    <p class="lede">The steps are listed in the order they ship.</p>
     <ol class="timeline">
-      <li><span class="ms">R1</span><b>Ledger and quarantine</b><span class="d">Signed journal, isolated stores and envelope format establish the integrity foundation.</span></li>
-      <li class="key"><span class="ms">R2</span><b>Provider adoption — {first_release}</b><span class="d">Storage, search, importer and the first agent-tool client. Review follows; this date does not promise the complete shared system.</span></li>
-      <li><span class="ms">R3</span><b>Two-stage review</b><span class="d">A non-author AI assesses trust from 0–100. A second authorized AI or human, distinct from author and assessor, issues binary APPROVE or REJECT for the exact revision and use. No second score; human participation depends on policy. Evaluate calibration and errors.</span></li>
-      <li><span class="ms">R4</span><b>Shared organizational controls</b><span class="d">Multi-deployment synchronization, contributor and team attribution, current read permissions, scoped publication, withdrawal and erasure tooling. Deployment authorities are separate from the two review stages.</span></li>
-      <li><span class="ms">R5</span><b>Skills, daily review and Commons</b><span class="d">Skill revision proposals, a bounded review digest, contradiction handling and the reviewed public library. Public contribution requires explicit publishing rights.</span></li>
+      <li><span class="ms">Now</span><b>One gate on one machine</b><span class="d">Held claims and the scanner. Grading by a model, by a person in the console, or both. The signed journal. Work areas and lineage. The Claude Code plugin and the console. The notifier and the skill watcher. The offline SDK. Every promotion is marked provisional. How often the grading model is right is unmeasured.</span></li>
+      <li class="key"><span class="ms">Next</span><b>The Solo release</b><span class="d">Installable, and restarted if it stops. Backup, restore and export. Signing keys that rotate and recover. Content erasure, with the signed record still verifying. An older version refuses a newer store and says why.</span></li>
+      <li><span class="ms">Then</span><b>Team</b><span class="d">A group shares one gate over the network, and access is granted per space. Steering: a person's direction, shown before any claim to every agent working in a work area or below it.</span></li>
+      <li><span class="ms">Later</span><b>Crews</b><span class="d">Agents started together as a crew, each under an API key of its own. A second, independent gate that countersigns.</span></li>
     </ol>
-    <p class="micro">Only the adoption release is dated. Later dates depend on the preceding releases and their acceptance evidence.</p>
-    <div class="cta-row"><a class="btn primary" href="https://doublegate-io.github.io/doublegate-sdk/">Read the SDK docs</a><a class="btn" href="evidence.html">Challenge the evidence</a></div>
+    <p class="micro">The Solo release gets a date when it passes its acceptance checks.</p>
+  </div>
+</section>
+
+<section id="next" class="band">
+  <div class="wrap tight">
+    <h2>The sources behind this page</h2>
+    <p>The evidence page gathers the research behind the problem, every measurement with its machine and date, and how to check each rule the gate enforces.</p>
+    <div class="cta-row"><a class="btn primary" href="evidence.html">Check every source</a></div>
   </div>
 </section>
 </main>

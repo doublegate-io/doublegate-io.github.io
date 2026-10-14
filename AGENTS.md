@@ -78,8 +78,8 @@ not startup copy and it is not a research abstract.
 - **Numbers and named sources over adjectives.** "66 firms, 7,137 knowledge
   workers" beats "extensive research". Every claim carries its primary source per
   the sourcing rule.
-- **No AI tells.** delve, leverage, robust, seamless, cutting-edge, game-changing,
-  unlock, empower, harness, "in today's landscape".
+- **No AI tells.** The list is `ai_tells` in [voice.json](voice.json), the site's
+  copy of the SDK's word list (ADR-0137 d6); gate 22 reads it from there.
 - **State the benefit and its cost in the same breath** — the honesty rule is also
   a *style* rule, because a benefit with its price attached reads as trustworthy
   where a bare benefit reads as marketing.
@@ -106,8 +106,8 @@ the public tracking handles.
 
 Enforced by gate 7. A page with no way forward is a lost reader. The route is
 deliberate: `index` hooks and dispatches; each specialist page ends by handing off
-to the next most likely question — `for-organizations` → `pricing`,
-`for-engineers` → `evidence`, `commons` → `governance`.
+to the next most likely question — `for-business` → `evidence`,
+`for-engineers` → `evidence`, `governance` → `for-business`.
 
 ### 6. The diagram carries the argument, so it carries alt text
 
@@ -125,6 +125,73 @@ greps have missed the anchor case, the nav-parity case and the README inline-HTM
 case. Run the gate, and add a check to it when you find a new class of failure —
 do not keep the check in your head.
 
+### 8. The reader is addressed only to act
+
+A call to act, the text of a link or a button, may use the imperative and the
+second person. Every other sentence names the organization, its team or the
+operator in the third person: "A company's teams already teach their agents",
+not "Your teams". The hero keeps the buyer's problem as its frame and changes only
+the pronoun. No exclamation, "please", apology, praise or "I"; "we" stays for the
+company's own commitments ("that is our bug", the roadmap). Quoted sources keep
+their own words inside `<q>` or `<blockquote>`. Gate 24 holds this against
+[voice.json](voice.json) and gate 25 holds that file equal to
+`doublegate-sdk/src/doublegate_sdk/voice.json`: a change to the list is made in the
+SDK and copied here by one `cp` in the same commit (ADR-0137 d6, d7).
+
+### 9. One statement a sentence; the limit is the next sentence
+
+Four readers of the 2026-10-06 copy stopped at the same shape: a benefit, a
+semicolon, then one or two caveats. Two adjacent sentences are "the same breath";
+a clause chain is not. Keep a sentence under 25 words (30 on for-engineers and
+evidence, where a number carries its machine and date). A semicolon joins two
+parallel facts of one kind, never a benefit and its limit.
+
+> ✗ *Held in quarantine and scanned before the write returns; the scan matches
+> patterns, so a new injection that fools it and the grader gets through.*
+
+> ✓ *Held in the quarantine, the store where claims wait for review, and scanned
+> before the agent gets its answer. The scan looks for leaked secrets and planted
+> instructions by matching known patterns. A new kind of planted instruction that
+> fools both the scan and the grading model gets through.*
+
+### 10. Say what a plain install does first, then what changes it and when
+
+A guarantee stated only by the setup in which it holds makes the reader invert the
+sentence to learn the default. And "specified" in prose reads as "done" to every
+reader: write "comes with the Solo release", "comes with Team" (what `NEXT_STEPS`
+names) or "is designed and on the roadmap". The status label SPECIFIED stays in the
+roadmap table, with its key under it.
+
+> ✗ *The gate compares identities, so the rule holds against an agent that runs as
+> another operating-system user (how to run one); a gate under its own service user
+> is specified.*
+
+> ✓ *If an agent runs as the same operating-system user as the gate, its shell can
+> promote what its session wrote. That is the case when you start both yourself.
+> Run the agent as another operating-system user and the rule holds against it (how
+> to set that up). A gate that runs under a dedicated operating-system user is
+> designed and on the roadmap.*
+
+### 11. One name per thing, glossed once a page; one wording per recurring limit
+
+The stored item is a **claim** on every page, never a memory, note, write,
+lesson or contribution ("lesson" and "correction" only as examples of a claim).
+Each product word carries the same plain gloss where a page first uses it: a claim,
+one thing an agent or a person writes down for others to rely on; the gate, the
+doublegate service on your machine that holds each claim until it is signed; a work
+area, the named place a session's claims go; recall, the gate's search; the
+journal, the signed record of every write and decision; the quarantine, the store
+where claims wait for review. Insider shorthand gets its plain words ("without the
+reviewer role", not "below reviewer"). A limit that recurs across pages is written
+once and repeated word for word, so gate 23's notice on it is expected; a second
+wording of the same limit is drift.
+
+> ✗ *Below reviewer, another author's held claim is answered exactly as an id that
+> names nothing.*
+
+> ✓ *Say an agent asks the gate for another agent's held claim by its id. Without
+> the reviewer role, it gets the same answer as for a claim that does not exist.*
+
 ---
 
 ## Before you commit
@@ -136,9 +203,12 @@ node    svg-geometry.js     # text-overlap check; skips without a browser
 ```
 
 Tone is the gate's business now, so there is nothing to run by hand. Gate 22
-fails the build on an AI tell (`delve`, `leverage`, `robust`, …); gate 17 fails it
+fails the build on an AI tell from the word list's `ai_tells`; gate 17 fails it
 on defensive framing, a disclaimer in heading position, and a qualifier that opens
-a section. Both name the sentence and the page.
+a section; gate 24 fails it on the second person outside a call to act and on the
+list's banned words. Each names the sentence and the page. `python3 check.py
+--selftest` runs gates 22 and 24 on the SDK's fixture, one caught and one passing
+sentence per entry, and the full run does the same.
 
 Hedges are deliberately *not* in either — rule 3 audits them, it does not ban
 them, and a count is not the finding. Read the `may`, `might` and `could`
@@ -300,3 +370,270 @@ a dated one.
   width; `ui-sync.py --check` and `sky-data.py --check` clean. `check.py` reports **one**
   problem, and it predates this work: `api-sync.py --check` says five `api/*.json` snapshots
   are behind the private checkouts beside this repo. Nothing is committed.
+
+### 2026-10-04 — the copy describes the product as it stands
+- The design's feature review (ADR-0110) declined the Commons, the organization gate's
+  HTTP surface and storage, team attribution at submission, folder subscriptions, the gap
+  report and the PROV export. Every page that sold one as the product or as a dated release
+  now says what runs today, from source (one gate on one machine), and lists only the next
+  two steps: the Solo release (installable, two-stage review, backup and restore, key
+  rotation, content erasure) and Team (one gate a group shares, read access per folder).
+  The second gate is named once per page where the name needs it, as a later step.
+- **Removed:** `pages/commons-for-business.html` and `pages/commons-for-engineers.html`.
+  Both URLs, and `commons.html`, redirect to the audience overviews; `audience-check.js`
+  checks only `#top` for them, because the overview has none of their sections.
+- **Undated:** `FIRST_RELEASE` (Q2 2027) is gone with the roadmap date it mirrored.
+  `NEXT_STEPS` in `build.py` names what ships next, in order, and every page quotes it;
+  the Solo release is dated when its acceptance list passes. Release numbers 2–5 are gone
+  from visible copy.
+- "The organization gate is private and proprietary" is gone from the footer, `pricing`
+  and `for-business#offering`: the organization gate is archived and its licence is an
+  open operator decision. The managed offering card went with it.
+- `governance#standards` now shows the two commands that verify the record, in place of
+  the W3C PROV and OpenLineage mappings. `for-engineers#agents` no longer lists the
+  organization gate's OpenAPI snapshot, and `llms.txt` drops it and the rule about
+  `PUT /submissions`.
+- `check.py` gate 21 refuses a route to either Commons page; gate 19 lost the Commons
+  ladder figure.
+- **Verified.** `build.py --check` in sync (15 files); `check.py` reports one problem,
+  `api-sync.py --check` (two snapshots behind the client gate's checkout), which `main`
+  reports identically; `svg-routes.js` PASS; `/dg-tone pages --client` 0 must-fix hits.
+  The browser checks were not run.
+
+### 2026-10-04 — governance says who proposes a memory today
+- `governance#how` and `#examples` described connectors as running: a contract naming a
+  dataset, its fields and a refresh cadence, and beliefs linked to a source system's rows.
+  No shipped program proposes from an outside system. Both sections now say who proposes today,
+  an agent or a person under its own identity, held and reviewed, and name reading from outside
+  systems as a later step taken by a separate program with its own key. The record's "where it
+  came from" row and the page's hero follow, and the README's page table no longer lists
+  connectors.
+- **Verified.** `build.py` run twice changes nothing beyond the edited sources and the
+  regenerated `governance.html`; `build.py --check` in sync (15 files); `check.py` PASS on all
+  8 pages; `api-sync.py --check` OK, 5 files equal the checkouts. The page's `may`/`might`/`could`
+  count went from five to four: three dates and the `may` of authorisation. The browser checks
+  were not run.
+
+### 2026-10-04 — the API snapshot follows the gate's smaller catalog
+- The client gate retired `dg.rank`, `dg.space_link`, `dg.space_unlink`, `dg.crawler_policy`
+  and the three `dg.submit*` verbs, took `rank`, `hide` and `ban` off the agent's tool list, and
+  dropped the catalog's `service` column (design ADR-0110 d6, ADR-0112; hardening items H1.9 and
+  H1.11). `api/daemon-rpc.json`, `api/mcp-tools.json` and `api/index.json` are regenerated from
+  that checkout.
+- `note.schema.json` moved with the notifier, which publishes the note, from the client gate to
+  `doublegate-peers/docs/api/`: `api-sync.py` reads it there, stamps `doublegate-peers` in
+  `api/index.json`, and takes `DOUBLEGATE_PEERS_SRC` to point elsewhere. The file's bytes did
+  not change.
+- **Verified.** `api-sync.py --check` OK, 5 files equal the checkouts; `build.py --check` in
+  sync (15 files); `check.py` PASS on all 8 pages. No page changed. The browser checks were not
+  run.
+
+### 2026-10-06 — the offering pass: what runs today, what it costs, and the decided words
+- Seven pages rewritten or edited from one plan, one writer per page, then read in order
+  (index, for-business, how-it-works, governance, evidence, for-engineers, pricing) by one
+  integrator. The offering statement is on `for-business#offering`; every other page quotes
+  `AVAILABILITY` and `NEXT_STEPS`. New sections: index `#rules`; how-it-works `#areas` and
+  `#after`; for-business `#asset`, `#review`, `#work-areas`, `#group`; for-engineers `#plugin`
+  and `#console`; governance `#private`; evidence `#rules` and `#measured`; pricing
+  `#costs-run`. `evidence#refuse` and `for-business#honest` are gone; `#against` is rewritten
+  and still hidden. The two flow SVGs are HTML markup; `{role_table}` and `{agent_reach}`
+  ("30 of 62") are counted from `api/daemon-rpc.json` at build time.
+- Nine statements depend on the held-row fix (`fix/held-row-reads`); each carries its
+  fallback in an HTML comment directly above it, so the swap is a delete or a paste.
+- **Primary sources merged with the pages** (`design/site-evidence`, research 07, 11, 12, 20).
+  Three sentences changed to match them: the provider-survey finding (Byterover holds only
+  flagged changes and only from its team; Mnemosyne's approval is a tool the writing agent
+  calls), the SkillCloak finding (two of its eight scanners are model judges, tried on 100
+  skills, so a grade of a skill proves no more than the scan; on evidence and for-business),
+  and the AER sentence on index ("detected no shift", the abstract's words, for "did not
+  change").
+- **Seams fixed while reading.** A bare "key" on index (3), evidence (3), governance (1) and
+  for-engineers (1) became an agent-role API key, an API key or sign-in, or the signing key;
+  `NEXT_STEPS` says "signing keys that rotate". The index crews row stopped repeating
+  for-business word for word (gate 23). The four route figures paint held, signed and
+  readable steps rose, green and cyan: the step rule lost to the card border before, so the
+  computed top border was the neutral line on every step. Governance's "could sign" is "can
+  sign", as index says it.
+- **Index hero.** At 320 px it measured 767 px tall against `audience-check.js`'s 720 px
+  bound; the body drops "One gate, on one machine" (the status line under it says so) and
+  measures 697 px. The tallest openings now: 452 px at 1440 (how-it-works), 553 at 768
+  (index), 658 at 390 and 711 at 320 (for-engineers, 9 px inside the bound).
+- **Gate 5c** is new: a bare "key" or a sense ADR-0104 d8 retired outright (per folder, piece
+  of work, pending review, projection, withdraw, assess, publication, two-stage, trust score,
+  admission, ledger, inbox) in visible copy fails. Put back on index ("the author's own key"),
+  it fails naming the page; on landing it found one more, for-engineers' "the key is shown
+  once".
+- **Verified.** `build.py --check` in sync (15 files). `check.py` PASS on 8 pages with three
+  gate-23 notices, each a shared constant or a mirrored rule title (`NEXT_STEPS` on three
+  pages, `AVAILABILITY` in two heroes, rule 4's title on index and evidence). `api-sync.py
+  --check` 5 files equal; `ui-sync.py --check` match; `sky-data.py --check` 20 × 40.
+  `svg-routes.js` 6 assets, no crossing; with Chromium: 80 labels fit, tightest line 34 px
+  clear, smallest label ≥10 px at 3 figure/breakpoint pairs, `overview-check.js` PASS at
+  1440/768/390/320 with five route steps. `audience-check.js` PASS: 24 route-viewport checks,
+  6 redirect bookmarks, 7 visible evidence articles and 10 primary links, scrollWidth equal to
+  the viewport at every width, no console errors. `verify.py doublegate-site --strict`: 10
+  checks, 0 failed, 0 skipped (Python 3.12 only; CI's 3.11 and 3.13 lanes were not run here).
+  `/dg-tone --client`: 0 must-fix on all seven pages; 10 hedges read, all the `may` of
+  permission, the month May, or a quoted study's "could see it".
+- **Read by hand.** The plan's banned list returns 6 hits: REJECTED as an outcome label in
+  `claim-path.svg` and `hero-field.svg` (2 each, the labels the plan asks for) and
+  "DoubleGate" in the aria-labels of the two logo marks `ui-sync.py` pins from
+  `doublegate-ui`, which this site cannot edit. `wordmark.svg`, which only the README shows,
+  now reads "doublegate — reviewed memory for AI agents", as the social card does. Each page names the second gate once. The plugin's eight tool
+  names equal `doublegate-agent` `TOOLS`; no `dg.` string reaches the built for-engineers or
+  evidence. Not checked: the console page and its images (phase 2), and the statements that
+  wait on the operator's open questions, which stay out.
+- **Caught by three independent readers, and fixed.** Three sentences the code does not
+  support: "no caller can choose a lighter kind" (the caller names the kind; the gate refuses a
+  supplied review class, so it now says no caller can ask for less review than its kind
+  carries), "every write is held" on the for-engineers topology (records are kept at once as
+  evidence; it now says every claim written), and the read-only notifier's promotion-only
+  notes, which hold only on the held-row fix and now carry the tenth fallback comment. Four
+  contradictions inside a page: the still map's HELD row called a held claim "live" (it is held
+  beside the promoted claim it contradicts, and only that one is recalled), index rule 1 said
+  an author can never sign and then that Claude Code's shell can (it now states the gate never
+  counts the authoring identity's signature, with the shell as the consequence), the index
+  route promised a cost on every step and named none on two, and governance said only agents
+  and people write while its own examples include the skill watcher. Voice: index `#problem`
+  stated no problem (it now opens with the session that pays to relearn a lesson), pricing
+  argued with doubts nobody raised, governance's record note defined a journal by what it is
+  not, four `Next` headings named no subject, and the SCAN label said "keys" for secrets. The
+  hero's default-scope clause read "its own work area" as the claim's; the plan's full sentence
+  failed `audience-check.js`'s 720 px bound at 320 px, and so did "by default an agent looks
+  in its own work area and those above" (720.5 px), so it reads "by default, from the
+  agent's own work area up" at 697 px. Re-run: `build.py --check` 15 files in sync; `check.py`
+  PASS on 8 pages, the same three gate-23 notices; `api-sync`, `ui-sync`, `sky-data` and
+  `claim-path.py --check` clean; `make check PKG=doublegate-site FLAGS=--strict` 10 checks, 0
+  failed, 0 skipped; `audience-check.js` PASS, 24 route-viewport checks, 7 evidence articles,
+  10 primary links; `/dg-tone --client` 0 must-fix on seven pages, the same 10 hedges.
+- **Last nine findings closed.** The index hero says in a whole sentence that any agent on the gate can find a signed claim with a recall across the space and by default searches its own work area and those above it (the proposition lost "for the agents that come after" to fit: 716 px at 320); the for-engineers "Graded" step names the default, two readings that can promote with no person; the operating-system-user limit is stated in full only on for-engineers `#plugin`, with one linked sentence on index, for-business, governance, evidence and for-engineers `#operations`; "residues" left governance and index for "what such a caller can still learn"; the space named main needs no declaration (index step 1, for-engineers `#connect`); an administrator, not a reviewer, declares an absence; pricing words held claims by recall only; governance says each decision is recorded with who made it and signed with the gate's signing key. The voice reader's other three rewrites applied (the AER and SkillCloak sentences on for-business, the pricing tag). Re-run: `check.py` PASS on 8 pages with the same three notices; `audience-check.js` PASS, 24 route-viewport checks; `make check PKG=doublegate-site FLAGS=--strict` 10 checks, 0 failed, 0 skipped; `/dg-tone --client` 0 must-fix, the same 10 hedges.
+- **The branch took `main`** (`c4549abf`: the held-row fix, the crews record, the showcase week, the console's label fix) by a merge, with no conflict. `api-sync.py` regenerated the snapshot from the merged catalog (`client-gate@5a490b0`), and the role table still reads `{agent_reach}` = "30 of 62": the fix changed what the by-id, listing and event verbs answer below reviewer, not which role each of the 62 methods needs. Every statement that waited on the fix is true of `main` and lost its fallback comment; index rule 4 and governance `#private` now say, as INV-SEC-10 does, that the timing residue confirms an id a caller holds or can compute (an id is a digest of the write). Re-run: `check.py` PASS with the same three notices; `make check PKG=doublegate-site FLAGS=--strict` 10 checks, 0 failed, 0 skipped; `audience-check.js` PASS, 24 route-viewport checks, 7 evidence articles, 10 primary links; `/dg-tone --client` 0 must-fix, the same 10 hedges; the design's docmap, audit, rendering, counts and vocabulary checks clean.
+
+### 2026-10-06 — the wording pass: one statement a sentence, the default first, one name per thing
+- **What the readers said failed.** Four readers (a budget holder with four minutes, a head of
+  platform engineering, a copy editor, a cold visitor) read the copy as the operator had read it
+  (tag `site-wording-before`) and agreed on the claims and not on the sentences. The index
+  hero's first sentence used five words in a private sense ("write" as a noun, signs, gate,
+  recall across the space, work area). The stored item had six names (claim, memory, note,
+  write, lesson, contribution). A benefit was routinely followed by a semicolon and two caveats.
+  "Specified" read as "done". Guarantees were stated only by the setup they hold in ("the rule
+  holds against an agent that runs as another operating-system user"), so the reader had to
+  invert the sentence to learn the default. Headings were slogans ("The evidence is the
+  deliverable" over a list of limits), and insider shorthand stood in for the outcome ("below
+  reviewer", "an id that names nothing", "closest", "recall keeps no receipt", "a shorter valid
+  prefix").
+- **The rules the voice guide set**, now hard rules 8–10 above: one statement a sentence, with
+  the limit as the next sentence (25 words, 30 on for-engineers and evidence); the plain-install
+  default first, then what changes it, with "comes with the Solo release", "comes with Team" or
+  "is designed and on the roadmap" in place of "specified"; one name per thing, glossed once a
+  page; outcome before mechanism; a heading that says what the section gives the reader; the
+  page's own case (the payments sandbox, the alert policy's revisions 3 and 4, the five
+  sessions) opening a hard section, marked as an illustration; each recurring limit worded once.
+  No claim, number, source, status label, section id, link target or figure's data moved.
+- **How it was done.** One writer a page committed its source; the integrator built, ran every
+  check and read the site in the visitor's order as the budget holder and as the engineering
+  lead. The integrator's changes: the operating-system-user limit had two wordings (for-business
+  differed) and was 28 words on index and governance, so it is two sentences on all five pages
+  ("If an agent runs as the same operating-system user as the gate, its shell can promote what
+  its session wrote. That is the case when you start both yourself."), and "a service user of
+  its own" and "a dedicated operating-system user" became the second one everywhere; the
+  journal's gloss was worded four ways and is "the signed record of every write and decision"
+  on every page; the quarantine and the work area each have one gloss; for-business names the
+  review queue as the console page where held claims wait; governance's skill-bundle sentence
+  stopped repeating index's word for word (gate 23); the guess-a-claim sentence on governance
+  lost its semicolon.
+- **Measures** (visible text at 1440 px, before → after; method in the scratch `measures.md`):
+  11,021 → 13,392 words across seven pages; 752 → 1,106 sentences; mean 14.7 → 12.1 words a
+  sentence; 90th percentile 25–31 → 18–22 on every page; semicolons 129 → 4 (two in the
+  knowledge map's example claim, two joining parallel facts); sentences over the ceiling 88 → 0.
+  The site is 21.5% longer: the glosses, the limits as their own sentences and the full forms
+  of the recurring limits cost words. Cutting it back without dropping a gloss or a limit is the
+  next pass's question.
+- **Verified.** `build.py --check` 15 files in sync. `check.py` PASS on 8 pages with 20 gate-23
+  notices, each read: the three recurring limits' fixed wording, the product words' glosses,
+  `NEXT_STEPS` and `AVAILABILITY`, and the without-the-reviewer-role answer. `api-sync.py
+  --check` 5 files equal; `ui-sync.py --check` match; `sky-data.py --check` 20 × 40;
+  `svg-routes.js` 6 assets, no crossing. With Chromium: `svg-geometry`, `svg-bounds` clean;
+  `svg-scale` 3 figure/breakpoint pairs at ≥10 px; `svg-fit` 80 labels fit; `svg-clearance`
+  tightest 34 px; `overview-check.js` PASS at 1440/768/390/320. `audience-check.js` PASS: 24
+  route-viewport checks, 6 redirects, 7 visible evidence articles, 10 primary links, no console
+  errors. `make check PKG=doublegate-site FLAGS=--strict` 10 checks, 0 failed, 0 skipped
+  (Python 3.12; CI's 3.11 and 3.13 lanes not run here). `/dg-tone --client` 0 must-fix on all
+  seven pages; 10 hedges read, each the `may` of permission, the month May or the evidence
+  page's "who could see it". The banned list returns the same 6 hits as the offering pass
+  (REJECTED as an outcome label in two figures, "DoubleGate" in the pinned logo aria-labels).
+- **Corrected after four verifiers compared before and after.** Thirteen sentences had moved a
+  claim and are put back where the code or the source puts them: the plugin's hooks keep evidence
+  at a session's start, before a compaction and at its end (no hook records tool calls); recall's
+  default never searches a sibling area; the field experiment is not turned into a general law;
+  Meta's words are quoted from "haven't seen"; the vector-search share reads one in six to one
+  in five of the top 10; the business figure keeps group sharing with Team; governance says
+  "reading from outside systems", since import exists; "four search scopes" is back; lineage is
+  who worked in which work area; the console is the gate's web console; the id a write returns
+  is not a promotion; every claim waits for review; the Ji heading says packed. Three benefits
+  the pass had added (a person per kind of content on index and for-business, "every decision
+  is signed" in the provider survey, the signed-decision remedy in the Ji item) are cut. Where
+  the old sentence read better it came back (the digest, "stay fine", "A correction we made to
+  our own case", the inline qualifier on the 100-skill sample); the operating-system-user limit
+  is a sentence and a link on for-engineers `#operations` and governance `#regulatory`, where
+  the full form already sits on the same or a linked section. 13,990 visible words, from 14,118;
+  gate-23 notices 18, from 20. `build.py --check` 15 in sync; `check.py` PASS on 8 pages;
+  `api-sync`, `ui-sync`, `sky-data --check` and `svg-routes.js` clean; with Chromium the five
+  `svg-*` checks and `overview-check.js` PASS; `audience-check.js` PASS, 24 route-viewport
+  checks and 6 redirects, 0 console errors (served from the preview on 8793); `make check
+  PKG=doublegate-site FLAGS=--strict` 10 checks, 0 failed, 0 skipped; `/dg-tone --client` 0
+  must-fix, the same 10 hedges; the banned list the same 6 hits.
+- **Closed by an editor's pass (2026-10-07).** The meaning reader found seven sentences that
+  drifted, and each now says what the code says: an id is a digest of the whole write (its
+  author, time and text), not of its text (index rule 4, governance `#private`); the SCAN step
+  holds a claim until rejected or expired only for a hard finding; steering reaches a work area
+  and the areas below it (index roadmap, for-business `#group`, for-engineers `#try`); an
+  administrator declares an absence; the map's claims are called illustrative again. Taken back
+  where the readers said the old sentence was better: "a model that did not write it" on GRADE,
+  "One developer, today" and the notfor summary on pricing, the asset card's "found by any agent
+  that recalls across the space", the Claude Code card's new session that finds an earlier
+  session's claims, the digest of about ten claims as a digest, Meta's card without Meta's praise
+  first, one count of what a caller still learns (four) on index and governance, and a governance
+  hero that names no command count. Length: every page is back within 5% of the copy the operator
+  read (site 11,462 words from 11,021; it was 13,392). Each product word is glossed once a page
+  in six words or fewer; the operating-system-user limit is in full only on for-engineers
+  `#plugin` and one linked sentence elsewhere (7 occurrences, from 18); "designed and on the
+  roadmap" is gone from prose (11 → 0) and the index legend carries the meaning; the BCBS 239
+  lineage aside lives only on evidence; the registry is named as the Model Context Protocol's.
+  Re-run: `build.py --check` 15 in sync; `check.py` PASS on 8 pages with 9 gate-23 notices, each
+  a deliberate shared line; `api-sync`, `ui-sync`, `sky-data --check` and `svg-routes.js` clean;
+  with Chromium the five `svg-*` checks and `overview-check.js` PASS; `audience-check.js` PASS,
+  24 route-viewport checks, 6 redirects, 7 evidence articles, 10 primary links, 0 console
+  errors (index hero 688.75 px at 320); `make check PKG=doublegate-site FLAGS=--strict` 10
+  checks, 0 failed, 0 skipped; the banned list the same 6 hits.
+- **Limits put back after the meaning reader (2026-10-07).** Sixteen limits the editor's pass cut are back, each one short sentence: index step 1's refusal of an unknown space and the administrator's declaration, step 3's one-model default, the absence rules on for-business (30 days by default, seven silent days, the 90-day ceiling), "The queue has no bulk act", a promoted skill written into your folders, Python 3.11, Meta's quoted claim, the console's reload and Live switch, governance's BCBS 239 line, evidence's held-claim article and the survey on request; "A gate that runs under a service user of its own is on the roadmap." now follows the separation on index, for-business, governance and evidence (settled conflict 6), and governance says "promote" like every page. Each page stays within 7% of the copy the operator read (site 11,686 from 11,021); `check.py` PASS on 8 pages with 9 gate-23 notices, `audience-check.js` PASS.
+- **Clauses put back after the meaning lens (2026-10-07).** Fourteen clauses the wording pass dropped are back as short sentences: "Run the agent as another operating-system user and the rule holds against it." after the hole on index, for-business, governance `#how` and evidence, and the four-eyes row says whom it binds on one machine; an administrator declares an absence and expired claims name it; recall's default scope beside the RECALLED benefit; "The method names in these files predate the words on this site."; "Install one or the other."; why the scanner rate fell; Meta's article is not a market survey; the review's cost beside the asset benefit; the skill watcher writes a file once; the signature binds the decision to the claim. `check.py` PASS with 10 gate-23 notices (the new limit sentence is the tenth, deliberate); `overview-check.js` and `audience-check.js` PASS; index hero 688.75 px at 320.
+
+### 2026-10-11 — the voice standard (ADR-0137, row VO7)
+- **Gates.** Gate 24 is new: a page's own visible prose, less quotations, hidden
+  sections and the text of links and buttons, breaks no entry of the word list.
+  Gate 25 is new: `voice.json` equals the SDK's file, and skips with its reason in a
+  checkout of the site alone. Gate 22 reads `ai_tells` from the list in place of its
+  own pattern. `check.py --selftest` is new.
+- **Measured** on the built pages before the rewrite: 69 second-person hits, index 12,
+  for-business 16, for-engineers 14, governance 11, pricing 8, how-it-works 3,
+  evidence 2, 404 3; after it, none. The record's 51 counted `pages/` alone; the
+  rest stood in the hero, availability lines, footer and 404 that `build.py` writes.
+- **Rule 8** is new, and rule 2's AI-tell line points at the list.
+- The Hugging Face quotation on `evidence` moved into `<q>`, as `governance` marks
+  its quotations; its words are the source's and are not rewritten.
+
+
+### 2026-10-11 — the offering pass carried onto the voice standard
+- `site/offering-pass` (2026-10-06 to 10-07) merged onto main after VO7. Its pages, hero,
+  availability lines, titles, api manifest and gate 5c are the content; main's register is the
+  voice. Its rules 8–10 are rules 9–11 here, because main's rule 8 (the reader is addressed
+  only to act) keeps its number; the dated 10-06 entry above still says 8–10.
+- **Measured** by gate 24 after the merge, before the register pass: 90 second-person hits
+  (for-engineers 19, for-business 17, governance 17, index 12, evidence 10, how-it-works 7,
+  pricing 7, 404 1) and one first person singular, "Annex I systems", which now reads
+  "systems under EU product-safety law". After it, none. The operator, the organization, an
+  auditor or "anyone holding it" now takes the sentence the reader held.
+- The footer keeps main's wording; the console's refusal is quoted as the console now
+  words it, <q>Refused: the claim's author cannot sign it</q>; the Claude Code plugin gives an
+  agent eleven tools, not eight, and the api manifest stops counting them.

@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Evidence — every claim, with its source</title>
-<meta name="description" content="The research behind the pitch: the 66-firm field experiment, Meta's in-house build, the provider survey, and the skill security data. Each one linked to its primary source.">
-<meta property="og:title" content="Evidence — every claim, with its source">
-<meta property="og:description" content="The research behind the pitch: the 66-firm field experiment, Meta's in-house build, the provider survey, and the skill security data. Each one linked to its primary source.">
+<title>Evidence — every finding, with its source</title>
+<meta name="description" content="The research behind the problem, the rules the gate enforces and how to check each, and what we measured on one machine.">
+<meta property="og:title" content="Evidence — every finding, with its source">
+<meta property="og:description" content="The research behind the problem, the rules the gate enforces and how to check each, and what we measured on one machine.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="assets/apple-touch-icon.png">
-<meta property="og:image" content="https://doublegate-io.github.io/assets/social-card.svg">
-<meta property="og:url" content="https://doublegate-io.github.io/evidence.html">
-<link rel="canonical" href="https://doublegate-io.github.io/evidence.html">
+<meta property="og:image" content="https://about.doublegate.io/assets/social-card.svg">
+<meta property="og:url" content="https://about.doublegate.io/evidence.html">
+<link rel="canonical" href="https://about.doublegate.io/evidence.html">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/institutional.css">
 <link rel="stylesheet" href="assets/style.css">
@@ -22,7 +22,7 @@
 
 <header class="nav">
   <div class="nav-inner">
-    <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="DoubleGate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
+    <a class="brand" href="index.html"><span class="dg-wordmark" aria-label="doublegate">DOUBLE<span class="dg-mark" aria-hidden="true"></span>GATE</span></a>
     <nav class="desktop-nav" aria-label="Main navigation"><a href="index.html">Home</a><a href="for-business.html">For business</a><a href="for-engineers.html">For engineers</a><a href="how-it-works.html">How it works</a><a href="evidence.html" class="here" aria-current="page">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav>
     <details class="mobile-menu"><summary>Menu</summary><nav aria-label="Mobile navigation"><a href="index.html">Home</a><a href="for-business.html">For business</a><a href="for-engineers.html">For engineers</a><a href="how-it-works.html">How it works</a><a href="evidence.html" class="here" aria-current="page">Evidence</a><a class="ghost" href="https://github.com/doublegate-io">GitHub</a></nav></details>
   </div>
@@ -33,9 +33,9 @@
   <div class="wrap">
     <p class="page-context">Evidence</p>
     <div class="page-hero-grid">
-      <div class="page-hero-title"><h1>Every claim, with its source.</h1></div>
+      <div class="page-hero-title"><h1>Every finding, with its source.</h1></div>
       <span class="gate-rail dg-boundary-mark hero-rail" aria-hidden="true"><i></i><i></i></span>
-      <div class="page-hero-complement"><p class="hero-proposition">Read the finding. Check what it actually supports.</p><p>Published research supports the problem and approach. DoubleGate’s own evaluations establish its outcomes, and the internal provider survey is available on request.</p><a href="#findings">Read the primary sources</a></div>
+      <div class="page-hero-complement"><p class="hero-proposition">Read the finding. Check what it actually supports.</p><p>Published research documents the problem. Anyone can check the gate’s rules against what we publish. Our own measurements come from one machine, and each says which.</p><a href="#findings">Read the primary sources</a></div>
     </div>
     
   </div>
@@ -44,95 +44,285 @@
 
 <section id="findings" class="band">
   <div class="wrap">
-    <h2>Evidence behind the proposition<a class="h-anchor" href="#findings" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <h2>Research behind the problem<a class="h-anchor" href="#findings" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <div class="evidence">
 
       <article class="ev">
         <h3>Individual AI access changed time use, not the mix of tasks</h3>
-        <p>A six-month randomized field experiment across <b>66 firms and 7,137 knowledge
-        workers</b>, with a generative AI tool integrated into the email, meeting and writing
-        applications workers already used. The 80% of treated workers who used it spent two fewer
-        hours on email a week in the experiment's second half and reduced out-of-hours work. Apart from those individual time
-        savings, the authors <b>"do not detect shifts in the quantity or composition of workers'
-        tasks resulting from individual-level AI provision"</b>.</p>
-        <p class="ev-use"><b>What we use it for:</b> separating individual time savings from
-        changes in how work is organized. Shared agent knowledge is the intervention doublegate
-        proposes; its effects require their own measurement.</p>
-        <p class="ev-use dim"><b>Study scope:</b> the tool tested was an office assistant.
-        The experiment did not evaluate shared agent memory or establish why task patterns
-        stayed unchanged. The World Economic
+        <p>A six-month randomized field experiment covered <b>66 firms and 7,137 knowledge
+        workers</b>. It added a generative AI tool to the email, meeting and writing applications
+        they already used. The 80% of treated workers who used it spent two fewer hours a week on
+        email in the experiment's second half. They also did less work out of hours. Apart from
+        those individual time savings, the authors <b>"do not detect shifts in the quantity or
+        composition of workers' tasks resulting from individual-level AI provision"</b>.</p>
+        <p class="ev-use"><b>What we use it for:</b> telling time saved by one person apart from a
+        change in how work is organized. The World Economic
         Forum's <a href="https://www.weforum.org/stories/artificial-intelligence/workplace-ai-has-a-visibility-problem-here-s-how-to-fix-it/">September 2026 piece</a>
-        frames the same result as the "single-player" phase of workplace AI.</p>
+        frames the same result as the "single-player" phase of workplace AI. Knowledge shared
+        between agents is the second kind of change, the one doublegate offers, and its effects
+        need their own measurement.</p>
+        <p class="ev-use dim"><b>Study scope:</b> the tool tested was an office assistant.
+        The experiment did not evaluate shared agent memory. It did not establish why task
+        patterns stayed unchanged.</p>
         <a class="src" href="https://www.aeaweb.org/articles?id=10.1257/aeri.20250275">Dillon, Jaffe, Immorlica &amp; Stanton, "Shifting Work Patterns with Generative AI", AER: Insights (forthcoming)</a>
       </article>
 
       <article class="ev">
         <h3>Meta built a reviewed institutional knowledge system</h3>
         <p>Meta's "organizational second brain" uses adversarial review by an agent that shares no
-        context with the author, validation that passes or fails rather than scoring, human expert
-        sign-off, and a complete audit trail. They state they had <b>not seen this level of
-        validation rigor applied to a structured knowledge base without model retraining</b>, and
-        describe the output as "permanent, compounding institutional memory".</p>
-        <p class="ev-use"><b>What we use it for:</b> an independently implemented approach to
-        turning expert corrections into reviewed knowledge updates. Its results belong to
-        Meta's system; the article is not an evaluation of doublegate or a market survey.</p>
+        context with the author. Its validation passes or fails rather than scoring. A human
+        expert signs off, and the audit trail is complete. Meta's engineers write that they
+        <b>"haven't seen this level of validation rigor applied to a structured knowledge base
+        without model retraining"</b>. They describe the output as "permanent, compounding institutional
+        memory".</p>
+        <p class="ev-use"><b>What we use it for:</b> a team independent of us built a way to turn
+        expert corrections into reviewed knowledge updates. The article evaluates Meta's system,
+        not doublegate, and it is not a market survey.</p>
         <a class="src" href="https://engineering.fb.com/2026/09/02/ml-applications/organizational-second-brain-ai-learns-from-experts/">Meta Engineering, 2 September 2026</a>
       </article>
 
       <article class="ev">
-        <h3>Write-path review in our provider survey</h3>
-        <p>Across <b>fourteen providers</b> we surveyed, a write is retrievable immediately.
-        Veracity scores, confidence ratings and decay tiers change <b>ranking</b> — never
-        <b>visibility</b> in the configurations covered by our survey.</p>
-        <p class="ev-use"><b>What we use it for:</b> the claim that this is a gap rather than a
-        feature we are duplicating. It is our own survey, so read the method.</p>
+        <h3>Two of fourteen memory providers can hold changes for review</h3>
+        <!-- Corrected 2026-10-06 against both providers' own documentation (research/20 §1.7):
+             Byterover holds only flagged changes, and only from the team; Mnemosyne's approval
+             is an agent tool the writing agent is told to call. -->
+        <p>Of the fourteen memory providers we surveyed in September 2026, two offer a review
+        step before what an agent writes is final. Since version 3.14.0, Mnemosyne can hold
+        everything written until it is approved. Byterover holds back two kinds of change from
+        the rest of the team: a deletion, and a change its own curation agent rates high-impact.
+        The author's own queries already see the change. In both, the agent that wrote a change
+        can approve it, and neither records the decision as a signed event.</p>
+        <p class="ev-use"><b>What we use it for:</b> holding back what an agent writes is no
+        longer rare. The difference left is who may approve, and whether the decision is signed.
+        We read both
+        providers' own documentation on 2026-10-06. The survey of the fourteen is our own.</p>
+        <a class="src" href="https://github.com/mnemosyne-oss/mnemosyne/releases/tag/v3.14.0">Mnemosyne v3.14.0 release notes, "Write-Approval Gate"</a>
+        <a class="src" href="https://docs.byterover.dev/review/overview">Byterover documentation, "Review Changes"</a>
         <span class="src">Our survey of fourteen providers — method and per-provider notes available on request</span>
       </article>
 
       <article class="ev">
-        <h3>Public agent skills carry real security flaws</h3>
-        <p>Of <b>3,984 public agent skills</b> scanned, 36.8% had at least one security flaw and
-        13.4% a critical one. 76 confirmed malicious payloads were found, 8 still live at
-        publication, and <b>91% of the malicious ones paired prompt injection with conventional
-        malware</b>. The barrier to publishing was a single file and a git repository.</p>
-        <p class="ev-use"><b>What we use it for:</b> why skills are gated on the same path as
-        memories rather than trusted as configuration.</p>
+        <h3>More than a third of public agent skills had a security flaw</h3>
+        <p>A skill is a set of instructions, sometimes with scripts, that changes what an agent
+        does. Of <b>3,984 public agent skills</b> scanned, 36.8% had at least one security flaw
+        and 13.4% a critical one. The scan confirmed 76 malicious payloads, 8 of them still live
+        when the study was published. Of the malicious ones, <b>91% paired prompt injection with
+        conventional malware</b>. The barrier to publishing a skill was a single file and a git
+        repository.</p>
+        <p class="ev-use"><b>What we use it for:</b> why a skill is held, scanned and reviewed
+        like anything else an agent writes, instead of going straight into use.</p>
         <a class="src" href="https://snyk.io/blog/toxicskills-malicious-ai-agent-skills-clawhub/">Snyk, ToxicSkills</a>
       </article>
 
       <article class="ev">
+        <h3>Packed skill malware got past every scanner tested</h3>
+        <p>The authors took <b>1,613 malicious skills found in the wild</b> and packed each one.
+        Packing hides the payload when the skill is installed and restores it when the skill
+        runs. They tested <b>eight scanners</b>: six that inspect a skill without running it, and
+        two that ask a language model to judge it. The packed skills got past every one more than
+        90% of the time, with the two model judges tried on a random 100 of the skills.
+        Disguising the payload's code, instead of packing it, got past most of the six
+        non-running scanners more than 80% of the time. The authors' own answer was to run each
+        skill in a sandbox and watch what it does. It detected 97% of attacks at a 2%
+        false-positive rate.</p>
+        <p class="ev-use"><b>What we use it for:</b> the gate's grading model reads a skill as it
+        would be installed. That is the same kind of check as the two model judges the packed skills got
+        past. So a grade of a skill proves no more than the scan does. Both hold a skill for
+        review and never prove it safe, and review is not permission to run it.</p>
+        <a class="src" href="https://arxiv.org/abs/2607.02357">Ji et al., "Cloak and Detonate: Scanner Evasion and Dynamic Detection of Agent Skill Malware", arXiv 2607.02357, July 2026</a>
+      </article>
+
+      <article class="ev">
         <h3>Public registries exclude curation by design, and say so</h3>
-        <p>The official registry for the standard agent-tool protocol commits itself, in its
-        published design principles, to <b>"no built-in ranking, curation, or quality
-        judgments"</b> and to <b>"avoid features that require constant human intervention or
+        <p>The official registry of the Model Context Protocol, the standard agent-tool
+        protocol, publishes its design principles. In them it commits itself to <b>"no built-in ranking, curation, or quality judgments"</b>
+        and to <b>"avoid features that require constant human intervention or
         moderation"</b>. Its ecosystem document expects that role to be filled by
         <b>"subregistries [that] add value […] by providing curation"</b>.</p>
         <p>Hugging Face, the most mature artifact registry in AI, scans uploads and states:
-        <b>"this is not 100% foolproof. It is your responsibility as a user to check if something
-        is safe or not. We are not actively auditing python packages for safety."</b></p>
-        <p class="ev-use"><b>What we use it for:</b> evidence that a reviewed public library is an
-        unfilled architectural role rather than a category we invented. Also a caution — these are
-        deliberate choices with stated reasons (operational cost, vendor neutrality, liability),
-        and anyone claiming to fix them inherits those costs.</p>
+        <b><q>this is not 100% foolproof. It is your responsibility as a user to check if something
+        is safe or not. We are not actively auditing python packages for safety.</q></b></p>
+        <p class="ev-use"><b>What we use it for:</b> by their own design, the registries leave
+        review to whoever installs, for stated reasons: operational cost, vendor neutrality and
+        liability. Whoever reviews instead carries those costs.</p>
         <a class="src" href="https://github.com/modelcontextprotocol/registry/blob/main/docs/design/design-principles.md">The registry's published design principles</a>
         <a class="src" href="https://github.com/modelcontextprotocol/registry/blob/main/docs/design/ecosystem-vision.md">and its ecosystem vision, for the subregistry role</a>
+        <a class="src" href="https://huggingface.co/docs/hub/security-pickle">Hugging Face, Pickle Scanning</a>
       </article>
 
       <article class="ev">
         <h3>A correction we made to our own case</h3>
-        <p>A great deal of published material states that <b>BCBS 239 requires data lineage</b>. We
-        searched the full 2013 text: <b>zero occurrences</b> of "lineage", "provenance",
-        "traceability" or "audit trail". The document requires reconciliation with source systems
-        and striving toward "a single authoritative source for risk data per each type of risk" —
-        which is different, and weaker, than a lineage mandate.</p>
-        <p>The lineage requirement is real, but it lives in the ECB's <b>2024 implementation
-        guide</b>, which states lineage must let a bank "track back the source of the issue in a
+        <p>Much published material states that <b>BCBS 239 requires data lineage</b>. We searched
+        the full 2013 text: <b>zero occurrences</b> of "lineage", "provenance", "traceability" or
+        "audit trail". The document requires reconciliation with source systems, and striving
+        toward "a single authoritative source for risk data per each type of risk". That is a
+        different requirement from a lineage mandate, and a weaker one.</p>
+        <p>The lineage requirement is real. It lives in the ECB's <b>2024 implementation
+        guide</b>. The guide states lineage must let a bank "track back the source of the issue in a
         timely manner" and "allow traceability for (external) validation". That is the document we
         cite.</p>
-        <p class="ev-use"><b>Why this is here:</b> quoting the better-known document as a lineage
-        mandate is the kind of borrowed authority a bank's second line is paid to catch. We would
-        rather lose the stronger-sounding citation than get caught using it.</p>
+        <p class="ev-use"><b>Why this is here:</b> a bank's risk and compliance function, its
+        second line of defence, is paid to catch borrowed authority. Quoting the better-known
+        document as a lineage mandate is that kind of borrowed authority. We would rather lose the stronger-sounding citation
+        than be caught using it.</p>
         <a class="src" href="https://www.bankingsupervision.europa.eu/ecb/pub/pdf/ssm.supervisory_guides240503_riskreporting.en.pdf">ECB Guide on effective RDARR, 3 May 2024</a>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<section id="rules" class="band alt">
+  <div class="wrap">
+    <h2>Each rule, and how to check it<a class="h-anchor" href="#rules" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <p class="lede">
+      The gate, the doublegate service on the operator&rsquo;s machine, enforces five rules on each claim, one
+      thing written down for reuse. Each row says how, how anyone can check it from what we
+      publish, and any limit on one machine. The checks are for whoever runs the gate.
+    </p>
+    <table class="cmp wide">
+      <thead><tr><th>Rule</th><th>How the gate enforces it</th><th>How to check it</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><b>The reviewer is never the author.</b></td>
+          <td>Before a promotion counts a signature, the gate drops any signer who is the claim's
+          author, whether an agent, a person or the operator. In the console, the author sees
+          <q>Refused: the claim's author cannot sign it</q> where Sign would be. If an agent starts as the
+          gate's own operating-system user, its shell can promote what its session wrote
+          (<a href="for-engineers.html#plugin">how to prevent that</a>). Run the agent as another
+          operating-system user and the rule holds against it. A gate that runs under a
+          service user of its own is on the roadmap.</td>
+          <td>No method an agent-role API key can call promotes, signs, rejects, demotes or
+          hides, and no method at any role deletes. The
+          <a href="api/daemon-rpc.json">published method catalog</a> names the role each method
+          needs: an agent-role API key reaches 35 of 81. The
+          <a href="for-engineers.html#agents">role table</a> on the engineers' page counts every
+          role.</td>
+        </tr>
+        <tr>
+          <td><b>Other agents can find a claim once it is signed.</b></td>
+          <td>Recall, the gate's search, returns promoted claims, then the asker's own held claims
+          after them, marked held. Claims by other authors that are still held are not searched.
+          Unless the operator requires a person, both signatures a promotion needs come from one grading
+          model, which reads each claim twice: once for it and once against. By default an agent recalls from its own work area, then each area
+          above it. Recalling across the space
+          searches every work area in it.</td>
+          <td>Have one agent remember a claim, then recall across the space with another: the
+          claim is absent until it is promoted. When its author recalls it, the answer carries the
+          held mark, a field of every recall hit in the
+          <a href="api/openapi.json">published OpenAPI</a>.</td>
+        </tr>
+        <tr>
+          <td><b>Every decision is signed and kept.</b></td>
+          <td>Each claim written, and each promotion, rejection and demotion, is an event in the
+          journal. Each is signed with the gate's signing key and linked to the one before it,
+          so a later change shows. Nothing is
+          edited in place or deleted, so storage only grows.</td>
+          <td>Run <code>doublegate verify</code> on the gate's machine, with the gate's home
+          directory or an API key. It walks the chain and checks every signature, at the
+          <a href="#measured">rate measured below</a>.</td>
+        </tr>
+        <tr>
+          <td><b>Only its author and reviewers can read a held claim.</b></td>
+          <td>Without the reviewer role, ask for another author's held claim by id, in a listing
+          or in a count. The gate answers as if the claim did not exist.</td>
+          <td>With an agent-role API key, ask for another author's held claim by its id. Then ask
+          for an id that no claim has, and compare the two answers. A caller can still learn four
+          things, timing among them, <a href="governance.html#private">measured on the governance
+          page</a>.</td>
+        </tr>
+        <tr>
+          <td><b>Promotion makes a claim findable and never ranks it higher.</b></td>
+          <td>A promotion adds no weight to a claim. Every promotion on one gate is marked
+          provisional, checked by this one gate alone. The mark shows on each hit without moving it. By default recall matches
+          words. An embedding model, if the operator configures one, adds matching by meaning.</td>
+          <td>Read any recall answer: each hit carries the provisional mark, a field in the
+          <a href="api/openapi.json">published OpenAPI</a>, beside the search's own score. The
+          mark does not change the order.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="measured" class="band">
+  <div class="wrap">
+    <h2>What we measured on one machine<a class="h-anchor" href="#measured" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
+    <p class="lede">
+      Figures were measured on 2026-10-05 on one WSL2 machine, an AMD Ryzen 9 5950X, unless a
+      figure gives its own date. A measurement on one machine is an illustration. Each figure is
+      the rate of one operation, and none of them is the capacity of a deployment.
+    </p>
+    <div class="evidence">
+
+      <article class="ev measured">
+        <h3>The journal appends about 700 signed events a second</h3>
+        <p>An event is one entry in the journal, such as a claim written or a promotion. The
+        median time to append one signed event was 1.34 to 1.40 ms across the journal sizes
+        tried, or 682 to 733 events a second. The rate held flat from ten thousand to a million
+        events. Each event is on disk before the gate answers, and waiting for the disk is what
+        caps the rate.</p>
+        <span class="src">our own measurement, 2026-10-05</span>
+      </article>
+
+      <article class="ev measured">
+        <h3>Checking every signature takes 56 µs an event</h3>
+        <p>Verifying the whole journal took 56 µs an event: 56 seconds for a million events. The
+        time grows in a straight line with the journal's length. The check holds no lock, so
+        claims can still be written while it runs.</p>
+        <span class="src">our own measurement, 2026-10-05</span>
+      </article>
+
+      <article class="ev measured">
+        <h3>Each claim uses about 14.5 KB of disk, permanently</h3>
+        <p>A promoted claim took about 14.5 KB on disk, 4.3 KB of it in the journal. Nothing is
+        deleted, so that space is never reclaimed and storage only grows.</p>
+        <span class="src">our own measurement, 2026-10-05</span>
+      </article>
+
+      <article class="ev measured">
+        <h3>Copying the gate's home directory runs at 90 to 113 MB/s</h3>
+        <p>Copying a 1.6 GB home directory, where the gate keeps what it stores, took 17.8
+        seconds. Backup comes with the Solo release, the next release of today's gate. A backup
+        cannot run faster than a plain copy, so 90 to 113 MB/s is the fastest a backup can go.
+        How long copying a running gate holds up writing to it is unmeasured.</p>
+        <span class="src">our own measurement, 2026-10-05</span>
+      </article>
+
+      <article class="ev measured">
+        <h3>The scanner takes 305 ms per MiB of text</h3>
+        <p>The scan for secrets and injected instructions read prose with no findings at 305 ms
+        per MiB, about 0.3 ms a KiB. The rate is from one development machine on 2026-09-23,
+        down from 366 ms. Secret patterns now skip text that lacks the prefix every match must
+        carry. The injection patterns have no such prefix and take about 61% of the time. A
+        clean scan still leaves the claim held for review. It never proves the claim safe.</p>
+        <span class="src">our own measurement, 2026-09-23</span>
+      </article>
+
+      <article class="ev measured">
+        <h3>What a caller can still learn about another author's held claim</h3>
+        <p>A caller without the reviewer role is answered as if another author's held claim did
+        not exist. The four things it can still learn,
+        timing among them, are measured once, on <a href="governance.html#private">the governance page</a>.</p>
+        <span class="src">our own measurement, 2026-10-06</span>
+      </article>
+
+      <article class="ev measured">
+        <h3>Search by meaning inside one work area misses most of the best matches</h3>
+        <p>A search by meaning confined to a work area holding 1% of the claims found 0.165
+        to 0.195 of the true top 10. That is about one in six to one in five. The result held at every store size tried. It
+        is a limit on
+        correctness, not on speed.</p>
+        <span class="src">our own measurement, 2026-10-05, against an exact search</span>
+      </article>
+
+      <article class="ev measured">
+        <h3>How often the grading model is right is unmeasured</h3>
+        <p>No experiment has counted how often the grading model promotes a claim it should have
+        rejected, or rejects one it should have promoted. Until one does, a claim the model
+        promoted alone rests on one model's judgement, read twice. One setting requires a person
+        for any kind of content.</p>
+        <span class="src">our own evaluation record, 2026-10-06</span>
       </article>
 
     </div>
@@ -143,24 +333,49 @@
   <div class="wrap tight">
     <h2>Findings that work against us<a class="h-anchor" href="#against" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
-      These are on the site because leaving them off would make the rest less believable.
+      Each finding below weakens a claim made elsewhere on this site, and each carries its source
+      like the rest.
     </p>
     <div class="evidence">
       <article class="ev warn">
-        <h3>Independent reviewers are less independent than they look</h3>
-        <p>A study of judge panels found that <b>nine models across seven families produced roughly
-        2.2 effective independent votes</b>. Correlated training makes correlated judgement, so
-        adding reviewers does not add assurance linearly. Our design has to survive this rather
-        than assume it away.</p>
+        <h3>The grading model's accuracy is unmeasured</h3>
+        <p>How often the grading model is right is unmeasured. A promotion it signs alone is
+        that model's judgement and nothing more.</p>
+        <span class="src">our own evaluation record, 2026-10-06</span>
+      </article>
+      <article class="ev warn">
+        <h3>The first falsification experiment was inconclusive</h3>
+        <p>The first falsification experiment was inconclusive. It asked whether content ranked
+        down still reaches an agent's prompt. The signal it needed was absent from all 393
+        memories it ran over.</p>
+        <span class="src">our own evaluation, 2026-09-06</span>
+      </article>
+      <article class="ev warn">
+        <h3>Two readings from one model are one judgement</h3>
+        <p>Judge panels of nine models from seven families give about two independent votes. Our
+        two readings share one model, so they are not independent reviewers.</p>
         <a class="src" href="https://arxiv.org/abs/2605.29800">arXiv 2605.29800</a>
       </article>
       <article class="ev warn">
-        <h3>None of 25 supervised banks had followed the principles fully</h3>
+        <h3>Holding a write for approval is no longer ours alone</h3>
+        <p>Two of the memory providers we surveyed offer a review step before what an agent writes
+        is final. In both, the agent that wrote can approve it. Against those two, the difference
+        left is who may approve, and whether the decision is signed.</p>
+        <span class="src">Our survey of fourteen providers — available on request</span>
+      </article>
+      <article class="ev warn">
+        <h3>A full quarantine refuses every write</h3>
+        <p>At 10,000 held claims every write is refused. Third-party content held for a
+        countersign stays held today.</p>
+        <span class="src">our own reading of the gate's settings and measurements, 2026-10-05</span>
+      </article>
+      <article class="ev warn">
+        <h3>No significant institution in the ECB's sample had fully followed the principles</h3>
         <p>The ECB's own thematic review found that <b>"none of the significant institutions in the
         sample […] including those classified as global systemically important institutions, had
-        fully followed the BCBS 239 principles"</b>. Read one way this is our market; read honestly
-        it is a warning — these organizations have large, long-running data-governance programmes,
-        and we are one component inside one, not a replacement for it.</p>
+        fully followed the BCBS 239 principles"</b>. These institutions run large, long-running
+        data-governance programmes and still fell short. A gate is one component inside such a
+        programme, never a replacement for it.</p>
         <a class="src" href="https://www.bankingsupervision.europa.eu/ecb/pub/pdf/ssm.supervisory_guides240503_riskreporting.en.pdf">ECB Guide on effective RDARR, May 2024</a>
       </article>
       <article class="ev warn">
@@ -169,71 +384,12 @@
         traces […] but only within bounded groups"</b>, and <b>"comfort drops sharply as audience
         expands beyond close teams"</b>. The authors also found that the level of detail shared
         mattered less than who could see it.</p>
-        <p class="ev-use"><b>What we use it for:</b> it supports our
-        author&nbsp;→&nbsp;group&nbsp;→&nbsp;organization tiering, and it warns that company-wide
-        sharing meets resistance we have to design for rather than assert past.</p>
+        <p class="ev-use"><b>What we use it for:</b> it supports sharing within a group first. It
+        also warns that sharing across a whole company meets resistance a product has to design
+        for.</p>
         <a class="src" href="https://arxiv.org/abs/2606.02763">Morris and Maes, MIT Media Lab — arXiv 2606.02763, 1 June 2026</a>
       </article>
     </div>
-  </div>
-</section>
-
-<!-- Hidden by request, like #against above: kept in source so the gates still read
-     it, not rendered. A link pointing into a hidden section is a dead end for the
-     visitor, which check.py gate 21 refuses. -->
-<section id="refuse" class="band" hidden>
-  <div class="wrap tight">
-    <h2>Time to a first verified task, and cost per correction<a class="h-anchor" href="#refuse" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p class="lede">
-      Deployment evaluation begins with release 4. It tests whether reviewed shared knowledge
-      improves task outcomes and what it costs to prepare, review and maintain.
-      Results are published with their method, sample, uncertainty and deployment conditions
-      once the evidence supports them; the release itself is not a publication deadline.
-    </p>
-    <div class="anti">
-      <ul>
-        <li><b>Time to first independently verified role-relevant task.</b> Compare similar
-        participants completing comparable tasks, using the same tools and source access,
-        with and without reviewed shared knowledge. Define completion criteria before the trial
-        and have an independent evaluator verify the result. This measures a specific task
-        outcome, rather than the whole process of human onboarding.</li>
-        <li><b>Correctness and effort.</b> Report task correctness, assistance required, failed
-        attempts and unfinished tasks alongside elapsed time. Account for the effort to prepare
-        the shared knowledge, review it and keep it current.</li>
-        <li><b>Cost per correction.</b> Compare reviewing and distributing one correction with
-        correcting the same wrong assumption separately under comparable conditions. Include
-        preparation, review, distribution and maintenance effort, and verify that the correction
-        is used correctly before counting a saving.</li>
-      </ul>
-    </div>
-    <h3>Review quality at each stage</h3>
-    <p>Release 3 has a quality-evaluation gate using labelled, held-out representative and
-      adversarial cases, including a published poisoning benchmark. Stage 1 evaluates the
-      quality of the AI's 0–100 rubric assessment against the evidence and reference labels.
-      The score expresses rubric assessment, not a probability of correctness; a probability
-      interpretation requires separate calibration evidence.</p>
-    <p>Stage 2 evaluates the distinct authorized reviewer's APPROVE or REJECT decision.
-      Report false approvals over all cases labelled for rejection, and false rejections over
-      all cases labelled for approval, with counts, sample composition and uncertainty for each.
-      Record shared model and evidence dependencies and joint failures across the stages.
-      The release gate evaluates these results against declared acceptance criteria;
-      the assessment score does not automatically approve a contribution.</p>
-    <h3>Lifecycle control verification</h3>
-    <p>Erasure is a separate control evaluation, with tooling planned for release 4.
-      Define the supported boundary and verify what happens to content in active stores,
-      caches, exports, backups and downstream copies. Record the action and its evidence,
-      including residual copies, retention conditions and limits to verification.</p>
-    <p>Crypto-erasure applies only to encrypted copies whose keys remain under the deployment's
-      custody, including recoverable key copies. Signed decision history and a recorded erasure
-      action support inspection. Copies outside that control require their own handling;
-      destroying a key cannot establish their removal. Compliance depends on the applicable
-      obligations and the complete handling of the request, beyond a successful control test.</p>
-    <p class="note">
-      The rule we work to: if a claim reads like a snapshot of one machine, it is an anecdote and
-      it gets labelled as one. Our own measurements — including the ratio of records to claims
-      quoted elsewhere on this site — are illustrations, not population findings. The same applies
-      to the homepage knowledge map: its contributions and outcomes are authored illustrations.
-    </p>
   </div>
 </section>
 
@@ -244,9 +400,14 @@
       Every study above links to its primary source. Our internal provider survey is available on
       request, with its method and per-provider notes.
     </p>
+  </div>
+</section>
+
+<section id="next" class="band">
+  <div class="wrap tight center">
+    <h2>Who pays, and what it costs<a class="h-anchor" href="#next" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <div class="cta-row center">
       <a class="btn primary" href="for-business.html">The business case</a>
-      <a class="btn" href="governance.html">How an auditor verifies it</a>
     </div>
   </div>
 </section></main>
@@ -257,21 +418,19 @@
     <div class="foot">
       <div>
         <b>doublegate</b> · <a href="index.html#implementation">Release roadmap</a> · <a href="evidence.html">Research and evaluation sources</a>
-        <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>. The organization gate is private and proprietary.
-        <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a> — including
-        "you got this wrong".</p>
+        <p class="dim"><a href="for-business.html#offering">Solo use is free and stays that way</a>.
+        <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Questions, objections and corrections go here</a>, a report that
+        the site is wrong included.</p>
       </div>
       <div class="foot-links">
         <a href="how-it-works.html">How it works</a>
         <a href="for-business.html">For business</a>
         <a href="for-engineers.html">For engineers</a>
         <a href="governance.html">Governance</a>
-        <a href="commons-for-business.html">Commons for business</a>
-        <a href="commons-for-engineers.html">Commons for engineers</a>
         <a href="evidence.html">Evidence</a>
         <a href="https://github.com/doublegate-io">GitHub</a>
         <a href="https://github.com/doublegate-io/doublegate-io.github.io/issues">Ask a question</a>
-        <a href="mailto:eugene.korniichuk@gmail.com">Email</a>
+        <a href="mailto:eugene@doublegate.io">Email</a>
       </div>
     </div>
   </div>

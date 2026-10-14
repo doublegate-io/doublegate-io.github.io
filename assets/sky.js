@@ -11,18 +11,20 @@
  *
  *   new        a star appears; the first star in a dormant category founds
  *              the constellation and its name fades in
- *   sharpened  a revision supersedes a star; the parent stays faint behind
+ *   revised    a revision supersedes a star; the parent stays faint behind
+ *              (key 'sharp', element id sky-n-sharp)
  *   merged     two stars converge on one; both parents stay faint behind
- *   held       the claim contradicts a star, reconciliation is refused, both
+ *   held       the claim contradicts a star, reconciliation is rejected, both
  *              stay live with the tension drawn between them
- *   refused    the arrival turns hollow and falls away; it is never a star,
- *              and the ledger on the right records why
+ *   rejected   the arrival turns hollow and falls away; it is never a star,
+ *              and the feed on the right records why (key 'refused', element
+ *              id sky-n-refused)
  *
  * The verdict mix follows the still figure's split (23 / 14 / 11 / 8 / 4 of
  * sixty). Which claim arrives next is random, and so is when: inter-arrival
  * times are exponential around two seconds with the occasional burst, which is
  * what a real queue looks like and what a metronome does not. When every claim
- * has arrived once, the ones that were superseded or refused come round again
+ * has arrived once, the ones that were superseded or rejected come round again
  * -- the same lesson learned by another agent -- so the stream does not stop.
  * The base sky is seeded, so two visitors see the same constellations in the
  * same places; from there on, no two visits are alike.
@@ -30,11 +32,11 @@
  * Camera: drag turns the sky, the wheel zooms at the pointer, a double-click
  * dives into a constellation, shift-drag (or a second finger) pans, arrow keys
  * turn, +/- zoom, 0 resets the view. Zoom is a magnification of the
- * projection, not a move of the camera through the stars, so a constellation
+ * drawn image, not a move of the camera through the stars, so a constellation
  * at 6x is the same shape it was at 1x, only readable.
  *
  * Why canvas 2D and no library: 800 points, a few hundred segments, and a
- * perspective projection are well inside what one canvas does at 60 fps, and
+ * perspective transform are well inside what one canvas does at 60 fps, and
  * the site ships no JavaScript dependencies. The colours come from style.css
  * so the five verdicts cannot drift from the rest of the site.
  */
@@ -71,10 +73,10 @@
   var VERDICTS = ['new', 'sharp', 'merge', 'held', 'refused'];
   var WEIGHT = { 'new': 23, sharp: 14, merge: 11, held: 8, refused: 4 };
   var CHIP = {
-    'new': 'New', sharp: 'Sharpened', merge: 'Merged from two',
-    held: 'Held, both kept', refused: 'Refused'
+    'new': 'New', sharp: 'Revised', merge: 'Merged from two',
+    held: 'Held, both kept', refused: 'Rejected'
   };
-  // Why an arrival is refused, by the kind of thing it is: a skill fails for what
+  // Why an arrival is rejected, by the kind of thing it is: a skill fails for what
   // it carries, a belief for what it says.
   var REFUSAL = {
     s: ['a payload where a skill expected text', 'a credential in the body', 'reaches the network without saying so'],
@@ -271,7 +273,7 @@
 
   function refill() {
     // Every claim has arrived once. Claims with no star in the sky right now --
-    // superseded parents, refused arrivals -- can come round again.
+    // superseded parents, rejected arrivals -- can come round again.
     var live = {};
     stars.forEach(function (s) { live[s.ci + ':' + s.j] = 1; });
     cats.forEach(function (c, ci) {
@@ -338,7 +340,7 @@
       var evidence = document.getElementById('sky-example-evidence');
       var isExample = text === "every alert has an owner team, a runbook link and a severity; the linter rejects an alert missing any of them";
       if (evidence) evidence.hidden = !isExample;
-      detail.textContent = isExample ? 'New — APPROVE for payments sandbox alerts: the cited policy supports the required fields.' : outcome;
+      detail.textContent = isExample ? 'New — promoted in the payments sandbox work area, because the policy it cites requires all three fields.' : outcome;
     }
   }
 
@@ -369,11 +371,11 @@
     });
     button.addEventListener('click', function () {
       var outcomes = {
-        new: 'A new contribution enters the shared knowledge in this example.',
+        new: 'A new claim is promoted in this example.',
         sharp: 'A revision supersedes an earlier claim; its history is retained.',
         merge: 'Related claims are reconciled, with their parents retained.',
         held: 'A disagreement stays open for review.',
-        refused: 'Refused in this example: ' + (a.reason || 'review rejected the contribution.')
+        refused: 'Rejected in this example: ' + (a.reason || 'the reviewer rejected the claim.')
       };
       inspectContribution(a.text, CHIP[a.verdict] + ' — ' + outcomes[a.verdict], true);
       feedEl.querySelectorAll('button').forEach(function (b) { b.setAttribute('aria-pressed', String(b === button)); });
@@ -394,7 +396,7 @@
   }
 
   // ---- camera ------------------------------------------------------------------
-  // yaw/pitch turn the sky; Z magnifies the projection; ox/oy pan the image in
+  // yaw/pitch turn the sky; Z magnifies the drawn image; ox/oy pan the image in
   // screen pixels so a zoomed-in constellation can be brought to the middle.
   var HOME = { yaw: -0.55, pitch: 0.62 };
   var yaw = HOME.yaw, pitch = HOME.pitch, vYaw = 0, vPitch = 0, D = 2.7;
@@ -555,7 +557,7 @@
       var inHl = hover && st.ci === hover.ci;
       ctx.fillStyle = rgba(COLOR.ink, P.a * (isHover ? 1 : inHl ? 0.98 : 0.88));
       ctx.beginPath(); ctx.arc(P.x, P.y, r * pop, 0, 6.2832); ctx.fill();
-      if (st.revs > 0) { // a sharpened star carries a thin ring
+      if (st.revs > 0) { // a revised star carries a thin ring
         ctx.strokeStyle = rgba(COLOR.sharp, P.a * 0.65); ctx.lineWidth = 1;
         ctx.beginPath(); ctx.arc(P.x, P.y, r + 2.4, 0, 6.2832); ctx.stroke();
       }
@@ -565,7 +567,7 @@
       }
     });
 
-    // arrivals in flight and refusals falling away
+    // arrivals in flight and rejections falling away
     for (i = inflight.length - 1; i >= 0; i--) {
       var a = inflight[i];
       if (!a.landed) {
@@ -666,9 +668,9 @@
     var kind = KIND[st.k] || st.k;
     var how = st.via === 'sharp' ? 'A revision: it supersedes an earlier claim, kept faint behind it.'
       : st.via === 'merge' ? 'Merged from two claims; both parents kept faint behind it.'
-      : st.via === 'held' ? 'Held: it contradicts a neighbour and the merge was refused, so both stay.'
+      : st.via === 'held' ? 'Held: it contradicts a neighbour and the merge was rejected, so both stay.'
       : st.via === 'new' ? 'Arrived as a new claim.' : 'In the sky at the start.';
-    if (st.revs > 1) how += ' Sharpened ' + st.revs + ' times.';
+    if (st.revs > 1) how += ' Revised ' + st.revs + ' times.';
     inspectContribution(st.text, kind + ' · ' + cats[st.ci].name + '. ' + how);
     tip.innerHTML = '';
     var k = document.createElement('span'); k.className = 'kind'; k.textContent = kind + ' \u00b7 ' + cats[st.ci].name;

@@ -1,5 +1,5 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://doublegate-io.github.io/sitemap.xml
-LLMs: https://doublegate-io.github.io/llms.txt
+Sitemap: https://about.doublegate.io/sitemap.xml
+LLMs: https://about.doublegate.io/llms.txt

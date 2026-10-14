@@ -679,7 +679,7 @@ s|event-validator: checks a build's emitted events against the schema registry i
 m|the mobile app batched events and sent them hours later; event time is the device time, receipt time is separate
 f|the weekly business review reads from one dashboard with definitions linked on every tile
 
-## compliance | Compliance & privacy | security, payments, governance, data
+## compliance | Compliance & privacy | security, payments, docs, data
 f|personal data is retained for the contract term plus 3 years, then deleted; the retention job runs monthly and reports what it removed
 m|an export for a data access request missed the support tickets because they lived in a vendor system; the export map lists every system
 c|every new data flow is recorded in the processing register before it goes live; the register is reviewed quarterly
@@ -696,7 +696,7 @@ f|the vendor review covers security, privacy and continuity; a vendor with produ
 m|a retention policy deleted invoices the tax authority required for 10 years; financial records have their own schedule
 c|deletion requests are honored across backups within 90 days; the backup job excludes deleted keys on restore
 f|customer data leaves its region only with a documented transfer mechanism, and the list of mechanisms is legal's to change
-s|dpia-template: produces the impact assessment questions for a new feature from its data description
+s|dpia-template: drafts the data-protection impact questions for a new feature from its data description
 m|a marketing tool synced the customer list including people who had opted out; sync respects the consent field now
 p|the team prefers to collect less data over protecting more; a field without a documented use is removed
 f|the accessibility statement is reviewed twice a year and lists the known gaps with their dates
@@ -716,7 +716,7 @@ p|the compliance team prefers a single policy library with owners and review dat
 f|training on data handling is completed within 30 days of joining and renewed yearly; completion is tracked
 m|a customer's deletion request was completed in the product but their data survived in the analytics warehouse for a year
 c|a legal hold suspends deletion for the named records only; a blanket hold on everything is refused
-f|the records of processing list the lawful basis for each purpose; a purpose without a basis is stopped
+f|the records of processing list the lawful basis for each use of personal data; a use without a basis is stopped
 s|consent-audit: samples recorded consents and verifies each has its text version and matches the current notice
 m|the contract template promised a deletion timeline the systems could not meet; the template matches the runbook now
 f|the whistleblowing channel is external, anonymous and answered within 7 days
@@ -763,7 +763,7 @@ s|churn-signals: flags accounts with rising ticket volume, failed payments or dr
 m|an escalation to engineering had no reproduction steps and bounced three times; the triage template requires them
 f|the support team's runbooks are in the same repository as engineering's, and a change is reviewed by both
 
-## product | Product & roadmap | analytics, support, governance, frontend
+## product | Product & roadmap | analytics, support, docs, frontend
 c|a feature is described by the problem it solves and how success is measured before any design starts
 f|the roadmap is published quarterly with themes, and a dated commitment appears only when the work has started
 m|a feature shipped to every customer on day one and support was flooded; new features roll out to 5% first
@@ -805,44 +805,44 @@ s|usage-cohorts: compares retention of accounts that adopted a feature against t
 m|the trial length was cut from 30 days to 14 and conversion rose because customers decided sooner
 f|the product team reviews the top ten support themes every month with the support lead in the room
 
-## governance | Knowledge governance | compliance, security, product, ml
-c|nothing an agent writes down is shared beyond its author until a reviewer that did not write it has signed it
-f|a rejected submission stays in the record with its reasons; it is not deleted and it is never readable
-m|a wrong retry rule propagated to every agent on a team before anyone questioned it; it was a fact for three weeks
-s|provenance-export: produces the signed chain for an artifact from submission to every approval, for an auditor
-p|the governance team prefers a contradiction left visible over a silent choice between two beliefs
-f|a merged belief supersedes its parents; the parents stay in the record with the edges that connect them
-m|two teams held opposite conventions for the same API and both were right for their own service; the record keeps both
-c|the reviewer runs in its own process, without tools and without network, and did not write what it reviews
-f|approval within a team is one signature; approval for the organization needs a second, independent one
-s|gap-report: lists what a team's agents keep asking that no approved artifact answers
-m|a skill installed from a public hub carried a credential exfiltration; scanning happens before review, not after
-p|security prefers every artifact to carry the identity that wrote it and the identity that signed it
-f|an artifact's identity is the hash of its content; the same claim submitted twice is one artifact
-m|a summary written by an agent was treated as a fact by another agent; summaries are labeled as derived
-c|a claim about a regulated matter is not approved without the citation that supports it
-f|the audit trail is append-only and hash-chained; an auditor verifies it without trusting the operator
-s|verdict-history: shows every decision on an artifact, who made it and what changed between versions
-m|a memory that was correct in March was wrong by June; artifacts carry the date they were last confirmed
-p|the organization prefers a belief with a known author over an anonymous one, even when the anonymous one is older
-f|a connector that proposes knowledge from a ticketing system is an author; its proposals wait for review like anyone's
-m|a convention was approved for one team and inherited by another where it did not apply; scope is part of the artifact
-c|an artifact is revised by a new version that supersedes the old; editing in place is refused
-f|the reviewer's grade has axes: correctness, specificity, safety and scope; a verdict names its scores
-s|review-queue: shows what is waiting for a human reviewer, ordered by age and by how many agents asked for it
-m|a review queue of 300 items meant nothing was reviewed; the queue is capped and the oldest items age out with notice
-p|reviewers prefer to see the claim's neighbors in the record before grading it
-f|a reviewer that grades its own writing is a configuration error and the system refuses to start
-m|a preference held by one engineer was promoted as a team convention; preferences and conventions are separate kinds
-c|the reasons for a rejection are written for the author to act on; a rejection without reasons is a defect
-f|an artifact readable by the organization was readable by its team first, and by its author before that
-s|scope-check: lists artifacts readable at a wider scope than any approval granted them
-m|a public skill's update changed its behavior after approval; approvals bind to the content hash, not the name
-p|the platform team prefers the gate to sit on the write path; a read-time filter was rejected as a design
-f|every verdict is signed with the reviewer's key, and the key belongs to an identity in the register
-m|a merge of two beliefs was proposed by the same component that graded it; proposers and deciders are separate identities
-c|a claim's scope names the systems it applies to; a claim without a scope is asked for one before review
-f|a human can override the automated reviewer; the override is signed and carries its reason
-s|claim-neighbors: finds the approved artifacts closest to a new claim and shows where they agree and where they differ
-m|an agent reported that its folder was missing a rate-limit rule; the report became the first entry in the gap register
-f|the record is exportable in full; an organization leaving takes its signed history with it
+## docs | Documentation | compliance, support, product, api
+c|every runbook names its owner team and the date someone last walked through it end to end
+f|the internal docs site is rebuilt from the main branch on every merge and serves the result within ten minutes
+m|the onboarding guide pointed new hires at a retired build tool for a month; guides link to the tool's own page now
+s|link-check: crawls the internal docs nightly and lists every broken link with the page that carries it
+p|the platform team prefers one page per task over one long page per service
+f|an architecture decision record is never edited once accepted; a later record supersedes it and links back
+m|two teams wrote different setup guides for the same service and new hires followed whichever they found first
+c|a how-to page opens with what the reader will have at the end, then the steps, then the troubleshooting
+f|the docs search ranks titles and headings first, so a page with a vague title is rarely found
+s|stale-pages: lists pages untouched for a year whose code paths changed since, with each page's owner
+m|a runbook step said restart the service but meant the worker; the incident ran an hour longer for it
+p|engineers prefer copyable commands in code blocks over screenshots of a terminal
+f|the style guide fixes sentence case for headings and the second person for instructions
+m|an API page documented a field the service had dropped two releases earlier; reference pages are generated from the schema now
+c|a page that describes a procedure is reviewed by someone who has just followed it, as well as by its author
+f|the glossary holds one definition per term, and every other page links to it instead of defining the term again
+s|glossary-lint: flags pages that use a term differently from the glossary, or a term the glossary lacks
+m|postmortems lived in four places and nobody found the earlier one with the same cause; they share one index now
+p|support prefers troubleshooting pages that start from the error message the customer sees
+f|diagrams are stored as source next to their page, so a change to a diagram is reviewed like a change to text
+m|a migration guide skipped the rollback section and a team had to reconstruct it during an outage
+c|a deprecated page carries a banner naming its replacement and is removed after one quarter
+f|the docs platform keeps every page's history, and the page's owner can restore any earlier version
+s|docs-owner-report: lists pages whose owner has left and suggests the team that edits them most
+m|a release note promised a setting that never shipped; release notes are drafted from the merged changes now
+p|writers prefer a short page that links to the reference over a long page that copies it
+f|the median internal page is read 40 times a month, and a fifth of pages are not read at all
+m|a code sample used a deprecated client and was copied into eleven services before anyone noticed
+c|every code sample on a page runs in CI against the current release, and a failing sample blocks the merge
+f|the API reference and the changelog are released together, from the same release tag
+s|sample-runner: extracts the code samples from a page and runs each one against a sandbox
+m|the on-call handbook said to page the database team for every slow query; it names the threshold now
+p|the docs team prefers a template per page type over a free-form page for each team
+f|a page's feedback button sends a note to its owner, who answers within five working days
+m|a tutorial grew to 30 steps and few readers finished it; it was split into three tutorials of ten steps
+c|screenshots name the release they were taken on in their alt text, and outdated ones are retaken at the next release
+f|a translated page shows the date of the source page it was translated from
+s|translation-diff: lists translated pages whose source changed since translation, with the changed paragraphs
+m|a contributor guide asked for a sign-off the repository no longer checks; the guide matches the checks now
+f|the docs site is built as static pages and works with JavaScript turned off

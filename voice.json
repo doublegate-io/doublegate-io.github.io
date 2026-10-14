@@ -1,0 +1,54 @@
+{
+  "decided_by": "ADR-0137; design/docs/03-components/29-words.md",
+  "second_person": "\\b[Yy]ou(r|rs|rself|rselves)?\\b",
+  "allow": [],
+  "banned": [
+    { "word": "an exclamation mark", "pattern": "!(?=[\\s\"'”)]|$)", "why": "§2" },
+    { "word": "please", "pattern": "\\b[Pp]lease\\b", "why": "§2; GOV.UK: it implies a choice" },
+    { "word": "sorry, oops, unfortunately", "pattern": "\\b([Ss]orry|[Oo]ops|[Uu]nfortunately)\\b", "why": "§2, §5" },
+    { "word": "something went wrong", "pattern": "\\b[Ss]omething went wrong\\b", "why": "§5: name what failed" },
+    { "word": "just now, in a moment, a while", "pattern": "\\b([Jj]ust now|[Ii]n a moment|a while)\\b", "why": "§6" },
+    { "word": "praise", "pattern": "\\b(Great|Awesome|Nice work|Well done|All set)\\b", "why": "§2" },
+    { "word": "the first person singular", "pattern": "\\b(I(?![/.-]\\w)|[Mm]e|[Mm]y|[Mm]ine|[Mm]yself)\\b", "why": "§2" },
+    { "word": "the first person plural", "pattern": "\\b([Ww]e|[Oo]ur|[Oo]urs)\\b", "except": ["doublegate-site"], "why": "§2: the site keeps we for the company's commitments" }
+  ],
+  "prefer": [
+    { "avoid": "Nothing you can read answers this.", "pattern": "\\bNothing you can read answers this\\b", "prefer": "No claim this account can read answers this.", "why": "§7: the assistant; ADR-0128 d8" },
+    { "avoid": "Claims you opened", "pattern": "\\b[Cc]laims you opened\\b", "prefer": "Claims opened in this tab", "why": "§7: the assistant; ADR-0128 d8" },
+    { "avoid": "<n> claims you can read", "pattern": "\\bclaims you can read\\b", "prefer": "<n> claims this account can read", "why": "§7: the assistant; ADR-0128 d8" },
+    { "avoid": "only you can clear it", "pattern": "\\bonly you can clear\\b", "prefer": "a person clears or rejects it", "why": "§7: dg.why's reasons; ADR-0119 d10" },
+    { "avoid": "it waits for your signature", "pattern": "\\bwaits for your signature\\b", "prefer": "it waits for a person's signature", "why": "§7: dg.why's reasons; ADR-0119 d10" },
+    { "avoid": "Nothing is waiting for you.", "pattern": "\\bNothing is waiting for you\\b", "prefer": "Nothing is waiting for review.", "why": "§7: dg.why's reasons; ADR-0119 d10" },
+    { "avoid": "which is why this reached you", "pattern": "\\bwhich is why this reached you\\b", "prefer": "which is why a person reviews it", "why": "§7: dg.why's reasons; ADR-0119 d10" },
+    { "avoid": "you wrote it, you are the only reviewer", "pattern": "\\byou wrote it, you are the only reviewer\\b", "prefer": "its author is the only reviewer", "why": "§7: dg.who_can_sign's words; ADR-0134 d3" },
+    { "avoid": "No notifier is set up; tell them yourself.", "pattern": "\\bNo notifier is set up; tell them yourself\\b", "prefer": "No notifier is set up: tell them directly.", "why": "§7: dg.who_can_sign's words; ADR-0134 d8" },
+    { "avoid": "Tell them yourself.", "pattern": "\\b[Tt]ell them yourself\\b", "prefer": "Tell them directly.", "why": "§7: dg.who_can_sign's words; ADR-0134 d8" },
+    { "avoid": "Can sign: you, in development mode", "pattern": "\\bCan sign: you, in development mode\\b", "prefer": "Can sign: this account, in development mode", "why": "§7: dg.who_can_sign's words; ADR-0135 d2" },
+    { "avoid": "development mode: your signature counts on your own rows", "pattern": "\\b(development: your signature counts on your own rows while you are this home's only person|development mode: your signature counts on your own rows)\\b", "prefer": "development mode: this home's one person signs their own claims", "why": "§7: doublegate init's comment and line, scripts/demo/up.sh; ADR-0135 d1" },
+    { "avoid": "signs their own rows", "pattern": "\\bsigns their own rows\\b", "prefer": "signs their own claims", "why": "§7: every page's foot, To sign's heading, doublegate init and up.sh; ADR-0135 d1, d4; ADR-0104 d8" },
+    { "avoid": "graded row", "pattern": "\\bgraded rows?\\b", "prefer": "graded claim", "why": "§7: the policy warning, dg.who_can_sign; ADR-0134 d2, d3; ADR-0104 d8" }
+  ],
+  "ai_tells": ["delve", "leverag(e|es|ing)", "robust", "seamless", "cutting-edge", "game.chang", "revolution",
+               "unlock", "empower", "harness(ed|ing)", "to harness", "in today'?s (landscape|world)"],
+  "agent_text": [
+    { "package": "client-gate", "source": "src/doublegate/mcp.py", "why": "the tool descriptions an agent reads (§3.2)" },
+    { "package": "client-gate", "source": "src/doublegate/gate.py", "span": ["STANCES", "_PROMPT", "_BATCH_PROMPT", "_AXIS_TEXT"], "why": "a grading model reads them" },
+    { "package": "client-gate", "source": "src/doublegate/semantic_review.py", "span": ["_PROMPT", "prompt", "ReviewSnapshot"], "why": "the findings reviewer, a model, reads them" },
+    { "package": "doublegate-sdk", "source": "src/doublegate_sdk/crew.py", "span": ["START_MESSAGE", "CONTINUE_MESSAGE"], "why": "a crew member reads its start" },
+    { "package": "doublegate-sdk", "source": "src/doublegate_sdk/crew.py", "span": ["ROLE_HEADINGS", "WHEN_BLOCKED", "CITE_WHAT_YOU_FOLLOW"], "why": "a crew member reads its charter's fixed sections" },
+    { "package": "doublegate-sdk", "source": "src/doublegate_sdk/assist.py", "span": ["INSTRUCTIONS"], "why": "the answer service's model reads them" },
+    { "package": "doublegate-sdk", "source": "src/doublegate_sdk/decision/codec.py", "span": ["typed_block"], "why": "the writer model reads the decision model's answers in it" },
+    { "package": "doublegate-sdk", "source": "src/doublegate_sdk/decision/questions.py", "why": "every string is a question a model answers" },
+    { "package": "doublegate-sdk", "source": "src/doublegate_sdk/rag/pack.py", "span": ["INSTRUCTION"], "why": "the model that answers from a context pack reads it" },
+    { "package": "doublegate-peers", "source": "src/doublegate_peers/runner.py", "span": ["argv"], "why": "the prompt the runner hands a member" },
+    { "package": "doublegate-agent", "source": "src/doublegate_agent", "why": "every string is a tool description or a hook's line to the model" }
+  ],
+  "not_text": [
+    { "package": "client-gate", "source": "src/doublegate/verbs.py", "span": ["you"], "why": "dg.who_can_sign's field key, read by a program" },
+    { "package": "client-gate", "source": "src/doublegate/scanner.py", "span": ["_INJECTION_PATTERNS"], "why": "patterns matched against content" },
+    { "package": "client-gate", "source": "src/doublegate/backends.py", "span": ["_systemone_table"], "why": "a provider's page quoted, content (§3.3)" },
+    { "package": "doublegate-sdk", "source": "src/doublegate_sdk/crew.py", "span": ["OVERRIDE_PHRASES"], "why": "phrases matched against a charter's text, content (§3.3)" },
+    { "package": "doublegate-peers", "source": "src/doublegate_peers/sources.py", "span": ["REFUSED"], "why": "quoted third-party terms, content (§3.3)" },
+    { "package": "doublegate-peers", "source": "src/doublegate_peers/fetching.py", "span": ["check_user_agent"], "why": "a quoted third-party policy, content (§3.3)" }
+  ]
+}

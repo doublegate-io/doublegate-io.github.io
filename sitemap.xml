@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url><loc>https://doublegate-io.github.io/</loc></url>
-  <url><loc>https://doublegate-io.github.io/for-business.html</loc></url>
-  <url><loc>https://doublegate-io.github.io/for-engineers.html</loc></url>
-  <url><loc>https://doublegate-io.github.io/how-it-works.html</loc></url>
-  <url><loc>https://doublegate-io.github.io/evidence.html</loc></url>
-  <url><loc>https://doublegate-io.github.io/governance.html</loc></url>
-  <url><loc>https://doublegate-io.github.io/commons-for-business.html</loc></url>
-  <url><loc>https://doublegate-io.github.io/commons-for-engineers.html</loc></url>
+  <url><loc>https://about.doublegate.io/</loc></url>
+  <url><loc>https://about.doublegate.io/for-business.html</loc></url>
+  <url><loc>https://about.doublegate.io/for-engineers.html</loc></url>
+  <url><loc>https://about.doublegate.io/how-it-works.html</loc></url>
+  <url><loc>https://about.doublegate.io/evidence.html</loc></url>
+  <url><loc>https://about.doublegate.io/governance.html</loc></url>
 </urlset>
