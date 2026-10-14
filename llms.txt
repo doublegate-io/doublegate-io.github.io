@@ -27,7 +27,7 @@ Rendered from the code that serves it and checked against it in the code reposit
 - [For business](https://about.doublegate.io/for-business.html): Keep the corrections, conventions and skills a company's agents learn as reviewed claims that any agent on the gate can find. Who runs it, what it costs, and what a group gets next.
 - [For engineers](https://about.doublegate.io/for-engineers.html): Run the gate on one machine, connect Claude Code through its plugin, review in the console, and check files offline with the SDK. Interfaces, running costs and the release sequence.
 - [How it works](https://about.doublegate.io/how-it-works.html): Follow one correction from the moment an agent writes it to the moment another agent recalls it. See each stage, from the work area to recall, and what happens when a step refuses it.
-- [Evidence](https://about.doublegate.io/evidence.html): The research behind the problem, the rules the gate enforces and how to check each, and what we measured on one machine.
+- [Evidence](https://about.doublegate.io/evidence.html): The research behind the problem, and the rules the gate enforces and how to check each.
 - [Business governance](https://about.doublegate.io/governance.html): Who wrote each claim, who reviewed it and why, in a signed journal an auditor can verify. Quoted references to the ECB RDARR Guide, EU AI Act Article 12, GDPR and BCBS 239.
 
 ## Optional

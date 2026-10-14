@@ -177,8 +177,7 @@
           so a later change shows. Nothing is
           edited in place or deleted, so storage only grows.</td>
           <td>Run <code>doublegate verify</code> on the gate's machine, with the gate's home
-          directory or an API key. It walks the chain and checks every signature, at the
-          <a href="#measured">rate measured below</a>.</td>
+          directory or an API key. It walks the chain and checks every signature.</td>
         </tr>
         <tr>
           <td><b>Only its author and reviewers can read a held claim.</b></td>
@@ -203,7 +202,11 @@
   </div>
 </section>
 
-<section id="measured" class="band">
+<!-- Measured figures belong in the repository's own benchmark reports, not on a
+     product page: they are an internal state of readiness, they go stale, and a
+     rate from one test machine tells a visitor nothing about their hardware.
+     Kept here, unrendered, like #against. -->
+<section id="measured" class="band" hidden>
   <div class="wrap">
     <h2>What we measured on one machine</h2>
     <p class="lede">
@@ -351,7 +354,7 @@
   </div>
 </section>
 
-<section id="all" class="band alt">
+<section id="all" class="band">
   <div class="wrap tight center">
     <h2>The full research set</h2>
     <p class="lede">
@@ -361,7 +364,7 @@
   </div>
 </section>
 
-<section id="next" class="band">
+<section id="next" class="band alt">
   <div class="wrap tight center">
     <h2>Who pays, and what it costs</h2>
     <div class="cta-row center">

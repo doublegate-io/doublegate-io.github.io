@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Evidence — every finding, with its source</title>
-<meta name="description" content="The research behind the problem, the rules the gate enforces and how to check each, and what we measured on one machine.">
+<meta name="description" content="The research behind the problem, and the rules the gate enforces and how to check each.">
 <meta property="og:title" content="Evidence — every finding, with its source">
-<meta property="og:description" content="The research behind the problem, the rules the gate enforces and how to check each, and what we measured on one machine.">
+<meta property="og:description" content="The research behind the problem, and the rules the gate enforces and how to check each.">
 <meta property="og:type" content="website">
 <link rel="icon" type="image/svg+xml" href="assets/logo.svg">
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png">
@@ -35,7 +35,7 @@
     <div class="page-hero-grid">
       <div class="page-hero-title"><h1>Every finding, with its source.</h1></div>
       <span class="gate-rail dg-boundary-mark hero-rail" aria-hidden="true"><i></i><i></i></span>
-      <div class="page-hero-complement"><p class="hero-proposition">Read the finding. Check what it actually supports.</p><p>Published research documents the problem. Anyone can check the gate’s rules against what we publish. Our own measurements come from one machine, and each says which.</p><a href="#findings">Read the primary sources</a></div>
+      <div class="page-hero-complement"><p class="hero-proposition">Read the finding. Check what it actually supports.</p><p>Published research documents the problem. Anyone can check the gate’s rules against what we publish, on their own gate.</p><a href="#findings">Read the primary sources</a></div>
     </div>
     
   </div>
@@ -219,8 +219,7 @@
           so a later change shows. Nothing is
           edited in place or deleted, so storage only grows.</td>
           <td>Run <code>doublegate verify</code> on the gate's machine, with the gate's home
-          directory or an API key. It walks the chain and checks every signature, at the
-          <a href="#measured">rate measured below</a>.</td>
+          directory or an API key. It walks the chain and checks every signature.</td>
         </tr>
         <tr>
           <td><b>Only its author and reviewers can read a held claim.</b></td>
@@ -245,7 +244,11 @@
   </div>
 </section>
 
-<section id="measured" class="band">
+<!-- Measured figures belong in the repository's own benchmark reports, not on a
+     product page: they are an internal state of readiness, they go stale, and a
+     rate from one test machine tells a visitor nothing about their hardware.
+     Kept here, unrendered, like #against. -->
+<section id="measured" class="band" hidden>
   <div class="wrap">
     <h2>What we measured on one machine<a class="h-anchor" href="#measured" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
@@ -393,7 +396,7 @@
   </div>
 </section>
 
-<section id="all" class="band alt">
+<section id="all" class="band">
   <div class="wrap tight center">
     <h2>The full research set<a class="h-anchor" href="#all" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <p class="lede">
@@ -403,7 +406,7 @@
   </div>
 </section>
 
-<section id="next" class="band">
+<section id="next" class="band alt">
   <div class="wrap tight center">
     <h2>Who pays, and what it costs<a class="h-anchor" href="#next" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
     <div class="cta-row center">

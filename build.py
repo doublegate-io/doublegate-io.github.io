@@ -124,10 +124,11 @@ TITLES = {
     ),
     "evidence.html": (
         "Evidence — every finding, with its source",
-        # Ends at "one machine" while #against is hidden; once it renders, the
-        # description adds ", and the findings that cut against us".
-        "The research behind the problem, the rules the gate enforces and how to check each, "
-        "and what we measured on one machine.",
+        # Ends at the rules while #against and #measured are hidden; once
+        # #against renders, the description adds ", and the findings that cut
+        # against us".
+        "The research behind the problem, and the rules the gate enforces and how to "
+        "check each.",
     ),
 }
 
@@ -365,8 +366,7 @@ HEROES = {'for-business.html': ('For business',
                    'Every finding, with its source.',
                    '<p class="hero-proposition">Read the finding. Check what it actually '
                    'supports.</p><p>Published research documents the problem. Anyone can check the '
-                   'gate’s rules against what we publish. Our own measurements come from one '
-                   'machine, and each says which.</p><a href="#findings">Read the primary '
+                   'gate’s rules against what we publish, on their own gate.</p><a href="#findings">Read the primary '
                    'sources</a>',
                    ''),
  'index.html': ('doublegate / Agent memory',

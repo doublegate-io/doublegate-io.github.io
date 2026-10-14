@@ -980,6 +980,38 @@ if not VOICE_SDK.exists():
 elif VOICE_SDK.read_bytes() != VOICE_COPY.read_bytes():
     fail(f"voice.json differs from the SDK's word list -> run `{VOICE_CP}` from the workspace root")
 
+# 26. THE SITE NEVER PUBLISHES OUR OWN MEASUREMENTS OR OUR OWN EFFORT.
+#     A rate from one test machine tells a visitor nothing: their hardware is
+#     different, the figure goes stale, and naming the host ("WSL2 on an AMD
+#     Ryzen 9 5950X") reads as a development snapshot rather than a product.
+#     Benchmarks belong in the repository, beside the bench that produced them.
+#     Counts of our own tests, docs or decision records are the same mistake in
+#     a second form: they answer no question a visitor arrived with, and a weak
+#     project could claim the same numbers.
+#     2026-10-14: #measured went `hidden` and six inbound links were re-pointed.
+#     The same leak had been removed by hand four times across the site, the
+#     organization profile and the LinkedIn copy, so it is a gate now. What the
+#     product does, and what remains unmeasured, still belong here: this gate
+#     forbids OUR figures and OUR effort, never a limitation.
+INTERNAL_STATE = {
+    "the host it ran on":
+        r"\bWSL2\b|\bRyzen\b|\bXeon\b|\bEPYC\b|\bApple M[1-9]\b|\btest machine\b",
+    "our own measurement":
+        r"our own measurement|we measured|rate measured|measured on one"
+        r"|our own benchmark|on the test machine",
+    "how much we have built":
+        r"\b\d[\d,]*\s+(?:tests?|test cases|design docs?|design documents?"
+        r"|decision records?|ADRs?)\b",
+}
+for page in pages:
+    # addressed_text() drops hidden sections, so #measured keeps its figures
+    # in the file for the bench report without failing this gate.
+    body = re.sub(r"\s+", " ", addressed_text(page.read_text()))
+    for what, pat in INTERNAL_STATE.items():
+        for m in re.finditer(pat, body, re.I):
+            fail(f"{page.name}: {what} reaches a visitor -> "
+                 f"{body[max(0, m.start() - 50):m.end() + 50].strip()!r}")
+
 # ---------------------------------------------------------------- report
 for w in warns:
     print(f"NOTICE · {w}")
@@ -999,3 +1031,4 @@ print("  the audience IA and its destination fragments resolve")
 print("  the band rhythm alternates · no AI tells in visible copy · a qualifier attaches to its claim, never opens a section")
 print("  a sentence is written once: cross-page repeats are listed above, not failed")
 print("  the third person outside a call to act, against the word list · the word list is the SDK's")
+print("  no measurement of ours and no count of our own effort reaches a visitor")

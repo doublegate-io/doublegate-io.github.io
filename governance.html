@@ -96,8 +96,8 @@
       journal. A caller can still learn four things, and we publish them:
     </p>
     <ul>
-      <li>Timing. Refusing such a claim takes about 2.6 µs longer over the gate&rsquo;s local
-      connection, on one test machine, 2026-10-06. Over many timed calls, a caller that holds the
+      <li>Timing. Refusing such a claim takes measurably longer than refusing one that does not
+      exist. Over many timed calls, a caller that holds the
       claim&rsquo;s id can confirm that the claim exists. So can a caller that can compute the
       id, which is a digest of the whole write: its author, time and text. Neither learns
       anything else about it.</li>
@@ -334,8 +334,8 @@
       <div class="card">
         <h3>Verify the chain</h3>
         <p><code>doublegate verify</code> checks every signature and every link in the journal.
-        A changed field, a removed decision or a reordered event makes the check fail. It takes
-        about 56 µs an event on one test machine, 2026-10-05.</p>
+        A changed field, a removed decision or a reordered event makes the check fail. The check
+        holds no lock, so claims can still be written while it runs.</p>
       </div>
       <div class="card">
         <h3>Read one claim&rsquo;s decisions</h3>

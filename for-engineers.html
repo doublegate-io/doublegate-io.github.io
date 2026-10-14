@@ -147,16 +147,15 @@
 <section id="costs" class="band alt">
   <div class="wrap tight">
     <h2>What it costs to run<a class="h-anchor" href="#costs" aria-label="Link to this section"><span aria-hidden="true">#</span></a></h2>
-    <p>By default each held claim costs two readings by the grading model. When the gate's policy asks for a person, it also costs that person's time. Every claim kept uses disk, and storage only grows because nothing is deleted. The rates below were measured on one test machine (WSL2 on an AMD Ryzen 9 5950X, 2026-10-05). Each illustrates how a cost behaves:</p>
+    <p>By default each held claim costs two readings by the grading model. When the gate's policy asks for a person, it also costs that person's time. Every claim kept uses disk, and storage only grows because nothing is deleted. What drives each cost:</p>
     <ul>
-      <li>The journal appends about 700 events a second, each on disk before the call returns. On the test machine, that rate caps how fast the gate writes.</li>
-      <li>Checking the journal's chain takes about 56 µs an event.</li>
-      <li>Each claim uses about 14.5 KB of disk, permanently.</li>
-      <li>The scanner runs at about 305 ms per MiB of prose (measured 2026-09-23).</li>
-      <li>Writing a 1 KiB claim, scan included, answers inside the 50 ms budget the test suite enforces. That time grows as the store grows. An index that halved it on test copies is on the roadmap.</li>
+      <li>Every event is on disk before the call returns, so the disk caps how fast the gate writes.</li>
+      <li>Checking the journal's chain reads every event in it, so the check grows with the journal.</li>
+      <li>Each claim holds disk permanently, because nothing is deleted.</li>
+      <li>The scanner reads the whole text of every claim written.</li>
+      <li>Writing a claim takes longer as the store grows. An index that lowers it is on the roadmap.</li>
     </ul>
     <p id="broken">Promotion, and rebuilding the views from the journal, take longer as the journal grows. More readers at once lower throughput on SQLite. Fixes for both are on the roadmap.</p>
-    <p class="micro">The evidence page lists <a href="evidence.html#measured">every measurement, with its machine and date</a>.</p>
   </div>
 </section>
 
