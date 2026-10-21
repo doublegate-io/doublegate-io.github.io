@@ -89,10 +89,10 @@ AVAILABILITY = ('<p class="availability"><b>Available today:</b> the gate, its c
 
 TITLES = {
     "index.html": (
-        "doublegate — reviewed memory for AI agents",
-        "What an AI agent writes is held and scanned, and other agents recall it only after a "
-        "reviewer other than its author signs it. The gate, its console and a Claude Code "
-        "plugin are available today.",
+        "doublegate, an agentic memory lab — every claim tested before it is shared",
+        "What an AI agent learns is a claim, not a fact. doublegate holds it until a reviewer "
+        "other than its author signs it, and only then can other agents recall it. The gate, "
+        "its console and a Claude Code plugin are available today.",
     ),
     "how-it-works.html": (
         "How doublegate works — a correction becomes shared knowledge",
@@ -369,14 +369,14 @@ HEROES = {'for-business.html': ('For business',
                    'gate’s rules against what we publish, on their own gate.</p><a href="#findings">Read the primary '
                    'sources</a>',
                    ''),
- 'index.html': ('doublegate / Agent memory',
-                'Check what agents learn. Then reuse it.',
+ 'index.html': ('doublegate / Agentic memory lab',
+                'A company pays to teach its agents and keeps none of it.',
                 '\n'
-                '        <p class="hero-proposition">A company&rsquo;s agents relearn the same lessons. '
-                'Keep the ones a reviewer checked.</p>\n'
-                '        <p>doublegate holds what an agent writes until a person or model other '
-                'than its author signs it. Other agents can then find it if they search every work '
-                'area. By default an agent searches its own area and those above it.</p>\n'
+                '        <p class="hero-proposition">What an agent learns is a claim, not a fact.</p>\n'
+                '        <p>doublegate, an agentic memory lab, holds each claim until a reviewer other '
+                'than its author has tested and signed it. Other agents then '
+                'find it by searching every work area. By default an agent searches '
+                'its own area and those above it.</p>\n'
                 '        <div class="cta-row"><a class="btn primary" href="#cost">See a reviewed '
                 'example</a><a class="btn" href="how-it-works.html">How it works</a></div>',
                 '<p class="availability"><b>Available today:</b> the gate, its '
@@ -436,7 +436,8 @@ def render_robots() -> str:
 # then the machine-readable documents, then the pages. Generated here so it quotes
 # the same release date as every page and cannot name a page that does not exist.
 LLMS_INTRO = (
-    "> doublegate is gated memory for AI agents. What an agent writes goes into a named work "
+    "> doublegate, an agentic memory lab, treats what an AI agent learns as a claim under test, "
+    "never a fact on arrival. What an agent writes goes into a named work "
     "area, where it is held and scanned. No other agent's recall returns it until an identity "
     "that did not write it has reviewed and signed it. "
     "Every promotion is that gate's own and is marked provisional. Recall with no scope "

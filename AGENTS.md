@@ -230,7 +230,10 @@ what they are afraid of.
 agent believes whatever it writes down" (the reader's problem, but a developer's,
 and developers do not sign annual contracts) → "your company is paying to teach
 five hundred private AI agents" (same product, priced as an asset). Each step
-changed *whose problem it was*, not the adjectives.
+changed *whose problem it was*, not the adjectives. The fourth (2026-10-21,
+design ADR-0151) keeps that problem and changes the product's stance: what an
+agent learns is a claim, not a fact, and doublegate is described as an agentic
+memory lab, after the name and never as the headline.
 
 **Order matters as much as wording.** Live order is problem → what you get →
 evidence → what changes → deployment → compare → roadmap. "What you get" sits
@@ -637,3 +640,17 @@ a dated one.
 - The footer keeps main's wording; the console's refusal is quoted as the console now
   words it, <q>Refused: the claim's author cannot sign it</q>; the Claude Code plugin gives an
   agent eleven tools, not eight, and the api manifest stops counting them.
+
+### 2026-10-21 — the site describes doublegate as an agentic memory lab (design ADR-0151)
+- The index hero's label is `doublegate / Agentic memory lab`; the headline is the buyer's
+  problem ("A company pays to teach its agents and keeps none of it."); the complement carries
+  the stance and the descriptor after the name. The index title and description, the
+  `llms.txt` opening and the social card's tagline carry the descriptor. `for-business` and
+  `how-it-works` heroes do not describe the product and are unchanged.
+- The hero lost "signs the verdict" for "has tested and signed it" to stay under
+  `audience-check.js`'s 720 px bound at 320 px (706 px).
+- The published-method point (falsification plan, first measurements) is not on the site:
+  `evidence#measured` and `#against` are hidden by request and the design repository is
+  private, so no visible page publishes either yet.
+- `check.py` gains no pattern for ADR-0151's four anti-claims; the record leaves that to the
+  tool, and the word list lives in the SDK.

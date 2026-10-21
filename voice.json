@@ -39,6 +39,7 @@
     { "package": "doublegate-sdk", "source": "src/doublegate_sdk/assist.py", "span": ["INSTRUCTIONS"], "why": "the answer service's model reads them" },
     { "package": "doublegate-sdk", "source": "src/doublegate_sdk/decision/codec.py", "span": ["typed_block"], "why": "the writer model reads the decision model's answers in it" },
     { "package": "doublegate-sdk", "source": "src/doublegate_sdk/decision/questions.py", "why": "every string is a question a model answers" },
+    { "package": "doublegate-sdk", "source": "src/doublegate_sdk/grading.py", "span": ["STANCES", "_PROMPT", "_BATCH_PROMPT", "_AXIS_TEXT", "GRADER_START_MESSAGE"], "why": "a grading crew's member reads them, moved from the gate (ADR-0149 d3)" },
     { "package": "doublegate-sdk", "source": "src/doublegate_sdk/rag/pack.py", "span": ["INSTRUCTION"], "why": "the model that answers from a context pack reads it" },
     { "package": "doublegate-peers", "source": "src/doublegate_peers/runner.py", "span": ["argv"], "why": "the prompt the runner hands a member" },
     { "package": "doublegate-agent", "source": "src/doublegate_agent", "why": "every string is a tool description or a hook's line to the model" }
